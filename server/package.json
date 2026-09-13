@@ -8,7 +8,6 @@
     "lint": "eslint src",
     "format": "prettier --write src",
     "dev": "tsx src/index.ts",
-    "smoke-test": "tsx src/shared/smoke-test.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx src/persistence/db/migrate.ts",
     "test": "vitest run",
