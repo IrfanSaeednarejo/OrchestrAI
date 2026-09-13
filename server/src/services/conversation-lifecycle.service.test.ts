@@ -81,11 +81,11 @@ describe('Conversation Lifecycle Service', () => {
 
   it('loadConversation: returns conversation, full transcript, and non-null state after sendMessage', async () => {
     const result = await loadConversation(createdConversationId, pocGraph as unknown as AnyCompiledGraph);
-    
+
     expect(result.conversation.id).toBe(createdConversationId);
     expect(result.messages).toHaveLength(1);
     expect(result.messages[0]?.content).toBe('Hello, graph!');
-    
+
     expect(result.state).toBeDefined();
     expect(result.state?.workflowStatus).toBe('ACTIVE');
     expect(result.state?.currentIntent).toBe('demo_intent');

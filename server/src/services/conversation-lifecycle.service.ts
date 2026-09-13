@@ -23,7 +23,7 @@ import type { ConversationState, ConversationStateAnnotation } from '../state/co
 // in the type signatures but accept the raw CompiledStateGraph type so callers can
 // inject any graph compiled from ConversationStateAnnotation without coupling this
 // service to a specific graph file.
-type AnyCompiledGraph = CompiledStateGraph<
+export type AnyCompiledGraph = CompiledStateGraph<
   typeof ConversationStateAnnotation.State,
   typeof ConversationStateAnnotation.Update,
   string
