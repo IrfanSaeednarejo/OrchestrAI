@@ -10,6 +10,7 @@
     "dev": "tsx src/index.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx src/persistence/db/migrate.ts",
+    "db:seed": "tsx src/persistence/seed.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },

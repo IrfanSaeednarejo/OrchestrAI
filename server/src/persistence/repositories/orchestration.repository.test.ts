@@ -15,13 +15,13 @@ describe('Orchestration Repository', () => {
       email: `orch-test-${Date.now()}@example.com`,
       defaultAddress: 'Orch St',
     }).returning();
-    testUserId = uResult[0]!.id;
+    testUserId = uResult[0] ? uResult[0].id : '';
 
     const cResult = await db.insert(conversations).values({
       userId: testUserId,
       status: 'active',
     }).returning();
-    testConversationId = cResult[0]!.id;
+    testConversationId = cResult[0] ? cResult[0].id : '';
   });
 
   afterAll(async () => {

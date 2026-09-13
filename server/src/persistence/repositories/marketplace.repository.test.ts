@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, afterAll } from 'vitest';
 import { db } from '../db/client.js';
 import { users } from '../db/schema.js';
 import { createUser, getUserById, User } from './marketplace.repository.js';

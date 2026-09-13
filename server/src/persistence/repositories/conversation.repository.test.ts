@@ -14,7 +14,7 @@ describe('Conversation Repository', () => {
       email: `conv-test-${Date.now()}@example.com`,
       defaultAddress: 'Conv St',
     }).returning();
-    testUserId = result[0]!.id;
+    testUserId = result[0] ? result[0].id : '';
   });
 
   afterAll(async () => {
