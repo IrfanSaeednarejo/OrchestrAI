@@ -11,6 +11,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx src/persistence/db/migrate.ts",
     "db:seed": "tsx src/persistence/seed.ts",
+    "checkpointer:setup": "tsx src/persistence/checkpointer/setup.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -33,6 +34,7 @@
   "dependencies": {
     "@langchain/core": "^1.2.11",
     "@langchain/langgraph": "^1.4.15",
+    "@langchain/langgraph-checkpoint-postgres": "^1.0.5",
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
     "pg": "^8.23.0",
