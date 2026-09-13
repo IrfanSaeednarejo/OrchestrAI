@@ -15,6 +15,7 @@ import {
 export type User = InferSelectModel<typeof users>;
 export type NewUser = InferInsertModel<typeof users>;
 export type Product = InferSelectModel<typeof products>;
+export type NewProduct = InferInsertModel<typeof products>;
 export type Order = InferSelectModel<typeof orders>;
 export type NewOrder = InferInsertModel<typeof orders>;
 export type OrderItem = InferSelectModel<typeof orderItems>;
@@ -45,6 +46,12 @@ export async function createUser(input: NewUser): Promise<User> {
 
 export async function getProductById(id: string): Promise<Product | undefined> {
   const result = await db.select().from(products).where(eq(products.id, id));
+  return result[0];
+}
+
+export async function createProduct(input: NewProduct): Promise<Product> {
+  const result = await db.insert(products).values(input).returning();
+  if (!result[0]) throw new Error('Failed to create record');
   return result[0];
 }
 

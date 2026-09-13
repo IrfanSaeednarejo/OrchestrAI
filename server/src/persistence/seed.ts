@@ -17,6 +17,7 @@ import {
 } from './db/schema.js';
 import {
   createUser,
+  createProduct,
   createOrder,
   createOrderItem,
   createPayment,
@@ -90,21 +91,17 @@ async function seed() {
   console.log(`Created user: ${u4.email}`);
 
   console.log('--- Creating Products ---');
-  const pResult1 = await db.insert(products).values({
+  const p1 = await createProduct({
     name: 'Pro Laptop',
     price: '1999.99',
     sku: 'LAP-PRO-1',
-  }).returning();
-  const p1 = pResult1[0];
+  });
 
-  const pResult2 = await db.insert(products).values({
+  const p2 = await createProduct({
     name: 'Wireless Headphones',
     price: '199.99',
     sku: 'AUD-WH-1',
-  }).returning();
-  const p2 = pResult2[0];
-  
-  if (!p1 || !p2) throw new Error('Product creation failed');
+  });
 
   // --- Scenario 1: Happy Path ---
   console.log('--- Scenario 1: Happy Path ---');
