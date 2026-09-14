@@ -1,5 +1,5 @@
 import { db } from '../db/client.js';
-import { eq, desc } from 'drizzle-orm';
+import { eq, desc, and } from 'drizzle-orm';
 import { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import {
   users,
@@ -114,6 +114,26 @@ export async function updatePaymentStatus(
     .where(eq(payments.id, id))
     .returning();
   return result[0];
+}
+
+export async function getPaymentById(id: string): Promise<Payment | undefined> {
+  const result = await db.select().from(payments).where(eq(payments.id, id));
+  return result[0];
+}
+
+export async function getCapturedPaymentsByUserId(userId: string): Promise<Payment[]> {
+  return db
+    .select({
+      id: payments.id,
+      orderId: payments.orderId,
+      amount: payments.amount,
+      status: payments.status,
+      method: payments.method,
+      createdAt: payments.createdAt,
+    })
+    .from(payments)
+    .innerJoin(orders, eq(payments.orderId, orders.id))
+    .where(and(eq(orders.userId, userId), eq(payments.status, 'captured')));
 }
 
 export async function getShipmentByOrderId(orderId: string): Promise<Shipment | undefined> {
