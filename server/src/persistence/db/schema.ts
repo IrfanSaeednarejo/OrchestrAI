@@ -133,6 +133,7 @@ export const shipments = pgTable(
     trackingNumber: text('tracking_number'),
     estimatedDelivery: timestamp('estimated_delivery'),
     carrier: text('carrier'),
+    deliveredAt: timestamp('delivered_at'),
   },
   (table) => [index('shipments_order_id_idx').on(table.orderId)],
 );
