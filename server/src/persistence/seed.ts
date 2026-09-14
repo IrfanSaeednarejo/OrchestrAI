@@ -130,6 +130,7 @@ async function seed() {
     status: 'delivered',
     trackingNumber: 'TRK-HAPPY-1',
     carrier: 'FedEx',
+    deliveredAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 7 days ago
   });
   specialCases.happyPathOrderId = orderHappy.id;
   console.log(`Created Happy Path Order: ${orderHappy.id}`);
@@ -217,6 +218,13 @@ async function seed() {
   });
   stats.orders++;
   await createOrderItem({ orderId: orderRetApp.id, productId: p2.id, quantity: 1, unitPrice: p2.price });
+  await createShipment({
+    orderId: orderRetApp.id,
+    status: 'delivered',
+    trackingNumber: 'TRK-APP-DEL',
+    carrier: 'UPS',
+    deliveredAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // Delivered 5 days ago (eligible for return)
+  });
   const retApp = await createReturn({
     orderId: orderRetApp.id,
     status: 'approved',
@@ -236,6 +244,13 @@ async function seed() {
   });
   stats.orders++;
   await createOrderItem({ orderId: orderRetRej.id, productId: p1.id, quantity: 1, unitPrice: p1.price });
+  await createShipment({
+    orderId: orderRetRej.id,
+    status: 'delivered',
+    trackingNumber: 'TRK-REJ-DEL',
+    carrier: 'FedEx',
+    deliveredAt: new Date(Date.now() - 40 * 24 * 60 * 60 * 1000), // Delivered 40 days ago (past 30 days policy)
+  });
   const retRej = await createReturn({
     orderId: orderRetRej.id,
     status: 'rejected',
@@ -293,6 +308,7 @@ async function seed() {
     status: 'in_transit',
     trackingNumber: 'TRK-INTRANSIT-1',
     carrier: 'UPS',
+    deliveredAt: null, // not yet delivered
   });
   specialCases.shippedNotDeliveredOrderId = orderShip.id;
   console.log(`Created Order (Shipped/In Transit): ${orderShip.id}`);

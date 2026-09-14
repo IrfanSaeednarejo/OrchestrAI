@@ -126,6 +126,15 @@ export async function createShipment(input: NewShipment): Promise<Shipment> {
   if (!result[0]) throw new Error('Failed to create record'); return result[0];
 }
 
+export async function markShipmentDelivered(shipmentId: string): Promise<Shipment | undefined> {
+  const result = await db
+    .update(shipments)
+    .set({ status: 'delivered', deliveredAt: new Date() })
+    .where(eq(shipments.id, shipmentId))
+    .returning();
+  return result[0];
+}
+
 export async function getReturnById(id: string): Promise<Return | undefined> {
   const result = await db.select().from(returns).where(eq(returns.id, id));
   return result[0];
