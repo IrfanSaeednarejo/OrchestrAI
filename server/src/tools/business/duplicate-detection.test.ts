@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
 import { db } from '../../persistence/db/client.js';
 import { payments, orders, users } from '../../persistence/db/schema.js';
 import { eq } from 'drizzle-orm';
@@ -110,5 +110,49 @@ describe('detectDuplicateCharge', () => {
     expect(result.success).toBe(false);
     if (result.success) return;
     expect(result.error.code).toBe('INVALID_INPUT');
+  });
+
+  // DATA_INTEGRITY_ERROR: payment's orderId references an order that no longer exists.
+  // This cannot be triggered naturally (NOT NULL FK prevents it), so we mock getOrderById.
+  it('returns DATA_INTEGRITY_ERROR when payment references a missing order', async () => {
+    const user = await createUser({
+      name: 'Integrity Test User',
+      email: `integrity-${Date.now()}@example.com`,
+      defaultAddress: '400 Integrity Rd',
+    });
+    const order = await createOrder({
+      userId: user.id,
+      status: 'paid',
+      shippingAddressSnapshot: '400 Integrity Rd',
+      totalAmount: '123.45',
+    });
+    const payment = await createPayment({
+      orderId: order.id,
+      amount: '123.45',
+      status: 'captured',
+      method: 'credit_card',
+    });
+
+    // Mock getOrderById to simulate a missing order for this specific orderId.
+    // Uses dynamic import so vi.spyOn can intercept the live binding.
+    const repo = await import('../../persistence/repositories/marketplace.repository.js');
+    const originalGetOrderById = repo.getOrderById;
+    vi.spyOn(repo, 'getOrderById').mockImplementation(async (id) => {
+      if (id === order.id) return undefined;
+      return originalGetOrderById(id);
+    });
+
+    try {
+      const result = await detectDuplicateCharge({ paymentId: payment.id });
+      expect(result.success).toBe(false);
+      if (result.success) return;
+      expect(result.error.code).toBe('DATA_INTEGRITY_ERROR');
+    } finally {
+      vi.restoreAllMocks();
+      // Clean up test-local rows
+      await db.delete(payments).where(eq(payments.orderId, order.id));
+      await db.delete(orders).where(eq(orders.id, order.id));
+      await db.delete(users).where(eq(users.id, user.id));
+    }
   });
 });
