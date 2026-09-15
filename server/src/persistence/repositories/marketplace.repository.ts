@@ -210,3 +210,15 @@ export async function updateRefundStatus(
     .returning();
   return result[0];
 }
+
+export async function updateUserProfile(
+  id: string,
+  fields: { name?: string; defaultAddress?: string }
+): Promise<User | undefined> {
+  const result = await db
+    .update(users)
+    .set(fields)
+    .where(eq(users.id, id))
+    .returning();
+  return result[0];
+}

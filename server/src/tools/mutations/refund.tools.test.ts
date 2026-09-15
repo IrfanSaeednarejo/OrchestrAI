@@ -20,8 +20,6 @@ import {
 
 describe('create_refund', () => {
   let userId: string;
-  let order1Id: string;
-  let order2Id: string;
 
   // Payments and Returns setup
   let validPaymentId: string;
@@ -62,7 +60,6 @@ describe('create_refund', () => {
     const oRefundExists = await makeOrder();
     const oFailedRefund = await makeOrder();
     const oMismatchAmount = await makeOrder();
-    const oRequested = await makeOrder();
     
     // For mismatch order case
     const oMismatch1 = await makeOrder();
@@ -129,7 +126,7 @@ describe('create_refund', () => {
     });
     mismatchAmountPaymentId = pMismatch.id;
 
-    const pMismatchReturnOrder = await createPayment({
+    await createPayment({
       orderId: oMismatch1,
       amount: '100.00',
       status: 'captured',
