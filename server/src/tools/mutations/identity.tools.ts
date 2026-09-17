@@ -113,3 +113,53 @@ export const verifyIdentityMetadata: ToolMetadata = {
   name: 'verify_identity',
   requiredVerification: 'NONE',
 };
+
+// --- initiate_password_reset ---
+
+export const InitiatePasswordResetInputSchema = z.object({
+  userId: uuidSchema,
+});
+
+export const InitiatePasswordResetOutputSchema = z.object({
+  acknowledged: z.boolean(),
+});
+
+export type InitiatePasswordResetInput = z.infer<typeof InitiatePasswordResetInputSchema>;
+export type InitiatePasswordResetOutput = z.infer<typeof InitiatePasswordResetOutputSchema>;
+
+export async function initiatePasswordReset(
+  rawInput: unknown
+): Promise<ToolResult<InitiatePasswordResetOutput>> {
+  const parsed = InitiatePasswordResetInputSchema.safeParse(rawInput);
+  if (!parsed.success) {
+    return {
+      success: false,
+      error: { code: 'INVALID_INPUT', message: parsed.error.message },
+    };
+  }
+
+  const { userId } = parsed.data;
+
+  try {
+    const user = await getUserById(userId);
+    if (!user) {
+      return {
+        success: false,
+        error: { code: 'NOT_FOUND', message: `User ${userId} not found.` },
+      };
+    }
+
+    // Guarantees: No Redis usage, no token generation, no ConversationState/IdentityState modification.
+    return { success: true, data: { acknowledged: true } };
+  } catch (error) {
+    return {
+      success: false,
+      error: { code: 'REPOSITORY_ERROR', message: error instanceof Error ? error.message : String(error) },
+    };
+  }
+}
+
+export const initiatePasswordResetMetadata: ToolMetadata = {
+  name: 'initiate_password_reset',
+  requiredVerification: 'NONE',
+};

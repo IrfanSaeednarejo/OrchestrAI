@@ -40,7 +40,7 @@ export const verificationService = {
       });
 
       return { code };
-    } catch (_error) {
+    } catch {
       return { error: 'VERIFICATION_SERVICE_UNAVAILABLE' };
     }
   },
@@ -79,7 +79,7 @@ export const verificationService = {
         await redisClient.set(key, JSON.stringify(data), { KEEPTTL: true });
         return { success: false, reason: 'INVALID_CODE' };
       }
-    } catch (_error) {
+    } catch {
       return { success: false, reason: 'VERIFICATION_SERVICE_UNAVAILABLE' };
     }
   },

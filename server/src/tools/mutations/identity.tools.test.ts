@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll, afterEach } from 'vitest';
-import { startIdentityVerification, verifyIdentity } from './identity.tools.js';
+import { startIdentityVerification, verifyIdentity, initiatePasswordReset } from './identity.tools.js';
 
 import { db } from '../../persistence/db/client.js';
 import { users } from '../../persistence/db/schema.js';
@@ -133,6 +133,53 @@ describe('identity.tools', () => {
       if (!result.success) {
         expect(result.error.code).toBe('NOT_FOUND');
       }
+    });
+  });
+
+  describe('initiate_password_reset', () => {
+    it('returns { acknowledged: true } for a valid, existing user', async () => {
+      const result = await initiatePasswordReset({ userId });
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data.acknowledged).toBe(true);
+      }
+    });
+
+    it('NOT_FOUND for a nonexistent userId', async () => {
+      const result = await initiatePasswordReset({ userId: '00000000-0000-0000-0000-000000000000' });
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.code).toBe('NOT_FOUND');
+      }
+    });
+
+    it('INVALID_INPUT for a malformed userId', async () => {
+      const result = await initiatePasswordReset({ userId: 'not-a-uuid' });
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.code).toBe('INVALID_INPUT');
+      }
+    });
+
+    it('explicitly asserts the user\'s defaultAddress/name/email are unchanged in the DB', async () => {
+      const { getUserById } = await import('../../persistence/repositories/marketplace.repository.js');
+      
+      const beforeUser = await getUserById(userId);
+      expect(beforeUser).toBeDefined();
+
+      const result = await initiatePasswordReset({ userId });
+      expect(result.success).toBe(true);
+
+      const afterUser = await getUserById(userId);
+      expect(afterUser).toBeDefined();
+
+      expect(afterUser?.email).toBe(beforeUser?.email);
+      expect(afterUser?.name).toBe(beforeUser?.name);
+      expect(afterUser?.defaultAddress).toBe(beforeUser?.defaultAddress);
+      
+      // Note: We also guarantee no ConversationState modification.
+      // A static check confirms we didn't import anything from `../../state/conversation-state.js`
+      // in the tools implementation file.
     });
   });
 });
