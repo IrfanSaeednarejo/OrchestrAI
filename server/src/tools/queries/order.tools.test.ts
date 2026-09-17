@@ -74,6 +74,14 @@ describe('order tools', () => {
       if (result.success) return;
       expect(result.error.code).toBe('NOT_FOUND');
     });
+
+    it('invalid input: returns INVALID_INPUT for a malformed orderId', async () => {
+      const result = await getOrder({ orderId: 'not-a-uuid' });
+
+      expect(result.success).toBe(false);
+      if (result.success) return;
+      expect(result.error.code).toBe('INVALID_INPUT');
+    });
   });
 
   // -------------------------------------------------------------------------
@@ -97,6 +105,14 @@ describe('order tools', () => {
       expect(result.success).toBe(false);
       if (result.success) return;
       expect(result.error.code).toBe('NOT_FOUND');
+    });
+
+    it('invalid input: returns INVALID_INPUT for a malformed orderId', async () => {
+      const result = await getShipmentStatus({ orderId: 'not-a-uuid' });
+
+      expect(result.success).toBe(false);
+      if (result.success) return;
+      expect(result.error.code).toBe('INVALID_INPUT');
     });
   });
 });

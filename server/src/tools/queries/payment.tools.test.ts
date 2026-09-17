@@ -89,6 +89,14 @@ describe('payment tools', () => {
       if (result.success) return;
       expect(result.error.code).toBe('NOT_FOUND');
     });
+
+    it('invalid input: returns INVALID_INPUT for a malformed orderId', async () => {
+      const result = await getPayment({ orderId: 'not-a-uuid' });
+
+      expect(result.success).toBe(false);
+      if (result.success) return;
+      expect(result.error.code).toBe('INVALID_INPUT');
+    });
   });
 
   // -------------------------------------------------------------------------
@@ -114,6 +122,14 @@ describe('payment tools', () => {
       expect(result.success).toBe(false);
       if (result.success) return;
       expect(result.error.code).toBe('NOT_FOUND');
+    });
+
+    it('invalid input: returns INVALID_INPUT for a malformed refundId', async () => {
+      const result = await getRefundStatus({ refundId: 'not-a-uuid' });
+
+      expect(result.success).toBe(false);
+      if (result.success) return;
+      expect(result.error.code).toBe('INVALID_INPUT');
     });
   });
 });

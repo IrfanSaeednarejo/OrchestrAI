@@ -76,6 +76,14 @@ describe('return tools', () => {
       if (result.success) return;
       expect(result.error.code).toBe('NOT_FOUND');
     });
+
+    it('invalid input: returns INVALID_INPUT for a malformed returnId', async () => {
+      const result = await getReturnStatus({ returnId: 'not-a-uuid' });
+
+      expect(result.success).toBe(false);
+      if (result.success) return;
+      expect(result.error.code).toBe('INVALID_INPUT');
+    });
   });
 
   // -------------------------------------------------------------------------
@@ -99,6 +107,14 @@ describe('return tools', () => {
       expect(result.success).toBe(true);
       if (!result.success) return;
       expect(result.data).toEqual([]);
+    });
+
+    it('invalid input: returns INVALID_INPUT for a malformed orderId', async () => {
+      const result = await getReturnByOrder({ orderId: 'not-a-uuid' });
+
+      expect(result.success).toBe(false);
+      if (result.success) return;
+      expect(result.error.code).toBe('INVALID_INPUT');
     });
   });
 });

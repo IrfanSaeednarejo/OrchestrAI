@@ -17,6 +17,11 @@ describe('detectDuplicateCharge', () => {
   let payment2Id: string;
   let normalOrderId: string;
   let normalPaymentId: string;
+  let authorizedOrderId: string;
+  let authorizedPaymentId: string;
+  let outsideWindowOrderId: string;
+  let outsideWindowPaymentId: string;
+  let freshOrderId: string;
 
   beforeAll(async () => {
     const user = await createUser({
@@ -73,12 +78,66 @@ describe('detectDuplicateCharge', () => {
       method: 'credit_card',
     });
     normalPaymentId = pNormal.id;
+
+    // Authorized-status payment — same amount as payment1, within window, but NOT captured.
+    // getCapturedPaymentsByUserId excludes it, so it must never appear as a duplicate.
+    const oAuth = await createOrder({
+      userId,
+      status: 'paid',
+      shippingAddressSnapshot: '300 Duplicate Ln',
+      totalAmount: '299.99',
+    });
+    authorizedOrderId = oAuth.id;
+    const pAuthResult = await db.insert(payments).values({
+      orderId: authorizedOrderId,
+      amount: '299.99',
+      status: 'authorized',
+      method: 'credit_card',
+    }).returning();
+    if (!pAuthResult[0]) throw new Error('Failed to insert authorized payment');
+    authorizedPaymentId = pAuthResult[0].id;
+
+    // Outside-window captured payment — same amount '299.99', but createdAt > 24h ago.
+    const oOld = await createOrder({
+      userId,
+      status: 'paid',
+      shippingAddressSnapshot: '300 Duplicate Ln',
+      totalAmount: '299.99',
+    });
+    outsideWindowOrderId = oOld.id;
+    const pOldResult = await db.insert(payments).values({
+      orderId: outsideWindowOrderId,
+      amount: '299.99',
+      status: 'captured',
+      method: 'credit_card',
+      createdAt: new Date(Date.now() - 25 * 60 * 60 * 1000),
+    }).returning();
+    if (!pOldResult[0]) throw new Error('Failed to insert outside-window payment');
+    outsideWindowPaymentId = pOldResult[0].id;
+
+    // Fresh captured payment that only matches outsideWindowPaymentId (and no other within-window capture).
+    const oFresh = await createOrder({
+      userId,
+      status: 'paid',
+      shippingAddressSnapshot: '300 Duplicate Ln',
+      totalAmount: '299.99',
+    });
+    freshOrderId = oFresh.id;
+    await createPayment({
+      orderId: freshOrderId,
+      amount: '299.99',
+      status: 'captured',
+      method: 'credit_card',
+    });
   });
 
   afterAll(async () => {
     await db.delete(payments).where(eq(payments.orderId, order1Id));
     await db.delete(payments).where(eq(payments.orderId, order2Id));
     await db.delete(payments).where(eq(payments.orderId, normalOrderId));
+    await db.delete(payments).where(eq(payments.orderId, authorizedOrderId));
+    await db.delete(payments).where(eq(payments.orderId, outsideWindowOrderId));
+    await db.delete(payments).where(eq(payments.orderId, freshOrderId));
     await db.delete(orders).where(eq(orders.userId, userId));
     await db.delete(users).where(eq(users.id, userId));
   });
@@ -154,5 +213,28 @@ describe('detectDuplicateCharge', () => {
       await db.delete(orders).where(eq(orders.id, order.id));
       await db.delete(users).where(eq(users.id, user.id));
     }
+  });
+
+  it('does not flag an authorized (non-captured) payment as a duplicate, even with matching amount within the window', async () => {
+    // payment1Id matches payment2Id (both captured, same amount, within window).
+    // authorizedPaymentId has the same amount and is within the window but is 'authorized',
+    // so getCapturedPaymentsByUserId excludes it — the duplicate must still resolve to payment2Id.
+    const result = await detectDuplicateCharge({ paymentId: payment1Id });
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+    expect(result.data.potentialDuplicate).toBe(true);
+    expect(result.data.duplicatePaymentId).toBe(payment2Id);
+    // Explicitly assert authorizedPaymentId is NOT the reported duplicate.
+    expect(result.data.duplicatePaymentId).not.toBe(authorizedPaymentId);
+  });
+
+  it('does not flag a captured payment with matching amount outside the 24-hour window', async () => {
+    // outsideWindowPaymentId is captured with amount '299.99', created >24h ago.
+    // No other captured payment was created within 24h OF that timestamp with the same amount,
+    // so there is no duplicate for it.
+    const result = await detectDuplicateCharge({ paymentId: outsideWindowPaymentId });
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+    expect(result.data.potentialDuplicate).toBe(false);
   });
 });
