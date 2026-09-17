@@ -28,4 +28,6 @@ export function satisfiesVerification(
 export type ToolMetadata = {
   name: string;
   requiredVerification: VerificationRequirement;
+  sensitiveInputFields?: string[];
+  sensitiveOutputFields?: string[];
 };

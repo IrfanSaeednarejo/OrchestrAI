@@ -57,6 +57,7 @@ export async function startIdentityVerification(
 export const startIdentityVerificationMetadata: ToolMetadata = {
   name: 'start_identity_verification',
   requiredVerification: 'NONE',
+  sensitiveOutputFields: ['code'],
 };
 
 // --- verify_identity ---
@@ -112,6 +113,7 @@ export async function verifyIdentity(
 export const verifyIdentityMetadata: ToolMetadata = {
   name: 'verify_identity',
   requiredVerification: 'NONE',
+  sensitiveInputFields: ['code'],
 };
 
 // --- initiate_password_reset ---
