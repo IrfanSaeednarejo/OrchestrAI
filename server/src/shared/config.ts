@@ -10,6 +10,7 @@ const envSchema = z.object({
   POSTGRES_HOST: z.string().default('localhost'),
   REDIS_PORT: z.coerce.number(),
   REDIS_HOST: z.string().default('localhost'),
+  GEMINI_API_KEY: z.string(),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -41,6 +42,9 @@ export const config = Object.freeze({
     host: envVars.REDIS_HOST,
     port: envVars.REDIS_PORT,
     url: `redis://${envVars.REDIS_HOST}:${envVars.REDIS_PORT}`,
+  },
+  gemini: {
+    apiKey: envVars.GEMINI_API_KEY,
   },
 });
 
