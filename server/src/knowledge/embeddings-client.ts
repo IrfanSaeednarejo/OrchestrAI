@@ -9,7 +9,6 @@ export async function embedDocument(text: string): Promise<number[]> {
     contents: `title: none | text: ${text}`,
     config: {
       outputDimensionality: 768,
-      taskType: 'RETRIEVAL_DOCUMENT',
     },
   });
 
@@ -26,7 +25,6 @@ export async function embedQuery(text: string): Promise<number[]> {
     contents: `task: search result | query: ${text}`,
     config: {
       outputDimensionality: 768,
-      taskType: 'RETRIEVAL_QUERY',
     },
   });
 

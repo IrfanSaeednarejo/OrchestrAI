@@ -12,6 +12,7 @@
     "db:migrate": "tsx src/persistence/db/migrate.ts",
     "db:seed": "tsx src/persistence/seed.ts",
     "checkpointer:setup": "tsx src/persistence/checkpointer/setup.ts",
+    "knowledge:ingest": "tsx src/knowledge/ingest.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
