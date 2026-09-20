@@ -55,8 +55,8 @@ let idD: string;
 let idE: string;
 
 beforeAll(async () => {
-  // Clean up any leftover test rows from prior runs
-  await db.delete(knowledgeDocuments).where(like(knowledgeDocuments.topic, '__test__%'));
+  // Escape _ because it is a single-character wildcard in SQL LIKE
+  await db.delete(knowledgeDocuments).where(like(knowledgeDocuments.topic, '\\_\\_test\\_\\_%'));
 
   const docA = await createKnowledgeDocument({
     domain: 'orders',
@@ -119,7 +119,8 @@ afterAll(async () => {
     inArray(knowledgeDocuments.id, [idA, idB, idC, idD, idE])
   );
   // Belt-and-suspenders: also wipe any remaining __test__ rows
-  await db.delete(knowledgeDocuments).where(like(knowledgeDocuments.topic, '__test__%'));
+  // Escape _ because it is a single-character wildcard in SQL LIKE
+  await db.delete(knowledgeDocuments).where(like(knowledgeDocuments.topic, '\\_\\_test\\_\\_%'));
 });
 
 beforeEach(() => {

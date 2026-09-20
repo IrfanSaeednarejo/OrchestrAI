@@ -11,11 +11,11 @@ const mockEmbedContent = vi.hoisted(() => vi.fn());
 
 vi.mock('@google/genai', () => {
   return {
-    GoogleGenAI: vi.fn().mockImplementation(() => ({
-      models: {
+    GoogleGenAI: class {
+      models = {
         embedContent: mockEmbedContent,
-      },
-    })),
+      };
+    },
   };
 });
 
@@ -32,6 +32,7 @@ function makeSuccessResponse(values = mockValues) {
 
 describe('embeddings-client', () => {
   beforeEach(() => {
+    mockEmbedContent.mockClear();
     mockEmbedContent.mockResolvedValue(makeSuccessResponse());
   });
 

@@ -31,7 +31,7 @@ function unitVec(index: number): number[] {
 
 function docVec(s: number, k: number): number[] {
   const v = new Array(768).fill(0);
-  v[0] = s;
+  v[50] = s;
   v[k] = Math.sqrt(1 - s * s);
   return v;
 }
@@ -54,7 +54,8 @@ let testAgentExecutionId: string;
 
 beforeAll(async () => {
   // Clean leftover test rows from prior runs
-  await db.delete(knowledgeDocuments).where(like(knowledgeDocuments.topic, '__test_tool__%'));
+  // Escape _ because it is a single-character wildcard in SQL LIKE
+  await db.delete(knowledgeDocuments).where(like(knowledgeDocuments.topic, '\\_\\_test\\_tool\\_\\_%'));
 
   const docHigh = await createKnowledgeDocument({
     domain: 'orders',
@@ -128,7 +129,8 @@ afterAll(async () => {
   await db.delete(knowledgeDocuments).where(
     inArray(knowledgeDocuments.id, [idHigh, idMid, idLow, idPayments])
   );
-  await db.delete(knowledgeDocuments).where(like(knowledgeDocuments.topic, '__test_tool__%'));
+  // Escape _ because it is a single-character wildcard in SQL LIKE
+  await db.delete(knowledgeDocuments).where(like(knowledgeDocuments.topic, '\\_\\_test\\_tool\\_\\_%'));
 
   await db.delete(toolExecutions).where(eq(toolExecutions.agentExecutionId, testAgentExecutionId));
   await db.delete(agentExecutions).where(eq(agentExecutions.id, testAgentExecutionId));
@@ -137,7 +139,7 @@ afterAll(async () => {
 });
 
 beforeEach(() => {
-  mockedEmbedQuery.mockResolvedValue(unitVec(0));
+  mockedEmbedQuery.mockResolvedValue(unitVec(50));
 });
 
 // ---------------------------------------------------------------------------
@@ -184,15 +186,14 @@ describe('searchKnowledge', () => {
   });
 
   // e. Orthogonal query -> success true, data [] (for fixture ids at least)
-  it('e. orthogonal query (unitVec(500)) returns no fixture hits', async () => {
+  it('e. orthogonal query (unitVec(500)) returns empty array', async () => {
     mockedEmbedQuery.mockResolvedValueOnce(unitVec(500));
     const result = await searchKnowledge({ query: 'test', domains: ['orders'], topK: 5 });
     expect(result.success).toBe(true);
     if (!result.success) return;
-    const ids = result.data.map(h => h.id);
-    expect(ids).not.toContain(idHigh);
-    expect(ids).not.toContain(idMid);
-    expect(ids).not.toContain(idLow);
+    // The real rows and the other test file's fixtures are orthogonal to unitVec(500),
+    // so the empty result is deterministic.
+    expect(result.data).toEqual([]);
   });
 
   // f. Bad inputs -> INVALID_INPUT
@@ -248,12 +249,12 @@ describe('searchKnowledge', () => {
     expect(logRow?.status).toBe('success');
     expect(logRow?.duration).not.toBeNull();
 
-    // Report: what is stored in the output jsonb column?
-    // The output column contains the full result.data array — an array of KnowledgeHit objects.
-    // Each object includes: id, domain, documentType, topic, version, content (full text), similarity.
-    // content IS stored in full — this is intentional (hits are meant for the LLM to consume).
-    // No redaction applies: searchKnowledgeMetadata has no sensitiveOutputFields defined,
-    // so executeTool's redact() is a no-op and the output is stored verbatim.
+    // a. Read the stored tool_executions row's output. Assert it is an array and that it contains an entry
+    // whose id equals idHigh and whose content is exactly 'tool test content high' (full text stored).
     expect(Array.isArray(logRow?.output)).toBe(true);
+    const outputArray = logRow?.output as Record<string, unknown>[];
+    const highHit = outputArray.find(h => h.id === idHigh);
+    expect(highHit).toBeDefined();
+    expect(highHit?.content).toBe('tool test content high');
   });
 });
