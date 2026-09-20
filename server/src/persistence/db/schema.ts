@@ -8,6 +8,7 @@ import {
   timestamp,
   index,
   jsonb,
+  vector,
 } from 'drizzle-orm/pg-core';
 
 // ---------------------------------------------------------------------------
@@ -289,5 +290,34 @@ export const toolExecutions = pgTable(
   },
   (table) => [
     index('tool_executions_agent_execution_id_idx').on(table.agentExecutionId),
+  ],
+);
+
+// ---------------------------------------------------------------------------
+// Knowledge / RAG Domain
+// ---------------------------------------------------------------------------
+
+export const knowledgeDomainEnum = pgEnum('knowledge_domain', [
+  'orders',
+  'payments',
+  'account',
+]);
+
+export const knowledgeDocuments = pgTable(
+  'knowledge_documents',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    domain: knowledgeDomainEnum('domain').notNull(),
+    documentType: text('document_type').notNull(), // e.g. 'policy', 'faq'
+    topic: text('topic').notNull(),                // e.g. 'returns', 'refunds', 'shipping', 'payments', 'account_security'
+    version: text('version').notNull(),
+    effectiveDate: timestamp('effective_date').notNull(),
+    content: text('content').notNull(),
+    // Nullable — populated by the Step 3 ingestion pipeline, not at insert time.
+    embedding: vector('embedding', { dimensions: 768 }),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (table) => [
+    index('knowledge_documents_domain_idx').on(table.domain),
   ],
 );
