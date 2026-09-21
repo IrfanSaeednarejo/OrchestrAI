@@ -8,7 +8,7 @@ import {
   createAgentExecution,
   createToolExecution,
 } from '../persistence/repositories/orchestration.repository.js';
-import type { ConversationState } from '../state/conversation-state.js';
+import type { ConversationStateUpdate } from '../state/conversation-state.js';
 
 // ---------------------------------------------------------------------------
 // RoutingEvent — produces BOTH a state update and an operational record.
@@ -55,11 +55,11 @@ export function toRoutingHistoryRecord(event: RoutingEvent): NewRoutingHistory {
  * handoff), and ESCALATION/FALLBACK are control-flow decisions, not lateral
  * handoffs — those are intentionally excluded from handoff counting.
  */
-export function toRoutingStateUpdate(event: RoutingEvent): Partial<ConversationState> {
+export function toRoutingStateUpdate(event: RoutingEvent): ConversationStateUpdate {
   const isHandoff =
     event.decisionType === 'HANDOFF' || event.decisionType === 'RE_ROUTE';
 
-  const update: Partial<ConversationState> = {
+  const update: ConversationStateUpdate = {
     routing: {
       currentAgent: event.destinationAgent,
       previousAgent: event.sourceAgent,
@@ -108,7 +108,7 @@ export function toRoutingStateUpdate(event: RoutingEvent): Partial<ConversationS
  */
 export async function recordRoutingEvent(
   event: RoutingEvent
-): Promise<Partial<ConversationState>> {
+): Promise<ConversationStateUpdate> {
   await createRoutingHistoryEntry(toRoutingHistoryRecord(event));
   return toRoutingStateUpdate(event);
 }

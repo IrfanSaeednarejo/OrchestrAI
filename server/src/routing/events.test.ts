@@ -70,12 +70,17 @@ describe('toRoutingStateUpdate', () => {
 
   it('HANDOFF: sets handoffCount delta to 1', () => {
     const update = toRoutingStateUpdate({ ...baseEvent, decisionType: 'HANDOFF' });
-    expect(update.routing?.handoffCount).toBe(1);
+    // Narrow away OverwriteValue<RoutingState> (which lacks RoutingState fields directly)
+    const routing = update.routing;
+    if (!routing || !('handoffCount' in routing)) throw new Error('Expected Partial<RoutingState>');
+    expect(routing.handoffCount).toBe(1);
   });
 
   it('RE_ROUTE: sets handoffCount delta to 1', () => {
     const update = toRoutingStateUpdate({ ...baseEvent, decisionType: 'RE_ROUTE' });
-    expect(update.routing?.handoffCount).toBe(1);
+    const routing = update.routing;
+    if (!routing || !('handoffCount' in routing)) throw new Error('Expected Partial<RoutingState>');
+    expect(routing.handoffCount).toBe(1);
   });
 
   it('INITIAL_ROUTE: does NOT include handoffCount', () => {
@@ -117,11 +122,14 @@ describe('toRoutingStateUpdate', () => {
 
   it('always sets routing.currentAgent, previousAgent, history, visitedAgents', () => {
     const update = toRoutingStateUpdate(baseEvent);
-    expect(update.routing?.currentAgent).toBe('agent-b');
-    expect(update.routing?.previousAgent).toBe('agent-a');
-    expect(update.routing?.history).toHaveLength(1);
-    expect(update.routing?.history?.[0]?.toAgent).toBe('agent-b');
-    expect(update.routing?.visitedAgents).toEqual(['agent-b']);
+    // Narrow away OverwriteValue<RoutingState> (which lacks RoutingState fields directly)
+    const routing = update.routing;
+    if (!routing || !('currentAgent' in routing)) throw new Error('Expected Partial<RoutingState>');
+    expect(routing.currentAgent).toBe('agent-b');
+    expect(routing.previousAgent).toBe('agent-a');
+    expect(routing.history).toHaveLength(1);
+    expect(routing.history?.[0]?.toAgent).toBe('agent-b');
+    expect(routing.visitedAgents).toEqual(['agent-b']);
   });
 });
 
@@ -172,10 +180,15 @@ describe('recordRoutingEvent', () => {
 
     // Confirm returned state update matches the pure function output
     const expected = toRoutingStateUpdate(event);
-    expect(stateUpdate.routing?.currentAgent).toBe(expected.routing?.currentAgent);
-    expect(stateUpdate.routing?.history).toHaveLength(1);
+    // Narrow away OverwriteValue<RoutingState> (which lacks RoutingState fields directly)
+    const actualRouting = stateUpdate.routing;
+    const expectedRouting = expected.routing;
+    if (!actualRouting || !('currentAgent' in actualRouting)) throw new Error('Expected Partial<RoutingState>');
+    if (!expectedRouting || !('currentAgent' in expectedRouting)) throw new Error('Expected Partial<RoutingState>');
+    expect(actualRouting.currentAgent).toBe(expectedRouting.currentAgent);
+    expect(actualRouting.history).toHaveLength(1);
     // INITIAL_ROUTE — no handoffCount key
-    expect(Object.prototype.hasOwnProperty.call(stateUpdate.routing, 'handoffCount')).toBe(false);
+    expect(Object.prototype.hasOwnProperty.call(actualRouting, 'handoffCount')).toBe(false);
   });
 
   it('throws and returns nothing when the FK constraint is violated', async () => {

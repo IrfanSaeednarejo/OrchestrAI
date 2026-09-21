@@ -1,9 +1,9 @@
 import { StateGraph, END, START } from '@langchain/langgraph';
-import { ConversationStateAnnotation, ConversationState } from '../../state/conversation-state.js';
+import { ConversationStateAnnotation, ConversationState, ConversationStateUpdate } from '../../state/conversation-state.js';
 import { checkpointer } from '../../persistence/checkpointer/client.js';
 
 // Node A: Initialises the workflow and records the first routing hop
-const startWorkflow = async (): Promise<Partial<ConversationState>> => {
+const startWorkflow = async (): Promise<ConversationStateUpdate> => {
   return {
     workflowStatus: 'ACTIVE',
     routing: {
@@ -21,7 +21,7 @@ const startWorkflow = async (): Promise<Partial<ConversationState>> => {
 };
 
 // Node B: Classifies intent and records the handoff from A to B
-const classifyIntent = async (): Promise<Partial<ConversationState>> => {
+const classifyIntent = async (): Promise<ConversationStateUpdate> => {
   return {
     currentIntent: 'demo_intent',
     routing: {
@@ -57,7 +57,7 @@ export const pocGraph = builder.compile({ checkpointer });
  */
 export async function runPocGraph(
   threadId: string,
-  input: Partial<ConversationState>
+  input: ConversationStateUpdate
 ): Promise<ConversationState> {
   const config = { configurable: { thread_id: threadId } };
   return pocGraph.invoke(input, config) as Promise<ConversationState>;

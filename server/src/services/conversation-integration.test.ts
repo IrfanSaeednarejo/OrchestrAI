@@ -108,7 +108,10 @@ describe('Phase 3 End-to-End Integration', () => {
     expect(rows[0]?.reason).toBe('test integration event');
 
     // State update should match the pure rules for INITIAL_ROUTE
-    expect(stateUpdate.routing?.currentAgent).toBe('poc-node-a');
+    // Narrow away OverwriteValue<RoutingState> (which lacks RoutingState fields directly)
+    const routing = stateUpdate.routing;
+    if (!routing || !('currentAgent' in routing)) throw new Error('Expected Partial<RoutingState>');
+    expect(routing.currentAgent).toBe('poc-node-a');
   });
 
   it('6. & 7. RELOAD / RESUME & VERIFY CONSISTENCY', async () => {

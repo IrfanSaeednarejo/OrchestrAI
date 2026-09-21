@@ -14,7 +14,8 @@
     "checkpointer:setup": "tsx src/persistence/checkpointer/setup.ts",
     "knowledge:ingest": "tsx src/knowledge/ingest.ts",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
