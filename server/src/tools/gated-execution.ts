@@ -35,7 +35,7 @@ export async function gatedExecuteTool<T>(
   }
 
   const errorResult = {
-    success: false,
+    success: false as const,
     error: {
       code: errorCode,
       message: errorMessage,
