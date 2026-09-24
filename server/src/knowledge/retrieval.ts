@@ -8,6 +8,7 @@ export const retrieveKnowledgeSchema = z.object({
   domains: z.array(z.enum(['orders', 'payments', 'account'])).min(1),
   topK: z.number().int().min(1).max(5).default(3),
   minSimilarity: z.number().min(-1).max(1).optional(),
+  topics: z.array(z.string().min(1)).min(1).optional(),
 });
 
 export type KnowledgeHit = {
@@ -29,7 +30,7 @@ export async function retrieveKnowledge(rawInput: unknown): Promise<ToolResult<K
     };
   }
 
-  const { query, domains, topK, minSimilarity } = parsed.data;
+  const { query, domains, topK, minSimilarity, topics } = parsed.data;
 
   let embedding: number[];
   try {
@@ -42,7 +43,7 @@ export async function retrieveKnowledge(rawInput: unknown): Promise<ToolResult<K
   }
 
   try {
-    const rows = await searchKnowledgeByEmbedding(embedding, domains as KnowledgeDomain[], topK);
+    const rows = await searchKnowledgeByEmbedding(embedding, domains as KnowledgeDomain[], topK, topics);
     
     let hits: KnowledgeHit[] = rows.map(row => ({
       id: row.id,

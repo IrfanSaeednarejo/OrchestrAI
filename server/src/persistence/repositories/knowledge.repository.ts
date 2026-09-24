@@ -33,13 +33,18 @@ export async function createKnowledgeDocument(input: NewKnowledgeDocument): Prom
 export async function searchKnowledgeByEmbedding(
   embedding: number[],
   domains: KnowledgeDomain[],
-  limit: number
+  limit: number,
+  topics?: string[]
 ): Promise<KnowledgeSearchRow[]> {
   if (domains.length === 0) {
     return [];
   }
 
   const dist = cosineDistance(knowledgeDocuments.embedding, embedding);
+
+  const topicFilter = topics && topics.length > 0
+    ? inArray(knowledgeDocuments.topic, topics)
+    : undefined;
 
   const results = await db
     .select({
@@ -55,7 +60,8 @@ export async function searchKnowledgeByEmbedding(
     .where(
       and(
         inArray(knowledgeDocuments.domain, domains),
-        isNotNull(knowledgeDocuments.embedding)
+        isNotNull(knowledgeDocuments.embedding),
+        topicFilter
       )
     )
     .orderBy(dist)
