@@ -46,6 +46,14 @@ Small focused steps; explicit typed state; clear agent boundaries; no agent spag
 - Per-specialist scope is domain+topic (see REFERENCE.md); Profile gets NO_KNOWLEDGE_ACCESS. Empty retrieval = no grounded knowledge; specialists must not answer from memory.
 - Structured questions use structured queries; semantic questions use retrieval.
 
+## Agents (Phase 7)
+- LLM: `gemini-2.5-flash` via `@google/genai`. Deterministic decisions/tool calls use `temperature: 0.0`; customer-facing generation uses `temperature: 0.2`.
+- Structured output uses `responseMimeType: 'application/json'` and validates responses with Zod schemas. Wrapper returns typed `LLMResult<T>` and never throws raw SDK errors. In Vitest, `@google/genai` is mocked (no real Gemini API calls).
+- Prompt templates enforce 5 standard sections (`Identity`, `Objective`, `Scope`, `Phased-Workflow`, `Guidelines`) with `{{key}}` parameter interpolation. Missing required sections throw at validation time; unreplaced variables trigger a warning.
+- `HandoffRequest` payload contract: `sourceAgent` (SpecialistId), `handoffReason` (string), `detectedIntent` (string | null), `recommendedDomain` (string), `relevantContext` (Record<string, unknown>), `attemptedActions` (string[]), `confidence` (number in [0, 1]). Strictly validated with Zod.
+- Specialist node patterns execute all tools via `gatedExecuteTool`. Gate outcomes map to: ALLOWED -> `{ workflowStatus: 'COMPLETED' }`, BLOCKED -> `{ ...buildBlockedWorkflowUpdate(...), workflowStatus: 'WAITING_FOR_USER_INPUT' }`, DENIED -> `{ workflowStatus: 'FAILED' }`.
+- Subgraph test harness (`buildSubgraphHarness`, `buildSingleNodeHarness`) runs against `ConversationStateAnnotation` with `MemorySaver` checkpointer for fast in-memory integration testing.
+
 ## Testing conventions
 - Real DB/Redis in integration tests with scoped cleanup (never an unscoped delete); distinct fixture prefixes to avoid cross-file races.
 - Raw verbatim command output in reports; always run typecheck after final edits.

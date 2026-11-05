@@ -1,4 +1,4 @@
-# Phase 7 — Agent Foundation — PLAN (status: APPROVED)
+# Phase 7 — Agent Foundation — PLAN (status: COMPLETED)
 
 ## 1. Goal and How It Fits the Architecture
 Phase 7 establishes the foundational building blocks required by all future specialist subgraphs (Phases 9–11) and the parent router (Phase 8). It introduces a mockable LLM client wrapper over `@google/genai` (Gemini 2.5 Flash), a modular prompt template loader enforcing standard agent sections, a strongly typed and validated `HandoffRequest` contract, standardized node execution patterns (routing all tool invocations through Phase 6's `gatedExecuteTool`), and a reusable subgraph test harness.

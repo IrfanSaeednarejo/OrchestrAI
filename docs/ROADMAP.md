@@ -6,7 +6,7 @@
 - [x] 4 Deterministic Tool Layer — 15 tools + executeTool wrapper, Redis verification flow. (search_knowledge in Phase 5 makes 16.)
 - [x] 5 Knowledge Layer & RAG — knowledge_documents (pgvector 768), 5 policy docs, retrieval, search_knowledge.
 - [x] 6 Access Control / Verification Gate — gate, allowlists, Pattern C builder, identity boundary, knowledge scope, Step 6a proof graph, Step 6b close-out.
-- [ ] 7 Agent Foundation — LLM-call/tool-call/decision-handoff node patterns (tools via the gate), LLM client wrapper, prompt template loader
+- [x] 7 Agent Foundation — LLM-call/tool-call/decision-handoff node patterns (tools via the gate), LLM client wrapper, prompt template loader
       (Identity/Objective/Scope/Phased-Workflow/Guidelines), HandoffRequest type (sourceAgent, handoffReason, detectedIntent, recommendedDomain,
       relevantContext, attemptedActions, confidence), subgraph test harness. Needs: 4, 5, 6. Must first resolve OPEN-DECISIONS #3 (LLM).
 - [ ] 8 Meta Orchestrator & Stateful Router (skeleton) — Command(goto) routing, router reads full state, handoffCount/visitedAgents with configurable maxima,
