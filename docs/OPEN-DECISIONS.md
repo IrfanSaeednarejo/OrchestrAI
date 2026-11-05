@@ -25,3 +25,11 @@ Approved items move to DECISIONS.md. Items marked [CONFLICT] are inconsistencies
 9. Original Stage 1/2 requirements doc is not available. Functional/non-functional requirements should be consolidated into docs/REQUIREMENTS.md during Phase 7 planning from DECISIONS + REFERENCE.
 10. [RESOLVED] Phase 6 Step 6a and Step 6b signed off; Phase 6 closed.
 11. [RESOLVED 2026-11-05] Pattern B lateral re-route mechanism in Parent Router: Option A adopted — existing `activeWorkflow` with `blockedBy: null` triggers `checkResumePreconditions` in router, emitting `decisionType: 'RE_ROUTE'` and dispatching `Command({ goto: targetSpecialist })`. Zero schema or state changes required. Recorded in DECISIONS.md under Phase 10.
+12. [PROPOSED Phase 13] Tool Retry & Failure Escalation Policy (Scenario 11):
+    Option A: Centralized single-retry (`maxRetries = 1`) inside `executeTool` for retryable infrastructure errors (`TIMEOUT`, `NETWORK_ERROR`, `DATABASE_ERROR`, `UNEXPECTED_ERROR`). On retry failure or unrecoverable error, specialist emits `workflowStatus: 'ESCALATED'` with human handoff message. Non-retryable domain outcomes (`NOT_FOUND`, `INVALID_ARGUMENTS`, `INELIGIBLE`) do not retry.
+    Option B: Ad-hoc retry loops inside each specialist subgraph.
+    Recommendation: Option A.
+13. [PROPOSED Phase 13] Terminal `ESCALATED` State Router Guard:
+    Option A: Add check in `evaluatePreClassificationGuards`: if `state.workflowStatus === 'ESCALATED'`, immediately return `{ outcome: 'ESCALATE', reason: 'Conversation in terminal ESCALATED state.' }`, preserving human handoff without invoking LLM classification.
+    Option B: Reset `workflowStatus` to `'ACTIVE'` on each turn and re-classify with the LLM.
+    Recommendation: Option A.
