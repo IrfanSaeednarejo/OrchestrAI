@@ -17,7 +17,6 @@ import {
   END,
   type BaseCheckpointSaver,
 } from '@langchain/langgraph';
-import type { RunnableConfig } from '@langchain/core/runnables';
 import { z } from 'zod';
 import {
   ConversationStateAnnotation,
@@ -177,8 +176,7 @@ export async function generateOrderResponse(params: {
 // ---------------------------------------------------------------------------
 
 export async function orderTrackingNode(
-  state: ConversationState,
-  config?: RunnableConfig
+  state: ConversationState
 ): Promise<ConversationStateUpdate> {
   const specialist = 'order_tracking' as const;
   const agentExecutionId = `ot-${Date.now()}`;

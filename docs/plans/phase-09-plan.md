@@ -1,7 +1,7 @@
-# Phase 09 — Orders Specialists — PLAN (status: DRAFT)
+# Phase 09 — Orders Specialists — PLAN (status: APPROVED)
 
 ## Approvals
-- [ ] Owner approval before any code
+- [x] Owner approval on 2026-11-05 ("approved COntinue")
 
 ---
 
@@ -305,3 +305,4 @@ npm test              # all pass, count >= 331 + new Phase 9 tests
 ---
 
 STOP — awaiting `APPROVED: phase 9 plan` before writing any production code.
+
