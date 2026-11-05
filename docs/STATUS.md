@@ -8,7 +8,8 @@ Last verified suite figure reported: 350/350 passing (46 files) at Phase 9. Base
   - Phase 7 (Agent Foundation): Steps 0-5 closed; LLM client, prompt loader, handoff contract, common node patterns, and subgraph harness verified (294 tests).
   - Phase 8 (Meta Orchestrator & Stateful Router Skeleton): Steps 0-5 closed; intent taxonomy, LLM classifier, deterministic guards, specialist stubs, parent graph with Command(goto) dispatch, and end-to-end integration tests verified (331 tests).
   - Phase 9 (Orders Specialists): Steps 0-4 closed; Order Tracking and Returns specialist subgraphs, prompt templates, RAG integration, Scenario 1 & 9 integration tests verified (350 tests).
-- Phases 10-19: not started. Concrete subgraphs (`graphs/subgraphs`) and domain specialists for Payments and Account are still stubs.
+- Phase 10 (Payments Specialists): in progress. Step 0 (plan approved). Baseline test count: 350.
+- Phases 11-19: not started. Concrete subgraphs (`graphs/subgraphs`) and domain specialists for Account are still stubs.
 
 ## Built so far
 Domain data model + repositories + seed; conversation/message services; ConversationState + PostgresSaver checkpointing; routing/agent/tool event logging;
