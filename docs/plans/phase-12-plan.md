@@ -1,7 +1,7 @@
-# Phase 12 — Cross-Domain Integration Validation — PLAN (status: DRAFT)
+# Phase 12 — Cross-Domain Integration Validation — PLAN (status: APPROVED)
 
 ## Approvals
-<!-- Fill in after owner approves each item in chat -->
+- 2026-11-06: Approved by owner in chat ("Approved Continue"). OD-1 resolution (Pattern A definition and 14-scenario matrix) approved.
 
 ---
 
@@ -197,3 +197,4 @@ npm test            # all tests pass, count >= 400 (all 14 scenarios green)
 ---
 
 STOP here and request approval.
+
