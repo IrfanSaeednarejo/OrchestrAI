@@ -95,6 +95,14 @@ Small focused steps; explicit typed state; clear agent boundaries; no agent spag
   - Security Boundary: Scenario 13 (unverified attempt to mutate profile / payment data blocked by pure gate).
 - Integration test suite structure: `server/src/graphs/parent/parent-graph-cross-domain.integration.test.ts` executes all 14 scenarios end-to-end against real PostgreSQL, pgvector, Redis, and PostgresSaver checkpointer, validating routing history rows, checkpointed state transitions, and tool execution audit trails.
 
+## Failure Handling, Loop Prevention & Terminal State Lock (Phase 13) — approved 2026-11-06
+- OD-12 (Tool Retry Policy): `executeTool` implements centralized automatic single-retry (`maxRetries = 1`) on transient infrastructure errors (`TIMEOUT`, `NETWORK_ERROR`, `DATABASE_ERROR`). Non-retryable domain outcomes (`NOT_FOUND`, `INVALID_ARGUMENTS`, `INELIGIBLE`, `ALREADY_EXISTS`) and programming bugs (`UNEXPECTED_ERROR`) fail immediately without retry. Tool execution audit table records retry count (`failed after 2 attempts`). On unrecoverable tool infrastructure failure, specialists transition `workflowStatus` to `'ESCALATED'` with a polite human escalation message (Scenario 11).
+- OD-13 (Terminal ESCALATED State Router Guard): `evaluatePreClassificationGuards` checks if `state.workflowStatus === 'ESCALATED'` before calling the LLM classifier. If already escalated, it immediately returns `{ outcome: 'ESCALATE' }`, preventing the autonomous bot from hijacking conversations once handed off to human support.
+- Loop Prevention Escalation: when `isRoutingLoop` triggers (proposed specialist visited ≥ 2 times or immediate ping-pong with handoffCount ≥ 2), the router logs `decisionType: 'ESCALATION'`, transitions `workflowStatus: 'ESCALATED'`, and outputs a human handoff message (Scenario 10).
+- Max Handoff Cap: when `handoffCount >= DEFAULT_MAX_HANDOFFS` (3), the router logs `decisionType: 'ESCALATION'`, transitions `workflowStatus: 'ESCALATED'`, and outputs a human handoff message (Scenario 12).
+- Classifier Failure Fallback: when `classifyMessage` fails or throws an exception, the router logs `decisionType: 'FALLBACK'` (which does not increment handoffCount), defaults safely to `order_tracking`, and allows the conversation to continue gracefully without crashing.
+- Failure handling integration suite: `server/src/graphs/parent/parent-graph-failure-handling.integration.test.ts` validates loop escalation, tool timeout retry escalation, handoff limit escalation, multi-turn terminal ESCALATED state lock, and classifier fallback routing live against PostgreSQL, Redis, and PostgresSaver checkpointer.
+
 ## Testing conventions
 - Real DB/Redis in integration tests with scoped cleanup (never an unscoped delete); distinct fixture prefixes to avoid cross-file races.
 - Raw verbatim command output in reports; always run typecheck after final edits.

@@ -1,9 +1,9 @@
 # STATUS (update at the end of every step/phase)
 
-Last verified suite figure reported: 414/414 passing (53 files) at Phase 12. Baseline test count: 414.
+Last verified suite figure reported: 428/428 passing (54 files) at Phase 13. Baseline test count: 428.
 
 ## Phase state
-- Phases 1-12: COMPLETE and signed off.
+- Phases 1-13: COMPLETE and signed off.
   - Phase 6 (Access Control / Verification Gate): Steps 0-5 closed; Step 6a proof graph verified; Step 6b close-out and type unification completed.
   - Phase 7 (Agent Foundation): Steps 0-5 closed; LLM client, prompt loader, handoff contract, common node patterns, and subgraph harness verified (294 tests).
   - Phase 8 (Meta Orchestrator & Stateful Router Skeleton): Steps 0-5 closed; intent taxonomy, LLM classifier, deterministic guards, specialist stubs, parent graph with Command(goto) dispatch, and end-to-end integration tests verified (331 tests).
@@ -11,14 +11,15 @@ Last verified suite figure reported: 414/414 passing (53 files) at Phase 12. Bas
   - Phase 10 (Payments Specialists): Steps 0-5 closed; Payment and Refund specialist subgraphs, Pattern B lateral re-route, OD-8 allowlist update, Scenarios 3, 4 & 8 integration tests verified (370 tests).
   - Phase 11 (Account Specialists): Steps 0-5 closed; Profile and Account Access real subgraphs, two-mode Account Access (stateless password reset; OTP verification for resume via `buildIdentityUpdate`), Scenarios 5, 6, 7, 13 & 14 parent integration tests verified (400 tests).
   - Phase 12 (Cross-Domain Integration Validation): Steps 1-5 closed; all 14 evaluation scenarios from REFERENCE.md verified live across all 6 concrete domain specialists with zero stubs against real Postgres, pgvector, Redis, and PostgresSaver checkpointer (414 tests).
-- Phases 13-19: not started. Phase 13 (Failure Handling & Loop Prevention) hardens loop fallback, tool failure retries, and ESCALATED terminal state.
+  - Phase 13 (Failure Handling & Loop Prevention): Steps 0-5 closed; tool retry policy (`maxRetries=1` for `TIMEOUT`, `NETWORK_ERROR`, `DATABASE_ERROR`), tool failure escalation in specialists, terminal `ESCALATED` state lock, loop detection escalation, and classifier fallback routing verified (428 tests).
+- Phases 14-19: not started. Phase 14 (Observability & Tracing) adds LangSmith tracing across conversation/graph/agent/tool/routing levels.
 
 ## Built so far
 Domain data model + repositories + seed; conversation/message services; ConversationState + PostgresSaver checkpointing; routing/agent/tool event logging;
 16 deterministic tools with zod schemas and verification metadata; Redis verification-code flow; `executeTool` + `gatedExecuteTool`; pure gate + per-specialist allowlist;
 Pattern C blocked-workflow builder; identity-update helper with import-boundary enforcement; knowledge ingestion + domain/topic-scoped retrieval; Phase 6 throwaway integration graph;
 Gemini LLM wrapper with structured Zod output; 5-section prompt template loader; HandoffRequest contract and Zod validation; standard node execution patterns; reusable subgraph test harness;
-intent taxonomy + LLM classifier (temperature 0.0, structured output); deterministic pre-classification guards (handoff cap, loop detection, resume preconditions);
+intent taxonomy + LLM classifier (temperature 0.0, structured output); deterministic pre-classification guards (handoff cap, loop detection, resume preconditions, terminal ESCALATED state lock);
 specialist stub factory (COMPLETE/HANDOFF/BLOCK/FAIL behaviors); parent graph with `routerNode` and `Command({ goto })` dispatch;
 Order Tracking specialist subgraph (`get_order`, `get_shipment_status`, RAG orders/shipping, argument extraction, grounded responses);
 Returns specialist subgraph (`check_return_eligibility`, `create_return` with FULL gate Pattern C block, RAG orders/returns, hard decline on ineligibility, resume from activeWorkflow);
@@ -26,7 +27,8 @@ Payment specialist subgraph (`get_payment`, `detect_duplicate_charge`, Pattern B
 Refund specialist subgraph (`create_refund` for duplicate charges, `get_return_by_order`, Pattern B handoff to Returns for unlinked returns, structured `create_refund` for approved returns, RAG payments/refunds);
 Profile specialist subgraph (`get_profile`, `update_profile`, FULL verification gate, Pattern C activeWorkflow block, no RAG);
 Account Access specialist subgraph (`start_identity_verification`, `verify_identity` with `buildIdentityUpdate` elevation and Pattern C unblock, `initiate_password_reset` with strict identity preservation, RAG account/account_security);
-All 6 domain specialists are real concrete subgraphs wired into parent graph; Pattern B (lateral re-route) and Pattern C (verification-for-resume) verified end-to-end.
+All 6 domain specialists are real concrete subgraphs wired into parent graph; Pattern B (lateral re-route) and Pattern C (verification-for-resume) verified end-to-end;
+Robust failure handling: tool execution single-retry on transient timeouts/errors with failure escalation, circular routing loop escalation, max handoff cap (3) escalation, terminal ESCALATED state lock, classifier fallback.
 
 ## Known issues (flagged, not fixed)
 1. `user` field reducer uses `update ?? state`, so an explicit `user: null` update is ignored.
@@ -36,8 +38,8 @@ All 6 domain specialists are real concrete subgraphs wired into parent graph; Pa
 6. 6a graph's ALLOWED branch does not clear `activeWorkflow`, so `blockedBy` goes stale after a successful resume (resolved in Phase 8: router writes RE_ROUTE event; specialist clears activeWorkflow on COMPLETED).
 
 ## Immediate next actions
-1. Owner merges phase/12-cross-domain-validation and tags phase-12-done.
-2. Plan Phase 13 (Failure Handling & Loop Prevention).
+1. Owner merges phase/13-failure-handling and tags phase-13-done.
+2. Plan Phase 14 (Observability & Tracing).
 
 ## Changelog
 - 2026-11-05: Phase 6 Step 6a integration proof graph and test suite verified (239 tests).
@@ -48,3 +50,4 @@ All 6 domain specialists are real concrete subgraphs wired into parent graph; Pa
 - 2026-11-05: Phase 10 Payments Specialists completed: Payment and Refund real subgraphs, Pattern B lateral re-route, Scenarios 3, 4 & 8 parent integration tests (370 tests).
 - 2026-11-06: Phase 11 Account Specialists completed: Profile and Account Access real subgraphs, two-mode operation, Pattern C verification resume, Scenarios 5, 6, 7, 13 & 14 parent integration tests (400 tests).
 - 2026-11-06: Phase 12 Cross-Domain Integration Validation completed: all 14 evaluation scenarios verified live across all 6 real domain specialists; OD-1 resolved (414 tests).
+- 2026-11-06: Phase 13 Failure Handling & Loop Prevention completed: tool retry policy (maxRetries=1 for transient infrastructure errors), tool failure escalation in specialists, terminal ESCALATED state lock, loop detection escalation, and classifier fallback routing verified (428 tests).
