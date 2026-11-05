@@ -16,7 +16,6 @@ export const DEFAULT_RETRYABLE_CODES = [
   'TIMEOUT',
   'NETWORK_ERROR',
   'DATABASE_ERROR',
-  'UNEXPECTED_ERROR',
 ] as const;
 
 export function isRetryableError(
