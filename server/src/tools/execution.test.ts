@@ -199,4 +199,120 @@ describe('executeTool wrapper', () => {
     expect(result.success).toBe(true);
     expect(loggedError).toBe(true);
   });
+
+  describe('Retry Policy (Phase 13 OD-12)', () => {
+    it('Retryable error (TIMEOUT) succeeds on second attempt', async () => {
+      let callCount = 0;
+      const transientTool = async (): Promise<ToolResult<{ value: string }>> => {
+        callCount++;
+        if (callCount === 1) {
+          return {
+            success: false,
+            error: { code: 'TIMEOUT', message: 'Gateway timed out waiting for response' },
+          };
+        }
+        return {
+          success: true,
+          data: { value: 'recovered' },
+        };
+      };
+
+      const result = await executeTool(
+        transientTool,
+        { name: 'transient_tool', requiredVerification: 'NONE' },
+        {},
+        { agentExecutionId: testExecution.id }
+      );
+
+      expect(callCount).toBe(2);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data.value).toBe('recovered');
+      }
+
+      const logRow = await getLatestToolExecution();
+      expect(logRow).toBeDefined();
+      expect(logRow?.status).toBe('success');
+      expect(logRow?.output).toEqual({ value: 'recovered' });
+    });
+
+    it('Retryable error (TIMEOUT) that fails twice exhausts retries and logs attempt count', async () => {
+      let callCount = 0;
+      const persistentFailureTool = async (): Promise<ToolResult<{ value: string }>> => {
+        callCount++;
+        return {
+          success: false,
+          error: { code: 'TIMEOUT', message: 'Upstream payment gateway timeout' },
+        };
+      };
+
+      const result = await executeTool(
+        persistentFailureTool,
+        { name: 'persistent_timeout_tool', requiredVerification: 'NONE' },
+        { target: 'payment' },
+        { agentExecutionId: testExecution.id }
+      );
+
+      expect(callCount).toBe(2);
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.code).toBe('TIMEOUT');
+      }
+
+      const logRow = await getLatestToolExecution();
+      expect(logRow).toBeDefined();
+      expect(logRow?.status).toBe('failure');
+      expect(logRow?.error).toContain('TIMEOUT: Upstream payment gateway timeout (failed after 2 attempts)');
+    });
+
+    it('Non-retryable domain error (NOT_FOUND) does NOT retry and executes only once', async () => {
+      let callCount = 0;
+      const notFoundTool = async (): Promise<ToolResult<{ value: string }>> => {
+        callCount++;
+        return {
+          success: false,
+          error: { code: 'NOT_FOUND', message: 'Item does not exist' },
+        };
+      };
+
+      const result = await executeTool(
+        notFoundTool,
+        { name: 'not_found_tool', requiredVerification: 'NONE' },
+        { id: '123' },
+        { agentExecutionId: testExecution.id }
+      );
+
+      expect(callCount).toBe(1);
+      expect(result.success).toBe(false);
+
+      const logRow = await getLatestToolExecution();
+      expect(logRow).toBeDefined();
+      expect(logRow?.status).toBe('failure');
+      expect(logRow?.error).toBe('NOT_FOUND: Item does not exist');
+    });
+
+    it('Explicit maxRetries: 0 disables retry even for retryable errors', async () => {
+      let callCount = 0;
+      const timeoutTool = async (): Promise<ToolResult<{ value: string }>> => {
+        callCount++;
+        return {
+          success: false,
+          error: { code: 'TIMEOUT', message: 'Timed out' },
+        };
+      };
+
+      const result = await executeTool(
+        timeoutTool,
+        { name: 'no_retry_timeout_tool', requiredVerification: 'NONE' },
+        {},
+        {
+          agentExecutionId: testExecution.id,
+          retryConfig: { maxRetries: 0 },
+        }
+      );
+
+      expect(callCount).toBe(1);
+      expect(result.success).toBe(false);
+    });
+  });
 });

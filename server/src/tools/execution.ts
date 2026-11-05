@@ -1,9 +1,30 @@
 import { ToolResult, ToolMetadata } from './types.js';
 import { recordToolExecution } from '../routing/events.js';
 
+export type ToolRetryConfig = {
+  maxRetries?: number;
+  retryableCodes?: readonly string[];
+  backoffMs?: number;
+};
+
 export type ToolExecutionContext = {
   agentExecutionId: string;
+  retryConfig?: ToolRetryConfig;
 };
+
+export const DEFAULT_RETRYABLE_CODES = [
+  'TIMEOUT',
+  'NETWORK_ERROR',
+  'DATABASE_ERROR',
+  'UNEXPECTED_ERROR',
+] as const;
+
+export function isRetryableError(
+  code: string,
+  retryableCodes: readonly string[] = DEFAULT_RETRYABLE_CODES
+): boolean {
+  return retryableCodes.includes(code);
+}
 
 // Shallow-only redaction helper. Does not recursively redact nested objects.
 function redact(obj: unknown, fields: string[] | undefined): unknown {
@@ -26,23 +47,55 @@ export async function executeTool<T>(
   context: ToolExecutionContext
 ): Promise<ToolResult<T>> {
   const startTime = Date.now();
-  let result: ToolResult<T>;
+  const maxRetries = context.retryConfig?.maxRetries ?? 1;
+  const retryableCodes = context.retryConfig?.retryableCodes ?? DEFAULT_RETRYABLE_CODES;
+  const backoffMs = context.retryConfig?.backoffMs ?? 0;
 
-  try {
-    result = await toolFn(rawInput);
-  } catch (error) {
-    result = {
-      success: false,
-      error: {
-        code: 'UNEXPECTED_ERROR',
-        message: error instanceof Error ? error.message : String(error),
-      },
-    };
+  let result: ToolResult<T> = {
+    success: false,
+    error: {
+      code: 'UNEXPECTED_ERROR',
+      message: 'Tool execution did not produce a result',
+    },
+  };
+  let attempts = 0;
+
+  while (attempts <= maxRetries) {
+    attempts++;
+    try {
+      result = await toolFn(rawInput);
+    } catch (error) {
+      result = {
+        success: false,
+        error: {
+          code: 'UNEXPECTED_ERROR',
+          message: error instanceof Error ? error.message : String(error),
+        },
+      };
+    }
+
+    if (result.success) {
+      break;
+    }
+
+    // Check if error is retryable and we have retries remaining
+    const canRetry = attempts <= maxRetries && isRetryableError(result.error.code, retryableCodes);
+    if (!canRetry) {
+      break;
+    }
+
+    if (backoffMs > 0) {
+      await new Promise((resolve) => setTimeout(resolve, backoffMs));
+    }
   }
 
   const duration = Date.now() - startTime;
   const status = result.success ? 'success' : 'failure';
-  const errorMessage = result.success ? undefined : `${result.error.code}: ${result.error.message}`;
+  let errorMessage: string | undefined;
+  if (!result.success) {
+    const retryNote = attempts > 1 ? ` (failed after ${attempts} attempts)` : '';
+    errorMessage = `${result.error.code}: ${result.error.message}${retryNote}`;
+  }
 
   const sanitizedInput = redact(rawInput, metadata.sensitiveInputFields) as Record<string, unknown> | undefined;
   
