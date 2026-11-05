@@ -263,13 +263,22 @@ export async function orderTrackingNode(
   // gate.outcome === 'ALLOWED' — check tool result
   if (!orderResult.success) {
     const isNotFound = orderResult.error.code === 'NOT_FOUND';
+    if (isNotFound) {
+      return {
+        workflowStatus: 'FAILED',
+        messages: [
+          new AIMessage(
+            "I couldn't find an order with that ID. Please double-check the order reference in your confirmation email."
+          ),
+        ],
+      };
+    }
+
     return {
-      workflowStatus: 'FAILED',
+      workflowStatus: 'ESCALATED',
       messages: [
         new AIMessage(
-          isNotFound
-            ? "I couldn't find an order with that ID. Please double-check the order reference in your confirmation email."
-            : 'I encountered an issue retrieving your order. Please try again shortly.'
+          'I encountered repeated technical issues retrieving your order details. I am escalating your request to human customer support for assistance.'
         ),
       ],
     };

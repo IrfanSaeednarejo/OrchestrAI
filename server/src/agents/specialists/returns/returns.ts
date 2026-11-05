@@ -289,13 +289,23 @@ export async function returnsNode(
   }
 
   if (!eligibilityResult.success) {
+    const isOrderNotFound = eligibilityResult.error.code === 'ORDER_NOT_FOUND';
+    if (isOrderNotFound) {
+      return {
+        workflowStatus: 'FAILED',
+        messages: [
+          new AIMessage(
+            "I couldn't find an order matching that ID. Please check the order number and try again."
+          ),
+        ],
+      };
+    }
+
     return {
-      workflowStatus: 'FAILED',
+      workflowStatus: 'ESCALATED',
       messages: [
         new AIMessage(
-          eligibilityResult.error.code === 'ORDER_NOT_FOUND'
-            ? "I couldn't find an order matching that ID. Please check the order number and try again."
-            : 'I encountered an error checking return eligibility. Please try again shortly.'
+          'I encountered repeated technical issues checking return eligibility. I am escalating your request to human customer support for assistance.'
         ),
       ],
     };
@@ -382,10 +392,10 @@ export async function returnsNode(
 
   if (!createResult.success) {
     return {
-      workflowStatus: 'FAILED',
+      workflowStatus: 'ESCALATED',
       messages: [
         new AIMessage(
-          `Unable to create return: ${createResult.error.message || 'unknown error'}`
+          `I encountered a technical issue creating your return: ${createResult.error.message || 'unknown error'}. I am escalating your request to human customer support for assistance.`
         ),
       ],
     };

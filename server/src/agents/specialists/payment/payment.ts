@@ -308,13 +308,23 @@ export async function paymentNode(
   }
 
   if (!paymentResult.success) {
+    const isNotFound = paymentResult.error.code === 'NOT_FOUND';
+    if (isNotFound) {
+      return {
+        workflowStatus: 'FAILED',
+        messages: [
+          new AIMessage(
+            "I couldn't find a payment record for that order. Please check the order number and try again."
+          ),
+        ],
+      };
+    }
+
     return {
-      workflowStatus: 'FAILED',
+      workflowStatus: 'ESCALATED',
       messages: [
         new AIMessage(
-          paymentResult.error.code === 'NOT_FOUND'
-            ? "I couldn't find a payment record for that order. Please check the order number and try again."
-            : 'I encountered an error retrieving payment details. Please try again shortly.'
+          'I encountered repeated technical issues retrieving payment details. I am escalating your request to human customer support for assistance.'
         ),
       ],
     };
@@ -363,9 +373,11 @@ export async function paymentNode(
 
     if (!duplicateResult.success) {
       return {
-        workflowStatus: 'FAILED',
+        workflowStatus: 'ESCALATED',
         messages: [
-          new AIMessage('I encountered an error checking for duplicate charges. Please try again shortly.'),
+          new AIMessage(
+            'I encountered repeated technical issues checking for duplicate charges. I am escalating your request to human customer support for assistance.'
+          ),
         ],
       };
     }

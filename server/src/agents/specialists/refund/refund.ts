@@ -259,9 +259,11 @@ export async function refundNode(
 
     if (!refundResult.success) {
       return {
-        workflowStatus: 'FAILED',
+        workflowStatus: 'ESCALATED',
         messages: [
-          new AIMessage(`I could not process the duplicate charge refund: ${refundResult.error.message}`),
+          new AIMessage(
+            `I encountered a technical issue processing the duplicate charge refund: ${refundResult.error.message}. I am escalating your request to human customer support for assistance.`
+          ),
         ],
       };
     }
@@ -515,8 +517,12 @@ export async function refundNode(
     }
 
     return {
-      workflowStatus: 'FAILED',
-      messages: [new AIMessage(`Unable to issue refund: ${createResult.error.message}`)],
+      workflowStatus: 'ESCALATED',
+      messages: [
+        new AIMessage(
+          `I encountered a technical issue processing your refund: ${createResult.error.message}. I am escalating your request to human customer support for assistance.`
+        ),
+      ],
     };
   }
 
