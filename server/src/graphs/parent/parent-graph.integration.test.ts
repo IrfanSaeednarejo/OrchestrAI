@@ -224,8 +224,8 @@ describe('Parent Graph & Stateful Router Integration', () => {
       },
     };
 
-    // Invoke graph directly with configurable stub behavior on this thread
-    const resultState = await parentGraph.invoke(
+    // Invoke stub graph directly with configurable stub behavior on this thread
+    const resultState = await stubParentGraph.invoke(
       {
         messages: [new HumanMessage('Can I return this damaged item?')],
       },
@@ -259,7 +259,7 @@ describe('Parent Graph & Stateful Router Integration', () => {
     createdConversationIds.push(convo.id);
 
     // Invoke with satisfied identity precondition and activeWorkflow.returnTo
-    const resultState = await parentGraph.invoke(
+    const resultState = await stubParentGraph.invoke(
       {
         identity: {
           status: 'VERIFIED',
