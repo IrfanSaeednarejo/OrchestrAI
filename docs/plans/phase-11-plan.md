@@ -1,7 +1,7 @@
-# Phase 11 — Account Specialists — PLAN (status: DRAFT)
+# Phase 11 — Account Specialists — PLAN (status: DONE)
 
 ## Approvals
-<!-- Fill in after owner approves each item in chat -->
+- 2026-11-05: Plan approved by owner (chat: "continue"). OD-4e (Profile single-node) and OD-4f (Account Access two-mode) approved.
 
 ---
 
@@ -320,3 +320,4 @@ Named tests that must pass:
 ---
 
 STOP here and request approval.
+

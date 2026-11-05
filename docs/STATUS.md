@@ -1,15 +1,16 @@
 # STATUS (update at the end of every step/phase)
 
-Last verified suite figure reported: 370/370 passing (49 files) at Phase 10. Baseline test count: 370.
+Last verified suite figure reported: 400/400 passing (52 files) at Phase 11. Baseline test count: 400.
 
 ## Phase state
-- Phases 1-10: COMPLETE and signed off.
+- Phases 1-11: COMPLETE and signed off.
   - Phase 6 (Access Control / Verification Gate): Steps 0-5 closed; Step 6a proof graph verified; Step 6b close-out and type unification completed.
   - Phase 7 (Agent Foundation): Steps 0-5 closed; LLM client, prompt loader, handoff contract, common node patterns, and subgraph harness verified (294 tests).
   - Phase 8 (Meta Orchestrator & Stateful Router Skeleton): Steps 0-5 closed; intent taxonomy, LLM classifier, deterministic guards, specialist stubs, parent graph with Command(goto) dispatch, and end-to-end integration tests verified (331 tests).
   - Phase 9 (Orders Specialists): Steps 0-4 closed; Order Tracking and Returns specialist subgraphs, prompt templates, RAG integration, Scenario 1 & 9 integration tests verified (350 tests).
   - Phase 10 (Payments Specialists): Steps 0-5 closed; Payment and Refund specialist subgraphs, Pattern B lateral re-route, OD-8 allowlist update, Scenarios 3, 4 & 8 integration tests verified (370 tests).
-- Phases 11-19: not started. Concrete subgraphs (`graphs/subgraphs`) and domain specialists for Account (Profile, Account Access) are still stubs.
+  - Phase 11 (Account Specialists): Steps 0-5 closed; Profile and Account Access real subgraphs, two-mode Account Access (stateless password reset; OTP verification for resume via `buildIdentityUpdate`), Scenarios 5, 6, 7, 13 & 14 parent integration tests verified (400 tests).
+- Phases 12-19: not started. Phase 12 (Cross-Domain Integration Validation) runs all 14 scenarios live across all 6 real domain specialists.
 
 ## Built so far
 Domain data model + repositories + seed; conversation/message services; ConversationState + PostgresSaver checkpointing; routing/agent/tool event logging;
@@ -22,7 +23,9 @@ Order Tracking specialist subgraph (`get_order`, `get_shipment_status`, RAG orde
 Returns specialist subgraph (`check_return_eligibility`, `create_return` with FULL gate Pattern C block, RAG orders/returns, hard decline on ineligibility, resume from activeWorkflow);
 Payment specialist subgraph (`get_payment`, `detect_duplicate_charge`, Pattern B handoff to Refund, RAG payments/payments);
 Refund specialist subgraph (`create_refund` for duplicate charges, `get_return_by_order`, Pattern B handoff to Returns for unlinked returns, structured `create_refund` for approved returns, RAG payments/refunds);
-Pattern B lateral handoff and router re-route verified end-to-end (Scenarios 3, 4, 8).
+Profile specialist subgraph (`get_profile`, `update_profile`, FULL verification gate, Pattern C activeWorkflow block, no RAG);
+Account Access specialist subgraph (`start_identity_verification`, `verify_identity` with `buildIdentityUpdate` elevation and Pattern C unblock, `initiate_password_reset` with strict identity preservation, RAG account/account_security);
+All 6 domain specialists are real concrete subgraphs wired into parent graph; Pattern B (lateral re-route) and Pattern C (verification-for-resume) verified end-to-end.
 
 ## Known issues (flagged, not fixed)
 1. `user` field reducer uses `update ?? state`, so an explicit `user: null` update is ignored.
@@ -32,7 +35,7 @@ Pattern B lateral handoff and router re-route verified end-to-end (Scenarios 3, 
 6. 6a graph's ALLOWED branch does not clear `activeWorkflow`, so `blockedBy` goes stale after a successful resume (resolved in Phase 8: router writes RE_ROUTE event; specialist clears activeWorkflow on COMPLETED).
 
 ## Immediate next actions
-1. Plan Phase 11 (Account Specialists: Profile, Account Access; two-mode access, password reset boundary).
+1. Plan Phase 12 (Cross-Domain Integration Validation: all 14 scenarios verified live on real specialists).
 
 ## Changelog
 - 2026-11-05: Phase 6 Step 6a integration proof graph and test suite verified (239 tests).
@@ -41,3 +44,4 @@ Pattern B lateral handoff and router re-route verified end-to-end (Scenarios 3, 
 - 2026-11-05: Phase 8 Meta Orchestrator & Stateful Router completed: taxonomy, classifier, guards, stubs, parent graph, integration tests (331 tests).
 - 2026-11-05: Phase 9 Orders Specialists completed: Order Tracking and Returns real subgraphs, RAG scoping, parent graph integration (350 tests).
 - 2026-11-05: Phase 10 Payments Specialists completed: Payment and Refund real subgraphs, Pattern B lateral re-route, Scenarios 3, 4 & 8 parent integration tests (370 tests).
+- 2026-11-06: Phase 11 Account Specialists completed: Profile and Account Access real subgraphs, two-mode operation, Pattern C verification resume, Scenarios 5, 6, 7, 13 & 14 parent integration tests (400 tests).

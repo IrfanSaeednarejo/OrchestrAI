@@ -13,7 +13,7 @@
       Command.PARENT handling, stub specialists. Needs: 3, 7. Resolves OPEN-DECISIONS #2/#4/#5/#6 as needed.
 - [x] 9 Orders Specialists — Order Tracking, Returns (replace stubs, register in agent registry). Needs: 8, 5, 6.
 - [x] 10 Payments Specialists — Payment, Refund; first real Pattern B re-route (duplicate charge -> REFUND_ACTION_REQUIRED handoff). Needs: 9.
-- [ ] 11 Account Specialists — Profile; two-mode Account Access (login recovery; subworkflow-resume with returnTo). Password reset never mutates identity.status. Needs: 10.
+- [x] 11 Account Specialists — Profile; two-mode Account Access (login recovery; subworkflow-resume with returnTo). Password reset never mutates identity.status. Needs: 10.
 - [ ] 12 Cross-Domain Integration Validation — all 14 scenarios live on real specialists; confirm Patterns A/B/C. Needs: 9, 10, 11.
 - [ ] 13 Failure Handling & Loop Prevention — loop -> fallback/escalate; tool failure -> retry once -> escalate; max handoffs -> escalate; ESCALATED terminal state. Needs: 12.
 - [ ] 14 Observability & Tracing — LangSmith; conversation/graph/agent/tool/routing levels; metadata. Needs: 13.
