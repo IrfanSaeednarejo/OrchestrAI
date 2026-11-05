@@ -3,6 +3,7 @@
 // Handles Scenario 9 (ineligible return -> RAG explanation -> hard decline),
 // return eligibility evaluation, and return creation (FULL-gated).
 
+import crypto from 'node:crypto';
 import { AIMessage } from '@langchain/core/messages';
 import {
   StateGraph,
@@ -10,6 +11,7 @@ import {
   END,
   type BaseCheckpointSaver,
 } from '@langchain/langgraph';
+import type { RunnableConfig } from '@langchain/core/runnables';
 import { z } from 'zod';
 import {
   ConversationStateAnnotation,
@@ -22,6 +24,7 @@ import { loadPrompt } from '../../prompts/template-loader.js';
 import { gatedExecuteTool } from '../../../tools/gated-execution.js';
 import { buildBlockedWorkflowUpdate } from '../../../state/blocked-workflow.js';
 import { retrieveKnowledge } from '../../../knowledge/retrieval.js';
+import { recordAgentExecution } from '../../../routing/events.js';
 import {
   checkReturnEligibility,
   checkReturnEligibilityMetadata,
@@ -177,15 +180,42 @@ export async function generateReturnSuccessResponse(params: {
   return `Your return request has been submitted successfully (Return reference: ${returnId}). Please follow the return instructions sent to your email to send the item back.`;
 }
 
+async function createAgentExecutionSafely(
+  conversationId: string | undefined,
+  agent: 'returns'
+): Promise<string> {
+  if (typeof conversationId === 'string' && conversationId.length > 0) {
+    try {
+      const record = await recordAgentExecution({
+        conversationId,
+        agent,
+        status: 'success',
+      });
+      return record.id;
+    } catch {
+      return crypto.randomUUID();
+    }
+  }
+  return crypto.randomUUID();
+}
+
 // ---------------------------------------------------------------------------
 // Main Returns Node
 // ---------------------------------------------------------------------------
 
 export async function returnsNode(
-  state: ConversationState
+  state: ConversationState,
+  config?: RunnableConfig
 ): Promise<ConversationStateUpdate> {
   const specialist = 'returns' as const;
-  const agentExecutionId = `ret-${Date.now()}`;
+  const conversationId =
+    typeof config?.configurable?.['conversationId'] === 'string'
+      ? config.configurable['conversationId']
+      : typeof config?.configurable?.['thread_id'] === 'string'
+        ? config.configurable['thread_id']
+        : undefined;
+
+  const agentExecutionId = await createAgentExecutionSafely(conversationId, specialist);
 
   // 1. Resolve orderId & reason (check resumeContext first, then LLM extraction)
   let orderId: string | null = null;

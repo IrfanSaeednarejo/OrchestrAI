@@ -10,6 +10,7 @@
 //   Phase C: Retrieve grounded knowledge (orders/shipping), generate LLM
 //            customer-facing response (temp 0.2).
 
+import crypto from 'node:crypto';
 import { AIMessage } from '@langchain/core/messages';
 import {
   StateGraph,
@@ -17,6 +18,7 @@ import {
   END,
   type BaseCheckpointSaver,
 } from '@langchain/langgraph';
+import type { RunnableConfig } from '@langchain/core/runnables';
 import { z } from 'zod';
 import {
   ConversationStateAnnotation,
@@ -28,6 +30,7 @@ import { loadPrompt } from '../../prompts/template-loader.js';
 import { gatedExecuteTool } from '../../../tools/gated-execution.js';
 import { buildBlockedWorkflowUpdate } from '../../../state/blocked-workflow.js';
 import { retrieveKnowledge } from '../../../knowledge/retrieval.js';
+import { recordAgentExecution } from '../../../routing/events.js';
 import {
   getOrder,
   getOrderMetadata,
@@ -171,15 +174,42 @@ export async function generateOrderResponse(params: {
   );
 }
 
+async function createAgentExecutionSafely(
+  conversationId: string | undefined,
+  agent: 'order_tracking'
+): Promise<string> {
+  if (typeof conversationId === 'string' && conversationId.length > 0) {
+    try {
+      const record = await recordAgentExecution({
+        conversationId,
+        agent,
+        status: 'success',
+      });
+      return record.id;
+    } catch {
+      return crypto.randomUUID();
+    }
+  }
+  return crypto.randomUUID();
+}
+
 // ---------------------------------------------------------------------------
 // Main specialist node
 // ---------------------------------------------------------------------------
 
 export async function orderTrackingNode(
-  state: ConversationState
+  state: ConversationState,
+  config?: RunnableConfig
 ): Promise<ConversationStateUpdate> {
   const specialist = 'order_tracking' as const;
-  const agentExecutionId = `ot-${Date.now()}`;
+  const conversationId =
+    typeof config?.configurable?.['conversationId'] === 'string'
+      ? config.configurable['conversationId']
+      : typeof config?.configurable?.['thread_id'] === 'string'
+        ? config.configurable['thread_id']
+        : undefined;
+
+  const agentExecutionId = await createAgentExecutionSafely(conversationId, specialist);
 
   // ── Phase A: Extract orderId ─────────────────────────────────────────────
   const userText = extractLastUserText(state);

@@ -29,6 +29,8 @@ import {
   type RoutingEvent,
 } from '../../routing/events.js';
 import { SPECIALIST_STUBS } from '../../agents/specialists/stubs.js';
+import { orderTrackingNode } from '../../agents/specialists/order-tracking/order-tracking.js';
+import { returnsNode } from '../../agents/specialists/returns/returns.js';
 import type { SpecialistId } from '../../tools/permissions.js';
 
 // ---------------------------------------------------------------------------
@@ -219,27 +221,73 @@ export const SPECIALIST_NODE_NAMES = [
   'account_access',
 ] as const;
 
-export function buildParentGraph(checkpointer?: BaseCheckpointSaver) {
+export type SpecialistNodeAction = (
+  state: ConversationState,
+  config?: RunnableConfig
+) => Promise<ConversationStateUpdate | Command>;
+
+function hasStubOverride(specialistId: SpecialistId, config?: RunnableConfig): boolean {
+  const configurable = config?.configurable;
+  if (typeof configurable !== 'object' || configurable === null) return false;
+  if (configurable['useStubs'] === true) return true;
+  const overrides = configurable['stubBehaviors'];
+  if (typeof overrides === 'object' && overrides !== null && specialistId in overrides) {
+    return true;
+  }
+  return 'stubBehavior' in configurable;
+}
+
+export const orderTrackingSpecialistNode: SpecialistNodeAction = async (state, config) => {
+  if (hasStubOverride('order_tracking', config)) {
+    return SPECIALIST_STUBS.order_tracking(state, config);
+  }
+  return orderTrackingNode(state, config);
+};
+
+export const returnsSpecialistNode: SpecialistNodeAction = async (state, config) => {
+  if (hasStubOverride('returns', config)) {
+    return SPECIALIST_STUBS.returns(state, config);
+  }
+  return returnsNode(state, config);
+};
+
+export interface ParentGraphOptions {
+  specialists?: Partial<Record<SpecialistId, SpecialistNodeAction>>;
+}
+
+export function buildParentGraph(
+  checkpointer?: BaseCheckpointSaver,
+  options?: ParentGraphOptions
+) {
+  const specialistNodes: Record<SpecialistId, SpecialistNodeAction> = {
+    order_tracking: options?.specialists?.order_tracking ?? orderTrackingSpecialistNode,
+    returns: options?.specialists?.returns ?? returnsSpecialistNode,
+    payment: options?.specialists?.payment ?? SPECIALIST_STUBS.payment,
+    refund: options?.specialists?.refund ?? SPECIALIST_STUBS.refund,
+    profile: options?.specialists?.profile ?? SPECIALIST_STUBS.profile,
+    account_access: options?.specialists?.account_access ?? SPECIALIST_STUBS.account_access,
+  };
+
   const workflow = new StateGraph(ConversationStateAnnotation)
     .addNode('router', routerNode, {
       ends: [...SPECIALIST_NODE_NAMES, END],
     })
-    .addNode('order_tracking', SPECIALIST_STUBS.order_tracking, {
+    .addNode('order_tracking', specialistNodes.order_tracking, {
       ends: ['router', END],
     })
-    .addNode('returns', SPECIALIST_STUBS.returns, {
+    .addNode('returns', specialistNodes.returns, {
       ends: ['router', END],
     })
-    .addNode('payment', SPECIALIST_STUBS.payment, {
+    .addNode('payment', specialistNodes.payment, {
       ends: ['router', END],
     })
-    .addNode('refund', SPECIALIST_STUBS.refund, {
+    .addNode('refund', specialistNodes.refund, {
       ends: ['router', END],
     })
-    .addNode('profile', SPECIALIST_STUBS.profile, {
+    .addNode('profile', specialistNodes.profile, {
       ends: ['router', END],
     })
-    .addNode('account_access', SPECIALIST_STUBS.account_access, {
+    .addNode('account_access', specialistNodes.account_access, {
       ends: ['router', END],
     })
     .addEdge(START, 'router')
