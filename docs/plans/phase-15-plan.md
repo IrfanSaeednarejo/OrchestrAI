@@ -1,7 +1,7 @@
-# Phase 15 — Evaluation Framework — PLAN (status: DRAFT)
+# Phase 15 — Evaluation Framework — PLAN (status: APPROVED)
 
 ## Approvals
-- (Pending review and approval by owner in chat)
+- 2026-11-06: Approved by owner in chat ("approved continue."). OD-15 approved.
 
 ---
 
@@ -149,3 +149,4 @@ The framework implements the 8 canonical binary evaluators (`ROUTING_CORRECT`, `
 ---
 
 STOP here and request approval.
+
