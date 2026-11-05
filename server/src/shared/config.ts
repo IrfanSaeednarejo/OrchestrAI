@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const envSchema = z.object({
+export const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   APP_PORT: z.coerce.number().default(4000),
   POSTGRES_USER: z.string(),
@@ -11,6 +11,10 @@ const envSchema = z.object({
   REDIS_PORT: z.coerce.number(),
   REDIS_HOST: z.string().default('localhost'),
   GEMINI_API_KEY: z.string(),
+  LANGCHAIN_TRACING_V2: z.enum(['true', 'false']).default('false'),
+  LANGCHAIN_API_KEY: z.string().optional(),
+  LANGCHAIN_PROJECT: z.string().default('orchestrai'),
+  LANGCHAIN_ENDPOINT: z.string().default('https://api.smith.langchain.com'),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -45,6 +49,12 @@ export const config = Object.freeze({
   },
   gemini: {
     apiKey: envVars.GEMINI_API_KEY,
+  },
+  langsmith: {
+    tracingEnabled: envVars.LANGCHAIN_TRACING_V2 === 'true' && Boolean(envVars.LANGCHAIN_API_KEY),
+    apiKey: envVars.LANGCHAIN_API_KEY ?? null,
+    project: envVars.LANGCHAIN_PROJECT,
+    endpoint: envVars.LANGCHAIN_ENDPOINT,
   },
 });
 
