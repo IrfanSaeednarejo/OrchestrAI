@@ -1,4 +1,4 @@
-# Phase 14 — Observability & Tracing — PLAN (status: APPROVED)
+# Phase 14 — Observability & Tracing — PLAN (status: DONE)
 
 ## Approvals
 - 2026-11-06: Approved by owner in chat ("Approved: COntinue"). OD-14 (LangSmith tracing delivery architecture) approved.
@@ -169,5 +169,5 @@ This ensures full transparent visibility into autonomous agent decision-making, 
 
 ---
 
-STOP here and request approval.
+Phase 14 completed on 2026-11-06. All 444 tests passing across 56 test files. Ready for merge to main and tag `phase-14-done`.
 

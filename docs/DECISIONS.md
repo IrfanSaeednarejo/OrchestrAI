@@ -103,6 +103,14 @@ Small focused steps; explicit typed state; clear agent boundaries; no agent spag
 - Classifier Failure Fallback: when `classifyMessage` fails or throws an exception, the router logs `decisionType: 'FALLBACK'` (which does not increment handoffCount), defaults safely to `order_tracking`, and allows the conversation to continue gracefully without crashing.
 - Failure handling integration suite: `server/src/graphs/parent/parent-graph-failure-handling.integration.test.ts` validates loop escalation, tool timeout retry escalation, handoff limit escalation, multi-turn terminal ESCALATED state lock, and classifier fallback routing live against PostgreSQL, Redis, and PostgresSaver checkpointer.
 
+## Observability & Tracing (Phase 14) — approved 2026-11-06
+- OD-14 (LangSmith Observability Architecture): Option A adopted — native LangGraph/LangChain tracing via `RunnableConfig` (`runName`, `tags`, `metadata`) paired with a centralized `createTraceConfig` factory in `server/src/observability/`.
+  - Config loader in `server/src/shared/config.ts` parses optional environment variables (`LANGCHAIN_TRACING_V2`, `LANGCHAIN_API_KEY`, `LANGCHAIN_PROJECT`, `LANGCHAIN_ENDPOINT`). Tracing is disabled by default in test/dev unless explicitly activated with an API key.
+  - Typed metadata sanitization: `sanitizeMetadata` guarantees that no secrets, passwords, or raw verification codes leak into telemetry. Whitelists `conversationId`, `userId`, `threadId`, `domain`, `specialist`, `intent`, `workflowStatus`, `verificationStatus`, `handoffCount`, `level`, and `environment`.
+  - Standardized run naming and tagging: `buildRunName` standardizes trace names across hierarchy (`OrchestrAI:ParentGraph`, `OrchestrAI:Router`, `OrchestrAI:Specialist:${specialist}`, `OrchestrAI:Tool`, `OrchestrAI:LLM`). `buildTags` formats searchable run tags for filtering in LangSmith.
+  - Offline test safety: parent graph and observability integration suites run with zero real API calls to LangSmith via Vitest in-memory callback spies and disabled tracing flags.
+  - Trace propagation integration suite: `server/src/graphs/parent/parent-graph-tracing.integration.test.ts` validates trace config passing, multi-turn metadata propagation across handoffs, escalation status reflection, and tool execution audit trail alignment live against PostgreSQL, Redis, and PostgresSaver checkpointer.
+
 ## Testing conventions
 - Real DB/Redis in integration tests with scoped cleanup (never an unscoped delete); distinct fixture prefixes to avoid cross-file races.
 - Raw verbatim command output in reports; always run typecheck after final edits.
