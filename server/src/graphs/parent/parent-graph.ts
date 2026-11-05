@@ -33,6 +33,8 @@ import { orderTrackingNode } from '../../agents/specialists/order-tracking/order
 import { returnsNode } from '../../agents/specialists/returns/returns.js';
 import { paymentNode } from '../../agents/specialists/payment/payment.js';
 import { refundNode } from '../../agents/specialists/refund/refund.js';
+import { profileNode } from '../../agents/specialists/profile/profile.js';
+import { accountAccessNode } from '../../agents/specialists/account-access/account-access.js';
 import type { SpecialistId } from '../../tools/permissions.js';
 
 // ---------------------------------------------------------------------------
@@ -267,6 +269,20 @@ export const refundSpecialistNode: SpecialistNodeAction = async (state, config) 
   return refundNode(state, config);
 };
 
+export const profileSpecialistNode: SpecialistNodeAction = async (state, config) => {
+  if (hasStubOverride('profile', config)) {
+    return SPECIALIST_STUBS.profile(state, config);
+  }
+  return profileNode(state, config);
+};
+
+export const accountAccessSpecialistNode: SpecialistNodeAction = async (state, config) => {
+  if (hasStubOverride('account_access', config)) {
+    return SPECIALIST_STUBS.account_access(state, config);
+  }
+  return accountAccessNode(state, config);
+};
+
 export interface ParentGraphOptions {
   specialists?: Partial<Record<SpecialistId, SpecialistNodeAction>>;
 }
@@ -280,8 +296,8 @@ export function buildParentGraph(
     returns: options?.specialists?.returns ?? returnsSpecialistNode,
     payment: options?.specialists?.payment ?? paymentSpecialistNode,
     refund: options?.specialists?.refund ?? refundSpecialistNode,
-    profile: options?.specialists?.profile ?? SPECIALIST_STUBS.profile,
-    account_access: options?.specialists?.account_access ?? SPECIALIST_STUBS.account_access,
+    profile: options?.specialists?.profile ?? profileSpecialistNode,
+    account_access: options?.specialists?.account_access ?? accountAccessSpecialistNode,
   };
 
   const workflow = new StateGraph(ConversationStateAnnotation)
