@@ -271,7 +271,6 @@ describe('Account Access specialist — accountAccessNode', () => {
     const update = cmd.update as {
       identity?: { status: string; verificationMethod: string; verifiedAt: string };
       activeWorkflow?: { blockedBy: string | null; returnTo: unknown; currentStep: string };
-      routing?: { previousAgent: string; handoffCount: number };
     };
 
     // Invariant: identity status elevated to VERIFIED via buildIdentityUpdate
@@ -286,8 +285,6 @@ describe('Account Access specialist — accountAccessNode', () => {
       agent: 'returns',
       workflowStep: 'create_return',
     });
-    expect(update.routing?.previousAgent).toBe('account_access');
-    expect(update.routing?.handoffCount).toBe(1);
   });
 
   // ---- Path 4: Verify Code Success (standalone without returnTo) ----

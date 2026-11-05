@@ -351,10 +351,6 @@ export async function accountAccessNode(
             blockedBy: null, // Signals unblocked to router guard checkResumePreconditions
             currentStep: 'verified',
           },
-          routing: {
-            previousAgent: specialist,
-            handoffCount: 1, // Reducer applies as delta
-          },
         },
       });
     }

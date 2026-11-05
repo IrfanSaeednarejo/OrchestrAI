@@ -194,12 +194,13 @@ export async function routerNode(
 
   // 5. Normal route dispatch
   const isInitialRoute = state.routing.currentAgent === null;
+  const isHandoff = !isInitialRoute && state.routing.currentAgent !== targetSpecialist;
   const routingEvent: RoutingEvent = {
     conversationId,
     sourceAgent: state.routing.currentAgent,
     destinationAgent: targetSpecialist,
     intent: detectedIntent,
-    decisionType: isInitialRoute ? 'INITIAL_ROUTE' : 'HANDOFF',
+    decisionType: isHandoff ? 'HANDOFF' : 'INITIAL_ROUTE',
     reason: routingReason,
     newDomain: targetSpecialist,
   };
