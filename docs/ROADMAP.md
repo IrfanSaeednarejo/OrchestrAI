@@ -14,7 +14,7 @@
 - [x] 9 Orders Specialists — Order Tracking, Returns (replace stubs, register in agent registry). Needs: 8, 5, 6.
 - [x] 10 Payments Specialists — Payment, Refund; first real Pattern B re-route (duplicate charge -> REFUND_ACTION_REQUIRED handoff). Needs: 9.
 - [x] 11 Account Specialists — Profile; two-mode Account Access (login recovery; subworkflow-resume with returnTo). Password reset never mutates identity.status. Needs: 10.
-- [ ] 12 Cross-Domain Integration Validation — all 14 scenarios live on real specialists; confirm Patterns A/B/C. Needs: 9, 10, 11.
+- [x] 12 Cross-Domain Integration Validation — all 14 scenarios live on real specialists; confirm Patterns A/B/C. Needs: 9, 10, 11.
 - [ ] 13 Failure Handling & Loop Prevention — loop -> fallback/escalate; tool failure -> retry once -> escalate; max handoffs -> escalate; ESCALATED terminal state. Needs: 12.
 - [ ] 14 Observability & Tracing — LangSmith; conversation/graph/agent/tool/routing levels; metadata. Needs: 13.
 - [ ] 15 Evaluation Framework — expand 14 -> 30-50 scenarios; binary evaluators (ROUTING_CORRECT, HANDOFF_CORRECT, SPECIALIST_SCOPE_CORRECT,

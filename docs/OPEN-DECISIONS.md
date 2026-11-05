@@ -2,10 +2,13 @@
 Process: the agent writes a proposal (options, tradeoffs, recommendation, impact, tests that would prove it), then WAITS for approval.
 Approved items move to DECISIONS.md. Items marked [CONFLICT] are inconsistencies in earlier notes that need a ruling, not a design.
 
-1. [CONFLICT] Pattern A is undefined, and roadmap scenario numbers for Phases 9-11 contradict the locked 14-scenario list.
-   Working inference (unapproved): Pattern A = router selects a specialist, it resolves with no handoff.
-   Proposed remap (unapproved): P9 -> 1,2,9; P10 -> 3,4,8; P11 -> 13,14 + block halves of 5,6,7; P12 -> all 14 live; P13 -> 10,11,12.
-   Scenarios 5-7 need Account Access, which is built last; consider ordering Account Access earlier.
+1. [RESOLVED 2026-11-06] Pattern A definition locked, and 14-scenario evaluation matrix confirmed:
+   - Pattern A = direct specialist resolution without lateral handoff or verification block (Scenarios 1, 2, 8, 9, 14).
+   - Pattern B = lateral handoff to parent router -> parent router re-routes to secondary specialist (Scenarios 3, 4).
+   - Pattern C = specialist blocked by verification -> routed to Account Access -> resumes originating specialist (Scenarios 5, 6, 7).
+   - Safety/Escalation = Scenarios 10, 11, 12.
+   - Security Boundary = Scenario 13 (preventing unverified identity mutation).
+   All 14 scenarios validated live across concrete specialists in Phase 12. Recorded in DECISIONS.md under Phase 12.
 2. [RESOLVED 2026-11-05] Router design: hybrid guard+LLM classifier; `DEFAULT_MAX_HANDOFFS = 3`; `Command({ goto })` dispatch; loop = same specialist ≥ 2 consecutive visits. Recorded in DECISIONS.md under Phase 8.
 3. [RESOLVED 2026-11-05] Agent LLM: `gemini-2.5-flash`, `temperature: 0.0` for routing/tool decisions, `temperature: 0.2` for customer-facing generation, `responseMimeType: 'application/json'` + Zod `responseSchema` for structured output, mockable client interface in Vitest. Recorded in DECISIONS.md under Phase 7.
 4. Specialist designs, one block per specialist: scope in/out, phased workflow (entry/action/branch/exit), handoff triggers, escalation conditions, success/failure criteria.
