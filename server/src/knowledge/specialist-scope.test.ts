@@ -1,6 +1,7 @@
 // src/knowledge/specialist-scope.test.ts
 import { describe, it, expect } from 'vitest';
 import { getKnowledgeScope, SPECIALIST_KNOWLEDGE_SCOPE, SpecialistName } from './specialist-scope.js';
+import type { SpecialistId } from '../tools/permissions.js';
 
 describe('specialist-scope', () => {
   describe('getKnowledgeScope — one assertion per specialist', () => {
@@ -33,7 +34,7 @@ describe('specialist-scope', () => {
     it('SPECIALIST_KNOWLEDGE_SCOPE covers exactly 6 specialist entries', () => {
       // This test guards against someone changing the type to Partial<Record<...>>
       // later and silently losing the compile-time guarantee for all 6 specialists.
-      const allSpecialists: SpecialistName[] = [
+      const allSpecialists: SpecialistId[] = [
         'order_tracking',
         'returns',
         'payment',
@@ -47,6 +48,12 @@ describe('specialist-scope', () => {
         expect(Object.prototype.hasOwnProperty.call(SPECIALIST_KNOWLEDGE_SCOPE, name)).toBe(true);
       }
       expect(Object.keys(SPECIALIST_KNOWLEDGE_SCOPE)).toHaveLength(6);
+    });
+
+    it('SpecialistName type alias is strictly interchangeable with SpecialistId', () => {
+      const aliasCheck: SpecialistName = 'order_tracking';
+      const canonicalCheck: SpecialistId = aliasCheck;
+      expect(canonicalCheck).toBe('order_tracking');
     });
   });
 });

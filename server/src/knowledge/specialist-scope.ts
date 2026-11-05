@@ -6,19 +6,15 @@
 // the values used in documents.ts — do not invent new ones.
 
 import type { KnowledgeDomain } from '../persistence/repositories/knowledge.repository.js';
+import type { SpecialistId } from '../tools/permissions.js';
 
-export type SpecialistName =
-  | 'order_tracking'
-  | 'returns'
-  | 'payment'
-  | 'refund'
-  | 'account_access'
-  | 'profile';
+// Canonical identifier is SpecialistId; SpecialistName retained as a compatibility alias.
+export type SpecialistName = SpecialistId;
 
 export type KnowledgeScope = { domain: KnowledgeDomain; topic: string } | null;
 
 // Record (not Partial<Record>) — omitting any specialist is a compile error.
-const SPECIALIST_KNOWLEDGE_SCOPE: Record<SpecialistName, KnowledgeScope> = {
+const SPECIALIST_KNOWLEDGE_SCOPE: Record<SpecialistId, KnowledgeScope> = {
   order_tracking: { domain: 'orders', topic: 'shipping' },
   returns:        { domain: 'orders', topic: 'returns' },
   payment:        { domain: 'payments', topic: 'payments' },
@@ -29,6 +25,6 @@ const SPECIALIST_KNOWLEDGE_SCOPE: Record<SpecialistName, KnowledgeScope> = {
 
 export { SPECIALIST_KNOWLEDGE_SCOPE };
 
-export function getKnowledgeScope(specialist: SpecialistName): KnowledgeScope {
+export function getKnowledgeScope(specialist: SpecialistId): KnowledgeScope {
   return SPECIALIST_KNOWLEDGE_SCOPE[specialist];
 }

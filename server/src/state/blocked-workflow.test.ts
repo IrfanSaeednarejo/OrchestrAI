@@ -131,8 +131,9 @@ describe('blocked-workflow', () => {
 
     it('end-to-end integration: feed evaluateGate output directly into builder', () => {
       // Returns specialist calling create_return while LIGHTLY_VERIFIED
+      const tool: ToolMetadata = { name: 'create_return', requiredVerification: 'FULL' };
       const gateDecision = evaluateGate({
-        tool: { name: 'create_return', requiredVerification: 'FULL' } as ToolMetadata,
+        tool,
         specialist: 'returns',
         identity: { status: 'LIGHTLY_VERIFIED', verificationMethod: 'test', verifiedAt: 'iso' },
       });
