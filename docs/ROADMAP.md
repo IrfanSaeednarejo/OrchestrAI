@@ -9,7 +9,7 @@
 - [x] 7 Agent Foundation — LLM-call/tool-call/decision-handoff node patterns (tools via the gate), LLM client wrapper, prompt template loader
       (Identity/Objective/Scope/Phased-Workflow/Guidelines), HandoffRequest type (sourceAgent, handoffReason, detectedIntent, recommendedDomain,
       relevantContext, attemptedActions, confidence), subgraph test harness. Needs: 4, 5, 6. Must first resolve OPEN-DECISIONS #3 (LLM).
-- [ ] 8 Meta Orchestrator & Stateful Router (skeleton) — Command(goto) routing, router reads full state, handoffCount/visitedAgents with configurable maxima,
+- [x] 8 Meta Orchestrator & Stateful Router (skeleton) — Command(goto) routing, router reads full state, handoffCount/visitedAgents with configurable maxima,
       Command.PARENT handling, stub specialists. Needs: 3, 7. Resolves OPEN-DECISIONS #2/#4/#5/#6 as needed.
 - [ ] 9 Orders Specialists — Order Tracking, Returns (replace stubs, register in agent registry). Needs: 8, 5, 6.
 - [ ] 10 Payments Specialists — Payment, Refund; first real Pattern B re-route (duplicate charge -> REFUND_ACTION_REQUIRED handoff). Needs: 9.
