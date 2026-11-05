@@ -63,6 +63,12 @@ Small focused steps; explicit typed state; clear agent boundaries; no agent spag
 - Resume semantics: when `activeWorkflow.returnTo` is set, `checkResumePreconditions` routes directly to that specialist with a `RE_ROUTE` routing event (no LLM call). The resumed specialist clears `activeWorkflow` on `COMPLETED` by emitting `activeWorkflow: overwrite(null)`.
 - All routing decisions write a `routing_history` row via `recordRoutingEvent` (via `logRoutingEventSafely` fallback for in-memory tests).
 
+## Orders Specialists (Phase 9) — approved 2026-11-05
+- Order Tracking specialist: single-node subgraph architecture; deterministic LLM argument extraction (`temperature: 0.0`) for UUID `orderId`; missing/ambiguous order ID emits `WAITING_FOR_USER_INPUT` (Scenario 2 shape); calls `getOrder` and `getShipmentStatus` via `gatedExecuteTool` (LIGHT verification); retrieves RAG policy (`domains: ['orders']`, `topics: ['shipping']`); customer response generated at `temperature: 0.2` with plain-text fallback on LLM failure.
+- Returns specialist: single-node subgraph architecture; extracts `orderId`, `reason`, and return intent; checks `checkReturnEligibility` via `gatedExecuteTool`; for ineligible returns (`RETURN_WINDOW_EXPIRED`, `ORDER_NOT_DELIVERED`, `RETURN_ALREADY_EXISTS`), queries RAG policy (`domains: ['orders']`, `topics: ['returns']`) and issues a definitive, polite decline with `workflowStatus: 'COMPLETED'` (Scenario 9); for eligible creation requests, calls `createReturn` (FULL verification requirement); if blocked, emits Pattern C `activeWorkflow` update with `workflowStatus: 'WAITING_FOR_USER_INPUT'` (Scenario 6 shape); clears `activeWorkflow: null` on completion.
+- Telemetry: specialist nodes record an `agent_executions` row for the conversation and supply its UUID as `agentExecutionId` to `gatedExecuteTool`, satisfying the `tool_executions` foreign-key constraint.
+- Parent graph wiring: `buildParentGraph` defaults to real `orderTrackingNode` and `returnsNode` subgraphs while retaining configurable stub overrides via `ParentGraphOptions.specialists` and `configurable.stubBehaviors` for isolated router testing.
+
 ## Testing conventions
 - Real DB/Redis in integration tests with scoped cleanup (never an unscoped delete); distinct fixture prefixes to avoid cross-file races.
 - Raw verbatim command output in reports; always run typecheck after final edits.
