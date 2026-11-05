@@ -1,4 +1,4 @@
-# Phase 10 — Payments Specialists (Payment, Refund; Pattern B Re-route) — PLAN (status: APPROVED)
+# Phase 10 — Payments Specialists (Payment, Refund; Pattern B Re-route) — PLAN (status: DONE)
 
 ## Approvals
 - [x] Owner approval on 2026-11-05 ("Approved COntinue")
