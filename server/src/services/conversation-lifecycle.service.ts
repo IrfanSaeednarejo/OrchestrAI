@@ -6,7 +6,8 @@ import {
   ToolMessage,
   BaseMessage,
 } from '@langchain/core/messages';
-import type { CompiledStateGraph } from '@langchain/langgraph';
+import type { StateSnapshot } from '@langchain/langgraph';
+import type { RunnableConfig } from '@langchain/core/runnables';
 import {
   createConversation,
   createMessage,
@@ -18,16 +19,16 @@ import {
 } from '../persistence/repositories/conversation.repository.js';
 import type { ConversationState, ConversationStateAnnotation } from '../state/conversation-state.js';
 
-// Generic type for any compiled LangGraph StateGraph. The four type parameters
-// are the shape used by CompiledStateGraph — we use typeof ConversationStateAnnotation
-// in the type signatures but accept the raw CompiledStateGraph type so callers can
-// inject any graph compiled from ConversationStateAnnotation without coupling this
-// service to a specific graph file.
-export type AnyCompiledGraph = CompiledStateGraph<
-  typeof ConversationStateAnnotation.State,
-  typeof ConversationStateAnnotation.Update,
-  string
->;
+// Generic interface for any compiled LangGraph StateGraph. Callers can inject
+// any graph compiled from ConversationStateAnnotation without coupling this
+// service to specific internal graph node union types.
+export interface AnyCompiledGraph {
+  invoke(
+    input: typeof ConversationStateAnnotation.Update,
+    config?: RunnableConfig
+  ): Promise<typeof ConversationStateAnnotation.State>;
+  getState(config: RunnableConfig): Promise<StateSnapshot>;
+}
 
 // ---------------------------------------------------------------------------
 // 1. startConversation
@@ -103,7 +104,7 @@ export async function sendMessage(params: SendMessageParams): Promise<SendMessag
   const state = await graph.invoke(
     { messages: [langchainMessage] },
     { configurable: { thread_id: conversationId } }
-  ) as ConversationState;
+  );
 
   // Step c: return both the durable row and the runtime state — not merged
   return { message, state };
