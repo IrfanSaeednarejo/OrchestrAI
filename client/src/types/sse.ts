@@ -50,3 +50,4 @@ export interface SSECallbacks {
   onDone?: (data: SSEDoneEvent) => void;
   onError?: (data: SSEErrorEvent) => void;
 }
+

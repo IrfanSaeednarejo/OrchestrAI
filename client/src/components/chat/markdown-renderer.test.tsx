@@ -63,3 +63,4 @@ describe('MarkdownRenderer Security & Formatting', () => {
     expect(container.querySelector('script')).toBeNull();
   });
 });
+

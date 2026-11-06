@@ -124,3 +124,4 @@ describe('ConversationSidebar', () => {
     expect(screen.getByText(/Loading chats\.\.\./i)).toBeInTheDocument();
   });
 });
+

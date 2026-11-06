@@ -21,7 +21,7 @@
       TOOL_SELECTION_CORRECT, STATE_PRESERVED, KNOWLEDGE_GROUNDED, WORKFLOW_COMPLETED, RESOLUTION_CORRECT); multi-turn thread evaluation;
       recalibrate MIN_SIMILARITY. Needs: 14.
 - [x] 16 Backend API Layer — resolve backend framework (Express.js REST API with CORS, Zod, custom AppError); start/send/history/trace endpoints (JSON + SSE streaming). Needs: 15.
-- [ ] 17 Frontend: Customer Chat (Next.js). Needs: 16.
+- [x] 17 Frontend: Customer Chat (Next.js). Needs: 16.
 - [ ] 18 Frontend: Platform/Ops UI — conversation explorer, execution timeline, routing/handoff visualization, tool history, trace viewer, eval results. Needs: 16, 15.
 - [ ] 19 Testing, Hardening & Deployment — edge cases, README/architecture docs, local-run guide. Needs: 17, 18.
 

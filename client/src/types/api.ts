@@ -80,3 +80,4 @@ export interface ApiErrorPayload {
     details?: unknown;
   };
 }
+

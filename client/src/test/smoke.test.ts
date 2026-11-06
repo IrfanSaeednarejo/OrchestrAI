@@ -5,3 +5,4 @@ describe('Client Workspace Smoke Test', () => {
     expect(true).toBe(true);
   });
 });
+

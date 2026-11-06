@@ -47,3 +47,4 @@ describe('SpecialistBadge Component', () => {
     expect(screen.getByTestId('handoff-count-badge')).toHaveTextContent('Handoffs: 2');
   });
 });
+

@@ -85,3 +85,4 @@ describe('MessageInput Component', () => {
     expect(textarea).toHaveAttribute('placeholder', 'Agent is thinking...');
   });
 });
+

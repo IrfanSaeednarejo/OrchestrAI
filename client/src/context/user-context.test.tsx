@@ -123,3 +123,4 @@ describe('UserProvider & useUser', () => {
     expect(screen.getByTestId('error-state')).toHaveTextContent('Failed to load demo users');
   });
 });
+
