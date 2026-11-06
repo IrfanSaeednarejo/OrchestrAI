@@ -126,3 +126,4 @@ describe('ops-client', () => {
     await expect(fetchOpsTrace('invalid-id')).rejects.toThrow(ApiClientError);
   });
 });
+

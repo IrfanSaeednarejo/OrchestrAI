@@ -51,3 +51,4 @@ export async function fetchOpsEvalResults(): Promise<BenchmarkReport> {
   const data = await handleOpsResponse<OpsEvalResponse>(res);
   return data.report;
 }
+
