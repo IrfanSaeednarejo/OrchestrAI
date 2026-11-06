@@ -352,6 +352,32 @@ describe('Phase 16 Step 3: Message Dispatch Endpoint', () => {
       expect(res.status).toBe(200);
       expect(res.body.message.role).toBe('assistant');
     });
+
+    it('returns 403 Forbidden (JSON) when guest tries to POST to an authenticated user conversation', async () => {
+      const app = createTestApp();
+
+      // ownerConversationId is owned by ownerUserId (authenticated), not the guest pool
+      const res = await request(app)
+        .post(`/api/conversations/${ownerConversationId}/messages`)
+        // no x-user-id → guest fallback
+        .send({ content: 'Can a guest access this?' });
+
+      expect(res.status).toBe(403);
+      expect(res.body.error.code).toBe('FORBIDDEN');
+    });
+
+    it('returns 403 Forbidden (SSE) when guest tries to POST to an authenticated user conversation', async () => {
+      const app = createTestApp();
+
+      const res = await request(app)
+        .post(`/api/conversations/${ownerConversationId}/messages`)
+        // no x-user-id → guest fallback
+        .set('Accept', 'text/event-stream')
+        .send({ content: 'Can a guest stream this?' });
+
+      expect(res.status).toBe(403);
+      expect(res.body.error.code).toBe('FORBIDDEN');
+    });
   });
 
   // -------------------------------------------------------------------------

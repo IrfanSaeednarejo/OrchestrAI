@@ -7,6 +7,7 @@ import { healthRouter } from './routes/health.routes.js';
 import { conversationRouter } from './routes/conversation.routes.js';
 import { errorHandler } from './middleware/error.middleware.js';
 import { NotFoundError } from './errors/app-error.js';
+import { config } from '../shared/config.js';
 import './types.js';
 
 export function createApp(
@@ -15,7 +16,7 @@ export function createApp(
   const app = express();
 
   // Global middleware
-  app.use(cors());
+  app.use(cors({ origin: config.app.clientOrigin }));
   app.use(express.json());
 
   // Mount health check route (unauthenticated)

@@ -14,6 +14,58 @@ describe('Config Loader', () => {
     expect(config.redis.port).toBeGreaterThan(0);
   });
 
+  it('should expose config.app.clientOrigin as a valid URL string', () => {
+    expect(typeof config.app.clientOrigin).toBe('string');
+    expect(() => new URL(config.app.clientOrigin)).not.toThrow();
+  });
+
+  it('envSchema defaults CLIENT_ORIGIN to http://localhost:3000', () => {
+    const parsed = envSchema.safeParse({
+      POSTGRES_USER: 'test_user',
+      POSTGRES_PASSWORD: 'test_password',
+      POSTGRES_DB: 'test_db',
+      POSTGRES_PORT: 5432,
+      REDIS_PORT: 6379,
+      GEMINI_API_KEY: 'test-key',
+    });
+
+    expect(parsed.success).toBe(true);
+    if (parsed.success) {
+      expect(parsed.data.CLIENT_ORIGIN).toBe('http://localhost:3000');
+    }
+  });
+
+  it('envSchema accepts a custom CLIENT_ORIGIN', () => {
+    const parsed = envSchema.safeParse({
+      POSTGRES_USER: 'test_user',
+      POSTGRES_PASSWORD: 'test_password',
+      POSTGRES_DB: 'test_db',
+      POSTGRES_PORT: 5432,
+      REDIS_PORT: 6379,
+      GEMINI_API_KEY: 'test-key',
+      CLIENT_ORIGIN: 'https://app.example.com',
+    });
+
+    expect(parsed.success).toBe(true);
+    if (parsed.success) {
+      expect(parsed.data.CLIENT_ORIGIN).toBe('https://app.example.com');
+    }
+  });
+
+  it('envSchema rejects an invalid CLIENT_ORIGIN (not a URL)', () => {
+    const parsed = envSchema.safeParse({
+      POSTGRES_USER: 'test_user',
+      POSTGRES_PASSWORD: 'test_password',
+      POSTGRES_DB: 'test_db',
+      POSTGRES_PORT: 5432,
+      REDIS_PORT: 6379,
+      GEMINI_API_KEY: 'test-key',
+      CLIENT_ORIGIN: 'not-a-url',
+    });
+
+    expect(parsed.success).toBe(false);
+  });
+
   describe('LangSmith Observability Config (Phase 14 OD-14)', () => {
     it('should have safe defaults when LangSmith environment variables are omitted', () => {
       expect(config.langsmith).toBeDefined();

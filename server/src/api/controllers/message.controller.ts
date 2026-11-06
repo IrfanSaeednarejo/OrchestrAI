@@ -11,8 +11,8 @@ import { checkpointer } from '../../persistence/checkpointer/client.js';
 import { buildParentGraph } from '../../graphs/parent/parent-graph.js';
 import { createTraceConfig } from '../../observability/tracer.js';
 import type { ConversationState } from '../../state/conversation-state.js';
-import { NotFoundError, ForbiddenError, UnauthorizedError } from '../errors/app-error.js';
-import { DEFAULT_GUEST_USER_ID } from '../middleware/auth.middleware.js';
+import { NotFoundError, UnauthorizedError } from '../errors/app-error.js';
+import { assertConversationOwnership } from '../utils/auth-helpers.js';
 
 let defaultGraph: ReturnType<typeof buildParentGraph> | null = null;
 
@@ -51,17 +51,11 @@ export async function sendMessageHandler(
     throw new NotFoundError(`Conversation with id "${conversationId}" not found`);
   }
 
+  assertConversationOwnership(conversation, req.user);
+
   const callerId = req.user?.id;
   if (!callerId) {
     throw new UnauthorizedError('User identity could not be resolved');
-  }
-
-  // Security check: ensure caller owns conversation (unless guest session)
-  if (
-    callerId !== DEFAULT_GUEST_USER_ID &&
-    conversation.userId !== callerId
-  ) {
-    throw new ForbiddenError('You do not have permission to message in this conversation');
   }
 
   const { content } = req.body as { content: string };

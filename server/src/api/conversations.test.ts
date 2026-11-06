@@ -141,6 +141,16 @@ describe('Phase 16 Step 2: Conversation Lifecycle & History Endpoints', () => {
       expect(res.body.error.code).toBe('FORBIDDEN');
     });
 
+    it('returns 403 Forbidden when guest tries to access an authenticated user conversation', async () => {
+      // testConvId is owned by userAId (authenticated), not by the guest pool
+      const res = await request(app)
+        .get(`/api/conversations/${testConvId}`);
+        // no x-user-id → guest fallback
+
+      expect(res.status).toBe(403);
+      expect(res.body.error.code).toBe('FORBIDDEN');
+    });
+
     it('returns 404 for non-existent conversation ID', async () => {
       const nonExistent = '00000000-0000-4000-8000-000000000099';
       const res = await request(app)
@@ -204,6 +214,29 @@ describe('Phase 16 Step 2: Conversation Lifecycle & History Endpoints', () => {
       const res = await request(app)
         .get(`/api/conversations/${testConvId}/messages`)
         .set('x-user-id', userBId);
+
+      expect(res.status).toBe(403);
+      expect(res.body.error.code).toBe('FORBIDDEN');
+    });
+  });
+
+  describe('Phase 17 Step 1a: Guest ownership 403 on GET /:id/messages', () => {
+    let ownedConvId: string;
+
+    beforeAll(async () => {
+      const res = await request(app)
+        .post('/api/conversations')
+        .set('x-user-id', userAId)
+        .send({});
+      ownedConvId = res.body.conversation.id;
+      createdConversationIds.push(ownedConvId);
+    });
+
+    it('returns 403 Forbidden when guest tries to access an authenticated user messages', async () => {
+      // ownedConvId is owned by userAId, not the guest pool
+      const res = await request(app)
+        .get(`/api/conversations/${ownedConvId}/messages`);
+        // no x-user-id → guest fallback
 
       expect(res.status).toBe(403);
       expect(res.body.error.code).toBe('FORBIDDEN');

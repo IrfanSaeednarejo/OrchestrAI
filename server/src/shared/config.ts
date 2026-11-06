@@ -15,6 +15,7 @@ export const envSchema = z.object({
   LANGCHAIN_API_KEY: z.string().optional(),
   LANGCHAIN_PROJECT: z.string().default('orchestrai'),
   LANGCHAIN_ENDPOINT: z.string().default('https://api.smith.langchain.com'),
+  CLIENT_ORIGIN: z.string().url().default('http://localhost:3000'),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -33,6 +34,7 @@ export const config = Object.freeze({
   env: envVars.NODE_ENV,
   app: {
     port: envVars.APP_PORT,
+    clientOrigin: envVars.CLIENT_ORIGIN,
   },
   postgres: {
     user: envVars.POSTGRES_USER,
