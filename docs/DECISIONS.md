@@ -162,3 +162,12 @@ Small focused steps; explicit typed state; clear agent boundaries; no agent spag
   - Access Gating: Controlled via `ENABLE_DEMO_ENDPOINTS` on server (hard-off in production) and `NEXT_PUBLIC_ENABLE_OPS_UI` on client.
   - Trace Visualization: Chronological timeline with color-coded nodes for Routing decisions (purple), Agent executions (blue), and Tool calls (emerald) with collapsible execution cards and visual multi-agent handoff breadcrumbs.
 
+## Testing, Hardening & Portfolio Documentation (Phase 19) — approved 2026-11-06
+- OD-19 (Runtime Hardening, API Security & Deep Health Checks):
+  - Core Runtime Hardening: Recursive array and nested object redaction in `executeTool` to mask credentials/PII across array outputs. Reducer null-safety for `user` field in `conversation-state.ts` (`update !== undefined ? update : state`).
+  - API Security: 100kb payload limit in Express body parser (`express.json({ limit: '100kb' })`). Production error sanitization suppressing internal stack traces and database error strings when `NODE_ENV === 'production'`.
+  - Deep Health & Readiness Check: `/health?deep=true` verifies live PostgreSQL connection (`SELECT 1`) and Redis connectivity (`ping()`), returning 503 if either dependency fails.
+  - Frontend Resilience: Next.js App Router error boundaries (`error.tsx`, `not-found.tsx`, `global-error.tsx`).
+  - Portfolio Documentation: Complete root `README.md` with Mermaid architecture diagrams, state lifecycle documentation, Patterns A/B/C explanations, and one-command local startup script (`scripts/run-local.ps1`).
+
+

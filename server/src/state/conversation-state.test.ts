@@ -135,4 +135,14 @@ describe('ConversationState Reducers', () => {
     expect(state.currentIntent).toBe('general_help');
     expect(state.user?.id).toBe('u2');
   });
+
+  it('user: explicit null update resets user (null-safe reducer)', async () => {
+    const { app, config } = buildTestApp();
+
+    let state = await app.invoke({ user: { id: 'u1' } }, config);
+    expect(state.user?.id).toBe('u1');
+
+    state = await app.invoke({ user: null }, config);
+    expect(state.user).toBeNull();
+  });
 });

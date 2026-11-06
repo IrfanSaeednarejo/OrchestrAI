@@ -314,5 +314,38 @@ describe('executeTool wrapper', () => {
       expect(callCount).toBe(1);
       expect(result.success).toBe(false);
     });
+
+    it('recursively redacts sensitive fields in arrays of objects and nested objects', async () => {
+      const sensitiveArrayTool = async (): Promise<ToolResult<{ cards: Array<{ cardNumber: string; type: string }> }>> => {
+        return {
+          success: true,
+          data: {
+            cards: [
+              { cardNumber: '4111-2222-3333-4444', type: 'visa' },
+              { cardNumber: '5555-6666-7777-8888', type: 'mastercard' },
+            ],
+          },
+        };
+      };
+
+      await executeTool(
+        sensitiveArrayTool,
+        {
+          name: 'get_saved_cards',
+          requiredVerification: 'NONE',
+          sensitiveOutputFields: ['cardNumber'],
+        },
+        {},
+        { agentExecutionId: testExecution.id }
+      );
+
+      const logRow = await getLatestToolExecution();
+      expect(logRow).toBeDefined();
+      expect(logRow?.status).toBe('success');
+      const output = logRow?.output as { cards: Array<{ cardNumber: string; type: string }> };
+      expect(output.cards[0]?.cardNumber).toBe('[REDACTED]');
+      expect(output.cards[1]?.cardNumber).toBe('[REDACTED]');
+      expect(output.cards[0]?.type).toBe('visa');
+    });
   });
 });
