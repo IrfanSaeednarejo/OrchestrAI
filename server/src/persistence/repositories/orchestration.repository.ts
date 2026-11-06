@@ -1,10 +1,12 @@
 import { db } from '../db/client.js';
-import { eq, asc, and } from 'drizzle-orm';
+import { eq, asc, and, desc } from 'drizzle-orm';
 import { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import {
   routingHistory,
   agentExecutions,
   toolExecutions,
+  conversations,
+  users,
 } from '../db/schema.js';
 
 export type RoutingHistory = InferSelectModel<typeof routingHistory>;
@@ -82,4 +84,58 @@ export async function getToolExecutionsByAgentExecutionId(
     .from(toolExecutions)
     .where(eq(toolExecutions.agentExecutionId, agentExecutionId))
     .orderBy(asc(toolExecutions.createdAt));
+}
+
+// ---------------------------------------------------------------------------
+// Ops: Cross-user conversation listing with enriched metadata
+// ---------------------------------------------------------------------------
+
+export interface OpsConversationRow {
+  id: string;
+  userId: string;
+  status: string;
+  createdAt: Date | null;
+  updatedAt: Date | null;
+  userEmail: string | null;
+  userName: string | null;
+  turnCount: number;
+}
+
+export async function listAllConversationsWithOpsMetadata(
+  limit = 50,
+  offset = 0
+): Promise<OpsConversationRow[]> {
+  // Left-join conversations with users to retrieve email/name metadata.
+  // Turn count is approximated from routing_history entries per conversation.
+  const rows = await db
+    .select({
+      id: conversations.id,
+      userId: conversations.userId,
+      status: conversations.status,
+      createdAt: conversations.createdAt,
+      updatedAt: conversations.updatedAt,
+      userEmail: users.email,
+      userName: users.name,
+    })
+    .from(conversations)
+    .leftJoin(users, eq(conversations.userId, users.id))
+    .orderBy(desc(conversations.updatedAt))
+    .limit(limit)
+    .offset(offset);
+
+  // Enrich each row with routing event count as a turn-count proxy
+  const enriched: OpsConversationRow[] = await Promise.all(
+    rows.map(async (row) => {
+      const routingRows = await db
+        .select({ id: routingHistory.id })
+        .from(routingHistory)
+        .where(eq(routingHistory.conversationId, row.id));
+      return {
+        ...row,
+        turnCount: routingRows.length,
+      };
+    })
+  );
+
+  return enriched;
 }
