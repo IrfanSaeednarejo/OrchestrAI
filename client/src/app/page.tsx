@@ -13,6 +13,7 @@ import { VerificationPrompt } from '../components/chat/verification-prompt';
 import { useChat } from '../hooks/use-chat';
 import { fetchConversations, createConversation } from '../lib/api-client';
 import type { Conversation } from '../types/api';
+import { TopNav } from '../components/navigation/top-nav';
 import { AlertTriangle, CheckCircle, RefreshCw } from 'lucide-react';
 
 function CustomerChatContent() {
@@ -75,16 +76,18 @@ function CustomerChatContent() {
   };
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-white text-slate-900">
-      {/* Sidebar (left) */}
-      <ConversationSidebar
-        conversations={conversations}
-        selectedId={selectedConvId}
-        onSelect={handleSelectConversation}
-        onNewChat={handleNewChat}
-        isLoading={isLoadingConvs}
-        className="w-72 md:w-80 shrink-0"
-      />
+    <div className="flex flex-col h-screen w-screen overflow-hidden">
+      <TopNav />
+      <div className="flex flex-1 min-h-0 overflow-hidden bg-white text-slate-900">
+        {/* Sidebar (left) */}
+        <ConversationSidebar
+          conversations={conversations}
+          selectedId={selectedConvId}
+          onSelect={handleSelectConversation}
+          onNewChat={handleNewChat}
+          isLoading={isLoadingConvs}
+          className="w-72 md:w-80 shrink-0"
+        />
 
       {/* Main Chat Area (right) */}
       <main className="flex-1 flex flex-col h-full min-w-0 bg-slate-50">
@@ -199,6 +202,7 @@ function CustomerChatContent() {
           />
         </div>
       </main>
+      </div>
     </div>
   );
 }
