@@ -10,12 +10,14 @@ import {
   PaginationQuerySchema,
   StartConversationSchema,
 } from '../schemas/conversation.schema.js';
+import { SendMessageSchema } from '../schemas/message.schema.js';
 import {
   createConversationHandler,
   listConversationsHandler,
   getConversationHandler,
   getConversationMessagesHandler,
 } from '../controllers/conversation.controller.js';
+import { sendMessageHandler } from '../controllers/message.controller.js';
 
 export const conversationRouter = Router();
 
@@ -44,5 +46,14 @@ conversationRouter.get(
   '/:id/messages',
   validateRequest({ params: ConversationIdParamSchema }),
   asyncHandler(getConversationMessagesHandler)
+);
+
+conversationRouter.post(
+  '/:id/messages',
+  validateRequest({
+    params: ConversationIdParamSchema,
+    body: SendMessageSchema,
+  }),
+  asyncHandler(sendMessageHandler)
 );
 
