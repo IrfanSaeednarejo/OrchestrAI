@@ -1,4 +1,4 @@
-# Phase 16 — Backend API Layer — PLAN (status: APPROVED)
+# Phase 16 — Backend API Layer — PLAN (status: DONE)
 
 ## Approvals
 - 2026-11-06: Approved by owner in chat. OD-7 approved. Custom `AppError` class extending `Error`, `asyncHandler`, global error handling, and modular structure specified.
