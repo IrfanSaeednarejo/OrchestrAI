@@ -13,7 +13,7 @@ import '../types.js';
 const UUID_REGEX =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
-export const DEFAULT_GUEST_USER_ID = '00000000-0000-0000-0000-000000000000';
+export const DEFAULT_GUEST_USER_ID = '00000000-0000-4000-a000-000000000001';
 
 export async function getOrCreateGuestUser(): Promise<User> {
   const existing = await getUserById(DEFAULT_GUEST_USER_ID);
