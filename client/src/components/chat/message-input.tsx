@@ -75,6 +75,7 @@ export function MessageInput({
           placeholder={activePlaceholder}
           rows={1}
           aria-label="Message input"
+          data-testid="message-input"
           className="flex-1 resize-none overflow-y-auto rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-slate-100 disabled:text-slate-500 disabled:cursor-not-allowed"
           style={{ maxHeight: '160px' }}
         />
@@ -83,6 +84,7 @@ export function MessageInput({
           onClick={handleSend}
           disabled={isLocked || !content.trim()}
           aria-label="Send message"
+          data-testid="send-button"
           className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed transition-colors"
         >
           <Send className="h-4 w-4" />
@@ -96,3 +98,4 @@ export function MessageInput({
     </div>
   );
 }
+
