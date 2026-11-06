@@ -40,12 +40,22 @@ export const errorHandler: ErrorRequestHandler = (
     return;
   }
 
-  // 3. Body-parser JSON syntax errors
+  // 3. Body-parser JSON syntax errors & entity too large
   if (err instanceof SyntaxError && 'status' in err && err.status === 400 && 'body' in err) {
     res.status(400).json({
       error: {
         message: 'Malformed JSON payload received',
         code: 'INVALID_JSON',
+      },
+    });
+    return;
+  }
+
+  if (typeof err === 'object' && err !== null && 'type' in err && err.type === 'entity.too.large') {
+    res.status(413).json({
+      error: {
+        message: 'Payload too large',
+        code: 'PAYLOAD_TOO_LARGE',
       },
     });
     return;

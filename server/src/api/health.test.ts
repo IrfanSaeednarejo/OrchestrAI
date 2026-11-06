@@ -150,6 +150,16 @@ describe('Phase 16 Step 1: Core App & Health Check', () => {
       expect(Array.isArray(res.body.error.details)).toBe(true);
       expect(res.body.error.details.length).toBeGreaterThanOrEqual(1);
     });
+
+    it('rejects payloads larger than 100kb with 413 PAYLOAD_TOO_LARGE', async () => {
+      const largePayload = { message: 'x'.repeat(1024 * 105) };
+      const res = await request(testApp)
+        .post('/test-val')
+        .send(largePayload);
+
+      expect(res.status).toBe(413);
+      expect(res.body.error.code).toBe('PAYLOAD_TOO_LARGE');
+    });
   });
 });
 
