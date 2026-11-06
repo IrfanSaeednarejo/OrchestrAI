@@ -4,6 +4,7 @@
 import express from 'express';
 import cors from 'cors';
 import { healthRouter } from './routes/health.routes.js';
+import { conversationRouter } from './routes/conversation.routes.js';
 import { errorHandler } from './middleware/error.middleware.js';
 import { NotFoundError } from './errors/app-error.js';
 import './types.js';
@@ -19,6 +20,9 @@ export function createApp(
 
   // Mount health check route (unauthenticated)
   app.use('/health', healthRouter);
+
+  // Mount API routes
+  app.use('/api/conversations', conversationRouter);
 
   // Mount custom routes/handlers if provided
   if (configure) {

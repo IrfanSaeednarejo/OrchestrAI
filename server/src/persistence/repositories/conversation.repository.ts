@@ -1,5 +1,5 @@
 import { db } from '../db/client.js';
-import { eq, asc } from 'drizzle-orm';
+import { eq, asc, desc } from 'drizzle-orm';
 import { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import { conversations, messages } from '../db/schema.js';
 
@@ -14,6 +14,20 @@ export async function getConversationById(id: string): Promise<Conversation | un
     .from(conversations)
     .where(eq(conversations.id, id));
   return result[0];
+}
+
+export async function getConversationsByUserId(
+  userId: string,
+  limit = 20,
+  offset = 0
+): Promise<Conversation[]> {
+  return db
+    .select()
+    .from(conversations)
+    .where(eq(conversations.userId, userId))
+    .orderBy(desc(conversations.updatedAt))
+    .limit(limit)
+    .offset(offset);
 }
 
 export async function createConversation(input: NewConversation): Promise<Conversation> {

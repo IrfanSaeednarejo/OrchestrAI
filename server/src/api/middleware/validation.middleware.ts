@@ -14,10 +14,12 @@ export function validateRequest(schema: ValidationSchema): RequestHandler {
   return (req: Request, _res: Response, next: NextFunction): void => {
     try {
       if (schema.params) {
-        req.params = schema.params.parse(req.params) as typeof req.params;
+        const parsed = schema.params.parse(req.params);
+        Object.assign(req.params, parsed);
       }
       if (schema.query) {
-        req.query = schema.query.parse(req.query) as typeof req.query;
+        const parsed = schema.query.parse(req.query);
+        Object.assign(req.query, parsed);
       }
       if (schema.body) {
         req.body = schema.body.parse(req.body);
