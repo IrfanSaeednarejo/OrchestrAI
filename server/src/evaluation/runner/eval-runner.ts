@@ -67,6 +67,11 @@ export interface RunScenarioOptions {
    * Integration tests use { useStubs: true } or { stubBehaviors: {...} }.
    */
   configurable?: Record<string, unknown>;
+  /**
+   * Optional pre-recorded or intercepted tool execution records to evaluate
+   * against expectedTools for tool-selection evaluation.
+   */
+  executedTools?: ExecutedToolRecord[];
 }
 
 // ---------------------------------------------------------------------------
@@ -123,16 +128,18 @@ export async function runScenario(
     // Build EvaluatorContext — routing decisions and tool executions are
     // derived from finalState.routing.history when real DB is not available,
     // which is the case for the MemorySaver-based unit tests.
-    const routingDecisions: RoutingDecisionRecord[] = finalState.routing.history.map((h) => ({
-      decisionType: 'ROUTE',
-      sourceAgent: h.fromAgent,
-      targetAgent: h.toAgent,
-      reason: h.reason,
-    }));
+    const routingDecisions: RoutingDecisionRecord[] = finalState.routing.history.map((h) => {
+      const isHandoff = Boolean(h.fromAgent && h.fromAgent !== h.toAgent);
+      return {
+        decisionType: isHandoff ? 'HANDOFF' : 'INITIAL_ROUTE',
+        sourceAgent: h.fromAgent,
+        targetAgent: h.toAgent,
+        reason: h.reason,
+      };
+    });
 
-    // Tools executed: the MemorySaver runner does not query Postgres tool_executions.
-    // The integration test variant (Step 4) can supply them via EvaluatorContext directly.
-    const executedTools: ExecutedToolRecord[] = [];
+    // Tools executed: supplied via options when running in test / harness environments.
+    const executedTools: ExecutedToolRecord[] = options.executedTools ?? [];
 
     const context: EvaluatorContext = {
       scenario,

@@ -13,6 +13,7 @@
     "db:seed": "tsx src/persistence/seed.ts",
     "checkpointer:setup": "tsx src/persistence/checkpointer/setup.ts",
     "knowledge:ingest": "tsx src/knowledge/ingest.ts",
+    "eval": "tsx src/evaluation/cli/run-eval.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
