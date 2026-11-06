@@ -1,10 +1,12 @@
 // src/api/app.ts
 // Phase 16: Express application setup with middleware, routes, and global error handling.
+// Phase 17 Step 1c: Mount dev-gated demo and verification routes outside x-user-id middleware.
 
 import express from 'express';
 import cors from 'cors';
 import { healthRouter } from './routes/health.routes.js';
 import { conversationRouter } from './routes/conversation.routes.js';
+import { demoRouter } from './routes/demo.routes.js';
 import { errorHandler } from './middleware/error.middleware.js';
 import { NotFoundError } from './errors/app-error.js';
 import { config } from '../shared/config.js';
@@ -22,8 +24,11 @@ export function createApp(
   // Mount health check route (unauthenticated)
   app.use('/health', healthRouter);
 
-  // Mount API routes
+  // Mount conversation API routes (authenticated via x-user-id)
   app.use('/api/conversations', conversationRouter);
+
+  // Mount demo routes outside auth middleware (Phase 17 Step 1c)
+  app.use('/api', demoRouter);
 
   // Mount custom routes/handlers if provided
   if (configure) {
@@ -42,4 +47,3 @@ export function createApp(
 }
 
 export const app = createApp();
-

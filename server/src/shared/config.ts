@@ -16,6 +16,10 @@ export const envSchema = z.object({
   LANGCHAIN_PROJECT: z.string().default('orchestrai'),
   LANGCHAIN_ENDPOINT: z.string().default('https://api.smith.langchain.com'),
   CLIENT_ORIGIN: z.string().url().default('http://localhost:3000'),
+  ENABLE_DEMO_ENDPOINTS: z
+    .enum(['true', 'false'])
+    .default('false')
+    .transform((v) => v === 'true'),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -30,11 +34,22 @@ if (!parsed.success) {
 
 const envVars = parsed.data;
 
+// Hard-off in production regardless of environment variable setting (Amendment A2)
+const enableDemoEndpoints =
+  envVars.NODE_ENV === 'production' ? false : envVars.ENABLE_DEMO_ENDPOINTS;
+
+if (enableDemoEndpoints) {
+  console.warn(
+    '⚠️ [SECURITY WARNING] ENABLE_DEMO_ENDPOINTS is enabled. Demo identity and OTP inspection routes are active.'
+  );
+}
+
 export const config = Object.freeze({
   env: envVars.NODE_ENV,
   app: {
     port: envVars.APP_PORT,
     clientOrigin: envVars.CLIENT_ORIGIN,
+    enableDemoEndpoints,
   },
   postgres: {
     user: envVars.POSTGRES_USER,

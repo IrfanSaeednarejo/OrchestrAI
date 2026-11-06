@@ -66,6 +66,59 @@ describe('Config Loader', () => {
     expect(parsed.success).toBe(false);
   });
 
+  describe('Demo Endpoints Config (Phase 17 Amendment A2)', () => {
+    it('envSchema defaults ENABLE_DEMO_ENDPOINTS to false', () => {
+      const parsed = envSchema.safeParse({
+        POSTGRES_USER: 'test_user',
+        POSTGRES_PASSWORD: 'test_password',
+        POSTGRES_DB: 'test_db',
+        POSTGRES_PORT: 5432,
+        REDIS_PORT: 6379,
+        GEMINI_API_KEY: 'test-key',
+      });
+
+      expect(parsed.success).toBe(true);
+      if (parsed.success) {
+        expect(parsed.data.ENABLE_DEMO_ENDPOINTS).toBe(false);
+      }
+    });
+
+    it('envSchema accepts "true" and transforms to true boolean', () => {
+      const parsed = envSchema.safeParse({
+        POSTGRES_USER: 'test_user',
+        POSTGRES_PASSWORD: 'test_password',
+        POSTGRES_DB: 'test_db',
+        POSTGRES_PORT: 5432,
+        REDIS_PORT: 6379,
+        GEMINI_API_KEY: 'test-key',
+        ENABLE_DEMO_ENDPOINTS: 'true',
+      });
+
+      expect(parsed.success).toBe(true);
+      if (parsed.success) {
+        expect(parsed.data.ENABLE_DEMO_ENDPOINTS).toBe(true);
+      }
+    });
+
+    it('envSchema rejects non-enum values like "1" or "yes"', () => {
+      const parsed = envSchema.safeParse({
+        POSTGRES_USER: 'test_user',
+        POSTGRES_PASSWORD: 'test_password',
+        POSTGRES_DB: 'test_db',
+        POSTGRES_PORT: 5432,
+        REDIS_PORT: 6379,
+        GEMINI_API_KEY: 'test-key',
+        ENABLE_DEMO_ENDPOINTS: 'yes',
+      });
+
+      expect(parsed.success).toBe(false);
+    });
+
+    it('exposes config.app.enableDemoEndpoints as a boolean', () => {
+      expect(typeof config.app.enableDemoEndpoints).toBe('boolean');
+    });
+  });
+
   describe('LangSmith Observability Config (Phase 14 OD-14)', () => {
     it('should have safe defaults when LangSmith environment variables are omitted', () => {
       expect(config.langsmith).toBeDefined();
