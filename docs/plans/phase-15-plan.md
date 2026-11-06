@@ -1,7 +1,8 @@
-# Phase 15 — Evaluation Framework — PLAN (status: APPROVED)
+# Phase 15 — Evaluation Framework — PLAN (status: DONE)
 
 ## Approvals
 - 2026-11-06: Approved by owner in chat ("approved continue."). OD-15 approved.
+- 2026-11-06: Steps 0-5 executed and completed with all 475 tests passing. Phase 15 signed off.
 
 ---
 

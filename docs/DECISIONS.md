@@ -111,6 +111,15 @@ Small focused steps; explicit typed state; clear agent boundaries; no agent spag
   - Offline test safety: parent graph and observability integration suites run with zero real API calls to LangSmith via Vitest in-memory callback spies and disabled tracing flags.
   - Trace propagation integration suite: `server/src/graphs/parent/parent-graph-tracing.integration.test.ts` validates trace config passing, multi-turn metadata propagation across handoffs, escalation status reflection, and tool execution audit trail alignment live against PostgreSQL, Redis, and PostgresSaver checkpointer.
 
+## Evaluation Framework (Phase 15) — approved 2026-11-06
+- OD-15 (Evaluation Framework Architecture & Scenario Expansion): Option A adopted — code-first canonical dataset in `server/src/evaluation/dataset/` paired with 8 deterministic programmatic binary evaluators and dual-mode execution (Vitest CI suite + standalone CLI scorecard runner).
+  - 30 canonical evaluation scenarios defined in `server/src/evaluation/dataset/scenarios.ts` expanding REFERENCE.md 1-14 with 16 new edge cases, boundary checks, and multi-turn failure trajectories across all 6 domain specialists and 5 patterns.
+  - 8 deterministic binary evaluators in `server/src/evaluation/evaluators/binary-evaluators.ts`: `ROUTING_CORRECT`, `HANDOFF_CORRECT`, `SPECIALIST_SCOPE_CORRECT`, `TOOL_SELECTION_CORRECT`, `STATE_PRESERVED`, `KNOWLEDGE_GROUNDED`, `WORKFLOW_COMPLETED`, and `RESOLUTION_CORRECT`.
+  - Multi-turn thread evaluation runner in `server/src/evaluation/runner/eval-runner.ts` (`runScenario` and `runBenchmark`): executes multi-turn conversations through LangGraph checkpointer threads, feeds `EvaluatorContext` to all 8 evaluators, and computes domain and evaluator pass rates.
+  - Standalone CLI runner in `server/src/evaluation/cli/run-eval.ts` (`npm run eval`): outputs formatted ASCII scorecard tables and generates a markdown report (`eval-results.md`).
+  - Threshold verification: `MIN_SIMILARITY = 0.60` confirmed and locked in `server/src/tools/queries/knowledge.tools.ts` for policy retrieval gating.
+  - Integration suite in `server/src/evaluation/evaluation.test.ts` validates dataset schema conformity, evaluator completeness, pattern executions, and benchmark reporting offline with zero external network dependencies.
+
 ## Testing conventions
 - Real DB/Redis in integration tests with scoped cleanup (never an unscoped delete); distinct fixture prefixes to avoid cross-file races.
 - Raw verbatim command output in reports; always run typecheck after final edits.
