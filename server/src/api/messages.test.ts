@@ -1,6 +1,7 @@
 // src/api/messages.test.ts
 // Phase 16 Step 3: Tests for the dual-mode message dispatch endpoint (JSON + SSE).
 // Uses MemorySaver + SPECIALIST_STUBS so no real PostgresSaver or Gemini API is called.
+// Phase 17 Step 1b: Turn-scoped extraction, blockedBy/currentStep telemetry, 502/error-event tests.
 
 import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import { MemorySaver } from '@langchain/langgraph';
@@ -32,6 +33,7 @@ import {
   toolExecutions,
 } from '../persistence/db/schema.js';
 import { inArray } from 'drizzle-orm';
+import type { ConversationState } from '../state/conversation-state.js';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -408,6 +410,203 @@ describe('Phase 16 Step 3: Message Dispatch Endpoint', () => {
       expect(res2.status).toBe(200);
       expect(res1.body.conversationId).toBe(conv1.id);
       expect(res2.body.conversationId).toBe(conv2.id);
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // Phase 17 Step 1b: telemetry, extraction, abort resilience
+  // -------------------------------------------------------------------------
+  describe('Phase 17 Step 1b: blockedBy/currentStep in JSON response', () => {
+    it('JSON response routing object includes blockedBy and currentStep (null when ACTIVE)', async () => {
+      const app = createTestApp();
+
+      const conv = await createConversation({ userId: ownerUserId });
+      cleanupConversationIds.push(conv.id);
+
+      const res = await request(app)
+        .post(`/api/conversations/${conv.id}/messages`)
+        .set('x-user-id', ownerUserId)
+        .send({ content: 'What is the status of my order?' });
+
+      expect(res.status).toBe(200);
+      expect(res.body.routing).toBeDefined();
+      // blockedBy and currentStep must be present (null when not in a blocked workflow)
+      expect(Object.prototype.hasOwnProperty.call(res.body.routing, 'blockedBy')).toBe(true);
+      expect(Object.prototype.hasOwnProperty.call(res.body.routing, 'currentStep')).toBe(true);
+      expect(res.body.routing.blockedBy).toBeNull();
+      expect(res.body.routing.currentStep).toBeNull();
+    });
+
+    it('SSE routing event includes blockedBy and currentStep fields', async () => {
+      const app = createTestApp();
+
+      const conv = await createConversation({ userId: ownerUserId });
+      cleanupConversationIds.push(conv.id);
+
+      const res = await request(app)
+        .post(`/api/conversations/${conv.id}/messages`)
+        .set('x-user-id', ownerUserId)
+        .set('Accept', 'text/event-stream')
+        .send({ content: 'Track my latest order.' });
+
+      expect(res.status).toBe(200);
+      // Extract the routing event data
+      const routingEventMatch = res.text.match(/event: routing\ndata: ({[^\n]+})/);
+      expect(routingEventMatch).not.toBeNull();
+      if (routingEventMatch && routingEventMatch[1]) {
+        const routingData = JSON.parse(routingEventMatch[1]) as Record<string, unknown>;
+        expect(Object.prototype.hasOwnProperty.call(routingData, 'blockedBy')).toBe(true);
+        expect(Object.prototype.hasOwnProperty.call(routingData, 'currentStep')).toBe(true);
+      }
+    });
+  });
+
+  describe('Phase 17 Step 1b: 502 when agent produces no reply (JSON)', () => {
+    it('returns 502 Bad Gateway when the graph produces no AI message after the human turn', async () => {
+      // Build a "silent" graph-like object that returns state with no AI messages
+      const silentGraph = {
+        invoke: async (input: { messages: unknown[] }) => {
+          // Return state with only the human message (no AI reply) + minimal required shape
+          return {
+            messages: input.messages, // only the human message, no AI message added
+            routing: { currentAgent: null, handoffCount: 0, history: [], previousAgent: null, visitedAgents: [] },
+            workflowStatus: 'ACTIVE',
+            activeWorkflow: null,
+            user: null,
+            currentDomain: null,
+            currentIntent: null,
+            identity: null,
+          };
+        },
+        stream: async function* () { /* never called in JSON mode */ },
+        getState: async () => ({ values: {} }),
+      };
+
+      const app = createApp();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      app.locals.graph = silentGraph as any;
+
+      const conv = await createConversation({ userId: ownerUserId });
+      cleanupConversationIds.push(conv.id);
+
+      const res = await request(app)
+        .post(`/api/conversations/${conv.id}/messages`)
+        .set('x-user-id', ownerUserId)
+        .send({ content: 'Silent test.' });
+
+      expect(res.status).toBe(502);
+      expect(res.body.error.code).toBe('BAD_GATEWAY');
+    });
+  });
+
+  describe('Phase 17 Step 1b: SSE error event when agent produces no reply', () => {
+    it('emits event: error when the graph produces no AI message after the human turn (SSE)', async () => {
+      const silentGraph = {
+        invoke: async () => ({}),
+        stream: async function* (input: { messages: unknown[] }) {
+          // Emit one chunk with only the human message, no AI reply
+          yield { router: { messages: input.messages } };
+        },
+        getState: async (config: unknown) => {
+          // Return snapshot with only the human message (the HumanMessage from input)
+          void config;
+          return {
+            values: {
+              messages: [], // empty — no AI message in turn scope
+              routing: { currentAgent: null, handoffCount: 0, history: [], previousAgent: null, visitedAgents: [] },
+              workflowStatus: 'ACTIVE',
+              activeWorkflow: null,
+            },
+          };
+        },
+      };
+
+      const app = createApp();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      app.locals.graph = silentGraph as any;
+
+      const conv = await createConversation({ userId: ownerUserId });
+      cleanupConversationIds.push(conv.id);
+
+      const res = await request(app)
+        .post(`/api/conversations/${conv.id}/messages`)
+        .set('x-user-id', ownerUserId)
+        .set('Accept', 'text/event-stream')
+        .send({ content: 'Silent SSE test.' });
+
+      expect(res.status).toBe(200); // SSE headers already sent
+      expect(res.text).toContain('event: error');
+      expect(res.text).toContain('Agent produced no response');
+      // No 'event: done' should be emitted after an error
+      expect(res.text).not.toContain('event: done');
+    });
+  });
+
+  describe('Phase 17 Step 1b: SSE abort resilience (Amendment A5)', () => {
+    it('drains the stream to completion and saves checkpoint after client disconnects', async () => {
+      const graph = buildStubGraph();
+      const app = createApp();
+      app.locals.graph = graph;
+
+      const conv = await createConversation({ userId: ownerUserId });
+      cleanupConversationIds.push(conv.id);
+
+      const server = app.listen(0);
+      const address = server.address() as import('net').AddressInfo;
+      const port = address.port;
+
+      try {
+        const controller = new AbortController();
+        const res = await fetch(`http://127.0.0.1:${port}/api/conversations/${conv.id}/messages`, {
+          method: 'POST',
+          headers: {
+            'x-user-id': ownerUserId,
+            'Accept': 'text/event-stream',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ content: 'Order status please.' }),
+          signal: controller.signal,
+        });
+
+        expect(res.status).toBe(200);
+
+        // Read the first chunk to ensure stream has started and res.on('close') can be triggered
+        const reader = res.body?.getReader();
+        expect(reader).toBeDefined();
+        await reader?.read();
+
+        // Abort the SSE stream while graph execution proceeds
+        controller.abort();
+
+        // Wait a short moment for the background stream drain and checkpointing to complete
+        await new Promise((resolve) => setTimeout(resolve, 300));
+
+        // Verify that the checkpoint contains the completed turn
+        const traceConfig = {
+          configurable: {
+            thread_id: conv.id,
+          },
+        };
+        const snapshot = await graph.getState(traceConfig);
+        const state = snapshot.values as ConversationState;
+
+        // Checkpoint state must reflect completed execution
+        expect(state.workflowStatus).toBe('COMPLETED');
+        expect(state.routing.currentAgent).toBe('order_tracking');
+
+        // Verify message was persisted to DB as well
+        const dbMsgs = await db
+          .select()
+          .from(messages)
+          .where(inArray(messages.conversationId, [conv.id]));
+        const roles = dbMsgs.map((m) => m.role);
+        expect(roles).toContain('user');
+        expect(roles).toContain('assistant');
+      } finally {
+        await new Promise<void>((resolve, reject) => {
+          server.close((err) => (err ? reject(err) : resolve()));
+        });
+      }
     });
   });
 });
