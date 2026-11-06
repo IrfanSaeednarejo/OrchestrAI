@@ -2,7 +2,6 @@
 // Phase 16 Step 3: Tests for the dual-mode message dispatch endpoint (JSON + SSE).
 // Uses MemorySaver + SPECIALIST_STUBS so no real PostgresSaver or Gemini API is called.
 
-import crypto from 'node:crypto';
 import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import { MemorySaver } from '@langchain/langgraph';
 import request from 'supertest';

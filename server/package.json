@@ -8,6 +8,7 @@
     "lint": "eslint src",
     "format": "prettier --write src",
     "dev": "tsx src/index.ts",
+    "start": "tsx src/api/server.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx src/persistence/db/migrate.ts",
     "db:seed": "tsx src/persistence/seed.ts",

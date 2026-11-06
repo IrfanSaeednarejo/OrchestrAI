@@ -1,6 +1,3 @@
-// src/api/routes/conversation.routes.ts
-// Phase 16: Router for conversation lifecycle and message history endpoints.
-
 import { Router } from 'express';
 import { asyncHandler } from '../utils/async-handler.js';
 import { authMiddleware } from '../middleware/auth.middleware.js';
@@ -18,6 +15,7 @@ import {
   getConversationMessagesHandler,
 } from '../controllers/conversation.controller.js';
 import { sendMessageHandler } from '../controllers/message.controller.js';
+import { getTraceHandler } from '../controllers/trace.controller.js';
 
 export const conversationRouter = Router();
 
@@ -55,5 +53,11 @@ conversationRouter.post(
     body: SendMessageSchema,
   }),
   asyncHandler(sendMessageHandler)
+);
+
+conversationRouter.get(
+  '/:id/traces',
+  validateRequest({ params: ConversationIdParamSchema }),
+  asyncHandler(getTraceHandler)
 );
 
