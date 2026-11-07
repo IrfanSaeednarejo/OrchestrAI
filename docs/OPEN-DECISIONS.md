@@ -33,8 +33,7 @@ Approved items move to DECISIONS.md. Items marked [CONFLICT] are inconsistencies
 15. [RESOLVED 2026-11-06] Evaluation Framework Architecture & Scenario Expansion:
     Option A adopted — Strongly typed in-code scenario dataset (30 scenarios expanding REFERENCE.md 1-14 with 16 new edge/failure cases) in `server/src/evaluation/dataset/scenarios.ts`; 8 deterministic binary evaluators (`ROUTING_CORRECT`, `HANDOFF_CORRECT`, `SPECIALIST_SCOPE_CORRECT`, `TOOL_SELECTION_CORRECT`, `STATE_PRESERVED`, `KNOWLEDGE_GROUNDED`, `WORKFLOW_COMPLETED`, `RESOLUTION_CORRECT`); dual-mode execution via Vitest CI suite (`npm test`) and standalone CLI report generator (`npm run eval`); maintain calibrated `MIN_SIMILARITY = 0.60`. Recorded in DECISIONS.md under Phase 15.
 
-20. [PROPOSAL] Conversational Router Agent Architecture for General Inquiries & Greetings:
-    Option A (Recommended) — When user sends greetings ("hello", "hi") or unclassified store queries, the router handles them directly via a conversational LLM greeting detailing OrchestrAI capabilities without dispatching Command({ goto: 'order_tracking' }) or requiring an order ID. The router keeps workflowStatus: 'WAITING_FOR_USER_INPUT' and transitions to specialist dispatch on the subsequent turn once a domain intent is expressed.
-    Option B — Dedicated triage specialist subgraph registered in SPECIALIST_NODE_NAMES.
-    Recommendation: Adopt Option A.
+20. [RESOLVED 2026-11-07] Conversational Router Agent Architecture for General Inquiries & Greetings:
+    Option A adopted — When the user sends greetings ("hello", "hi") or unclassified store queries, the router handles them directly via a conversational LLM greeting detailing OrchestrAI capabilities without dispatching Command({ goto: 'order_tracking' }) or requiring an order ID. The router keeps workflowStatus: 'WAITING_FOR_USER_INPUT' and transitions to specialist dispatch on the subsequent turn once a domain intent is expressed. Recorded in DECISIONS.md under Phase 20.
+
 

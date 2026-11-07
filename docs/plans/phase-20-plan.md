@@ -1,4 +1,4 @@
-# Phase 20 — Conversational Routing & Chat State Isolation — PLAN (status: APPROVED)
+# Phase 20 — Conversational Routing & Chat State Isolation — PLAN (status: DONE)
 
 ## Approvals
 - APPROVED: Phase 20 Plan (2026-11-07 by owner)

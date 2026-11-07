@@ -170,4 +170,12 @@ Small focused steps; explicit typed state; clear agent boundaries; no agent spag
   - Frontend Resilience: Next.js App Router error boundaries (`error.tsx`, `not-found.tsx`, `global-error.tsx`).
   - Portfolio Documentation: Complete root `README.md` with Mermaid architecture diagrams, state lifecycle documentation, Patterns A/B/C explanations, and one-command local startup script (`scripts/run-local.ps1`).
 
+## Conversational Routing & Chat State Isolation (Phase 20) — approved 2026-11-07
+- OD-20 (Conversational Router Agent Architecture):
+  - Option A adopted: Standalone customer greetings ("hello there", "hi", "good morning") without domain requests are intercepted by `routerNode` via `isGreetingMessage()`. The router responds directly as "OrchestrAI Supervisor", explains the platform's support capabilities (order tracking, returns, payments, refunds, profile, account access), sets `workflowStatus: 'WAITING_FOR_USER_INPUT'`, and keeps `currentAgent: 'router'` without dispatching `Command({ goto: 'order_tracking' })` or requiring an order ID. Subsequent turns statefully route to specialists as an initial assignment without incrementing `handoffCount`.
+- Chat Session Isolation & Disassociation:
+  - Frontend Synchronous Reset: Switching demo identities or clicking "+ New Chat" synchronously resets `selectedConvId` to `null` and dispatches `RESET_STATE`, immediately wiping transcripts and disconnecting the active LangGraph checkpoint thread.
+  - Ownership Error Resilience: On `403 Forbidden` / ownership errors, stale conversation state is wiped (`RESET_STATE` + `STREAM_ERROR`), preventing cross-user message leakage.
+
+
 
