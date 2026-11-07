@@ -23,6 +23,7 @@ import {
   isRoutingLoop,
 } from '../../routing/guards.js';
 import { classifyMessage } from '../../routing/classifier/classifier.js';
+import { isGreetingMessage } from '../../routing/classifier/taxonomy.js';
 import {
   recordRoutingEvent,
   toRoutingStateUpdate,
@@ -151,14 +152,17 @@ export async function routerNode(
     });
   }
 
-  // 3. PROCEED: Classify user message via LLM
+  // 3. PROCEED: Classify user message via LLM or greeting check
   const userText = extractLastUserMessage(state);
   let targetSpecialist: SpecialistId = 'order_tracking';
   let detectedIntent = 'GENERAL_INQUIRY';
   let routingReason = 'Initial default routing';
   let isFallback = false;
 
-  if (userText.trim().length > 0) {
+  if (isGreetingMessage(userText)) {
+    detectedIntent = 'GREETING';
+    routingReason = 'Customer greeting and general triage';
+  } else if (userText.trim().length > 0) {
     const classification = await classifyMessage(userText, {
       currentDomain: state.currentDomain,
       previousAgent: state.routing.previousAgent,
@@ -172,6 +176,32 @@ export async function routerNode(
       isFallback = true;
       routingReason = `Classifier fallback: ${classification.error.message}`;
     }
+  }
+
+  // 3b. Interactive greeting: respond directly from supervisor without forcing specialist dispatch
+  if (detectedIntent === 'GREETING') {
+    const routingEvent: RoutingEvent = {
+      conversationId,
+      sourceAgent: state.routing.currentAgent,
+      destinationAgent: 'router',
+      intent: 'GREETING',
+      decisionType: 'INITIAL_ROUTE',
+      reason: routingReason,
+    };
+
+    const routingUpdate = await logRoutingEventSafely(routingEvent);
+    return {
+      ...routingUpdate,
+      currentIntent: 'GREETING',
+      workflowStatus: 'WAITING_FOR_USER_INPUT',
+      messages: [
+        new AIMessage(
+          "Hello! I am OrchestrAI's autonomous customer support assistant. " +
+            'I can help you with tracking orders, processing returns, managing payments and refunds, ' +
+            'updating your profile, or account security issues. How can I assist you today?'
+        ),
+      ],
+    };
   }
 
   // 4. Guard check: Loop detection on proposed target
@@ -195,7 +225,7 @@ export async function routerNode(
   }
 
   // 5. Normal route dispatch
-  const isInitialRoute = state.routing.currentAgent === null;
+  const isInitialRoute = state.routing.currentAgent === null || state.routing.currentAgent === 'router';
   const isHandoff = !isInitialRoute && state.routing.currentAgent !== targetSpecialist;
   const decisionType = isFallback
     ? 'FALLBACK'

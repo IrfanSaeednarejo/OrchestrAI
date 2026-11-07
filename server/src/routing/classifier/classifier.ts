@@ -51,6 +51,8 @@ Specialists available:
 - profile: Viewing or updating customer profile information (name, shipping address).
 - account_access: Login issues, identity verification, password resets.
 
+If the user message is simply a greeting or casual opening ("hello", "hi", "good morning") without a specific domain request, classify intent as "GREETING" and specialist as "order_tracking".
+
 Context:
 ${domainContext}
 

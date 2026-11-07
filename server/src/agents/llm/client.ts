@@ -19,7 +19,7 @@ const ai = new GoogleGenAI({ apiKey: config.gemini.apiKey });
 // ---------------------------------------------------------------------------
 
 /** Well-known model identifier used for all agent calls in this platform. */
-export const DEFAULT_MODEL = 'gemini-2.5-flash' as const;
+export const DEFAULT_MODEL = (process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite') as string;
 
 export interface LLMOptions {
   /** Sampling temperature (0.0 = fully deterministic). Defaults to 0.0. */

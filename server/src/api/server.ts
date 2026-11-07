@@ -3,8 +3,9 @@
 
 import 'dotenv/config';
 import { app } from './app.js';
+import { config } from '../shared/config.js';
 
-const PORT = Number(process.env.PORT) || 3001;
+const PORT = Number(process.env.PORT) || config.app.port || 4000;
 
 const server = app.listen(PORT, () => {
   console.log(`[OrchestrAI] Server listening on :${PORT}`);

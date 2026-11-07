@@ -17,6 +17,30 @@ vi.mock('@google/genai', () => {
 });
 
 import { classifyMessage } from './classifier.js';
+import { isGreetingMessage } from './taxonomy.js';
+
+describe('isGreetingMessage', () => {
+  it('identifies standalone greetings', () => {
+    expect(isGreetingMessage('hello there')).toBe(true);
+    expect(isGreetingMessage('hi')).toBe(true);
+    expect(isGreetingMessage('Hey!')).toBe(true);
+    expect(isGreetingMessage('Good morning')).toBe(true);
+    expect(isGreetingMessage('howdy assistant')).toBe(true);
+  });
+
+  it('rejects empty or non-greeting messages', () => {
+    expect(isGreetingMessage('')).toBe(false);
+    expect(isGreetingMessage('   ')).toBe(false);
+    expect(isGreetingMessage('Where is my package?')).toBe(false);
+  });
+
+  it('rejects greetings that immediately contain domain keywords', () => {
+    expect(isGreetingMessage('Hi, where is my order?')).toBe(false);
+    expect(isGreetingMessage('Hello, I want a refund')).toBe(false);
+    expect(isGreetingMessage('Hey, can you track my delivery?')).toBe(false);
+    expect(isGreetingMessage('Hi I forgot my password')).toBe(false);
+  });
+});
 
 describe('classifyMessage', () => {
   beforeEach(() => {

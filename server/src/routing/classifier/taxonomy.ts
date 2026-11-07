@@ -45,6 +45,7 @@ export const ALL_INTENTS = [
   ...REFUND_INTENTS,
   ...PROFILE_INTENTS,
   ...ACCOUNT_ACCESS_INTENTS,
+  'GREETING',
   'GENERAL_INQUIRY',
   'UNKNOWN',
 ] as const;
@@ -68,9 +69,22 @@ export const INTENT_SPECIALIST_MAP: Record<RecognizedIntent, SpecialistId> = {
   PASSWORD_RESET: 'account_access',
   VERIFY_ACCOUNT: 'account_access',
   LOGIN_ISSUE: 'account_access',
+  GREETING: 'order_tracking', // fallback if forwarded
   GENERAL_INQUIRY: 'order_tracking', // default fallback for general store queries
   UNKNOWN: 'order_tracking',
 };
+
+export function isGreetingMessage(text: string): boolean {
+  const trimmed = text.trim();
+  if (!trimmed) return false;
+  const greetingPattern = /^(hello|hi|hey|greetings|good\s+(morning|afternoon|evening)|howdy)\b/i;
+  if (!greetingPattern.test(trimmed)) {
+    return false;
+  }
+  // If the user greeted but immediately included a domain keyword, treat it as domain-specific
+  const domainPattern = /\b(order|track|shipment|deliver|return|refund|pay|charge|bill|invoice|profile|address|password|login|verify|account)\b/i;
+  return !domainPattern.test(trimmed);
+}
 
 export function getSpecialistForIntent(intent: RecognizedIntent): SpecialistId {
   return INTENT_SPECIALIST_MAP[intent];
