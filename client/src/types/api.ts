@@ -1,5 +1,6 @@
 // src/types/api.ts
 // Phase 17 Step 3: API data contracts matching backend Express schemas.
+// Phase 21: Added AuthUser, AuthResponse, Product, Order, and Storefront types.
 
 export type WorkflowStatus =
   | 'ACTIVE'
@@ -49,6 +50,55 @@ export interface DemoUser {
   isGuest: boolean;
 }
 
+// Phase 21: Real user authentication types
+export interface AuthUser {
+  id: string;
+  email: string;
+  name: string;
+  defaultAddress: string;
+  createdAt?: string;
+  isGuest?: boolean;
+}
+
+export interface AuthResponse {
+  token: string;
+  user: AuthUser;
+}
+
+export interface AuthMeResponse {
+  user: AuthUser;
+}
+
+// Phase 21: Storefront and orders types
+export interface Product {
+  id: string;
+  name: string;
+  price: string;
+  sku: string;
+}
+
+export interface ProductsResponse {
+  products: Product[];
+}
+
+export interface Order {
+  id: string;
+  userId: string;
+  status: 'pending' | 'paid' | 'shipped' | 'delivered' | 'cancelled' | 'returned';
+  shippingAddressSnapshot: string;
+  totalAmount: string;
+  createdAt: string;
+}
+
+export interface OrdersResponse {
+  orders: Order[];
+}
+
+export interface PlaceOrderResponse {
+  order: Order;
+  trackingNumber: string;
+}
+
 // Wrapped response contracts
 export interface ConversationResponse {
   conversation: Conversation;
@@ -80,4 +130,3 @@ export interface ApiErrorPayload {
     details?: unknown;
   };
 }
-
