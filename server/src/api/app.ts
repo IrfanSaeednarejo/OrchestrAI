@@ -2,7 +2,7 @@
 // Phase 16: Express application setup with middleware, routes, and global error handling.
 // Phase 17 Step 1c: Mount dev-gated demo and verification routes outside x-user-id middleware.
 // Phase 18 Step 1: Mount dev-gated ops routes.
-// Phase 21 Step 2: Mount auth routes (register/login/logout/me).
+// Phase 21: Mount auth routes (register/login/logout/me) and storefront routes.
 
 import express from 'express';
 import cors from 'cors';
@@ -11,6 +11,7 @@ import { conversationRouter } from './routes/conversation.routes.js';
 import { demoRouter } from './routes/demo.routes.js';
 import { opsRouter } from './routes/ops.routes.js';
 import { authRouter } from './routes/auth.routes.js';
+import { orderRouter } from './routes/order.routes.js';
 import { errorHandler } from './middleware/error.middleware.js';
 import { NotFoundError } from './errors/app-error.js';
 import { config } from '../shared/config.js';
@@ -33,6 +34,9 @@ export function createApp(
 
   // Mount conversation API routes (authenticated via Bearer token or x-user-id)
   app.use('/api/conversations', conversationRouter);
+
+  // Mount storefront routes (products public, orders require auth)
+  app.use('/api', orderRouter);
 
   // Mount demo routes outside auth middleware (Phase 17 Step 1c)
   app.use('/api', demoRouter);
