@@ -126,5 +126,51 @@ describe('HomePage Customer Chat Integration', () => {
       expect(apiClient.streamMessage).toHaveBeenCalled();
     });
   });
+
+  it('clicking "+ New Chat" disassociates active thread and clears the chat feed', async () => {
+    const mockMessages: Message[] = [
+      {
+        id: 'msg-1',
+        conversationId: 'conv-test-111',
+        role: 'user',
+        content: 'Historical user message',
+        timestamp: new Date().toISOString(),
+      },
+      {
+        id: 'msg-2',
+        conversationId: 'conv-test-111',
+        role: 'assistant',
+        content: 'Historical assistant message',
+        timestamp: new Date().toISOString(),
+      },
+    ];
+
+    vi.mocked(apiClient.fetchMessages).mockResolvedValue(mockMessages);
+
+    render(<HomePage />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('conversation-item-conv-test-111')).toBeInTheDocument();
+    });
+
+    // Select the conversation
+    fireEvent.click(screen.getByTestId('conversation-item-conv-test-111'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Historical user message')).toBeInTheDocument();
+      expect(screen.getByText('Historical assistant message')).toBeInTheDocument();
+    });
+
+    // Click "+ New Chat"
+    const newChatBtn = screen.getByTestId('new-chat-button');
+    fireEvent.click(newChatBtn);
+
+    // Messages should immediately disappear and feed should be empty
+    await waitFor(() => {
+      expect(screen.queryByText('Historical user message')).not.toBeInTheDocument();
+      expect(screen.queryByText('Historical assistant message')).not.toBeInTheDocument();
+    });
+  });
 });
+
 
