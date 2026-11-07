@@ -64,6 +64,8 @@ export const users = pgTable('users', {
   email: text('email').notNull().unique(),
   name: text('name').notNull(),
   defaultAddress: text('default_address').notNull(),
+  // Nullable — seeded test users have no password; only real registered users do.
+  passwordHash: text('password_hash'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
 });
 
