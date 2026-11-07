@@ -2,6 +2,7 @@
 // Phase 16: Express application setup with middleware, routes, and global error handling.
 // Phase 17 Step 1c: Mount dev-gated demo and verification routes outside x-user-id middleware.
 // Phase 18 Step 1: Mount dev-gated ops routes.
+// Phase 21 Step 2: Mount auth routes (register/login/logout/me).
 
 import express from 'express';
 import cors from 'cors';
@@ -9,13 +10,14 @@ import { healthRouter } from './routes/health.routes.js';
 import { conversationRouter } from './routes/conversation.routes.js';
 import { demoRouter } from './routes/demo.routes.js';
 import { opsRouter } from './routes/ops.routes.js';
+import { authRouter } from './routes/auth.routes.js';
 import { errorHandler } from './middleware/error.middleware.js';
 import { NotFoundError } from './errors/app-error.js';
 import { config } from '../shared/config.js';
 import './types.js';
 
 export function createApp(
-  configure?: (app: express.Application) => void
+  configure?: (app: express.Application) => void,
 ): express.Application {
   const app = express();
 
@@ -26,7 +28,10 @@ export function createApp(
   // Mount health check route (unauthenticated)
   app.use('/health', healthRouter);
 
-  // Mount conversation API routes (authenticated via x-user-id)
+  // Mount auth routes — public (register/login/logout) + protected (me uses its own middleware)
+  app.use('/api/auth', authRouter);
+
+  // Mount conversation API routes (authenticated via Bearer token or x-user-id)
   app.use('/api/conversations', conversationRouter);
 
   // Mount demo routes outside auth middleware (Phase 17 Step 1c)

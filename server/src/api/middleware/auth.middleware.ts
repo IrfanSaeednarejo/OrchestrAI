@@ -1,5 +1,11 @@
 // src/api/middleware/auth.middleware.ts
 // Phase 16: Authentication middleware resolving caller identity via x-user-id header.
+// Phase 21: Added Bearer token resolution (priority over x-user-id for real users).
+//
+// Resolution order:
+//   1. Authorization: Bearer <token>  — real registered users (Phase 21)
+//   2. x-user-id: <uuid>              — benchmark / evaluation runners (Phase 16, preserved)
+//   3. Guest fallback                 — anonymous visitors
 
 import type { Request, Response, NextFunction } from 'express';
 import {
@@ -7,7 +13,8 @@ import {
   createUser,
   type User,
 } from '../../persistence/repositories/marketplace.repository.js';
-import { BadRequestError, NotFoundError } from '../errors/app-error.js';
+import { BadRequestError, NotFoundError, UnauthorizedError } from '../errors/app-error.js';
+import { verifyToken } from '../../services/token.service.js';
 import '../types.js';
 
 const UUID_REGEX =
@@ -40,11 +47,27 @@ export async function getOrCreateGuestUser(): Promise<User> {
 export async function authMiddleware(
   req: Request,
   _res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> {
   try {
-    const rawUserId = req.headers['x-user-id'];
+    // ── Priority 1: Bearer token (real users, Phase 21) ──────────────────────
+    const authHeader = req.headers['authorization'];
+    if (authHeader?.startsWith('Bearer ')) {
+      const token = authHeader.slice(7);
+      const payload = verifyToken(token);
+      if (!payload) {
+        throw new UnauthorizedError('Invalid or expired session token');
+      }
+      const user = await getUserById(payload.userId);
+      if (!user) {
+        throw new UnauthorizedError('User account not found');
+      }
+      req.user = user;
+      return next();
+    }
 
+    // ── Priority 2: x-user-id header (benchmark runners, Phase 16) ───────────
+    const rawUserId = req.headers['x-user-id'];
     if (rawUserId !== undefined) {
       const userId = Array.isArray(rawUserId) ? rawUserId[0] : rawUserId;
 
@@ -61,7 +84,7 @@ export async function authMiddleware(
       return next();
     }
 
-    // Guest fallback when x-user-id is omitted
+    // ── Priority 3: Guest fallback (anonymous visitors) ───────────────────────
     const guestUser = await getOrCreateGuestUser();
     req.user = {
       ...guestUser,
@@ -73,3 +96,21 @@ export async function authMiddleware(
   }
 }
 
+/**
+ * Strict auth guard — requires a resolved non-guest user.
+ * Routes that need a confirmed identity (e.g. /api/auth/me, /api/orders) use this.
+ */
+export async function requireAuth(
+  req: Request,
+  _res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    if (!req.user || (req.user as User & { isGuest?: boolean }).isGuest === true) {
+      throw new UnauthorizedError('Authentication required');
+    }
+    next();
+  } catch (err) {
+    next(err);
+  }
+}
