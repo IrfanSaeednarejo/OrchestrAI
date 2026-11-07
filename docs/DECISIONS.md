@@ -177,5 +177,18 @@ Small focused steps; explicit typed state; clear agent boundaries; no agent spag
   - Frontend Synchronous Reset: Switching demo identities or clicking "+ New Chat" synchronously resets `selectedConvId` to `null` and dispatches `RESET_STATE`, immediately wiping transcripts and disconnecting the active LangGraph checkpoint thread.
   - Ownership Error Resilience: On `403 Forbidden` / ownership errors, stale conversation state is wiped (`RESET_STATE` + `STREAM_ERROR`), preventing cross-user message leakage.
 
+## Real User Accounts, Authentication & Storefront Integration (Phase 21) — approved 2026-11-07
+- OD-21a (Password Hashing & Security Service):
+  - Option A adopted: Passwords hashed using Node.js standard `crypto.scrypt` with a fresh 16-byte cryptographically random salt and 64-byte derived key. Verification uses constant-time `crypto.timingSafeEqual`. Requires zero external binary dependencies (`bcrypt` or `argon2`), avoiding build issues while guaranteeing security.
+- OD-21b (Session Token Transport & Dual-Mode Compatibility):
+  - Option A adopted: Stateless signed HMAC-SHA256 Bearer tokens (`Authorization: Bearer <token>`) signed with `TOKEN_SECRET`. Auth middleware evaluates Bearer tokens first, preserving backward compatibility with `x-user-id` header for existing benchmark suites and evaluation harnesses.
+- OD-21c (Order & Shipment Initialization on Checkout):
+  - Option A adopted: `POST /api/orders` executes an atomic transaction creating `orders` (status: 'paid'), `order_items` (with unit price snapshot), `payments` (status: 'captured'), and `shipments` (status: 'in_transit' with tracking number). Newly registered users can immediately query the agent in chat regarding their real order with instant grounded answers.
+- Frontend Auth & Commerce Experience:
+  - `AuthProvider` & `useAuth()` hook managing token persistence in `localStorage`.
+  - Accessible `AuthModal` with Sign In / Register tabs.
+  - Interactive `StorefrontModal` displaying catalog products, real-time cart pricing, and a 1-click "Ask Agent About This Order" action.
+  - Seamless fallback to demo identities for development and scenario benchmarking.
+
 
 

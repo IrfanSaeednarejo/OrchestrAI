@@ -25,6 +25,7 @@
 - [x] 18 Frontend: Platform/Ops UI — conversation explorer, execution timeline, routing/handoff visualization, tool history, trace viewer, eval results. Needs: 16, 15.
 - [x] 19 Testing, Hardening & Deployment — edge cases, README/architecture docs, local-run guide. Needs: 17, 18.
 - [x] 20 Conversational Routing & Chat State Isolation — Option B conversational supervisor greeting, capability triage, client session disassociation and 403 leakage prevention. Needs: 19.
+- [x] 21 Real User Accounts, Authentication & Storefront Integration — database password hashing (`crypto.scrypt`), HMAC-SHA256 session tokens, auth REST endpoints (register/login/logout/me), storefront endpoints (catalog & order placement), frontend auth & storefront modals, and live chat order tracking. Needs: 20.
 
 
 Explicitly out of core scope: parallel safety fanout (optional post-core), production alerting, Lyft-style config-driven self-serve agent registration.

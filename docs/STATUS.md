@@ -1,9 +1,9 @@
 # STATUS (update at the end of every step/phase)
 
-Last verified suite figure reported: Server 563/563 passing (65 files), Client 98/98 passing (20 files). Total: 661 passing tests. Server baseline test count: 559. Client baseline test count: 95.
+Last verified suite figure reported: Server 584/584 passing (67 files), Client 112/112 passing (23 files). Total: 696 passing tests. Server baseline test count: 563. Client baseline test count: 98.
 
 ## Phase state
-- Phases 1-20: COMPLETE and signed off.
+- Phases 1-21: COMPLETE and signed off.
 
   - Phase 6 (Access Control / Verification Gate): Steps 0-5 closed; Step 6a proof graph verified; Step 6b close-out and type unification completed.
   - Phase 7 (Agent Foundation): Steps 0-5 closed; LLM client, prompt loader, handoff contract, common node patterns, and subgraph harness verified (294 tests).
@@ -20,6 +20,7 @@ Last verified suite figure reported: Server 563/563 passing (65 files), Client 9
   - Phase 18 (Frontend: Platform/Ops UI & Observability Dashboard): Steps 1-7 closed; dev-gated server ops endpoints (`/api/ops/conversations`, `/api/ops/conversations/:id/traces`, `/api/ops/eval-results`), global TopNav navigation header, conversation explorer with search/status filters, trace viewer & handoff inspector with multi-agent trajectory breadcrumbs and collapsible tool cards, 30-scenario canonical benchmark scorecard dashboard, and manual verification runbook (556 server tests + 93 client tests = 649 tests).
   - Phase 19 (Testing, Hardening & Portfolio Documentation): Steps 1-5 closed; runtime hardening (recursive tool output redaction, `user` reducer null-safety), API security (100kb payload limit, 413 entity-too-large handler, production error sanitization), Next.js error boundaries (`error.tsx`, `not-found.tsx`, `global-error.tsx`), automated local run script (`scripts/run-local.ps1`), portfolio-grade system README, and final documentation closeout (559 server tests + 95 client tests = 654 tests).
   - Phase 20 (Conversational Routing & Chat State Isolation): Steps 1-3 closed; client chat session isolation & "+ New Chat" disassociation, error sanitization on 403, taxonomy greeting intent and regex triage (`isGreetingMessage`), conversational supervisor onboarding in `routerNode` without forcing specialist dispatch, 100% test pass rate (563 server tests + 98 client tests = 661 tests).
+  - Phase 21 (Real User Accounts, Authentication & Storefront Integration): Steps 1-5 closed; database schema addition of nullable `passwordHash` to `users`, scrypt + salt password hashing, signed HMAC-SHA256 Bearer session tokens, auth REST endpoints (register/login/logout/me), storefront endpoints (catalog & order placement), frontend auth modal, storefront modal, and live customer chat order tracking (584 server tests + 112 client tests = 696 tests).
 
 ## Built so far
 Domain data model + repositories + seed; conversation/message services; ConversationState + PostgresSaver checkpointing; routing/agent/tool event logging;
@@ -51,8 +52,8 @@ Phase 19 hardening: recursive tool output PII redaction, `user` reducer null-saf
 6. 6a graph's ALLOWED branch does not clear `activeWorkflow`, so `blockedBy` goes stale after a successful resume (resolved in Phase 8: router writes RE_ROUTE event; specialist clears activeWorkflow on COMPLETED).
 
 ## Immediate next actions
-1. Owner merges phase/19-hardening-and-docs and tags phase-19-done.
-2. Project complete. 🎉
+1. Owner merges phase/21-real-user-auth-and-storefront and tags phase-21-done.
+2. Production customer self-service onboarding live. 🎉
 
 ## Changelog
 - 2026-11-05: Phase 6 Step 6a integration proof graph and test suite verified (239 tests).
@@ -71,4 +72,5 @@ Phase 19 hardening: recursive tool output PII redaction, `user` reducer null-saf
 - 2026-11-06: Phase 18 Frontend: Platform/Ops UI & Observability Dashboard completed: dev-gated server ops endpoints (`/api/ops/conversations`, `/api/ops/conversations/:id/traces`, `/api/ops/eval-results`), global TopNav navigation header, conversation explorer with search/status filters, trace viewer & handoff inspector with multi-agent trajectory breadcrumbs and collapsible tool cards, 30-scenario canonical benchmark scorecard dashboard, and manual verification runbook (556 server tests + 93 client tests = 649 tests).
 - 2026-11-06: Phase 19 Testing, Hardening & Portfolio Documentation completed: runtime hardening (recursive tool output redaction, `user` reducer null-safety), API security (100kb payload limit, 413 entity-too-large handler, production error sanitization), Next.js error boundaries (`error.tsx`, `not-found.tsx`, `global-error.tsx`), automated local run script (`scripts/run-local.ps1`), portfolio-grade system README, and final documentation closeout (559 server tests + 95 client tests = 654 tests).
 - 2026-11-07: Phase 20 Conversational Routing & Chat State Isolation completed: client session disassociation on "+ New Chat" and user switch, 403 leakage prevention, greeting classification and supervisor triage response, seamless subsequent domain dispatch (563 server tests + 98 client tests = 661 tests).
+- 2026-11-07: Phase 21 Real User Accounts, Authentication & Storefront Integration completed: schema addition of nullable passwordHash to users, Node crypto.scrypt password hashing with salt, signed HMAC-SHA256 session tokens with dual-mode auth middleware fallback, /api/auth and /api/orders REST endpoints, frontend AuthModal and StorefrontModal, and real customer chat order tracking (584 server tests + 112 client tests = 696 tests).
 
