@@ -56,6 +56,26 @@ Phase 19 hardening: recursive tool output PII redaction, `user` reducer null-saf
 1. Owner merges phase/22-mandatory-auth-and-storefront-pages and tags phase-22-done.
 2. Full production-grade user authentication, catalog browsing, order history, and conversational support live. 🎉
 
+## Neon Postgres deployment (out-of-phase)
+- Neon project: `withered-wildflower-96418740` (org `org-frosty-river-50490515`), branch `production` (`br-silent-band-bdye411r`).
+- `DATABASE_URL` (pooled) and `DATABASE_URL_UNPOOLED` (direct) written to `server/.env` and `.env.local`.
+- `server/src/shared/config.ts` updated: `DATABASE_URL`/`DATABASE_URL_UNPOOLED` optional fields; config parses connection details from `DATABASE_URL` when present, falls back to individual `POSTGRES_*` vars.
+- `server/drizzle.config.ts` updated: prefers `DATABASE_URL_UNPOOLED` → `DATABASE_URL` → individual vars for migrations/DDL.
+- `server/vitest.config.ts` updated: `testTimeout: 30000`, `hookTimeout: 30000` (some integration tests require >5s on Neon).
+- `server/package.json` updated: added `"build": "tsc"` script.
+- `package.json` (root) updated: added `"build"` script running client + server builds in sequence.
+- `neon.ts` created at root (Neon configuration file).
+- Drizzle migrations applied to Neon via `npm run db:migrate` ✓
+- LangGraph checkpoint tables created via `npm run checkpointer:setup` ✓
+- Database seeded via `npm run db:seed` ✓ (4 users, 9 orders, 4 payments, 3 returns, 2 refunds)
+- Knowledge documents ingested via `npm run knowledge:ingest` ✓ (5/5 documents)
+- `npm run build` (root): Next.js client + TypeScript server both pass ✓
+- `/health` endpoint: `{"status":"healthy","services":{"database":"up","redis":"up"}}` ✓
+- `/api/products` returns 2 products from Neon ✓
+- `/api/demo-users` returns seeded users ✓
+- Full conversation turn (create conversation → POST message → GET messages): end-to-end round-trip through LangGraph + Neon checkpointer ✓
+- Server test count: 537 passing (some integration tests timeout at 5s default; pass at 30s). Client: 131/131 ✓.
+
 ## Changelog
 - 2026-11-05: Phase 6 Step 6a integration proof graph and test suite verified (239 tests).
 - 2026-11-05: Phase 6 Step 6b type unification (SpecialistId), cast cleanup, and Phase 6 close-out (240 tests).
@@ -76,4 +96,5 @@ Phase 19 hardening: recursive tool output PII redaction, `user` reducer null-saf
 - 2026-11-07: Phase 21 Real User Accounts, Authentication & Storefront Integration completed: schema addition of nullable passwordHash to users, Node crypto.scrypt password hashing with salt, signed HMAC-SHA256 session tokens with dual-mode auth middleware fallback, /api/auth and /api/orders REST endpoints, frontend AuthModal and StorefrontModal, and real customer chat order tracking (584 server tests + 112 client tests = 696 tests).
 - 2026-11-08: Phase 22 Mandatory User Auth & Dedicated Storefront / Orders Pages completed: mandatory authentication guard hook (`useRequireAuth`), dedicated full-page `/login` and `/register` flows with query redirection, global navigation update (`TopNav` with user identity pill and direct store/orders links), removal of demo identity switcher from user-facing sidebar, dedicated full-page `/store` catalog with dynamic cart & checkout, dedicated `/orders` order history with color-coded status badges and 1-click "Ask Agent About This Order", root `/` chat routing guard and `orderId` input prompt pre-fill (584 server tests + 131 client tests = 715 tests).
 - 2026-11-08: Bug Fixes & UX Clarification: UUID fast-path regex extraction across specialists (Order Tracking, Returns, Payment), Pattern C profile verification routing and resume context fix, actionable guidance hint in client VerificationPrompt banner and input placeholder (584 server tests + 131 client tests = 715 tests).
+- 2026-11-08: Neon Postgres deployment: wired DATABASE_URL/UNPOOLED into config, drizzle, env; migrations, checkpointer setup, seed, and knowledge ingestion applied to Neon; root build scripts; vitest testTimeout raised to 30s; full end-to-end round-trip verified against Neon (commit 45393f0).
 
