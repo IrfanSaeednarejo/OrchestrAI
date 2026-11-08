@@ -1,8 +1,9 @@
 // src/hooks/use-chat.ts
 // Phase 17 Step 6a: Pure chat state reducer, useChat hook, and synchronous double-send ref guard.
+// Phase 23: Added serviceOptions to ChatState; STREAM_ROUTING captures options; START_SEND clears them.
 
 import { useReducer, useRef, useCallback, useEffect } from 'react';
-import type { Message, WorkflowStatus } from '../types/api';
+import type { Message, WorkflowStatus, ServiceOption } from '../types/api';
 import type { SSERoutingEvent } from '../types/sse';
 import {
   streamMessage,
@@ -22,6 +23,7 @@ export interface ChatState {
   blockedBy: string | null;
   currentStep: string | null;
   error: string | null;
+  serviceOptions: ServiceOption[] | null;
 }
 
 export type ChatAction =
@@ -82,6 +84,7 @@ export const initialChatState: ChatState = {
   blockedBy: null,
   currentStep: null,
   error: null,
+  serviceOptions: null,
 };
 
 export function deriveStateFromMessages(messages: Message[]): {
@@ -90,6 +93,7 @@ export function deriveStateFromMessages(messages: Message[]): {
   handoffCount: number;
   blockedBy: string | null;
   currentStep: string | null;
+  serviceOptions: ServiceOption[] | null;
 } {
   const lastAssistant = [...messages].reverse().find((m) => m.role === 'assistant');
   const meta = lastAssistant?.metadata;
@@ -100,6 +104,7 @@ export function deriveStateFromMessages(messages: Message[]): {
     handoffCount: typeof meta?.handoffCount === 'number' ? meta.handoffCount : 0,
     blockedBy: meta?.blockedBy || null,
     currentStep: meta?.currentStep || null,
+    serviceOptions: Array.isArray(meta?.options) ? (meta.options as ServiceOption[]) : null,
   };
 }
 
@@ -118,7 +123,6 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
         ...derived,
       };
     }
-
     case 'START_SEND': {
       return {
         ...state,
@@ -127,6 +131,7 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
         streamingText: '',
         currentNode: null,
         error: null,
+        serviceOptions: null,
       };
     }
 
@@ -145,7 +150,7 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
     }
 
     case 'STREAM_ROUTING': {
-      const { currentAgent, handoffCount, blockedBy, currentStep, workflowStatus } =
+      const { currentAgent, handoffCount, blockedBy, currentStep, workflowStatus, options } =
         action.payload;
       return {
         ...state,
@@ -155,6 +160,7 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
         blockedBy: blockedBy ?? state.blockedBy,
         currentStep: currentStep ?? state.currentStep,
         workflowStatus: workflowStatus ?? state.workflowStatus,
+        serviceOptions: options ?? null,
       };
     }
 
@@ -207,6 +213,7 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
         blockedBy: null,
         currentStep: null,
         error: null,
+        serviceOptions: null,
       };
     }
 

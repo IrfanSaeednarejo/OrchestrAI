@@ -13,6 +13,7 @@ import {
   type BaseCheckpointSaver,
 } from '@langchain/langgraph';
 import type { RunnableConfig } from '@langchain/core/runnables';
+import { z } from 'zod';
 import {
   ConversationStateAnnotation,
   type ConversationState,
@@ -24,6 +25,7 @@ import {
 } from '../../routing/guards.js';
 import { classifyMessage } from '../../routing/classifier/classifier.js';
 import { isGreetingMessage } from '../../routing/classifier/taxonomy.js';
+import { generateStructuredOutput } from '../../agents/llm/client.js';
 import {
   recordRoutingEvent,
   toRoutingStateUpdate,
@@ -37,6 +39,78 @@ import { refundNode } from '../../agents/specialists/refund/refund.js';
 import { profileNode } from '../../agents/specialists/profile/profile.js';
 import { accountAccessNode } from '../../agents/specialists/account-access/account-access.js';
 import type { SpecialistId } from '../../tools/permissions.js';
+
+// ---------------------------------------------------------------------------
+// Service options type (embedded in AIMessage.additional_kwargs for transport)
+// ---------------------------------------------------------------------------
+
+export interface ServiceOption {
+  label: string;
+  message: string;
+}
+
+/** Zod schema for the LLM-generated greeting + service options. */
+const GreetingResponseSchema = z.object({
+  greeting: z.string().min(1),
+  options: z.array(
+    z.object({
+      label: z.string().min(1),
+      message: z.string().min(1),
+    })
+  ),
+});
+
+/** Default service options shown when LLM generation fails. */
+const DEFAULT_SERVICE_OPTIONS: ServiceOption[] = [
+  { label: 'Track an Order', message: 'I need to track my order' },
+  { label: 'Request a Return', message: 'I would like to request a return' },
+  { label: 'Request a Refund', message: 'I need help with a refund' },
+  { label: 'Manage Payments', message: 'I have a question about a payment' },
+  { label: 'Update Profile', message: 'I need to update my profile' },
+  { label: 'Account Security', message: 'I need help with my account or password' },
+];
+
+/** Fallback static greeting used when LLM call fails. */
+const FALLBACK_GREETING =
+  "Hi! How can I help you today? Please choose from one of the options below or type your question.";
+
+/**
+ * Generates a short, natural greeting and a set of interactive service options
+ * via the LLM. Falls back to static defaults if the LLM call fails.
+ */
+async function generateGreetingResponse(userText: string): Promise<{
+  greeting: string;
+  options: ServiceOption[];
+}> {
+  const prompt =
+    `You are a friendly customer support assistant for an e-commerce platform.\n` +
+    `The customer just said: "${userText}"\n\n` +
+    `Respond with a brief, warm greeting (1–2 sentences max) and provide exactly 6 service options ` +
+    `the customer can choose from. Keep the greeting natural and conversational — do NOT list all ` +
+    `services in the greeting text; the options array handles that.\n\n` +
+    `Respond with JSON:\n` +
+    `{\n` +
+    `  "greeting": "<1-2 sentence greeting>",\n` +
+    `  "options": [\n` +
+    `    { "label": "Track an Order", "message": "I need to track my order" },\n` +
+    `    { "label": "Request a Return", "message": "I would like to request a return" },\n` +
+    `    { "label": "Request a Refund", "message": "I need help with a refund" },\n` +
+    `    { "label": "Manage Payments", "message": "I have a question about a payment" },\n` +
+    `    { "label": "Update Profile", "message": "I need to update my profile" },\n` +
+    `    { "label": "Account Security", "message": "I need help with my account or password" }\n` +
+    `  ]\n` +
+    `}`;
+
+  const result = await generateStructuredOutput(GreetingResponseSchema, prompt, {
+    temperature: 0.2,
+  });
+
+  if (result.success) {
+    return { greeting: result.data.greeting, options: result.data.options };
+  }
+
+  return { greeting: FALLBACK_GREETING, options: DEFAULT_SERVICE_OPTIONS };
+}
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -167,6 +241,15 @@ export async function routerNode(
     detectedIntent = 'GREETING';
     routingReason = 'Customer greeting and general triage';
   } else if (
+    // 3a. Order tracking continuation guard: when specialist is awaiting an order ID,
+    // route back directly without re-classifying through the LLM.
+    state.routing.currentAgent === 'order_tracking' &&
+    state.workflowStatus === 'WAITING_FOR_USER_INPUT'
+  ) {
+    targetSpecialist = 'order_tracking';
+    detectedIntent = state.currentIntent ?? 'ORDER_STATUS';
+    routingReason = 'Continuing order ID collection for active order_tracking session';
+  } else if (
     uuidOnlyMatch &&
     state.routing.currentAgent &&
     state.routing.currentAgent !== 'router' &&
@@ -204,17 +287,22 @@ export async function routerNode(
     };
 
     const routingUpdate = await logRoutingEventSafely(routingEvent);
+
+    // Generate a natural, short LLM greeting with interactive service options.
+    const { greeting, options } = await generateGreetingResponse(userText);
+
+    // Encode options in additional_kwargs so the message controller can read them
+    // from the final state snapshot and forward them to the SSE routing event.
+    const greetingMessage = new AIMessage({
+      content: greeting,
+      additional_kwargs: { options },
+    });
+
     return {
       ...routingUpdate,
       currentIntent: 'GREETING',
       workflowStatus: 'WAITING_FOR_USER_INPUT',
-      messages: [
-        new AIMessage(
-          "Hello! I am OrchestrAI's autonomous customer support assistant. " +
-            'I can help you with tracking orders, processing returns, managing payments and refunds, ' +
-            'updating your profile, or account security issues. How can I assist you today?'
-        ),
-      ],
+      messages: [greetingMessage],
     };
   }
 

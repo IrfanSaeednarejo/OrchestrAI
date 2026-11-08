@@ -202,5 +202,14 @@ Small focused steps; explicit typed state; clear agent boundaries; no agent spag
   - Dedicated `/store` catalog with product quantity selection, real-time total calculation, address verification, and instant checkout receipt.
   - Dedicated `/orders` management page showing real order IDs, placed dates, order totals, shipping destinations, status badges (`paid`, `shipped`, `delivered`, `pending`, `cancelled`), and direct "Ask Agent" routing.
 
+## Conversational UX, Interactive Service Menu & Order Tracking Reliability (Phase 23) — approved 2026-11-08
+- OD-23a (Dynamic Greeting Response Generation):
+  - Option A adopted: In `routerNode`, replaced static multi-sentence assistant introduction with structured LLM generation (`generateGreetingResponse`, temperature 0.2) returning `{ greeting: string, options: ServiceOption[] }`. Greetings are concise (1-2 sentences), natural, and context-dependent. Fallback to a polite, short static default if LLM is unavailable.
+- OD-23b (Interactive Service Options Transport & Rendering):
+  - Option A adopted: Options are attached to `AIMessage.additional_kwargs.options`, forwarded through `message.controller.ts` via the SSE `routing` event (`SSERoutingEvent.options`), and stored in `ChatState.serviceOptions`. The client renders these as clickable pills (`ServiceOptionBar`) beneath the last assistant message. Clicking an option dispatches `sendMessage` directly, and `START_SEND` automatically clears active options.
+- OD-23c (Order Tracking Continuation Guard):
+  - Option A adopted: In `routerNode`, when `state.routing.currentAgent === 'order_tracking'` and `state.workflowStatus === 'WAITING_FOR_USER_INPUT'`, router bypasses LLM classification and dispatches directly back to `order_tracking`. Prevents misclassification and loop drops during multi-turn order ID collection.
+
+
 
 

@@ -27,6 +27,7 @@ describe('deriveStateFromMessages', () => {
       handoffCount: 0,
       blockedBy: null,
       currentStep: null,
+      serviceOptions: null,
     });
   });
 
@@ -62,7 +63,31 @@ describe('deriveStateFromMessages', () => {
       handoffCount: 1,
       blockedBy: 'VERIFICATION_FULL',
       currentStep: 'verify_identity',
+      serviceOptions: null,
     });
+  });
+
+  it('derives serviceOptions from last assistant message metadata when present', () => {
+    const options = [
+      { label: 'Track an Order', message: 'I need to track my order' },
+      { label: 'Request a Refund', message: 'I need help with a refund' },
+    ];
+    const messages: Message[] = [
+      {
+        id: '1',
+        conversationId: 'c1',
+        role: 'assistant',
+        content: 'Hi! How can I help?',
+        timestamp: '2026-01-01T00:00:00Z',
+        metadata: {
+          workflowStatus: 'WAITING_FOR_USER_INPUT',
+          options,
+        },
+      },
+    ];
+
+    const derived = deriveStateFromMessages(messages);
+    expect(derived.serviceOptions).toEqual(options);
   });
 });
 
@@ -85,6 +110,27 @@ describe('chatReducer', () => {
     expect(next.isStreaming).toBe(true);
     expect(next.streamingText).toBe('');
     expect(next.error).toBeNull();
+  });
+
+  it('START_SEND clears serviceOptions', () => {
+    const stateWithOptions = {
+      ...initialChatState,
+      serviceOptions: [{ label: 'Track an Order', message: 'I need to track my order' }],
+    };
+    const userMsg: Message = {
+      id: 'u1',
+      conversationId: 'c1',
+      role: 'user',
+      content: 'I need to track my order',
+      timestamp: '2026-01-01T00:00:00Z',
+    };
+
+    const next = chatReducer(stateWithOptions, {
+      type: 'START_SEND',
+      payload: { userMessage: userMsg },
+    });
+
+    expect(next.serviceOptions).toBeNull();
   });
 
   it('handles STREAM_NODE', () => {
@@ -121,6 +167,46 @@ describe('chatReducer', () => {
     expect(next.handoffCount).toBe(2);
     expect(next.blockedBy).toBe('VERIFICATION_LIGHT');
     expect(next.workflowStatus).toBe('BLOCKED');
+  });
+
+  it('STREAM_ROUTING captures service options when present', () => {
+    const options = [
+      { label: 'Track an Order', message: 'I need to track my order' },
+      { label: 'Request a Refund', message: 'I need help with a refund' },
+    ];
+    const next = chatReducer(initialChatState, {
+      type: 'STREAM_ROUTING',
+      payload: {
+        currentAgent: 'router',
+        handoffCount: 0,
+        blockedBy: null,
+        currentStep: null,
+        workflowStatus: 'WAITING_FOR_USER_INPUT',
+        options,
+      },
+    });
+
+    expect(next.serviceOptions).toEqual(options);
+  });
+
+  it('STREAM_ROUTING sets serviceOptions to null when options field absent', () => {
+    const stateWithOptions = {
+      ...initialChatState,
+      serviceOptions: [{ label: 'Track an Order', message: 'I need to track my order' }],
+    };
+    const next = chatReducer(stateWithOptions, {
+      type: 'STREAM_ROUTING',
+      payload: {
+        currentAgent: 'order_tracking',
+        handoffCount: 0,
+        blockedBy: null,
+        currentStep: null,
+        workflowStatus: 'ACTIVE',
+        // no options field
+      },
+    });
+
+    expect(next.serviceOptions).toBeNull();
   });
 
   it('handles STREAM_DONE and appends assistant message', () => {

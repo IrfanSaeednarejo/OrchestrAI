@@ -1,9 +1,9 @@
 # STATUS (update at the end of every step/phase)
 
-Last verified suite figure reported: Server 584/584 passing (67 files), Client 131/131 passing (27 files). Total: 715 passing tests. Server baseline test count: 563. Client baseline test count: 98.
+Last verified suite figure reported: Server 586/586 passing (67 files), Client 144/144 passing (28 files). Total: 730 passing tests. Server baseline test count: 563. Client baseline test count: 98.
 
 ## Phase state
-- Phases 1-22: COMPLETE and signed off.
+- Phases 1-23: COMPLETE and signed off.
 
   - Phase 6 (Access Control / Verification Gate): Steps 0-5 closed; Step 6a proof graph verified; Step 6b close-out and type unification completed.
   - Phase 7 (Agent Foundation): Steps 0-5 closed; LLM client, prompt loader, handoff contract, common node patterns, and subgraph harness verified (294 tests).
@@ -22,6 +22,8 @@ Last verified suite figure reported: Server 584/584 passing (67 files), Client 1
   - Phase 20 (Conversational Routing & Chat State Isolation): Steps 1-3 closed; client chat session isolation & "+ New Chat" disassociation, error sanitization on 403, taxonomy greeting intent and regex triage (`isGreetingMessage`), conversational supervisor onboarding in `routerNode` without forcing specialist dispatch, 100% test pass rate (563 server tests + 98 client tests = 661 tests).
   - Phase 21 (Real User Accounts, Authentication & Storefront Integration): Steps 1-5 closed; database schema addition of nullable `passwordHash` to `users`, scrypt + salt password hashing, signed HMAC-SHA256 Bearer session tokens, auth REST endpoints (register/login/logout/me), storefront endpoints (catalog & order placement), frontend auth modal, storefront modal, and live customer chat order tracking (584 server tests + 112 client tests = 696 tests).
   - Phase 22 (Mandatory User Auth & Dedicated Storefront / Orders Pages): Steps 1-6 closed; mandatory authentication guard hook (`useRequireAuth`), dedicated full-page `/login` and `/register` flows with query redirection, global navigation update (`TopNav` with user identity pill and direct store/orders links), removal of demo identity switcher from user-facing sidebar, dedicated full-page `/store` catalog with dynamic cart & checkout, dedicated `/orders` order history with color-coded status badges and 1-click "Ask Agent About This Order", root `/` chat routing guard and `orderId` input prompt pre-fill (584 server tests + 131 client tests = 715 tests).
+  - Phase 23 (Conversational UX, Interactive Service Menu & Order Tracking Reliability): Steps 1-7 closed; dynamic LLM greeting generation (`temperature: 0.2`) returning concise, context-adaptive greetings, interactive service-option buttons (`Track an Order`, `Request a Return`, `Request a Refund`, `Manage Payments`, `Update Profile`, `Account Security`) transported via SSE routing metadata and rendered as clickable pills, order tracking continuation guard in `routerNode` preventing unwanted re-classification during order ID collection (586 server tests + 144 client tests = 730 tests).
+
 
 ## Built so far
 Domain data model + repositories + seed; conversation/message services; ConversationState + PostgresSaver checkpointing; routing/agent/tool event logging;
