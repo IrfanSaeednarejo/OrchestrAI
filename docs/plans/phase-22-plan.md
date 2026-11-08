@@ -1,11 +1,12 @@
-# Phase 22 — Mandatory User Authentication, Dedicated Storefront & Order Management Pages — PLAN (status: APPROVED 2026-11-07)
+# Phase 22 — Mandatory User Authentication, Dedicated Storefront & Order Management Pages — PLAN (status: DONE 2026-11-08)
 
 ## 1. Goal and How It Fits the Architecture
 Phase 22 transitions OrchestrAI into a production-grade consumer application where user authentication is mandatory for accessing customer chat, browsing the store, and managing orders. Visitors without an active session are routed to dedicated `/login` and `/register` pages, and valid sessions persist across page refreshes and browser restarts. The demo identity selector is retired from the end-user sidebar while underlying seed records are retained in PostgreSQL for headless evaluation and test suite continuity.
 
 ## 2. Dependencies Satisfied / Missing
 - **Phases 1-21**: All complete and verified.
-- **Current Baseline Test Count**: Server: 584 passing (67 files); Client: 112 passing (23 files). Total: 696 passing tests.
+- **Suite Baseline**: Server: 584 passing (67 files); Client: 112 passing (23 files). Total: 696 passing tests.
+- **Final Phase 22 Suite**: Server: 584 passing (67 files); Client: 131 passing (27 files). Total: 715 passing tests.
 
 ## 3. Scope IN / Scope OUT
 ### Scope IN:
@@ -44,52 +45,52 @@ Phase 22 transitions OrchestrAI into a production-grade consumer application whe
 - **Options**:
   - *Option A (Recommended)*: Client-side `AuthGuard` wrapper / `useRequireAuth()` hook utilizing `useAuth()`. Because OrchestrAI operates primarily as a single-page interactive chat and dashboard application backed by an Express REST API with Bearer tokens in `localStorage`, client-side auth guarding avoids cookie-sync synchronization issues and CORS proxy complexity across ports 3000 and 4000.
   - *Option B*: Next.js server-side `middleware.ts` reading HTTP-only cookies. Would require migrating token transport to cross-origin cookies.
-- **Recommendation**: Adopt **Option A**.
+- **Recommendation**: Adopt **Option A**. [RESOLVED & IMPLEMENTED]
 
 ### OD-22b: Pre-filling Chat Message from Store & Orders
 - **Options**:
   - *Option A (Recommended)*: When user clicks "Ask Agent About This Order", route to `/?orderId=<orderId>` or pass state to pre-fill the chat input (`Where is my order <orderId>?`) and focus the message input.
   - *Option B*: Automatically send the message immediately upon navigation.
-- **Recommendation**: Adopt **Option A** (allows user to review/adjust the message before submitting).
+- **Recommendation**: Adopt **Option A** (allows user to review/adjust the message before submitting). [RESOLVED & IMPLEMENTED]
 
 ## 5. Ordered Steps
 
-### Step 1: Authentication Guard Hook & Dedicated Auth Routes (`client/`)
+### [x] Step 1: Authentication Guard Hook & Dedicated Auth Routes (`client/`)
 - **Files touched**:
   - `client/src/hooks/use-require-auth.ts`: Hook redirecting unauthenticated users to `/login`.
   - `client/src/app/login/page.tsx`: Clean, focused login page with error alerts.
   - `client/src/app/register/page.tsx`: Registration page with address and password requirements.
-  - Component tests for login and register pages.
+  - Component tests for login and register pages (`client/src/app/login/page.test.tsx`, `client/src/app/register/page.test.tsx`).
 - **Protected files affected**: None.
 
-### Step 2: Global Navigation & Sidebar Clean-up (`client/`)
+### [x] Step 2: Global Navigation & Sidebar Clean-up (`client/`)
 - **Files touched**:
   - `client/src/components/navigation/top-nav.tsx`: Add navigation links for `Chat`, `Store`, `My Orders`, active user profile, and Sign Out.
   - `client/src/components/sidebar/conversation-sidebar.tsx`: Remove demo user selector dropdown and demo disclaimer; display real user identity and "+ New Chat".
   - Update `conversation-sidebar.test.tsx` and `top-nav.test.tsx`.
 - **Protected files affected**: None.
 
-### Step 3: Dedicated Storefront Page (`/store`) (`client/`)
+### [x] Step 3: Dedicated Storefront Page (`/store`) (`client/`)
 - **Files touched**:
   - `client/src/app/store/page.tsx`: Product catalog grid, quantity controls, cart summary panel, checkout confirmation modal with Order ID & Tracking Number.
   - Tests in `client/src/app/store/page.test.tsx`.
 - **Protected files affected**: None.
 
-### Step 4: Dedicated Order Management Page (`/orders`) (`client/`)
+### [x] Step 4: Dedicated Order Management Page (`/orders`) (`client/`)
 - **Files touched**:
   - `client/src/app/orders/page.tsx`: Order history cards with status pills, order details, and "Ask Agent" CTA.
   - Tests in `client/src/app/orders/page.test.tsx`.
 - **Protected files affected**: None.
 
-### Step 5: Chat Pre-fill Integration & Page Routing Guard (`client/`)
+### [x] Step 5: Chat Pre-fill Integration & Page Routing Guard (`client/`)
 - **Files touched**:
   - `client/src/app/page.tsx`: Guard chat with `useRequireAuth()`; inspect `orderId` search param to pre-fill prompt.
   - Update `client/src/app/page.test.tsx`.
 - **Protected files affected**: None.
 
-### Step 6: Full Verification, Documentation & Closeout
+### [x] Step 6: Full Verification, Documentation & Closeout
 - **Files touched**:
-  - `docs/STATUS.md`, `docs/ROADMAP.md`, `docs/DECISIONS.md`, `docs/OPEN-DECISIONS.md`.
+  - `docs/STATUS.md`, `docs/ROADMAP.md`, `docs/DECISIONS.md`, `docs/OPEN-DECISIONS.md`, `docs/plans/phase-22-plan.md`.
   - Full suite run: `npm run lint`, `npm run typecheck`, `npm test` across server and client.
 - **Protected files affected**: None.
 

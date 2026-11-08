@@ -190,5 +190,17 @@ Small focused steps; explicit typed state; clear agent boundaries; no agent spag
   - Interactive `StorefrontModal` displaying catalog products, real-time cart pricing, and a 1-click "Ask Agent About This Order" action.
   - Seamless fallback to demo identities for development and scenario benchmarking.
 
+## Mandatory User Auth & Dedicated Storefront / Orders Pages (Phase 22) — approved 2026-11-08
+- OD-22a (Client-side Navigation Guard via `useRequireAuth`):
+  - Option A adopted: Lightweight React hook `useRequireAuth(targetPath)` inspecting `isAuthenticated` and `isLoading` from `auth-context.tsx`. When unauthenticated, automatically navigates to `/login?redirect=${encodeURIComponent(targetPath)}`. Logged-in sessions persist across page refreshes and browser restarts via localStorage Bearer tokens. Protects root customer chat (`/`), `/store`, and `/orders`.
+- OD-22b (1-Click Order Chat Integration via Query Parameter):
+  - Option A adopted: When users click "Ask Agent About This Order" from either the `/store` checkout receipt or `/orders` history card, they navigate to `/?orderId=${order.id}`. The root chat component inspects `useSearchParams().get('orderId')` within `<Suspense>` and initializes the chat message draft with `"Where is my order ${orderId}? Can you give me the latest tracking status?"`. Enables immediate single-click conversational tracking without manual copy-pasting.
+- Dedicated App Router Pages & Clean UX:
+  - Dedicated `/login` and `/register` pages with error banners, loading indicators, and post-auth redirect handling.
+  - Global `TopNav` displaying direct links to `Support Chat`, `Store`, `My Orders`, and an active user profile pill with `Sign Out`.
+  - Cleaned user-facing sidebar by removing the demo identity selector and disclaimer while preserving database seed fixtures for headless evaluation test suites.
+  - Dedicated `/store` catalog with product quantity selection, real-time total calculation, address verification, and instant checkout receipt.
+  - Dedicated `/orders` management page showing real order IDs, placed dates, order totals, shipping destinations, status badges (`paid`, `shipped`, `delivered`, `pending`, `cancelled`), and direct "Ask Agent" routing.
+
 
 
