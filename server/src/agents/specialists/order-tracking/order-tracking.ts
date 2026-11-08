@@ -258,7 +258,15 @@ export async function orderTrackingNode(
       currentStep: 'get_order',
       resumeContext: { orderId },
     });
-    return { ...blockedUpdate, workflowStatus: 'WAITING_FOR_USER_INPUT' };
+    return {
+      ...blockedUpdate,
+      workflowStatus: 'WAITING_FOR_USER_INPUT',
+      messages: [
+        new AIMessage(
+          'To view order and tracking details, please log in to your account or confirm your identity.'
+        ),
+      ],
+    };
   }
 
   if (orderResult.gate.outcome === 'DENIED') {

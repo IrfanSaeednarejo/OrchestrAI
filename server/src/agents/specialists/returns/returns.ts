@@ -291,7 +291,15 @@ export async function returnsNode(
       currentStep: 'check_return_eligibility',
       resumeContext: { orderId, reason },
     });
-    return { ...blockedUpdate, workflowStatus: 'WAITING_FOR_USER_INPUT' };
+    return {
+      ...blockedUpdate,
+      workflowStatus: 'WAITING_FOR_USER_INPUT',
+      messages: [
+        new AIMessage(
+          'To check return eligibility, please log in to your account or confirm your identity.'
+        ),
+      ],
+    };
   }
 
   if (eligibilityResult.gate.outcome === 'DENIED') {

@@ -159,9 +159,23 @@ export async function routerNode(
   let routingReason = 'Initial default routing';
   let isFallback = false;
 
+  const uuidOnlyMatch = userText.trim().match(
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+  );
+
   if (isGreetingMessage(userText)) {
     detectedIntent = 'GREETING';
     routingReason = 'Customer greeting and general triage';
+  } else if (
+    uuidOnlyMatch &&
+    state.routing.currentAgent &&
+    state.routing.currentAgent !== 'router' &&
+    state.routing.currentAgent !== 'escalation'
+  ) {
+    // Pure UUID follow-up message provided to an active specialist
+    targetSpecialist = state.routing.currentAgent as SpecialistId;
+    detectedIntent = state.currentIntent ?? 'ORDER_STATUS';
+    routingReason = `Follow-up UUID reference provided for active specialist ${state.routing.currentAgent}`;
   } else if (userText.trim().length > 0) {
     const classification = await classifyMessage(userText, {
       currentDomain: state.currentDomain,
