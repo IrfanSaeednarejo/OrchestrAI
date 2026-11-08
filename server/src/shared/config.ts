@@ -3,10 +3,12 @@ import { z } from 'zod';
 export const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   APP_PORT: z.coerce.number().default(4000),
-  POSTGRES_USER: z.string(),
-  POSTGRES_PASSWORD: z.string(),
-  POSTGRES_DB: z.string(),
-  POSTGRES_PORT: z.coerce.number(),
+  DATABASE_URL: z.string().optional(),
+  DATABASE_URL_UNPOOLED: z.string().optional(),
+  POSTGRES_USER: z.string().optional(),
+  POSTGRES_PASSWORD: z.string().optional(),
+  POSTGRES_DB: z.string().optional(),
+  POSTGRES_PORT: z.coerce.number().optional(),
   POSTGRES_HOST: z.string().default('localhost'),
   REDIS_PORT: z.coerce.number(),
   REDIS_HOST: z.string().default('localhost'),
@@ -47,6 +49,28 @@ if (enableDemoEndpoints) {
   );
 }
 
+let pgUser = envVars.POSTGRES_USER ?? '';
+let pgPassword = envVars.POSTGRES_PASSWORD ?? '';
+let pgDatabase = envVars.POSTGRES_DB ?? '';
+let pgHost = envVars.POSTGRES_HOST ?? 'localhost';
+let pgPort = envVars.POSTGRES_PORT ?? 5432;
+let connectionString = envVars.DATABASE_URL ?? '';
+
+if (envVars.DATABASE_URL) {
+  try {
+    const url = new URL(envVars.DATABASE_URL);
+    pgUser = url.username || pgUser;
+    pgPassword = url.password || pgPassword;
+    pgDatabase = url.pathname.replace(/^\//, '') || pgDatabase;
+    pgHost = url.hostname || pgHost;
+    pgPort = url.port ? Number(url.port) : 5432;
+  } catch {
+    // fallback to explicit values
+  }
+} else {
+  connectionString = `postgresql://${pgUser}:${pgPassword}@${pgHost}:${pgPort}/${pgDatabase}`;
+}
+
 export const config = Object.freeze({
   env: envVars.NODE_ENV,
   app: {
@@ -55,12 +79,13 @@ export const config = Object.freeze({
     enableDemoEndpoints,
   },
   postgres: {
-    user: envVars.POSTGRES_USER,
-    password: envVars.POSTGRES_PASSWORD,
-    database: envVars.POSTGRES_DB,
-    host: envVars.POSTGRES_HOST,
-    port: envVars.POSTGRES_PORT,
-    connectionString: `postgresql://${envVars.POSTGRES_USER}:${envVars.POSTGRES_PASSWORD}@${envVars.POSTGRES_HOST}:${envVars.POSTGRES_PORT}/${envVars.POSTGRES_DB}`,
+    user: pgUser,
+    password: pgPassword,
+    database: pgDatabase,
+    host: pgHost,
+    port: pgPort,
+    connectionString,
+    unpooledConnectionString: envVars.DATABASE_URL_UNPOOLED || connectionString,
   },
   redis: {
     host: envVars.REDIS_HOST,
