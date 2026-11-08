@@ -262,6 +262,8 @@ function CustomerChatContent() {
                   : chatState.blockedBy === 'VERIFICATION_FULL' &&
                     chatState.currentStep === 'verify_identity'
                   ? 'Enter your 6-digit verification code...'
+                  : chatState.blockedBy === 'VERIFICATION_FULL'
+                  ? 'Ask for a verification code or enter your 6-digit code...'
                   : 'Type your message here...'
               }
             />
