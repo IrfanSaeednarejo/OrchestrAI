@@ -98,6 +98,11 @@ export async function extractPaymentIntent(userText: string): Promise<PaymentExt
     return { orderId: null, paymentId: null, intent: 'general_inquiry', confidence: 0 };
   }
 
+  const uuidMatch = userText.match(
+    /\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/i
+  );
+  const directOrderId = uuidMatch ? uuidMatch[0].toLowerCase() : null;
+
   const prompt = `Extract the order ID (a UUID), payment ID (a UUID, if mentioned), and customer intent from the following customer message.
 Recognized intents:
 - 'duplicate_charge': Customer reports being charged twice, multiple charges, duplicate payment, or billing dispute.
@@ -119,10 +124,18 @@ Respond with JSON:
   });
 
   if (result.success) {
-    return result.data;
+    return {
+      ...result.data,
+      orderId: result.data.orderId || directOrderId,
+    };
   }
 
-  return { orderId: null, paymentId: null, intent: 'general_inquiry', confidence: 0 };
+  return {
+    orderId: directOrderId,
+    paymentId: null,
+    intent: 'general_inquiry',
+    confidence: directOrderId ? 0.8 : 0,
+  };
 }
 
 export function isDuplicateChargeInquiry(userText: string, intent?: string | null): boolean {
@@ -297,7 +310,16 @@ export async function paymentNode(
       currentStep: 'get_payment',
       resumeContext: { orderId, intent },
     });
-    return { ...blockedUpdate, workflowStatus: 'WAITING_FOR_USER_INPUT' };
+    return {
+      ...blockedUpdate,
+      workflowStatus: 'WAITING_FOR_USER_INPUT',
+      messages: [
+        new AIMessage(
+          'To access sensitive payment details, we need to verify your identity first. ' +
+            'Please request a verification code to receive a 6-digit code via email, or enter your code if you already have one.'
+        ),
+      ],
+    };
   }
 
   if (paymentResult.gate.outcome === 'DENIED') {
@@ -361,7 +383,16 @@ export async function paymentNode(
         currentStep: 'detect_duplicate_charge',
         resumeContext: { orderId, intent },
       });
-      return { ...blockedUpdate, workflowStatus: 'WAITING_FOR_USER_INPUT' };
+      return {
+      ...blockedUpdate,
+      workflowStatus: 'WAITING_FOR_USER_INPUT',
+      messages: [
+        new AIMessage(
+          'To access sensitive payment details, we need to verify your identity first. ' +
+            'Please request a verification code to receive a 6-digit code via email, or enter your code if you already have one.'
+        ),
+      ],
+    };
     }
 
     if (duplicateResult.gate.outcome === 'DENIED') {

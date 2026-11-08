@@ -228,7 +228,7 @@ describe('Profile specialist — profileNode', () => {
     };
     expect(result.workflowStatus).toBe('WAITING_FOR_USER_INPUT');
     expect(result.activeWorkflow?.blockedBy).toBe('VERIFICATION_FULL');
-    expect(result.activeWorkflow?.returnTo?.agent).toBe('account_access');
+    expect(result.activeWorkflow?.returnTo?.agent).toBe('profile');
     expect(result.activeWorkflow?.returnTo?.workflowStep).toBe('get_profile');
     expect(result.activeWorkflow?.resumeContext?.['intent']).toBe('view_profile');
   });
@@ -319,7 +319,7 @@ describe('Profile specialist — profileNode', () => {
       };
     };
     expect(result.workflowStatus).toBe('WAITING_FOR_USER_INPUT');
-    expect(result.activeWorkflow?.returnTo?.agent).toBe('account_access');
+    expect(result.activeWorkflow?.returnTo?.agent).toBe('profile');
     expect(result.activeWorkflow?.returnTo?.workflowStep).toBe('update_profile');
     expect(result.activeWorkflow?.resumeContext?.['defaultAddress']).toBe('456 Oak Ave');
     expect(result.activeWorkflow?.resumeContext?.['intent']).toBe('update_profile');

@@ -109,6 +109,14 @@ export async function extractOrderId(
     return { orderId: null, confidence: 0 };
   }
 
+  // Fast path: deterministic UUID regex extraction
+  const uuidMatch = userText.match(
+    /\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/i
+  );
+  if (uuidMatch) {
+    return { orderId: uuidMatch[0].toLowerCase(), confidence: 1.0 };
+  }
+
   const prompt = `Extract the order ID (a UUID) from the following customer message.
 If a valid UUID order ID is present, return it. If not found or unclear, return null.
 

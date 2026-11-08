@@ -337,21 +337,14 @@ describe('Parent Graph & Stateful Router Integration', () => {
       }),
     });
 
-    // 2. Order Tracking specialist extraction
-    mockGenerateContent.mockResolvedValueOnce({
-      text: JSON.stringify({
-        orderId: scenario1OrderId,
-        confidence: 0.98,
-      }),
-    });
+    // Note: extractOrderId uses UUID regex fast-path — no LLM call for extraction when UUID is in text.
 
-    // 3. Order Tracking customer-facing response generation
+    // 2. Order Tracking customer-facing response generation
     mockGenerateContent.mockResolvedValueOnce({
       text: JSON.stringify({
         response: 'Your order is currently shipped and in transit with FedEx (Tracking: TRK-P9-1111).',
       }),
     });
-
     const convo = await startConversation(fixtureUserId);
     createdConversationIds.push(convo.id);
 

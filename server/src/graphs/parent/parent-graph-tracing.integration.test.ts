@@ -218,6 +218,7 @@ describe('Phase 14: Parent Graph Observability & Tracing Integration', () => {
     createdConversationIds.push(convo.id);
 
     // Turn 1: Order tracking inquiry
+    // Note: extractOrderId uses a UUID regex fast-path — no LLM call for extraction when UUID is in text.
     mockGenerateContent
       .mockResolvedValueOnce({
         text: JSON.stringify({
@@ -226,9 +227,6 @@ describe('Phase 14: Parent Graph Observability & Tracing Integration', () => {
           confidence: 0.95,
           reasoning: 'Inquiring about order status.',
         }),
-      })
-      .mockResolvedValueOnce({
-        text: JSON.stringify({ orderId: testOrderId, confidence: 0.98 }),
       })
       .mockResolvedValueOnce({
         text: JSON.stringify({
