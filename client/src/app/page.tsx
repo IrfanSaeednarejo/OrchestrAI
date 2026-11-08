@@ -4,9 +4,11 @@
 // Phase 17 Step 6b: Master Customer Chat interface assembling all components.
 // Phase 21: Added real user AuthProvider, AuthModal, StorefrontModal, and live order tracking.
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { UserProvider, useUser } from '../context/user-context';
 import { AuthProvider, useAuth } from '../context/auth-context';
+import { useRequireAuth } from '../hooks/use-require-auth';
 import { ConversationSidebar } from '../components/sidebar/conversation-sidebar';
 import { ChatFeed } from '../components/chat/chat-feed';
 import { MessageInput } from '../components/chat/message-input';
@@ -18,11 +20,23 @@ import { useChat } from '../hooks/use-chat';
 import { fetchConversations } from '../lib/api-client';
 import type { Conversation } from '../types/api';
 import { TopNav } from '../components/navigation/top-nav';
-import { AlertTriangle, CheckCircle, RefreshCw, ShoppingBag } from 'lucide-react';
+import { AlertTriangle, CheckCircle, RefreshCw, ShoppingBag, Loader2 } from 'lucide-react';
 
 function CustomerChatContent() {
+  const searchParams = useSearchParams();
+  const queryOrderId = searchParams?.get('orderId');
+  const { user: authUser, token: authToken, isAuthenticated, isLoading: isAuthLoading } = useRequireAuth('/');
   const { currentUser } = useUser();
-  const { user: authUser, token: authToken, isAuthenticated } = useAuth();
+
+  const [initialDraft, setInitialDraft] = useState('');
+  const [orderPromptPrefilled, setOrderPromptPrefilled] = useState(false);
+
+  useEffect(() => {
+    if (queryOrderId && !orderPromptPrefilled) {
+      setInitialDraft(`Where is my order ${queryOrderId}? Can you give me the latest tracking status?`);
+      setOrderPromptPrefilled(true);
+    }
+  }, [queryOrderId, orderPromptPrefilled]);
 
   // If real user is logged in, use their ID and token; otherwise fallback to demo/guest user
   const activeUserId = isAuthenticated && authUser ? authUser.id : currentUser.id;
@@ -68,10 +82,11 @@ function CustomerChatContent() {
 
   // When active user or token changes: reset active chat state and fetch conversations
   useEffect(() => {
+    if (!isAuthenticated) return;
     setSelectedConvId(null);
     resetChat();
     void loadUserConversations(activeUserId, activeToken);
-  }, [activeUserId, activeToken, loadUserConversations, resetChat]);
+  }, [isAuthenticated, activeUserId, activeToken, loadUserConversations, resetChat]);
 
   // Keep sidebar updated if a new conversation is created via chat
   useEffect(() => {
@@ -80,6 +95,15 @@ function CustomerChatContent() {
       void loadUserConversations(activeUserId, activeToken);
     }
   }, [chatState.conversationId, selectedConvId, activeUserId, activeToken, loadUserConversations]);
+
+  if (isAuthLoading || !isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-slate-400 gap-2">
+        <Loader2 className="h-5 w-5 animate-spin text-indigo-500" />
+        <span>Authenticating...</span>
+      </div>
+    );
+  }
 
   const handleSelectConversation = (convId: string) => {
     setSelectedConvId(convId);
@@ -231,6 +255,7 @@ function CustomerChatContent() {
               onSend={handleSend}
               isStreaming={chatState.isStreaming}
               workflowStatus={chatState.workflowStatus}
+              initialValue={initialDraft}
               placeholder={
                 chatState.workflowStatus === 'ESCALATED'
                   ? 'Conversation escalated. Input is disabled.'
@@ -264,12 +289,37 @@ function CustomerChatContent() {
   );
 }
 
+function EnsureAuthProvider({ children }: { children: React.ReactNode }) {
+  let hasAuth = false;
+  try {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const ctx = useAuth();
+    if (ctx) hasAuth = true;
+  } catch {
+    hasAuth = false;
+  }
+
+  if (hasAuth) {
+    return <>{children}</>;
+  }
+  return <AuthProvider>{children}</AuthProvider>;
+}
+
 export default function HomePage() {
   return (
-    <AuthProvider>
+    <EnsureAuthProvider>
       <UserProvider>
-        <CustomerChatContent />
+        <Suspense
+          fallback={
+            <div className="min-h-screen bg-slate-950 flex items-center justify-center text-slate-400 gap-2">
+              <Loader2 className="h-5 w-5 animate-spin text-indigo-500" />
+              <span>Loading chat...</span>
+            </div>
+          }
+        >
+          <CustomerChatContent />
+        </Suspense>
       </UserProvider>
-    </AuthProvider>
+    </EnsureAuthProvider>
   );
 }

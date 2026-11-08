@@ -1,13 +1,28 @@
 // src/app/page.test.tsx
 // Phase 17 Step 6b: Integration test for master HomePage customer chat.
+// Phase 22 Step 5: Route auth gating and orderId query param pre-fill tests.
 
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import HomePage from './page';
+import { AuthProvider } from '../context/auth-context';
 import * as apiClient from '../lib/api-client';
 import { DEFAULT_GUEST_USER } from '../context/user-context';
-import type { Conversation, Message } from '../types/api';
+import type { Conversation, Message, AuthUser } from '../types/api';
+
+const mockPush = vi.fn();
+const mockReplace = vi.fn();
+let mockSearchParams = new URLSearchParams();
+
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: mockPush,
+    replace: mockReplace,
+  }),
+  usePathname: () => '/',
+  useSearchParams: () => mockSearchParams,
+}));
 
 vi.mock('../lib/api-client', () => ({
   fetchDemoUsers: vi.fn(),
@@ -17,7 +32,18 @@ vi.mock('../lib/api-client', () => ({
   createConversation: vi.fn(),
   streamMessage: vi.fn(),
   peekDevVerificationCode: vi.fn(),
+  apiLogin: vi.fn(),
+  apiRegister: vi.fn(),
+  apiLogout: vi.fn(),
+  apiMe: vi.fn(),
 }));
+
+const mockAuthUser: AuthUser = {
+  id: DEFAULT_GUEST_USER.id,
+  name: DEFAULT_GUEST_USER.name,
+  email: DEFAULT_GUEST_USER.email,
+  defaultAddress: '123 Main St, Anytown USA',
+};
 
 describe('HomePage Customer Chat Integration', () => {
   const mockConversations: Conversation[] = [
@@ -32,6 +58,8 @@ describe('HomePage Customer Chat Integration', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    mockSearchParams = new URLSearchParams();
+    localStorage.clear();
     window.HTMLElement.prototype.scrollIntoView = vi.fn();
 
     vi.mocked(apiClient.fetchDemoUsers).mockResolvedValue([DEFAULT_GUEST_USER]);
@@ -42,8 +70,29 @@ describe('HomePage Customer Chat Integration', () => {
     vi.mocked(apiClient.fetchMessages).mockResolvedValue([]);
   });
 
-  it('renders master chat layout including sidebar, header, and input', async () => {
-    render(<HomePage />);
+  function renderHomePage(isAuth = true) {
+    return render(
+      <AuthProvider
+        initialToken={isAuth ? 'test-token' : null}
+        initialUser={isAuth ? mockAuthUser : null}
+      >
+        <HomePage />
+      </AuthProvider>
+    );
+  }
+
+  it('redirects unauthenticated visitors to /login?redirect=%2F', async () => {
+    renderHomePage(false);
+
+    await waitFor(() => {
+      expect(mockReplace).toHaveBeenCalledWith(
+        expect.stringContaining('/login?redirect=')
+      );
+    });
+  });
+
+  it('renders master chat layout including sidebar, header, and input when authenticated', async () => {
+    renderHomePage(true);
 
     expect(screen.getByTestId('conversation-sidebar')).toBeInTheDocument();
     expect(screen.getByTestId('chat-header')).toBeInTheDocument();
@@ -52,6 +101,19 @@ describe('HomePage Customer Chat Integration', () => {
 
     await waitFor(() => {
       expect(screen.getByText(/Chat conv-tes/i)).toBeInTheDocument();
+    });
+  });
+
+  it('pre-fills chat input when orderId query param is present', async () => {
+    mockSearchParams = new URLSearchParams('orderId=ord-xyz-999');
+
+    renderHomePage(true);
+
+    await waitFor(() => {
+      const textarea = screen.getByTestId('message-input');
+      expect(textarea).toHaveValue(
+        'Where is my order ord-xyz-999? Can you give me the latest tracking status?'
+      );
     });
   });
 
@@ -79,7 +141,7 @@ describe('HomePage Customer Chat Integration', () => {
 
     vi.mocked(apiClient.fetchMessages).mockResolvedValue(mockMessages);
 
-    render(<HomePage />);
+    renderHomePage(true);
 
     await waitFor(() => {
       expect(screen.getByTestId('conversation-item-conv-test-111')).toBeInTheDocument();
@@ -114,7 +176,7 @@ describe('HomePage Customer Chat Integration', () => {
       }
     );
 
-    render(<HomePage />);
+    renderHomePage(true);
 
     const textarea = screen.getByTestId('message-input');
     const sendButton = screen.getByTestId('send-button');
@@ -147,7 +209,7 @@ describe('HomePage Customer Chat Integration', () => {
 
     vi.mocked(apiClient.fetchMessages).mockResolvedValue(mockMessages);
 
-    render(<HomePage />);
+    renderHomePage(true);
 
     await waitFor(() => {
       expect(screen.getByTestId('conversation-item-conv-test-111')).toBeInTheDocument();
@@ -172,5 +234,3 @@ describe('HomePage Customer Chat Integration', () => {
     });
   });
 });
-
-

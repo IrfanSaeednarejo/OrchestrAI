@@ -13,6 +13,7 @@ interface MessageInputProps {
   isStreaming?: boolean;
   workflowStatus?: WorkflowStatus | null;
   placeholder?: string;
+  initialValue?: string;
 }
 
 export function MessageInput({
@@ -21,9 +22,16 @@ export function MessageInput({
   isStreaming = false,
   workflowStatus,
   placeholder,
+  initialValue = '',
 }: MessageInputProps) {
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState(initialValue);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (initialValue) {
+      setContent(initialValue);
+    }
+  }, [initialValue]);
 
   const isEscalated = workflowStatus === 'ESCALATED';
   const isLocked = disabled || isStreaming || isEscalated;
