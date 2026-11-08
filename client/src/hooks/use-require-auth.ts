@@ -22,3 +22,4 @@ export function useRequireAuth(redirectPath?: string) {
 
   return { user, token, isAuthenticated, isLoading };
 }
+

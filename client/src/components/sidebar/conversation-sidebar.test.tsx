@@ -1,44 +1,33 @@
 // src/components/sidebar/conversation-sidebar.test.tsx
-// Phase 17 Step 5b: Tests for ConversationSidebar component.
+// Phase 17 Step 5b / Phase 22 Step 2: Tests for ConversationSidebar component.
 
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ConversationSidebar } from './conversation-sidebar';
-import { UserProvider, DEFAULT_GUEST_USER } from '../../context/user-context';
-import type { Conversation, DemoUser } from '../../types/api';
+import { AuthProvider } from '../../context/auth-context';
+import type { Conversation, AuthUser } from '../../types/api';
 
-const mockDemoUsers: DemoUser[] = [
-  DEFAULT_GUEST_USER,
-  {
-    id: '11111111-1111-4111-a111-111111111111',
-    name: 'Alice Johnson',
-    email: 'alice@example.com',
-    scenario: 'Scenario 1 & 5',
-    isGuest: false,
-  },
-  {
-    id: '22222222-2222-4222-a222-222222222222',
-    name: 'Bob Smith',
-    email: 'bob@example.com',
-    scenario: 'Scenario 2',
-    isGuest: false,
-  },
-];
+const mockUser: AuthUser = {
+  id: 'user-alice-123',
+  name: 'Alice Johnson',
+  email: 'alice@example.com',
+  defaultAddress: '123 Test Lane',
+};
 
 const mockConversations: Conversation[] = [
   {
     id: 'conv-1111-aaaa',
-    userId: DEFAULT_GUEST_USER.id,
+    userId: mockUser.id,
     status: 'active',
-    createdAt: new Date(Date.now() - 1000 * 60 * 5).toISOString(), // 5 mins ago
+    createdAt: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
     updatedAt: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
   },
   {
     id: 'conv-2222-bbbb',
-    userId: DEFAULT_GUEST_USER.id,
+    userId: mockUser.id,
     status: 'escalated',
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
     updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
   },
 ];
@@ -48,12 +37,18 @@ describe('ConversationSidebar', () => {
     vi.clearAllMocks();
   });
 
-  function renderSidebar(props: Partial<React.ComponentProps<typeof ConversationSidebar>> = {}) {
+  function renderSidebar(
+    props: Partial<React.ComponentProps<typeof ConversationSidebar>> = {},
+    isAuth = true
+  ) {
     const onSelect = vi.fn();
     const onNewChat = vi.fn();
 
     const utils = render(
-      <UserProvider initialUsers={mockDemoUsers} initialUser={DEFAULT_GUEST_USER}>
+      <AuthProvider
+        initialToken={isAuth ? 'test-token' : null}
+        initialUser={isAuth ? mockUser : null}
+      >
         <ConversationSidebar
           conversations={mockConversations}
           selectedId={mockConversations[0].id}
@@ -61,7 +56,7 @@ describe('ConversationSidebar', () => {
           onNewChat={onNewChat}
           {...props}
         />
-      </UserProvider>
+      </AuthProvider>
     );
 
     return { ...utils, onSelect, onNewChat };
@@ -91,23 +86,20 @@ describe('ConversationSidebar', () => {
     expect(onNewChat).toHaveBeenCalled();
   });
 
-  it('displays mandatory demo identity disclaimer', () => {
+  it('displays authenticated user profile card and sign out button', () => {
     renderSidebar();
 
-    expect(
-      screen.getByText(/demo identity, not authentication/i)
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('sidebar-user-card')).toBeInTheDocument();
+    expect(screen.getByText('Alice Johnson')).toBeInTheDocument();
+    expect(screen.getByText('alice@example.com')).toBeInTheDocument();
+    expect(screen.getByTestId('sidebar-signout-btn')).toBeInTheDocument();
   });
 
-  it('allows switching demo identities via select dropdown', () => {
-    renderSidebar();
+  it('displays sign in button when unauthenticated', () => {
+    renderSidebar({}, false);
 
-    const select = screen.getByTestId('demo-user-select') as HTMLSelectElement;
-    expect(select.value).toBe(DEFAULT_GUEST_USER.id);
-
-    fireEvent.change(select, { target: { value: mockDemoUsers[1].id } });
-    expect(select.value).toBe(mockDemoUsers[1].id);
-    expect(screen.getByText(/Active:/i)).toHaveTextContent('alice@example.com');
+    expect(screen.getByTestId('sidebar-signin-btn')).toBeInTheDocument();
+    expect(screen.queryByTestId('sidebar-user-card')).not.toBeInTheDocument();
   });
 
   it('shows empty state message when no conversations exist', () => {
@@ -124,4 +116,3 @@ describe('ConversationSidebar', () => {
     expect(screen.getByText(/Loading chats\.\.\./i)).toBeInTheDocument();
   });
 });
-
