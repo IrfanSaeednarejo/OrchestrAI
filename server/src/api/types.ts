@@ -2,6 +2,7 @@
 // Phase 16: Common API type contracts and Express request extensions.
 
 import type { User } from '../persistence/repositories/marketplace.repository.js';
+import type { AuthMethod } from '../state/session-identity.js';
 
 export interface AuthenticatedUser {
   id: string;
@@ -15,6 +16,7 @@ declare global {
   namespace Express {
     interface Request {
       user?: AuthenticatedUser | User;
+      authMethod?: AuthMethod;
     }
   }
 }

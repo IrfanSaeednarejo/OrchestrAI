@@ -63,6 +63,7 @@ export async function authMiddleware(
         throw new UnauthorizedError('User account not found');
       }
       req.user = user;
+      req.authMethod = 'bearer';
       return next();
     }
 
@@ -81,6 +82,7 @@ export async function authMiddleware(
       }
 
       req.user = user;
+      req.authMethod = 'x-user-id';
       return next();
     }
 
@@ -90,6 +92,7 @@ export async function authMiddleware(
       ...guestUser,
       isGuest: true,
     };
+    req.authMethod = 'guest';
     next();
   } catch (err) {
     next(err);

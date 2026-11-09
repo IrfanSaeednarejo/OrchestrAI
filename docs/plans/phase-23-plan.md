@@ -1,4 +1,8 @@
-# Phase 23 — Stabilization — PLAN (status: DRAFT)
+# Phase 23 — Stabilization — PLAN (status: APPROVED)
+
+## Approvals
+- 2026-11-09: APPROVED: live Gemini smoke
+- 2026-11-09: APPROVED: Phase 23 Stabilization Plan and OD-24a, OD-24b, OD-24c
 
 ## 1. Goal and How it Fits the Architecture
 The stabilization phase addresses real-user customer journey failures identified during post-Phase 22 review. While synthetic evaluations with injected state pass, real logged-in users encounter identity disconnects (Bearer sessions lacking gate verification), unhandled BLOCKED specialist branches returning empty responses (502 / SSE error), unconfirmed automated financial mutations, and cross-turn handoff exhaustion. This phase establishes hardened session-identity seeding, uniform blocked-workflow responses, strict owner-scoped tool permissions, robust router state lifecycle, and human review escalation for payment disputes without destabilizing underlying checkpointer or access control foundations.

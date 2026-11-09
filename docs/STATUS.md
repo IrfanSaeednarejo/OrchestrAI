@@ -1,9 +1,10 @@
 # STATUS (update at the end of every step/phase)
 
-Last verified suite figure reported: Server 586/586 passing (67 files), Client 144/144 passing (28 files). Total: 730 passing tests. Server baseline test count: 563. Client baseline test count: 98.
+Last verified suite figure reported: Server 594/594 passing (68 files), Client 144/144 passing (28 files). Total: 738 passing tests. Server baseline test count: 586. Client baseline test count: 144.
 
 ## Phase state
 - Phases 1-23: COMPLETE and signed off.
+- Phase 24 (Stabilization): In progress on branch `phase/23-stabilization`. Step 0 (Plan & Baseline) and Step 1a (Session-Identity Seeding & Propagation) COMPLETE.
 
   - Phase 6 (Access Control / Verification Gate): Steps 0-5 closed; Step 6a proof graph verified; Step 6b close-out and type unification completed.
   - Phase 7 (Agent Foundation): Steps 0-5 closed; LLM client, prompt loader, handoff contract, common node patterns, and subgraph harness verified (294 tests).

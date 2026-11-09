@@ -15,7 +15,7 @@ import { checkpointer } from '../../persistence/checkpointer/client.js';
 import { buildParentGraph } from '../../graphs/parent/parent-graph.js';
 import { createTraceConfig } from '../../observability/tracer.js';
 import type { ConversationState, IdentityState } from '../../state/conversation-state.js';
-import type { User } from '../../persistence/repositories/marketplace.repository.js';
+import { resolveSessionIdentity } from '../../state/session-identity.js';
 import { NotFoundError, UnauthorizedError } from '../errors/app-error.js';
 import { assertConversationOwnership } from '../utils/auth-helpers.js';
 import type { ServiceOption } from '../../graphs/parent/parent-graph.js';
@@ -159,32 +159,15 @@ export async function sendMessageHandler(
 
   const humanMessage = new HumanMessage({ content, id: humanMessageId });
 
-  const isRegisteredUser = (req.user as User & { isGuest?: boolean })?.isGuest !== true;
-  let initialIdentityUpdate: { identity: IdentityState } | Record<string, never> = {};
-
-  if (isRegisteredUser) {
-    try {
-      const currentSnapshot = await graph.getState(traceConfig);
-      const currentIdentity = (currentSnapshot?.values as ConversationState | undefined)?.identity;
-      if (!currentIdentity || currentIdentity.status === 'UNVERIFIED') {
-        initialIdentityUpdate = {
-          identity: {
-            status: 'LIGHTLY_VERIFIED',
-            verificationMethod: 'order_number',
-            verifiedAt: new Date().toISOString(),
-          },
-        };
-      }
-    } catch {
-      initialIdentityUpdate = {
-        identity: {
-          status: 'LIGHTLY_VERIFIED',
-          verificationMethod: 'order_number',
-          verifiedAt: new Date().toISOString(),
-        },
-      };
-    }
+  let currentIdentity: IdentityState | null | undefined;
+  try {
+    const currentSnapshot = await graph.getState(traceConfig);
+    currentIdentity = (currentSnapshot?.values as ConversationState | undefined)?.identity;
+  } catch {
+    currentIdentity = null;
   }
+
+  const resolvedIdentity = resolveSessionIdentity(req.authMethod, currentIdentity);
 
   const isSSE = req.headers.accept?.includes('text/event-stream');
 
@@ -218,7 +201,7 @@ export async function sendMessageHandler(
         {
           messages: [humanMessage],
           user: { id: callerId },
-          ...initialIdentityUpdate,
+          identity: resolvedIdentity,
         },
         { ...traceConfig, streamMode: 'updates' }
       );
@@ -315,7 +298,7 @@ export async function sendMessageHandler(
       {
         messages: [humanMessage],
         user: { id: callerId },
-        ...initialIdentityUpdate,
+        identity: resolvedIdentity,
       },
       traceConfig
     )) as ConversationState;
