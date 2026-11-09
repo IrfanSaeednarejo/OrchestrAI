@@ -244,11 +244,17 @@ export async function orderTrackingNode(
   }
 
   // ── Phase B: Fetch order via gated tool ─────────────────────────────────
-  const orderResult = await gatedExecuteTool(getOrder, getOrderMetadata, { orderId }, {
-    agentExecutionId,
-    specialist,
-    identity: state.identity,
-  });
+  const callerUserId = typeof state.user?.id === 'string' ? state.user.id : undefined;
+  const orderResult = await gatedExecuteTool(
+    getOrder,
+    getOrderMetadata,
+    { orderId, userId: callerUserId },
+    {
+      agentExecutionId,
+      specialist,
+      identity: state.identity,
+    }
+  );
 
   if (orderResult.gate.outcome === 'BLOCKED') {
     const returnTo = {

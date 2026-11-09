@@ -285,10 +285,11 @@ export async function paymentNode(
   }
 
   // 2. Fetch payment details via gated tool (requires FULL verification)
+  const callerUserId = typeof state.user?.id === 'string' ? state.user.id : undefined;
   const paymentResult = await gatedExecuteTool(
     getPayment,
     getPaymentMetadata,
-    { orderId },
+    { orderId, userId: callerUserId },
     {
       agentExecutionId,
       specialist,

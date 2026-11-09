@@ -19,7 +19,7 @@ function requireDemoEnabled(req: Request, _res: Response, next: NextFunction): v
       ? Boolean(req.app.locals.enableDemoEndpoints)
       : config.app.enableDemoEndpoints;
 
-  if (!isEnabled) {
+  if (!isEnabled || config.env === 'production') {
     throw new NotFoundError('Ops endpoints are not enabled');
   }
   next();

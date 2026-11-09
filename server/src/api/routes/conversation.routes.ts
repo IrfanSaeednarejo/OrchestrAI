@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { asyncHandler } from '../utils/async-handler.js';
 import { authMiddleware } from '../middleware/auth.middleware.js';
 import { validateRequest } from '../middleware/validation.middleware.js';
+import { rateLimit } from '../middleware/rate-limit.middleware.js';
 import {
   ConversationIdParamSchema,
   PaginationQuerySchema,
@@ -24,6 +25,7 @@ conversationRouter.use(asyncHandler(authMiddleware));
 
 conversationRouter.post(
   '/',
+  rateLimit({ windowSeconds: 60, maxRequests: 60 }),
   validateRequest({ body: StartConversationSchema }),
   asyncHandler(createConversationHandler)
 );
@@ -48,6 +50,7 @@ conversationRouter.get(
 
 conversationRouter.post(
   '/:id/messages',
+  rateLimit({ windowSeconds: 60, maxRequests: 60 }),
   validateRequest({
     params: ConversationIdParamSchema,
     body: SendMessageSchema,

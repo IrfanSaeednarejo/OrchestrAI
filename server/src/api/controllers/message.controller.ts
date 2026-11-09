@@ -282,9 +282,15 @@ export async function sendMessageHandler(
       }
     } catch (streamErr) {
       if (!clientDisconnected) {
+        const isProd = process.env.NODE_ENV === 'production';
+        const errorMessage = isProd
+          ? 'An internal streaming error occurred'
+          : streamErr instanceof Error
+            ? streamErr.message
+            : 'Streaming error';
         res.write(
           `event: error\ndata: ${JSON.stringify({
-            message: streamErr instanceof Error ? streamErr.message : 'Streaming error',
+            message: errorMessage,
           })}\n\n`
         );
         res.end();

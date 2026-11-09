@@ -14,6 +14,7 @@ const uuidSchema = z.string().uuid();
 
 export const GetOrderInputSchema = z.object({
   orderId: uuidSchema,
+  userId: z.string().optional(),
 });
 
 export const GetOrderOutputSchema = z.object({
@@ -42,6 +43,13 @@ export async function getOrder(
   try {
     const order = await getOrderById(parsed.data.orderId);
     if (!order) {
+      return {
+        success: false,
+        error: { code: 'NOT_FOUND', message: `Order ${parsed.data.orderId} not found.` },
+      };
+    }
+
+    if (parsed.data.userId && order.userId !== parsed.data.userId) {
       return {
         success: false,
         error: { code: 'NOT_FOUND', message: `Order ${parsed.data.orderId} not found.` },
