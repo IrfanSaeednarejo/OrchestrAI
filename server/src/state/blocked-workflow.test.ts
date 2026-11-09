@@ -1,9 +1,11 @@
 // src/state/blocked-workflow.test.ts
 import { describe, it, expect } from 'vitest';
+import type { BaseMessage } from '@langchain/core/messages';
 import {
   isBlockedByReason,
   reasonForRequirement,
   buildBlockedWorkflowUpdate,
+  createBlockedResponse,
   BuildBlockedWorkflowInput
 } from './blocked-workflow.js';
 import { evaluateGate } from '../tools/gate.js';
@@ -161,6 +163,43 @@ describe('blocked-workflow', () => {
           resumeContext: null,
         }
       });
+    });
+  });
+
+  describe('createBlockedResponse', () => {
+    it('sets workflowStatus to WAITING_FOR_USER_INPUT and includes AIMessage', () => {
+      const input = {
+        decision: {
+          outcome: 'BLOCKED' as const,
+          reason: 'VERIFICATION_REQUIRED' as const,
+          tool: 'get_order',
+          specialist: 'order_tracking' as const,
+          required: 'LIGHT' as const,
+          current: 'UNVERIFIED' as const,
+        },
+        returnTo: { domain: 'order_tracking', agent: 'order_tracking', workflowStep: 'get_order' },
+        workflowId: null,
+        originatingIntent: 'ORDER_STATUS',
+        currentStep: 'get_order',
+        resumeContext: { orderId: 'ord-123' },
+      };
+
+      const response = createBlockedResponse(input, 'Please confirm your identity.');
+
+      expect(response.workflowStatus).toBe('WAITING_FOR_USER_INPUT');
+      expect(response.activeWorkflow).toEqual({
+        workflowId: null,
+        originatingIntent: 'ORDER_STATUS',
+        currentStep: 'get_order',
+        blockedBy: 'VERIFICATION_LIGHT',
+        returnTo: { domain: 'order_tracking', agent: 'order_tracking', workflowStep: 'get_order' },
+        resumeContext: { orderId: 'ord-123' },
+      });
+      expect(Array.isArray(response.messages)).toBe(true);
+      const msgs = response.messages as BaseMessage[];
+      expect(msgs).toHaveLength(1);
+      expect(msgs[0]?.getType()).toBe('ai');
+      expect(msgs[0]?.content).toBe('Please confirm your identity.');
     });
   });
 });

@@ -28,7 +28,7 @@ import {
 import { generateStructuredOutput } from '../../llm/client.js';
 import { loadPrompt } from '../../prompts/template-loader.js';
 import { gatedExecuteTool } from '../../../tools/gated-execution.js';
-import { buildBlockedWorkflowUpdate } from '../../../state/blocked-workflow.js';
+import { createBlockedResponse } from '../../../state/blocked-workflow.js';
 import { retrieveKnowledge } from '../../../knowledge/retrieval.js';
 import { recordAgentExecution } from '../../../routing/events.js';
 import {
@@ -222,8 +222,16 @@ export async function orderTrackingNode(
   // ── Phase A: Extract orderId ─────────────────────────────────────────────
   const userText = extractLastUserText(state);
   const extraction = await extractOrderId(userText);
+  const resumeOrderId =
+    state.activeWorkflow?.returnTo?.agent === specialist &&
+    state.activeWorkflow?.resumeContext &&
+    typeof state.activeWorkflow.resumeContext['orderId'] === 'string'
+      ? state.activeWorkflow.resumeContext['orderId']
+      : undefined;
 
-  if (!extraction.orderId) {
+  const orderId = extraction.orderId || resumeOrderId;
+
+  if (!orderId) {
     return {
       workflowStatus: 'WAITING_FOR_USER_INPUT',
       messages: [
@@ -234,8 +242,6 @@ export async function orderTrackingNode(
       ],
     };
   }
-
-  const orderId = extraction.orderId;
 
   // ── Phase B: Fetch order via gated tool ─────────────────────────────────
   const orderResult = await gatedExecuteTool(getOrder, getOrderMetadata, { orderId }, {
@@ -250,23 +256,17 @@ export async function orderTrackingNode(
       agent: specialist,
       workflowStep: 'get_order',
     };
-    const blockedUpdate = buildBlockedWorkflowUpdate({
-      decision: orderResult.gate,
-      returnTo,
-      workflowId: null,
-      originatingIntent: state.currentIntent,
-      currentStep: 'get_order',
-      resumeContext: { orderId },
-    });
-    return {
-      ...blockedUpdate,
-      workflowStatus: 'WAITING_FOR_USER_INPUT',
-      messages: [
-        new AIMessage(
-          'To view order and tracking details, please log in to your account or confirm your identity.'
-        ),
-      ],
-    };
+    return createBlockedResponse(
+      {
+        decision: orderResult.gate,
+        returnTo,
+        workflowId: null,
+        originatingIntent: state.currentIntent,
+        currentStep: 'get_order',
+        resumeContext: { orderId },
+      },
+      'To view order and tracking details, please log in to your account or confirm your identity.'
+    );
   }
 
   if (orderResult.gate.outcome === 'DENIED') {
@@ -337,6 +337,7 @@ export async function orderTrackingNode(
 
   return {
     workflowStatus: 'COMPLETED',
+    activeWorkflow: null,
     messages: [new AIMessage(responseText)],
   };
 }

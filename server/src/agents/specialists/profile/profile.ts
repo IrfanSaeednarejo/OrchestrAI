@@ -23,7 +23,7 @@ import {
 import { generateStructuredOutput } from '../../llm/client.js';
 import { loadPrompt } from '../../prompts/template-loader.js';
 import { gatedExecuteTool } from '../../../tools/gated-execution.js';
-import { buildBlockedWorkflowUpdate } from '../../../state/blocked-workflow.js';
+import { createBlockedResponse } from '../../../state/blocked-workflow.js';
 import { recordAgentExecution } from '../../../routing/events.js';
 import { getProfile, getProfileMetadata } from '../../../tools/queries/profile.tools.js';
 import { updateProfile, updateProfileMetadata } from '../../../tools/mutations/profile.tools.js';
@@ -269,23 +269,17 @@ export async function profileNode(
         agent: specialist,
         workflowStep: 'get_profile',
       };
-      const blockedUpdate = buildBlockedWorkflowUpdate({
-        decision: profileResult.gate,
-        returnTo,
-        workflowId: null,
-        originatingIntent: state.currentIntent,
-        currentStep: 'get_profile',
-        resumeContext: { userId, intent: 'view_profile' },
-      });
-      return {
-        ...blockedUpdate,
-        workflowStatus: 'WAITING_FOR_USER_INPUT',
-        messages: [
-          new AIMessage(
-            'To access your profile, we need to verify your identity first. Please request a verification code to receive a 6-digit code via email, or enter your code if you already have one.'
-          ),
-        ],
-      };
+      return createBlockedResponse(
+        {
+          decision: profileResult.gate,
+          returnTo,
+          workflowId: null,
+          originatingIntent: state.currentIntent,
+          currentStep: 'get_profile',
+          resumeContext: { userId, intent: 'view_profile' },
+        },
+        'To access your profile, we need to verify your identity first. Please request a verification code to receive a 6-digit code via email, or enter your code if you already have one.'
+      );
     }
 
     if (profileResult.gate.outcome === 'DENIED') {
@@ -363,23 +357,17 @@ export async function profileNode(
       agent: specialist,
       workflowStep: 'update_profile',
     };
-    const blockedUpdate = buildBlockedWorkflowUpdate({
-      decision: updateResult.gate,
-      returnTo,
-      workflowId: null,
-      originatingIntent: state.currentIntent,
-      currentStep: 'update_profile',
-      resumeContext: { userId, intent: 'update_profile', name: newName ?? null, defaultAddress: newDefaultAddress ?? null },
-    });
-    return {
-      ...blockedUpdate,
-      workflowStatus: 'WAITING_FOR_USER_INPUT',
-      messages: [
-        new AIMessage(
-          'To update your profile, we need to verify your identity first. Please request a verification code to receive a 6-digit code via email, or enter your code if you already have one.'
-        ),
-      ],
-    };
+    return createBlockedResponse(
+      {
+        decision: updateResult.gate,
+        returnTo,
+        workflowId: null,
+        originatingIntent: state.currentIntent,
+        currentStep: 'update_profile',
+        resumeContext: { userId, intent: 'update_profile', name: newName ?? null, defaultAddress: newDefaultAddress ?? null },
+      },
+      'To update your profile, we need to verify your identity first. Please request a verification code to receive a 6-digit code via email, or enter your code if you already have one.'
+    );
   }
 
   if (updateResult.gate.outcome === 'DENIED') {

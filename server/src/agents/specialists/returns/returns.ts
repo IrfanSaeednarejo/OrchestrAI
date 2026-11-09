@@ -22,7 +22,7 @@ import {
 import { generateStructuredOutput } from '../../llm/client.js';
 import { loadPrompt } from '../../prompts/template-loader.js';
 import { gatedExecuteTool } from '../../../tools/gated-execution.js';
-import { buildBlockedWorkflowUpdate } from '../../../state/blocked-workflow.js';
+import { createBlockedResponse } from '../../../state/blocked-workflow.js';
 import { retrieveKnowledge } from '../../../knowledge/retrieval.js';
 import { recordAgentExecution } from '../../../routing/events.js';
 import {
@@ -283,23 +283,17 @@ export async function returnsNode(
       agent: specialist,
       workflowStep: 'check_return_eligibility',
     };
-    const blockedUpdate = buildBlockedWorkflowUpdate({
-      decision: eligibilityResult.gate,
-      returnTo,
-      workflowId: null,
-      originatingIntent: state.currentIntent,
-      currentStep: 'check_return_eligibility',
-      resumeContext: { orderId, reason },
-    });
-    return {
-      ...blockedUpdate,
-      workflowStatus: 'WAITING_FOR_USER_INPUT',
-      messages: [
-        new AIMessage(
-          'To check return eligibility, please log in to your account or confirm your identity.'
-        ),
-      ],
-    };
+    return createBlockedResponse(
+      {
+        decision: eligibilityResult.gate,
+        returnTo,
+        workflowId: null,
+        originatingIntent: state.currentIntent,
+        currentStep: 'check_return_eligibility',
+        resumeContext: { orderId, reason },
+      },
+      'To check return eligibility, please log in to your account or confirm your identity.'
+    );
   }
 
   if (eligibilityResult.gate.outcome === 'DENIED') {
@@ -384,24 +378,18 @@ export async function returnsNode(
       agent: specialist,
       workflowStep: 'create_return',
     };
-    const blockedUpdate = buildBlockedWorkflowUpdate({
-      decision: createResult.gate,
-      returnTo,
-      workflowId: null,
-      originatingIntent: state.currentIntent,
-      currentStep: 'create_return',
-      resumeContext: { orderId, reason: returnReason },
-    });
-    return {
-      ...blockedUpdate,
-      workflowStatus: 'WAITING_FOR_USER_INPUT',
-      messages: [
-        new AIMessage(
-          'Your order is eligible for return! To submit the return request, we need to verify your identity. ' +
-            'Please request a verification code to receive a 6-digit code via email, or enter your code if you already have one.'
-        ),
-      ],
-    };
+    return createBlockedResponse(
+      {
+        decision: createResult.gate,
+        returnTo,
+        workflowId: null,
+        originatingIntent: state.currentIntent,
+        currentStep: 'create_return',
+        resumeContext: { orderId, reason: returnReason },
+      },
+      'Your order is eligible for return! To submit the return request, we need to verify your identity. ' +
+        'Please request a verification code to receive a 6-digit code via email, or enter your code if you already have one.'
+    );
   }
 
   if (createResult.gate.outcome === 'DENIED') {

@@ -23,7 +23,7 @@ import {
 import { generateStructuredOutput } from '../../llm/client.js';
 import { loadPrompt } from '../../prompts/template-loader.js';
 import { gatedExecuteTool } from '../../../tools/gated-execution.js';
-import { buildBlockedWorkflowUpdate } from '../../../state/blocked-workflow.js';
+import { createBlockedResponse } from '../../../state/blocked-workflow.js';
 import { retrieveKnowledge } from '../../../knowledge/retrieval.js';
 import { recordAgentExecution } from '../../../routing/events.js';
 import {
@@ -302,24 +302,18 @@ export async function paymentNode(
       agent: specialist,
       workflowStep: 'get_payment',
     };
-    const blockedUpdate = buildBlockedWorkflowUpdate({
-      decision: paymentResult.gate,
-      returnTo,
-      workflowId: null,
-      originatingIntent: state.currentIntent,
-      currentStep: 'get_payment',
-      resumeContext: { orderId, intent },
-    });
-    return {
-      ...blockedUpdate,
-      workflowStatus: 'WAITING_FOR_USER_INPUT',
-      messages: [
-        new AIMessage(
-          'To access sensitive payment details, we need to verify your identity first. ' +
-            'Please request a verification code to receive a 6-digit code via email, or enter your code if you already have one.'
-        ),
-      ],
-    };
+    return createBlockedResponse(
+      {
+        decision: paymentResult.gate,
+        returnTo,
+        workflowId: null,
+        originatingIntent: state.currentIntent,
+        currentStep: 'get_payment',
+        resumeContext: { orderId, intent },
+      },
+      'To access sensitive payment details, we need to verify your identity first. ' +
+        'Please request a verification code to receive a 6-digit code via email, or enter your code if you already have one.'
+    );
   }
 
   if (paymentResult.gate.outcome === 'DENIED') {
@@ -375,24 +369,18 @@ export async function paymentNode(
         agent: specialist,
         workflowStep: 'detect_duplicate_charge',
       };
-      const blockedUpdate = buildBlockedWorkflowUpdate({
-        decision: duplicateResult.gate,
-        returnTo,
-        workflowId: null,
-        originatingIntent: state.currentIntent,
-        currentStep: 'detect_duplicate_charge',
-        resumeContext: { orderId, intent },
-      });
-      return {
-      ...blockedUpdate,
-      workflowStatus: 'WAITING_FOR_USER_INPUT',
-      messages: [
-        new AIMessage(
-          'To access sensitive payment details, we need to verify your identity first. ' +
-            'Please request a verification code to receive a 6-digit code via email, or enter your code if you already have one.'
-        ),
-      ],
-    };
+      return createBlockedResponse(
+        {
+          decision: duplicateResult.gate,
+          returnTo,
+          workflowId: null,
+          originatingIntent: state.currentIntent,
+          currentStep: 'detect_duplicate_charge',
+          resumeContext: { orderId, intent },
+        },
+        'To access sensitive payment details, we need to verify your identity first. ' +
+          'Please request a verification code to receive a 6-digit code via email, or enter your code if you already have one.'
+      );
     }
 
     if (duplicateResult.gate.outcome === 'DENIED') {
