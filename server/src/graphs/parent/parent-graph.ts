@@ -185,27 +185,8 @@ export async function routerNode(
     };
   }
 
-  // 2. Guard check: RESUME active workflow
+  // 2. Guard check: RESUME active workflow (exempt from loop detection, OD-24c)
   if (guardOutcome.outcome === 'RESUME') {
-    if (isRoutingLoop(state.routing, guardOutcome.targetSpecialist)) {
-      const loopEvent: RoutingEvent = {
-        conversationId,
-        sourceAgent: state.routing.currentAgent,
-        destinationAgent: 'escalation',
-        intent: state.currentIntent,
-        decisionType: 'ESCALATION',
-        reason: `Loop detected while resuming to '${guardOutcome.targetSpecialist}'.`,
-      };
-      const routingUpdate = await logRoutingEventSafely(loopEvent);
-      return {
-        ...routingUpdate,
-        workflowStatus: 'ESCALATED',
-        messages: [
-          new AIMessage('I detected repeated routing issues and am connecting you with a supervisor.'),
-        ],
-      };
-    }
-
     const routingEvent: RoutingEvent = {
       conversationId,
       sourceAgent: state.routing.currentAgent,
@@ -241,7 +222,17 @@ export async function routerNode(
     detectedIntent = 'GREETING';
     routingReason = 'Customer greeting and general triage';
   } else if (
-    // 3a. Order tracking continuation guard: when specialist is awaiting an order ID,
+    // 3a. Sticky verification guard: when active workflow is awaiting identity verification,
+    // route directly to account_access without invoking LLM classification.
+    state.activeWorkflow?.currentStep === 'verify_identity' &&
+    state.activeWorkflow?.blockedBy !== null &&
+    state.activeWorkflow?.blockedBy !== undefined
+  ) {
+    targetSpecialist = 'account_access';
+    detectedIntent = 'ACCOUNT_SECURITY';
+    routingReason = 'Sticky routing to account_access for pending identity verification';
+  } else if (
+    // 3b. Order tracking continuation guard: when specialist is awaiting an order ID,
     // route back directly without re-classifying through the LLM.
     state.routing.currentAgent === 'order_tracking' &&
     state.workflowStatus === 'WAITING_FOR_USER_INPUT'

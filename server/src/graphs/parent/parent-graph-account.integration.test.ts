@@ -286,19 +286,8 @@ describe('Phase 11: Account Specialists Integration (Scenarios 5, 6, 7, 13, 14)'
     const { code } = JSON.parse(redisRaw) as { code: string };
     expect(code).toMatch(/^\d{6}$/);
 
-    // ── Turn 3: Customer provides code -> verify -> resume Payment ───────────
-    // 1. Router classifies message to account_access
-    mockGenerateContent.mockResolvedValueOnce({
-      text: JSON.stringify({
-        specialist: 'account_access',
-        intent: 'ACCOUNT_SECURITY',
-        confidence: 0.97,
-        reasoning: 'Customer provides 6-digit verification code.',
-      }),
-    });
-
-    // Note: Account Access fast-paths 6-digit code regex, no extra LLM extraction needed.
-    // 2. Resumed Payment specialist generates grounded confirmation response:
+    // ── Turn 3: Customer provides code -> sticky guard routes directly to account_access ─
+    // Resumed Payment specialist generates grounded confirmation response:
     mockGenerateContent.mockResolvedValueOnce({
       text: JSON.stringify({
         response: `Your payment of $210.00 for order ${order5Id} is captured and completed.`,
@@ -411,18 +400,8 @@ describe('Phase 11: Account Specialists Integration (Scenarios 5, 6, 7, 13, 14)'
     if (!redisRaw) throw new Error('Redis verification data missing');
     const { code } = JSON.parse(redisRaw) as { code: string };
 
-    // ── Turn 3: Customer submits code -> verified -> resume Returns ──────────
-    // 1. Router classifies to account_access
-    mockGenerateContent.mockResolvedValueOnce({
-      text: JSON.stringify({
-        specialist: 'account_access',
-        intent: 'ACCOUNT_SECURITY',
-        confidence: 0.98,
-        reasoning: 'Customer submits verification code.',
-      }),
-    });
-
-    // 2. Resumed Returns specialist confirms return creation
+    // ── Turn 3: Customer submits code -> sticky guard routes directly to account_access ───
+    // Resumed Returns specialist confirms return creation
     mockGenerateContent.mockResolvedValueOnce({
       text: JSON.stringify({
         response: `Your return for order ${order6Id} has been successfully authorized. Please use the prepaid label sent to your email.`,

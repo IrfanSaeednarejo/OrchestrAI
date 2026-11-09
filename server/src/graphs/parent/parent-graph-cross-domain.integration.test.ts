@@ -824,21 +824,12 @@ describe('Phase 12: Cross-Domain Integration Validation (All 14 Scenarios)', () 
     if (!redisRaw) throw new Error('Redis verification data missing');
     const { code } = JSON.parse(redisRaw) as { code: string };
 
-    // ── Turn 3: Customer enters code -> verify -> resume Payment ────────────
-    mockGenerateContent
-      .mockResolvedValueOnce({
-        text: JSON.stringify({
-          specialist: 'account_access',
-          intent: 'ACCOUNT_SECURITY',
-          confidence: 0.98,
-          reasoning: 'Customer submits 6-digit verification code.',
-        }),
-      })
-      .mockResolvedValueOnce({
-        text: JSON.stringify({
-          response: `Your payment of $180.00 for order ${order5Id} is captured successfully.`,
-        }),
-      });
+    // ── Turn 3: Customer enters code -> verify (sticky guard bypasses classifier) -> resume Payment ────────────
+    mockGenerateContent.mockResolvedValueOnce({
+      text: JSON.stringify({
+        response: `Your payment of $180.00 for order ${order5Id} is captured successfully.`,
+      }),
+    });
 
     const turn3State = await parentGraph.invoke(
       {
@@ -926,21 +917,12 @@ describe('Phase 12: Cross-Domain Integration Validation (All 14 Scenarios)', () 
     if (!redisRaw) throw new Error('Redis verification data missing');
     const { code } = JSON.parse(redisRaw) as { code: string };
 
-    // ── Turn 3: Customer enters code -> verify -> resume Returns ────────────
-    mockGenerateContent
-      .mockResolvedValueOnce({
-        text: JSON.stringify({
-          specialist: 'account_access',
-          intent: 'ACCOUNT_SECURITY',
-          confidence: 0.98,
-          reasoning: 'Customer submits 6-digit OTP code.',
-        }),
-      })
-      .mockResolvedValueOnce({
-        text: JSON.stringify({
-          response: `Your return request for order ${order6Id} is approved and created. Return label generated.`,
-        }),
-      });
+    // ── Turn 3: Customer enters code -> verify (sticky guard bypasses classifier) -> resume Returns ────────────
+    mockGenerateContent.mockResolvedValueOnce({
+      text: JSON.stringify({
+        response: `Your return request for order ${order6Id} is approved and created. Return label generated.`,
+      }),
+    });
 
     const turn3State = await parentGraph.invoke(
       {
@@ -1006,20 +988,11 @@ describe('Phase 12: Cross-Domain Integration Validation (All 14 Scenarios)', () 
     if (!redisRaw) throw new Error('Redis verification data missing');
     const { code } = JSON.parse(redisRaw) as { code: string };
 
-    mockGenerateContent
-      .mockResolvedValueOnce({
-        text: JSON.stringify({
-          specialist: 'account_access',
-          intent: 'ACCOUNT_SECURITY',
-          confidence: 0.98,
-          reasoning: 'Customer submits code.',
-        }),
-      })
-      .mockResolvedValueOnce({
-        text: JSON.stringify({
-          response: 'Identity confirmed and return created successfully.',
-        }),
-      });
+    mockGenerateContent.mockResolvedValueOnce({
+      text: JSON.stringify({
+        response: 'Identity confirmed and return created successfully.',
+      }),
+    });
 
     const turn2State = await parentGraph.invoke(
       {

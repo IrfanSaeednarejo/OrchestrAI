@@ -202,6 +202,7 @@ export async function sendMessageHandler(
           messages: [humanMessage],
           user: { id: callerId },
           identity: resolvedIdentity,
+          routing: { handoffCount: 0 },
         },
         { ...traceConfig, streamMode: 'updates' }
       );
@@ -305,6 +306,7 @@ export async function sendMessageHandler(
         messages: [humanMessage],
         user: { id: callerId },
         identity: resolvedIdentity,
+        routing: { handoffCount: 0 },
       },
       traceConfig
     )) as ConversationState;
