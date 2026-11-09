@@ -1,3 +1,4 @@
+import { sql } from 'drizzle-orm';
 import {
   pgTable,
   pgEnum,
@@ -7,6 +8,7 @@ import {
   numeric,
   timestamp,
   index,
+  uniqueIndex,
   jsonb,
   vector,
 } from 'drizzle-orm/pg-core';
@@ -158,7 +160,7 @@ export const returns = pgTable(
     reason: text('reason').notNull(),
     createdAt: timestamp('created_at').notNull().defaultNow(),
   },
-  (table) => [index('returns_order_id_idx').on(table.orderId)],
+  (table) => [uniqueIndex('returns_order_id_idx').on(table.orderId)],
 );
 
 export const refunds = pgTable(
@@ -175,7 +177,9 @@ export const refunds = pgTable(
     createdAt: timestamp('created_at').notNull().defaultNow(),
   },
   (table) => [
-    index('refunds_payment_id_idx').on(table.paymentId),
+    uniqueIndex('refunds_payment_id_idx')
+      .on(table.paymentId)
+      .where(sql`${table.status} != 'failed'`),
     index('refunds_return_id_idx').on(table.returnId),
   ],
 );

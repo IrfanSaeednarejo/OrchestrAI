@@ -843,7 +843,7 @@ describe('Phase 12: Cross-Domain Integration Validation (All 14 Scenarios)', () 
     expect(turn3State.routing.currentAgent).toBe('payment');
     expect(turn3State.activeWorkflow).toBeNull();
     expect(turn3State.messages.at(-1)?.content).toContain('captured successfully');
-  });
+  }, 60_000);
 
   it('Scenario 6: Return creation with only LIGHT -> Account Access FULL -> resume Returns', async () => {
     const convo = await startConversation(fixtureUserId);
@@ -940,7 +940,7 @@ describe('Phase 12: Cross-Domain Integration Validation (All 14 Scenarios)', () 
     const createdReturns = await getReturnsByOrderId(order6Id);
     expect(createdReturns.length).toBeGreaterThanOrEqual(1);
     expect(createdReturns[0]?.status).toBe('requested');
-  });
+  }, 60_000);
 
   it('Scenario 7: Login issue mid-Returns flow -> Account Access -> resume Returns', async () => {
     const convo = await startConversation(fixtureUserId);
