@@ -315,6 +315,30 @@ describe('executeTool wrapper', () => {
       expect(result.success).toBe(false);
     });
 
+    it('Step 6: mutation tools (create_return, create_refund, update_profile) are NEVER retried even on TIMEOUT', async () => {
+      let callCount = 0;
+      const mutationTool = async (): Promise<ToolResult<{ value: string }>> => {
+        callCount++;
+        return {
+          success: false,
+          error: { code: 'TIMEOUT', message: 'Gateway timeout during mutation' },
+        };
+      };
+
+      const result = await executeTool(
+        mutationTool,
+        { name: 'create_refund', requiredVerification: 'FULL' },
+        { paymentId: 'test-id' },
+        {
+          agentExecutionId: testExecution.id,
+          retryConfig: { maxRetries: 2 }, // Even if explicitly requested
+        }
+      );
+
+      expect(callCount).toBe(1);
+      expect(result.success).toBe(false);
+    });
+
     it('recursively redacts sensitive fields in arrays of objects and nested objects', async () => {
       const sensitiveArrayTool = async (): Promise<ToolResult<{ cards: Array<{ cardNumber: string; type: string }> }>> => {
         return {

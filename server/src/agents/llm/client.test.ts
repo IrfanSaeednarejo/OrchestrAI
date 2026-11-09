@@ -110,13 +110,44 @@ describe('generateStructuredOutput', () => {
 
   // f. SDK throws → SDK_ERROR (never throws)
   it('returns SDK_ERROR when the underlying SDK throws', async () => {
-    mockGenerateContent.mockRejectedValueOnce(new Error('network failure'));
+    mockGenerateContent.mockRejectedValue(new Error('fatal error'));
 
     const result = await generateStructuredOutput(schema, 'some prompt');
 
     expect(result.success).toBe(false);
     if (!result.success) {
       expect(result.error.kind).toBe('SDK_ERROR');
+    }
+  });
+
+  it('Step 6: retries on transient network error and succeeds on retry', async () => {
+    mockGenerateContent
+      .mockRejectedValueOnce(new Error('fetch failed: network error'))
+      .mockResolvedValueOnce(makeTextResponse('{"answer":"recovered","value":99}'));
+
+    const result = await generateStructuredOutput(schema, 'prompt with retry');
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data).toEqual({ answer: 'recovered', value: 99 });
+    }
+    expect(mockGenerateContent).toHaveBeenCalledTimes(2);
+  });
+
+  it('Step 6: times out when LLM call exceeds timeoutMs', async () => {
+    mockGenerateContent.mockImplementationOnce(
+      () => new Promise((resolve) => setTimeout(resolve, 500))
+    );
+
+    const result = await generateStructuredOutput(schema, 'prompt that hangs', {
+      timeoutMs: 50,
+      maxRetries: 0,
+    });
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.kind).toBe('SDK_ERROR');
+      expect(result.error.message).toMatch(/timed out after 50ms/i);
     }
   });
 

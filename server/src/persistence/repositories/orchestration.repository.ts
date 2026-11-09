@@ -40,6 +40,18 @@ export async function createAgentExecution(
   if (!result[0]) throw new Error('Failed to create record'); return result[0];
 }
 
+export async function updateAgentExecution(
+  id: string,
+  update: Partial<NewAgentExecution>
+): Promise<AgentExecution | null> {
+  const result = await db
+    .update(agentExecutions)
+    .set(update)
+    .where(eq(agentExecutions.id, id))
+    .returning();
+  return result[0] ?? null;
+}
+
 export async function getAgentExecutionsByConversationId(
   conversationId: string
 ): Promise<AgentExecution[]> {
