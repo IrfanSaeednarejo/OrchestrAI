@@ -241,6 +241,16 @@ export async function routerNode(
     detectedIntent = state.currentIntent ?? 'ORDER_STATUS';
     routingReason = 'Continuing order ID collection for active order_tracking session';
   } else if (
+    // 3c. Duplicate charge confirmation guard: when payment specialist is awaiting confirmation,
+    // route back directly to payment without re-classifying through the LLM.
+    state.routing.currentAgent === 'payment' &&
+    state.workflowStatus === 'WAITING_FOR_USER_INPUT' &&
+    state.activeWorkflow?.resumeContext?.['awaitingDuplicateConfirmation'] === true
+  ) {
+    targetSpecialist = 'payment';
+    detectedIntent = 'DUPLICATE_CHARGE';
+    routingReason = 'Continuing duplicate charge confirmation for active payment session';
+  } else if (
     uuidOnlyMatch &&
     state.routing.currentAgent &&
     state.routing.currentAgent !== 'router' &&

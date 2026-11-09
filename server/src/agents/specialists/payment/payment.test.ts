@@ -337,7 +337,7 @@ describe('Payment Specialist Subgraph', () => {
         .mockResolvedValueOnce(makeDuplicateFoundResult());
 
       const state = buildBaseState({
-        messages: [new HumanMessage(`I was double charged for order ${FIXTURE_ORDER_ID}!`)],
+        messages: [new HumanMessage(`I was double charged for order ${FIXTURE_ORDER_ID}! Please refund the duplicate.`)],
       });
 
       const result = await paymentNode(state);

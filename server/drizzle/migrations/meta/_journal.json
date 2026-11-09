@@ -57,6 +57,13 @@
       "when": 1794059315383,
       "tag": "0007_milky_talkback",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1794212114111,
+      "tag": "0008_lying_quasimodo",
+      "breakpoints": true
     }
   ]
 }

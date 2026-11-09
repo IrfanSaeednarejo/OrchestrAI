@@ -55,6 +55,12 @@ export const refundStatusEnum = pgEnum('refund_status', [
   'failed',
 ]);
 
+export const reviewRequestStatusEnum = pgEnum('review_request_status', [
+  'pending',
+  'approved',
+  'rejected',
+]);
+
 // ---------------------------------------------------------------------------
 // Tables
 // ---------------------------------------------------------------------------
@@ -171,6 +177,31 @@ export const refunds = pgTable(
   (table) => [
     index('refunds_payment_id_idx').on(table.paymentId),
     index('refunds_return_id_idx').on(table.returnId),
+  ],
+);
+
+export const reviewRequests = pgTable(
+  'review_requests',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    conversationId: uuid('conversation_id')
+      .notNull()
+      .references(() => conversations.id),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id),
+    orderId: uuid('order_id').references(() => orders.id),
+    paymentId: uuid('payment_id').references(() => payments.id),
+    duplicatePaymentId: uuid('duplicate_payment_id').references(() => payments.id),
+    amount: numeric('amount', { precision: 10, scale: 2 }).notNull(),
+    status: reviewRequestStatusEnum('status').notNull().default('pending'),
+    reason: text('reason').notNull(),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  },
+  (table) => [
+    index('review_requests_conversation_id_idx').on(table.conversationId),
+    index('review_requests_user_id_idx').on(table.userId),
   ],
 );
 

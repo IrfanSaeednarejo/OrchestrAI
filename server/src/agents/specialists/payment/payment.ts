@@ -35,6 +35,8 @@ import {
   detectDuplicateCharge,
   detectDuplicateChargeMetadata,
 } from '../../../tools/business/duplicate-detection.js';
+import { createReviewRequest } from '../../../persistence/repositories/review-request.repository.js';
+import { getOrderById } from '../../../persistence/repositories/marketplace.repository.js';
 
 // ---------------------------------------------------------------------------
 // Prompt template (5 required sections)
@@ -156,6 +158,20 @@ export function isDuplicateChargeInquiry(userText: string, intent?: string | nul
   );
 }
 
+export function isUserConfirmation(text: string): { confirmed: boolean; declined: boolean } {
+  const lower = text.toLowerCase().trim();
+  const affirmPattern = /\b(yes|yeah|yep|sure|please|confirm|refund|ok|okay|proceed|do it|go ahead|submit)\b/i;
+  const declinePattern = /\b(no|nope|cancel|don't|dont|nevermind|never mind|stop|leave it)\b/i;
+
+  const isDeclined = declinePattern.test(lower);
+  const isAffirmed = affirmPattern.test(lower);
+
+  if (isDeclined && !isAffirmed) {
+    return { confirmed: false, declined: true };
+  }
+  return { confirmed: isAffirmed, declined: isDeclined };
+}
+
 export async function generatePaymentResponse(params: {
   payment: GetPaymentOutput;
   knowledgeContext: string;
@@ -263,6 +279,75 @@ export async function paymentNode(
   }
 
   const userText = extractLastUserText(state);
+
+  // 0. Duplicate charge confirmation continuation check
+  const activeResumeContext = state.activeWorkflow?.resumeContext;
+  if (
+    activeResumeContext &&
+    activeResumeContext['awaitingDuplicateConfirmation'] === true &&
+    typeof activeResumeContext['orderId'] === 'string' &&
+    typeof activeResumeContext['paymentId'] === 'string'
+  ) {
+    const confirmation = isUserConfirmation(userText);
+    const dupOrderId = activeResumeContext['orderId'] as string;
+    const dupPaymentId = activeResumeContext['paymentId'] as string;
+    const dupDuplicatePaymentId = (activeResumeContext['duplicatePaymentId'] as string) ?? null;
+    const dupAmount = (activeResumeContext['amount'] as string) ?? '0.00';
+    const dupReason = (activeResumeContext['reason'] as string) ?? 'Duplicate charge reported by customer';
+
+    if (confirmation.declined) {
+      return {
+        workflowStatus: 'COMPLETED',
+        activeWorkflow: null,
+        messages: [
+          new AIMessage(
+            'Understood. I have cancelled the duplicate charge review request. Please let me know if there is anything else I can help you with.'
+          ),
+        ],
+      };
+    }
+
+    if (confirmation.confirmed) {
+      let userId = state.user?.id;
+      if (!userId && dupOrderId) {
+        const order = await getOrderById(dupOrderId);
+        if (order) userId = order.userId;
+      }
+      if (!userId) {
+        userId = crypto.randomUUID();
+      }
+
+      const reviewRequest = await createReviewRequest({
+        conversationId: conversationId ?? crypto.randomUUID(),
+        userId,
+        orderId: dupOrderId,
+        paymentId: dupPaymentId,
+        duplicatePaymentId: dupDuplicatePaymentId,
+        amount: dupAmount,
+        status: 'pending',
+        reason: dupReason,
+      });
+
+      return {
+        workflowStatus: 'COMPLETED',
+        activeWorkflow: null,
+        messages: [
+          new AIMessage(
+            `Thank you for confirming. I have submitted review request #${reviewRequest.id} for the duplicate charge of $${dupAmount} on order ${dupOrderId}. Our billing team will inspect the transaction and process the refund. You will receive an update once reviewed.`
+          ),
+        ],
+      };
+    }
+
+    return {
+      workflowStatus: 'WAITING_FOR_USER_INPUT',
+      messages: [
+        new AIMessage(
+          `We detected two charges of $${dupAmount} for order ${dupOrderId}. Would you like our billing team to review and refund this charge? Please reply Yes or No.`
+        ),
+      ],
+    };
+  }
 
   if (!orderId) {
     const extraction = await extractPaymentIntent(userText);
@@ -404,35 +489,69 @@ export async function paymentNode(
 
     const { potentialDuplicate, duplicatePaymentId, reason } = duplicateResult.data;
 
-    // Pattern B Re-Route: Duplicate confirmed -> hand off to Refund specialist
+    // Duplicate charge detected: confirm with user or hand off if already requested
     if (potentialDuplicate && duplicatePaymentId) {
-      return new Command({
-        goto: 'router',
-        update: {
-          currentIntent: 'REFUND_ACTION_REQUIRED',
-          currentDomain: 'refund',
-          activeWorkflow: {
-            workflowId: `handoff-dup-${payment.id}`,
-            originatingIntent: 'DUPLICATE_CHARGE',
-            currentStep: 'REFUND_ACTION_REQUIRED',
-            blockedBy: null, // NOT blocked by verification
-            returnTo: { domain: 'refund', agent: 'refund', workflowStep: 'create_refund' },
-            resumeContext: {
-              orderId: payment.orderId,
-              paymentId: duplicatePaymentId, // The second payment to refund
-              duplicatePaymentId,
-              originalPaymentId: payment.id,
-              amount: payment.amount,
-              returnId: null, // Duplicate charge refunds have returnId = null
-              reason: reason ?? 'Duplicate charge confirmed within 24 hours',
+      const userAlreadyRequestedRefund =
+        userText.toLowerCase().includes('refund') ||
+        userText.toLowerCase().includes('please refund') ||
+        userText.toLowerCase().includes('refund the duplicate');
+
+      if (userAlreadyRequestedRefund) {
+        return new Command({
+          goto: 'router',
+          update: {
+            currentIntent: 'REFUND_ACTION_REQUIRED',
+            currentDomain: 'refund',
+            activeWorkflow: {
+              workflowId: `handoff-dup-${payment.id}`,
+              originatingIntent: 'DUPLICATE_CHARGE',
+              currentStep: 'REFUND_ACTION_REQUIRED',
+              blockedBy: null, // NOT blocked by verification
+              returnTo: { domain: 'refund', agent: 'refund', workflowStep: 'create_refund' },
+              resumeContext: {
+                orderId: payment.orderId,
+                paymentId: duplicatePaymentId, // The second payment to refund
+                duplicatePaymentId,
+                originalPaymentId: payment.id,
+                amount: payment.amount,
+                returnId: null, // Duplicate charge refunds have returnId = null
+                reason: reason ?? 'Duplicate charge confirmed within 24 hours',
+              },
+            },
+            routing: {
+              previousAgent: specialist,
+              handoffCount: 1, // Reducer applies this as a delta
             },
           },
-          routing: {
-            previousAgent: specialist,
-            handoffCount: 1, // Reducer applies this as a delta
+        });
+      }
+
+      // Customer did not yet request/confirm refund: prompt for confirmation
+      return {
+        workflowStatus: 'WAITING_FOR_USER_INPUT',
+        activeWorkflow: {
+          workflowId: `dup-confirm-${payment.id}`,
+          originatingIntent: 'DUPLICATE_CHARGE',
+          currentStep: 'confirm_duplicate',
+          blockedBy: null,
+          returnTo: { domain: specialist, agent: specialist, workflowStep: 'confirm_duplicate' },
+          resumeContext: {
+            awaitingDuplicateConfirmation: true,
+            orderId: payment.orderId,
+            paymentId: duplicatePaymentId,
+            duplicatePaymentId,
+            originalPaymentId: payment.id,
+            amount: payment.amount,
+            returnId: null,
+            reason: reason ?? 'Duplicate charge detected within 24 hours',
           },
         },
-      });
+        messages: [
+          new AIMessage(
+            `We detected two charges of $${payment.amount} for order ${payment.orderId}. Would you like our billing team to review and refund this charge?`
+          ),
+        ],
+      };
     }
 
     // No duplicate charge found: explain to customer with policy knowledge
