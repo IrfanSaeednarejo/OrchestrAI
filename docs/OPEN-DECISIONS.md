@@ -50,6 +50,35 @@ Approved items move to DECISIONS.md. Items marked [CONFLICT] are inconsistencies
     OD-23b [RESOLVED 2026-11-08]: Interactive Options Transport & Rendering — Option A adopted: options transported in `AIMessage.additional_kwargs.options` -> forwarded in SSE routing event -> stored in `ChatState.serviceOptions` -> rendered as interactive `ServiceOptionBar` pills in chat.
     OD-23c [RESOLVED 2026-11-08]: Order Tracking Continuation Guard — Option A adopted: direct continuation guard in `routerNode` ensuring pending order ID collection turns re-route directly to `order_tracking` without spurious LLM re-classification. Recorded in DECISIONS.md under Phase 23.
 
+24. Phase 24 Stabilization Proposals (PENDING APPROVAL — DO NOT IMPLEMENT WITHOUT APPROVAL):
+    - OD-24a (Identity Seeding Boundary vs. "Only Account Access Writes Identity" Invariant):
+      - Problem: Locked rule in DECISIONS.md states "Only the Account Access specialist may change identity (via state/identity-update.ts; enforced by ESLint + boundary test)". However, real users authenticated via Bearer tokens enter the graph with `identity = null` (or unverified), causing LIGHT-gated tools (`get_order`) to block unnecessarily and prompting logged-in users to log in again.
+      - Option A (Recommended): Create pure helper `server/src/state/session-identity.ts`. Maps `req.authMethod === 'bearer'` to `status: 'LIGHTLY_VERIFIED'` with `verificationMethod: 'session'`. Guests and `x-user-id` callers map to `UNVERIFIED`. If checkpoint already has `status: 'VERIFIED'`, preserve `VERIFIED` only if `verifiedAt` is within TTL (e.g. 15m), else drop to `LIGHTLY_VERIFIED`. The helper NEVER creates or elevates to `VERIFIED`. `auth.middleware.ts` sets `req.authMethod`; controller passes identity into graph input.
+      - Option B: Force an automatic internal invocation of Account Access before running any specialist.
+        - Tradeoff: High latency (+1 graph execution per turn), complex routing state transitions.
+      - Option C: Modify `evaluateGate` to inspect HTTP request headers directly.
+        - Tradeoff: Breaches architectural purity; tools/gate should only inspect state, not HTTP context.
+      - Recommendation: Option A. Pure, deterministic, preserves the OTP elevation boundary for `VERIFIED`.
+
+    - OD-24b (Duplicate Charge Human Review Escalation & `review_requests` Table):
+      - Problem: Payment currently executes automatic lateral handoff to Refund which auto-calls `createRefund` for duplicate charges without customer confirmation or merchant oversight. This risks unauthorized refunds.
+      - Option A (Recommended): Add `review_requests` table to `server/src/persistence/db/schema.ts` with columns (`id`, `conversationId`, `userId`, `orderId`, `paymentId`, `duplicatePaymentId`, `amount`, `status`, `reason`, `createdAt`, `updatedAt`). When duplicate charge is detected, agent asks user to confirm. Once confirmed, creates a `review_requests` record with `status: 'pending'`, escalating to human review instead of executing an immediate automated refund.
+      - Option B: Repurpose `routing_history` or `agent_executions` to record review requests.
+        - Tradeoff: Conflates system runtime logs with domain financial records.
+      - Option C: Only emit `workflowStatus: 'ESCALATED'` without database persistence.
+        - Tradeoff: Ops team cannot query, approve, or track duplicate charge requests.
+      - Recommendation: Option A. Clean relational schema with Drizzle migration.
+
+    - OD-24c (Per-Turn Handoff Counter Semantics in `ConversationState`):
+      - Problem: `routing.handoffCount` currently accumulates across all turns of a conversation. Multi-turn conversations eventually hit `DEFAULT_MAX_HANDOFFS = 3` and trigger false-positive human escalations. In addition, specialists and router both update `handoffCount` inconsistently.
+      - Option A (Recommended): Make `handoffCount` turn-scoped (reset to 0 at the start of each user turn in router or state initialization). Single authoritative owner: only the parent router updates `handoffCount` when executing a `HANDOFF` or `RE_ROUTE`. Specialists never emit `handoffCount` deltas. Resume transitions (`RE_ROUTE`) are exempt from loop detection.
+      - Option B: Increase global `DEFAULT_MAX_HANDOFFS` from 3 to 15.
+        - Tradeoff: Masking bug; does not fix unbounded cumulative growth or uncoordinated specialist emissions.
+      - Option C: Rely entirely on `isRoutingLoop` and remove `DEFAULT_MAX_HANDOFFS`.
+        - Tradeoff: Fails to detect multi-node non-adjacent cycles (A -> B -> C -> A).
+      - Recommendation: Option A. Prevents false-positive escalations while maintaining loop safety per turn.
+
+
 
 
 

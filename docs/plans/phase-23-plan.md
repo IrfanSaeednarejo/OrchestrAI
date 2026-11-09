@@ -1,235 +1,218 @@
-# Phase 23 — Conversational UX, Interactive Service Menu & Order Tracking Fix — PLAN (status: DONE)
-
----
+# Phase 23 — Stabilization — PLAN (status: DRAFT)
 
 ## 1. Goal and How it Fits the Architecture
-
-This phase tightens three user-facing rough edges that emerged after the Phase 20–22 delivery:
-
-1. **Dynamic greeting response** – The router currently emits a hardcoded, long, prescriptive introduction for every greeting.  We replace it with a brief, context-aware LLM-generated greeting (temperature 0.2) that adapts its tone and length to the input.  The router's core routing logic (guard order, `Command({ goto })` dispatch, `isGreetingMessage` regex) is **not changed**.
-
-2. **Interactive service-option buttons** – When the conversation is in the opening state (no previous specialist, `workflowStatus !== 'ESCALATED'`, no active workflow), the assistant response includes a structured `options` array in the SSE `routing` metadata.  The client maps those options to clickable buttons in the chat feed that fire `sendMessage` with the selected service label.  No new state shape; the payload piggybacks on the existing `SSERoutingEvent` / `MessageMetadata` extension pattern.
-
-3. **Order Tracking follow-up fix** – When the specialist is waiting for an Order ID (`workflowStatus === 'WAITING_FOR_USER_INPUT'`, `currentAgent === 'order_tracking'`) and the user submits text that the UUID fast-path cannot match, the LLM extraction currently runs but the `resumeContext` stored in `activeWorkflow` is **never used by `checkResumePreconditions`** because `blockedBy` is `null` only for Pattern B/C.  The real bug is that the router re-classifies the follow-up instead of routing directly back to `order_tracking` to retry extraction.  The fix is a lightweight guard in `routerNode`: when `state.routing.currentAgent === 'order_tracking'` AND `state.workflowStatus === 'WAITING_FOR_USER_INPUT'`, skip LLM classification and route back directly.
-
----
+The stabilization phase addresses real-user customer journey failures identified during post-Phase 22 review. While synthetic evaluations with injected state pass, real logged-in users encounter identity disconnects (Bearer sessions lacking gate verification), unhandled BLOCKED specialist branches returning empty responses (502 / SSE error), unconfirmed automated financial mutations, and cross-turn handoff exhaustion. This phase establishes hardened session-identity seeding, uniform blocked-workflow responses, strict owner-scoped tool permissions, robust router state lifecycle, and human review escalation for payment disputes without destabilizing underlying checkpointer or access control foundations.
 
 ## 2. Dependencies Satisfied / Missing
-
-- Phases 1–22: **COMPLETE and signed off** (STATUS.md line 6-24).
-- All 715 tests passing; this phase's baseline is **715**.
-- No new npm packages required.
-- No schema migrations required.
-- No new infrastructure required.
-
----
+- Satisfied:
+  - Database schema, Drizzle ORM, PostgresSaver checkpointer, Redis verification service (Phases 1–6).
+  - 6 concrete domain specialists and parent router graph with Command(goto) dispatch (Phases 7–12).
+  - Failure handling, loop detection, and LangSmith tracing infrastructure (Phases 13–14).
+  - REST & SSE Express backend, auth middleware, and customer chat Next.js UI (Phases 16–22).
+  - STATUS.md verified baseline: 586/586 server tests (67 files), 144/144 client tests (28 files). Total: 730 passing tests.
+- Missing (to be created in this phase):
+  - Pure session-identity resolver (`server/src/state/session-identity.ts`).
+  - Unified blocked reply helper (`server/src/state/blocked-workflow.ts`).
+  - `review_requests` table and Drizzle migration for duplicate charge escalations.
 
 ## 3. Scope IN / Scope OUT
+- Scope IN:
+  - Step 1a: Pure session-identity resolver (`state/session-identity.ts`), `req.authMethod` tracking in `auth.middleware.ts`, and identity propagation in `message.controller.ts`.
+  - Step 1b: Shared `createBlockedResponse` helper across all 6 specialists; verify every specialist consumes `resumeContext` and clears `activeWorkflow` upon resolution.
+  - Step 2: Security hardening: owner-scoped tools (enforce `userId` matching `order.userId`), disable guest/demo endpoints in production, `crypto.randomInt` OTP generation, OTP lockout across re-issues, Express rate limiting, payload/message length caps, sanitized SSE error events.
+  - Step 3: Router hardening: sticky routing guards for `verify_identity` and `WAITING_FOR_USER_INPUT` steps, classifier domain context injection, turn-scoped handoff counter with single ownership in parent router, loop detection exclusion for valid resume transitions, accurate decision types (`INITIAL_ROUTE`, `HANDOFF`, `RE_ROUTE`, `RESUME`, `ESCALATION`).
+  - Step 4: Duplicate charge workflow redesign: interactive confirmation dialog, `review_requests` persistence table + migration, human staff review escalation (no auto-refunds).
+  - Step 5: Intent alignment in Returns/Refunds, pre-write readbacks, removal of ungrounded policy hallucination fallbacks, unique DB indexes.
+  - Step 6: LLM invocation timeouts and single-retry policy, tool retry alignment (idempotent read queries only; mutations never retried), deferred `agent_executions` completion status updates, per-thread advisory lock for concurrent message prevention.
+  - Step 7: Multi-turn end-to-end HTTP integration tests, opt-in live Gemini smoke suite, documentation reconciliation.
+- Scope OUT:
+  - Adding new agents or changing the 6-specialist domain taxonomy.
+  - Changing Redis into the checkpointing path.
+  - Altering the Drizzle single-schema architecture (`schema.ts`).
+  - Direct cross-specialist lateral edges (parent router remains the sole hub).
 
-### In Scope
-- Replace static greeting string in `routerNode` with a short LLM-generated greeting + interactive options array in the response.
-- Extend `SSERoutingEvent` on both server and client with an optional `options?: ServiceOption[]` field (additive, backward-compatible).
-- Extend `MessageMetadata` client type with optional `options?: ServiceOption[]`.
-- New `ServiceOptionBar` client component rendered beneath the assistant message when options are present.
-- Clicking a service option fires `sendMessage(option.message)` — same code path as a typed message.
-- Order Tracking guard: when `currentAgent === 'order_tracking'` and `workflowStatus === 'WAITING_FOR_USER_INPUT'`, skip classifier and route directly back to `order_tracking`.
-- Tests for: new router behavior (greeting LLM branch, options in routing update, OT guard), `ServiceOptionBar` render/click.
+## 4. Open Decisions Requiring Approval
+- **OD-24a (Identity Seeding Boundary):** Introduce pure helper `server/src/state/session-identity.ts` mapping `authMethod === 'bearer'` to `LIGHTLY_VERIFIED` (`method: 'session'`) while preserving `VERIFIED` only within TTL (15m). Helper never emits `VERIFIED`. (Proposal in OPEN-DECISIONS.md).
+- **OD-24b (Duplicate Charge Review Escalation):** Add `review_requests` table to `schema.ts` with Drizzle migration. Replace automatic `createRefund` execution with customer confirmation + staff review queue. (Proposal in OPEN-DECISIONS.md).
+- **OD-24c (Per-Turn Handoff Counting Semantics):** Redefine `handoffCount` to be turn-scoped and strictly owned by `routerNode` (specialists never emit handoff deltas). (Proposal in OPEN-DECISIONS.md).
 
-### Out of Scope
-- Any new backend infrastructure or database changes.
-- Changing the guard order, `checkResumePreconditions`, or any protected file semantics.
-- Redesigning the SSE streaming protocol.
-- Changing any specialist beyond `order_tracking`.
-- LangSmith trace changes.
-- Persistent storage of service options.
+## 5. Execution Steps
 
----
+### Step 1a: Session-Identity Seeding & Propagation
+- **Files touched:**
+  - `server/src/state/session-identity.ts` (NEW)
+  - `server/src/state/session-identity.test.ts` (NEW)
+  - `server/src/api/middleware/auth.middleware.ts`
+  - `server/src/api/types.ts`
+  - `server/src/api/controllers/message.controller.ts`
+  - `server/src/services/conversation-lifecycle.service.ts`
+- **Protected files affected:** None.
+- **State ownership & changes:**
+  - `authMiddleware` attaches `req.authMethod: 'bearer' | 'x-user-id' | 'guest'`.
+  - `resolveSessionIdentity(authMethod, currentIdentity, now)` returns updated `IdentityState`.
+  - Bearer users receive `status: 'LIGHTLY_VERIFIED'`, `verificationMethod: 'session'`, `verifiedAt: now.toISOString()`.
+  - Existing `status: 'VERIFIED'` preserved only if `now - verifiedAt < 15 minutes`; otherwise downgraded to `LIGHTLY_VERIFIED`.
+  - Guest and `x-user-id` callers always return `status: 'UNVERIFIED'`.
+  - `message.controller.ts` passes the resolved identity as initial input to `graph.stream` and `graph.invoke`.
+- **Failure cases:**
+  - Malformed `verifiedAt` timestamp in checkpoint: safely defaults to `LIGHTLY_VERIFIED`.
+  - Missing `req.user`: rejected by auth middleware before reaching controller.
+- **Tests:** `session-identity.test.ts` unit tests covering all permutations; `messages.test.ts` Bearer session integration tests.
 
-## 4. Open Decisions This Phase Must Resolve
+### Step 1b: Universal Blocked-Reply Helper & ActiveWorkflow Cleanup
+- **Files touched:**
+  - `server/src/state/blocked-workflow.ts`
+  - `server/src/state/blocked-workflow.test.ts`
+  - `server/src/agents/specialists/order-tracking/order-tracking.ts`
+  - `server/src/agents/specialists/returns/returns.ts`
+  - `server/src/agents/specialists/payment/payment.ts`
+  - `server/src/agents/specialists/refund/refund.ts`
+  - `server/src/agents/specialists/profile/profile.ts`
+- **Protected files affected:** None (`blocked-workflow.ts` is in `state/` but is not in protected list).
+- **State ownership & changes:**
+  - Export `createBlockedResponse(input: BuildBlockedWorkflowInput, customerMessage: string): ConversationStateUpdate`.
+  - Guarantees `workflowStatus: 'WAITING_FOR_USER_INPUT'` and an array containing a customer-facing `AIMessage` on EVERY blocked branch.
+  - Refactor all 5 gated specialists (`order-tracking`, `returns`, `payment`, `refund`, `profile`) to use `createBlockedResponse`.
+  - Fix all 5 BLOCKED branches in `refund.ts` to emit explanatory messages.
+  - Audit every specialist to ensure `activeWorkflow: null` is explicitly returned when a workflow completes.
+- **Failure cases:** Empty message string passed: helper enforces a non-empty fallback message.
+- **Tests:** Unit tests in `blocked-workflow.test.ts` asserting message presence; specialist tests asserting `AIMessage` emission on gate block.
 
-### OD-23a — Greeting Response: Static String vs. LLM-Generated (NEEDS APPROVAL)
+### Step 2: Security Hardening & Isolation
+- **Files touched:**
+  - `server/src/tools/queries/order.tools.ts`
+  - `server/src/tools/queries/payment.tools.ts`
+  - `server/src/tools/mutations/return.tools.ts`
+  - `server/src/tools/mutations/identity.tools.ts`
+  - `server/src/services/verification.service.ts`
+  - `server/src/api/routes/demo.routes.ts`
+  - `server/src/api/routes/ops.routes.ts`
+  - `server/src/api/middleware/auth.middleware.ts`
+  - `server/src/api/app.ts`
+  - `server/src/shared/config.ts`
+- **Protected files affected:** None.
+- **State ownership & changes:**
+  - Add ownership check to query tools: caller `userId` must match `order.userId` / `payment.userId` (returns `NOT_FOUND` if mismatch, preventing IDOR).
+  - Disable demo and dev routes (`/api/demo-users`, `/api/dev/*`, `/api/ops/*`) when `NODE_ENV === 'production'` or `ENABLE_DEMO_ENDPOINTS === 'false'`.
+  - In production, reject `x-user-id` header (require valid signed Bearer token).
+  - Replace `Math.random` OTP generation with `crypto.randomInt(100000, 999999).toString()`.
+  - Fix Redis lockout: failed attempt counters persist across code re-issues within the 10-minute TTL.
+  - Add rate limiting middleware (`express-rate-limit`) on `/api/conversations` and message dispatch.
+  - Enforce message content max length of 2000 chars.
+  - Sanitize SSE error events to never leak internal stack traces or database errors.
+- **Failure cases:** Cross-tenant ID access attempt: returns `NOT_FOUND` without leaking entity existence.
+- **Tests:** Tool ownership tests; auth middleware rejection tests in production mode; OTP randomness and lockout tests.
 
-**Problem:** The hardcoded greeting produces a long, repetitive intro on every "hello".
+### Step 3: Router Hardening & Handoff Lifecycle
+- **Files touched:**
+  - `server/src/graphs/parent/parent-graph.ts`
+  - `server/src/routing/guards.ts`
+  - `server/src/routing/classifier/classifier.ts`
+  - `server/src/graphs/parent/parent-graph.test.ts`
+- **Protected files affected:** None (`parent-graph.ts` is not protected; `guards.ts` is adjacent but not in protected list).
+- **State ownership & changes:**
+  - Add sticky guard in `evaluatePreClassificationGuards`: if `activeWorkflow.currentStep === 'verify_identity'` and `activeWorkflow.blockedBy` is present, route directly to `account_access` without invoking LLM classification.
+  - Extend sticky continuation guard: if an active specialist left `workflowStatus === 'WAITING_FOR_USER_INPUT'`, route back to that specialist for input completion.
+  - In `classifyMessage`, inject `currentDomain` and `previousAgent` into prompt context so LLM understands conversation continuity.
+  - Reset `handoffCount` to 0 at the start of each new user turn. Router is the sole entity that increments `handoffCount` on `HANDOFF` or `RE_ROUTE`. Specialists never increment handoff count.
+  - Exclude `RE_ROUTE` (resumes) from `isRoutingLoop` triggering.
+  - Properly record decision types: `INITIAL_ROUTE` for new turns/continuation, `HANDOFF` for lateral hops, `RE_ROUTE` for unblocked resume, `RESUME` for returnTo.
+- **Failure cases:** Customer inputs arbitrary text while in verification: sticky guard keeps conversation focused on verification until completed or cancelled.
+- **Tests:** Router tests for verification interception, turn reset, and resume loop exemption.
 
-**Options:**
+### Step 4: Duplicate Charge Flow Redesign & Human Review Queue
+- **Files touched:**
+  - `server/src/persistence/db/schema.ts`
+  - `server/src/persistence/db/migrations/*` (new migration)
+  - `server/src/persistence/repositories/review-request.repository.ts` (NEW)
+  - `server/src/agents/specialists/payment/payment.ts`
+  - `server/src/agents/specialists/refund/refund.ts`
+  - `server/src/tools/mutations/refund.tools.ts`
+- **Protected files affected:** `server/src/persistence/db/schema.ts` (requires Tier 2 approval under OD-24b).
+- **State ownership & changes:**
+  - Define `review_requests` table: `id`, `conversationId`, `userId`, `orderId`, `paymentId`, `duplicatePaymentId`, `amount`, `status`, `reason`, timestamps.
+  - In `payment.ts`, when `detectDuplicateCharge` reports potential duplicate:
+    1. Ask the customer to confirm: "We detected two charges of $X for order Y. Would you like our billing team to review and refund this charge?"
+    2. Set `workflowStatus: 'WAITING_FOR_USER_INPUT'`, `resumeContext: { awaitingDuplicateConfirmation: true, ... }`.
+  - When customer confirms: create a record in `review_requests` with `status: 'pending'`, inform customer that human review request #ID is submitted, and transition to `COMPLETED`. No automated refund mutation.
+- **Failure cases:** User declines duplicate charge refund: cancel pending action gracefully and complete turn.
+- **Tests:** Migration verification test; repository unit tests; Payment duplicate charge confirmation flow tests.
 
-| | Option A: LLM-generated (temperature 0.2) | Option B: Rotate from a small bank of static strings |
-|---|---|---|
-| Naturalness | High — varies with phrasing | Medium — still repetitive across sessions |
-| Latency | +~1 LLM call per greeting (~200–400ms) | Zero extra latency |
-| Test stability | Needs mock (already mocked in Vitest) | Simple string match |
-| Complexity | Low — reuses `generateStructuredOutput` already in the router context | Minimal |
+### Step 5: Intent Alignment, Readback & Policy Grounding
+- **Files touched:**
+  - `server/src/agents/specialists/returns/returns.ts`
+  - `server/src/agents/specialists/refund/refund.ts`
+  - `server/src/persistence/db/schema.ts` (indexes)
+- **Protected files affected:** None.
+- **State ownership & changes:**
+  - In `returns.ts` and `refund.ts`, respect extracted intent (`check_status` vs `create_return` vs `check_eligibility`). Do not initiate creation when user only asked for status.
+  - Readback before writes: before creating a return or refund review, verify current DB status has not changed concurrently.
+  - Remove all fallback policy strings that hallucinate rules when RAG returns empty; strictly emit grounded standard decline messages.
+  - Add unique indexes on `returns (order_id)` and `refunds (payment_id)` to enforce database-level idempotency against race conditions.
+- **Failure cases:** Concurrent duplicate return requests: rejected by unique DB constraint and handled gracefully.
+- **Tests:** Specialist status vs create intent tests; concurrency collision tests.
 
-**Recommendation:** **Option A** — LLM-generated greeting.  Fits the "platform feels intelligent" goal, and `@google/genai` is already mocked in Vitest so tests remain deterministic.  The greeting call uses the same `generateStructuredOutput` pattern already in every specialist.
+### Step 6: Resilience, Idempotent Retries & Advisory Locking
+- **Files touched:**
+  - `server/src/agents/llm/client.ts`
+  - `server/src/tools/execution.ts`
+  - `server/src/routing/events.ts`
+  - `server/src/api/controllers/message.controller.ts`
+- **Protected files affected:** `server/src/routing/events.ts` (protected - only non-breaking update for execution completion).
+- **State ownership & changes:**
+  - In `client.ts`, add 10-second timeout and single exponential-backoff retry on LLM network/rate-limit errors.
+  - In `execution.ts`, restrict tool retry strictly to idempotent read tools (`getOrder`, `getPayment`, `getProfile`, `searchKnowledge`). Never retry mutation tools (`createReturn`, `createRefund`, `updateProfile`).
+  - Align retry error codes with real Postgres/pg errors (`ECONNREFUSED`, `ETIMEDOUT`, `57P01`).
+  - In `agent_executions`, defer status update to the end of the node execution so failures reflect actual outcomes.
+  - In `message.controller.ts`, acquire a PostgreSQL advisory lock (`pg_try_advisory_xact_lock(hashtext(conversationId))`) during message execution to block concurrent turns on the same thread.
+- **Failure cases:** Rapid concurrent POST requests on same conversation: second request receives 409 Conflict.
+- **Tests:** Advisory lock test; mutation non-retry assertion test; LLM timeout test.
 
-### OD-23b — Interactive Options Transport: Routing Metadata vs. Dedicated SSE Event (NEEDS APPROVAL)
-
-**Options:**
-
-| | Option A: Add `options` to existing `SSERoutingEvent` / `MessageMetadata` | Option B: New `options` SSE event type |
-|---|---|---|
-| Protocol change | Additive only (backward-compatible) | New event type, client must handle or ignore |
-| Client complexity | Low — `STREAM_ROUTING` already updates state | Medium — new reducer case |
-| Risk to existing tests | Minimal — extra field ignored if not present | Moderate — parsers must skip |
-
-**Recommendation:** **Option A** — extend `SSERoutingEvent` and `MessageMetadata` with an optional `options` field.  The existing SSE frame and reducer already handle `routing` events; adding an optional field is a backward-compatible, non-breaking addition.
-
-### OD-23c — Order Tracking Re-Route Guard: Position in `routerNode` (NEEDS APPROVAL)
-
-**Options:**
-
-| | Option A: Add a new pre-classification guard inside `routerNode` body (after ESCALATE/RESUME, before LLM classify) | Option B: Extend `checkResumePreconditions` in `guards.ts` |
-|---|---|---|
-| Protected file impact | `parent-graph.ts` changed (not protected); `guards.ts` **is** listed as adjacent to protected routing infra but is not explicitly in the protected list | Only `guards.ts` modified |
-| Clarity | Guard logic lives in `parent-graph.ts` where routing branch decisions already exist | Centralises all guard logic |
-| Risk | Low — new `if` block in an existing switch-like sequence | Low — adds another check inside existing fn |
-
-**Recommendation:** **Option A** — add the guard directly in `routerNode` between the RESUME block and the LLM classification.  `guards.ts` is not in the protected-file list; however, the guard pattern is conceptually: "when specialist is waiting for user input, do not reclassify — continue with the same specialist."  This is a routing continuation, not a resume of a blocked workflow, so it belongs in `routerNode` logic, not in `checkResumePreconditions`.
-
----
-
-## 5. Steps
-
-### Step 1 — Server: Dynamic LLM Greeting + Options in Routing Metadata
-**Files touched:** `server/src/graphs/parent/parent-graph.ts`
-
-- Replace the hardcoded `AIMessage` string in the `detectedIntent === 'GREETING'` branch with a call to `generateStructuredOutput` (schema: `{ greeting: z.string(), options: z.array(z.object({label: z.string(), message: z.string()})) }`).
-- If the LLM call fails, fall back to a short static string (safe degradation).
-- Include `options` in the state update — but `ConversationState` does **not** store them.  Instead, emit them in the SSE `routing` event (via the `routingUpdate`).
-
-> **How options get to the client:** The `message.controller.ts` SSE `routing` event serialises the routing state update.  We extend `toRoutingStateUpdate` / `recordRoutingEvent` return type to pass through `options` as an extra field on the event that the controller forwards in the SSE frame.
-
-Protected file check: `routing/events.ts` is **protected**.  To avoid modifying it, we pass options through a separate key on the `ConversationStateUpdate` extension approach is not feasible without schema changes.  Alternative: the SSE routing event in `message.controller.ts` reads `options` from the `state` snapshot after each graph step.  Since `options` will not be in `ConversationState`, we include them in the `AIMessage`'s `additional_kwargs` and extract them in the controller.
-
-**Revised approach (no protected-file touch):**
-- Encode `options` in the `AIMessage`'s `additional_kwargs.options` field (standard LangChain pattern for metadata).
-- `message.controller.ts` reads `additional_kwargs.options` from the extracted AI message and includes it in the `routing` SSE event and the persisted message `metadata`.
-- `routing/events.ts` is **not touched**.
-
-**Files touched:** `server/src/graphs/parent/parent-graph.ts`, `server/src/api/controllers/message.controller.ts`
-
-Protected file impact: **None.**
-
-### Step 2 — Server: Order Tracking Continuation Guard
-**Files touched:** `server/src/graphs/parent/parent-graph.ts`
-
-- After the RESUME guard block, before LLM classification, add:
-  ```ts
-  if (
-    state.routing.currentAgent === 'order_tracking' &&
-    state.workflowStatus === 'WAITING_FOR_USER_INPUT'
-  ) {
-    // Route back to order_tracking without re-classifying
-    targetSpecialist = 'order_tracking';
-    detectedIntent = state.currentIntent ?? 'ORDER_STATUS';
-    routingReason = 'Continuing order ID collection for active order_tracking session';
-    // skip classifier
-  }
-  ```
-- Skip the classifier and proceed to the normal dispatch path (Step 5 of `routerNode`).
-- This guard fires only when the user is mid-collection and prevents reclassification to any other specialist or the greeting handler.
-
-Protected file impact: **None.**
-
-### Step 3 — Shared Types: `ServiceOption` + extend `SSERoutingEvent` / `MessageMetadata`
-**Files touched:** `client/src/types/api.ts`, `client/src/types/sse.ts`
-
-- Add `ServiceOption { label: string; message: string }` interface.
-- Add optional `options?: ServiceOption[]` to `SSERoutingEvent` and `MessageMetadata`.
-- Additive — no existing field changed.
-
-### Step 4 — Client: `ServiceOptionBar` Component
-**Files touched:** `client/src/components/chat/service-option-bar.tsx` (new), `client/src/components/chat/service-option-bar.test.tsx` (new)
-
-- Renders a horizontal (wrapping) row of pill buttons from an `options` prop.
-- Each button calls `onSelect(option.message)` when clicked.
-- Visually: outlined indigo pills, disabled when `isStreaming` or `isEscalated`.
-- Tests: renders correct labels, calls `onSelect` with correct message on click, disabled state.
-
-### Step 5 — Client: Wire `ServiceOptionBar` into `ChatFeed`
-**Files touched:** `client/src/components/chat/chat-feed.tsx`, `client/src/components/chat/chat-feed.test.tsx`
-
-- Accept new `onOptionSelect?: (message: string) => void` prop and `serviceOptions?: ServiceOption[]` prop.
-- Render `ServiceOptionBar` beneath the **last** assistant message when `serviceOptions` is non-empty.
-- Pass `isStreaming` to disable buttons during a pending response.
-
-### Step 6 — Client: Plumb Options Through `useChat` → `page.tsx`
-**Files touched:** `client/src/hooks/use-chat.ts`, `client/src/app/page.tsx`
-
-- In `chatReducer`, `STREAM_ROUTING` case: capture `options` from the routing event into `ChatState.serviceOptions?: ServiceOption[]`.  Clear `serviceOptions` to `null` on `START_SEND` (a new message starts, old options removed).
-- In `page.tsx`, pass `serviceOptions={chatState.serviceOptions}` and `onOptionSelect={handleSend}` to `ChatFeed`.
-
-### Step 7 — Tests
-**Files touched:** `server/src/graphs/parent/parent-graph.test.ts`, `client/src/hooks/use-chat.test.ts`, new component test files
-
-- Server unit test: `routerNode` with `isGreetingMessage` input → mock LLM → verify `AIMessage.additional_kwargs.options` present and contains expected service labels.
-- Server unit test: `routerNode` with `currentAgent === 'order_tracking'` + `workflowStatus === 'WAITING_FOR_USER_INPUT'` state → verify `Command({ goto: 'order_tracking' })` returned without LLM classifier called.
-- Client: `chatReducer` `STREAM_ROUTING` with `options` field → verify `serviceOptions` in state.
-- Client: `chatReducer` `START_SEND` → verify `serviceOptions` cleared.
-- `ServiceOptionBar` render and click tests (Step 4).
-- `ChatFeed` options render test (Step 5).
-
----
+### Step 7: Multi-Turn HTTP Integration Tests & Documentation
+- **Files touched:**
+  - `server/src/api/stabilization.integration.test.ts` (NEW)
+  - `server/src/test/live-smoke.test.ts` (NEW, opt-in via env flag)
+  - `docs/STATUS.md`
+  - `docs/DECISIONS.md`
+  - `docs/OPEN-DECISIONS.md`
+  - `docs/ROADMAP.md`
+- **Protected files affected:** None.
+- **State ownership & changes:**
+  - Multi-turn HTTP integration test: real Bearer register -> login -> create order -> ask order status in chat -> verify zero 502s, `status: 'LIGHTLY_VERIFIED'`, and grounded response.
+  - Multi-turn return flow test: unverified user -> login -> check eligibility -> verify OTP -> return created -> activeWorkflow cleared.
+  - Opt-in live smoke suite: gated by `RUN_LIVE_GEMINI_SMOKE=true` and explicit owner approval.
+  - Reconcile documentation across all completed phases.
+- **Failure cases:** Live smoke fails if API key invalid or model unavailable.
+- **Tests:** Full test suite execution ensuring all tests pass.
 
 ## 6. Functional Requirements
-
-1. When a user sends a greeting, the assistant replies with a **short, natural greeting** (≤2 sentences) and displays **up to 6 interactive service-option buttons**.
-2. Clicking a service-option button sends the corresponding message exactly as if the user had typed it.
-3. Service-option buttons are hidden once the user has sent any message after them.
-4. When `currentAgent === 'order_tracking'` and `workflowStatus === 'WAITING_FOR_USER_INPUT'`, the router **skips LLM classification** and re-routes directly to `order_tracking`.
-5. The order-tracking specialist accepts the user's follow-up text and re-runs UUID extraction; if still not found, it asks again (existing behavior — no change needed).
-6. No existing evaluation scenarios (1–30) regress.
-
----
+1. Logged-in Bearer token users must never be blocked by LIGHT-gated tools (`get_order`, `get_shipment_status`).
+2. Every specialist BLOCKED gate outcome must produce a polite, clear customer-facing message explaining next steps.
+3. The API must never respond with 502 Bad Gateway or empty SSE streams during normal customer support workflows.
+4. Duplicate charge detections must require customer confirmation and route to a staff review queue rather than executing auto-refunds.
+5. Inquiries about return/refund status must not initiate creation workflows.
+6. A conversation can proceed across multiple turns without hitting the max handoff escalation limit.
 
 ## 7. Non-Functional Requirements
-
-- **Latency:** Greeting LLM call adds ≤500ms; acceptable for a conversational greeting.
-- **Testability:** All LLM calls remain mockable via the existing Vitest `@google/genai` mock.
-- **Backward compatibility:** The `options` field in SSE events and message metadata is optional; existing SSE consumers that do not read it are unaffected.
-- **No protected-file changes:** `routing/events.ts`, `state/conversation-state.ts`, `persistence/db/client.ts`, `persistence/checkpointer/*`, `services/conversation-lifecycle.service.ts`, `routing/events.ts` — all untouched.
-- **Test count:** Must not decrease from 715.
-
----
+- **Security:** Zero cross-tenant data leakage (IDOR-safe tools). Zero raw verification codes or secrets in logs.
+- **Integrity:** Database-level idempotency via unique indexes and advisory locks.
+- **Performance:** No added network latency for normal requests; session-identity evaluation is pure in-memory math.
+- **Testability:** 100% deterministic offline test suite with real Postgres and Redis. Zero real Gemini API calls during standard CI/test runs.
 
 ## 8. Acceptance Criteria
+- `npm run lint` passes with 0 errors across both server and client.
+- `npm run typecheck` passes with 0 errors across both server and client.
+- `npm test` passes with test count strictly >= 730 baseline.
+- `server/src/api/stabilization.integration.test.ts` passes end-to-end for Bearer token customer journeys.
+- All 14 evaluation scenarios from REFERENCE.md continue to pass.
 
-```
-npm run lint                        # 0 errors / 0 warnings
-npm run typecheck                   # 0 errors
-npm test                            # ≥ 715 passing (server + client combined)
-```
-
-Specific named tests (new, must pass):
-- `routerNode › greeting branch › generates LLM greeting with service options`
-- `routerNode › order tracking guard › routes back to order_tracking when WAITING_FOR_USER_INPUT`
-- `chatReducer › STREAM_ROUTING with options › populates serviceOptions in state`
-- `chatReducer › START_SEND › clears serviceOptions`
-- `ServiceOptionBar › renders correct labels and fires onSelect with message`
-- `ServiceOptionBar › disabled when isStreaming`
-- `ChatFeed › renders ServiceOptionBar when serviceOptions is non-empty`
-
----
-
-## 9. Risks and What Would Make Me Stop and Ask
-
-| Risk | Mitigation / Stop condition |
-|---|---|
-| `generateStructuredOutput` mock in Vitest does not cover the new greeting call site | Verify mock shape; stop and ask if Vitest mock doesn't expose new call |
-| `additional_kwargs` on `AIMessage` is not serialised in the SSE `message` event but only in the routing event path | Verify `message.controller.ts` extraction path; stop and ask if LangGraph strips `additional_kwargs` before controller access |
-| OT guard interacts badly with Pattern C resume (specialist is `order_tracking` AND `blockedBy` is set) | The Pattern C guard (`checkResumePreconditions`) runs **before** the new guard; if `blockedBy` is set, `RESUME` path fires first and the new guard is never reached — no conflict |
-| Adding `options` to `ChatState` requires a new test for `RESET_STATE` | Update existing `RESET_STATE` test; not a stop condition |
-
----
+## 9. Risks and Stop Conditions
+- **Database Schema Migration (Step 4):** Touching `schema.ts` and generating migrations requires Tier 2 owner approval. Stop and wait for approval before running `npm run db:generate` or `npm run db:migrate`.
+- **Protected Files:** `server/src/state/conversation-state.ts` and `server/src/routing/events.ts` are protected. Any change requires explicit approval under OD-24c.
+- **Live Gemini Calls:** Never call the live Gemini API without explicit chat approval: "APPROVED: live Gemini smoke".
 
 ## 10. Docs to Update on Completion
-
-- `docs/STATUS.md` — phase state, baseline test count.
-- `docs/DECISIONS.md` — OD-23a, OD-23b, OD-23c.
-- `docs/OPEN-DECISIONS.md` — move OD-23a/b/c to resolved.
-- `docs/ROADMAP.md` — add Phase 23 checkbox (checked).
-
----
-
-**STOP — awaiting approval before writing any production code.**
-
+- `docs/STATUS.md` — report new test counts, phase state, and changelog.
+- `docs/DECISIONS.md` — record approved OD-24a, OD-24b, OD-24c decisions.
+- `docs/OPEN-DECISIONS.md` — mark OD-24 items as resolved.
+- `docs/ROADMAP.md` — check off Phase 24 / Stabilization.
