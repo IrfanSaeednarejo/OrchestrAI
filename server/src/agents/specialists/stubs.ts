@@ -169,6 +169,7 @@ export const paymentStub = createSpecialistStub('payment');
 export const refundStub = createSpecialistStub('refund');
 export const profileStub = createSpecialistStub('profile');
 export const accountAccessStub = createSpecialistStub('account_access');
+export const generalAssistantStub = createSpecialistStub('general_assistant');
 
 export const SPECIALIST_STUBS: Record<SpecialistId, SpecialistStubNode> = {
   order_tracking: orderTrackingStub,
@@ -177,4 +178,5 @@ export const SPECIALIST_STUBS: Record<SpecialistId, SpecialistStubNode> = {
   refund: refundStub,
   profile: profileStub,
   account_access: accountAccessStub,
+  general_assistant: generalAssistantStub,
 };

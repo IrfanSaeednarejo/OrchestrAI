@@ -38,6 +38,8 @@ import { paymentNode } from '../../agents/specialists/payment/payment.js';
 import { refundNode } from '../../agents/specialists/refund/refund.js';
 import { profileNode } from '../../agents/specialists/profile/profile.js';
 import { accountAccessNode } from '../../agents/specialists/account-access/account-access.js';
+import { generalAssistantNode } from '../../agents/specialists/general-assistant/general-assistant.js';
+import { isCapabilityMessage } from '../../routing/classifier/taxonomy.js';
 import type { SpecialistId } from '../../tools/permissions.js';
 
 // ---------------------------------------------------------------------------
@@ -207,9 +209,9 @@ export async function routerNode(
     });
   }
 
-  // 3. PROCEED: Classify user message via LLM or greeting check
+  // 3. PROCEED: Classify user message via LLM or deterministic payload check
   const userText = extractLastUserMessage(state);
-  let targetSpecialist: SpecialistId = 'order_tracking';
+  let targetSpecialist: SpecialistId = 'general_assistant';
   let detectedIntent = 'GENERAL_INQUIRY';
   let routingReason = 'Initial default routing';
   let isFallback = false;
@@ -220,41 +222,29 @@ export async function routerNode(
 
   if (isGreetingMessage(userText)) {
     detectedIntent = 'GREETING';
+    targetSpecialist = 'general_assistant';
     routingReason = 'Customer greeting and general triage';
+  } else if (isCapabilityMessage(userText)) {
+    detectedIntent = 'CAPABILITY_QUERY';
+    targetSpecialist = 'general_assistant';
+    routingReason = 'Customer inquiry about platform capabilities';
   } else if (
-    // 3a. Sticky verification guard: when active workflow is awaiting identity verification,
-    // route directly to account_access without invoking LLM classification.
+    // 3a. Narrowed verification guard: when active workflow is awaiting identity verification,
+    // and the message is a pure 6-digit OTP code, route directly to account_access.
     state.activeWorkflow?.currentStep === 'verify_identity' &&
     state.activeWorkflow?.blockedBy !== null &&
-    state.activeWorkflow?.blockedBy !== undefined
+    state.activeWorkflow?.blockedBy !== undefined &&
+    /^\d{6}$/.test(userText.trim())
   ) {
     targetSpecialist = 'account_access';
     detectedIntent = 'ACCOUNT_SECURITY';
-    routingReason = 'Sticky routing to account_access for pending identity verification';
-  } else if (
-    // 3b. Order tracking continuation guard: when specialist is awaiting an order ID,
-    // route back directly without re-classifying through the LLM.
-    state.routing.currentAgent === 'order_tracking' &&
-    state.workflowStatus === 'WAITING_FOR_USER_INPUT'
-  ) {
-    targetSpecialist = 'order_tracking';
-    detectedIntent = state.currentIntent ?? 'ORDER_STATUS';
-    routingReason = 'Continuing order ID collection for active order_tracking session';
-  } else if (
-    // 3c. Duplicate charge confirmation guard: when payment specialist is awaiting confirmation,
-    // route back directly to payment without re-classifying through the LLM.
-    state.routing.currentAgent === 'payment' &&
-    state.workflowStatus === 'WAITING_FOR_USER_INPUT' &&
-    state.activeWorkflow?.resumeContext?.['awaitingDuplicateConfirmation'] === true
-  ) {
-    targetSpecialist = 'payment';
-    detectedIntent = 'DUPLICATE_CHARGE';
-    routingReason = 'Continuing duplicate charge confirmation for active payment session';
+    routingReason = 'Direct routing of 6-digit OTP to account_access for pending identity verification';
   } else if (
     uuidOnlyMatch &&
     state.routing.currentAgent &&
     state.routing.currentAgent !== 'router' &&
-    state.routing.currentAgent !== 'escalation'
+    state.routing.currentAgent !== 'escalation' &&
+    state.routing.currentAgent !== 'general_assistant'
   ) {
     // Pure UUID follow-up message provided to an active specialist
     targetSpecialist = state.routing.currentAgent as SpecialistId;
@@ -267,11 +257,19 @@ export async function routerNode(
     });
 
     if (classification.success) {
-      targetSpecialist = classification.data.specialist;
-      detectedIntent = classification.data.intent;
-      routingReason = classification.data.reasoning;
+      if (classification.data.confidence < 0.60) {
+        targetSpecialist = 'general_assistant';
+        detectedIntent = 'CLARIFICATION_REQUIRED';
+        routingReason = `Low classification confidence (${classification.data.confidence}); routing to general assistant for clarification`;
+      } else {
+        targetSpecialist = classification.data.specialist;
+        detectedIntent = classification.data.intent;
+        routingReason = classification.data.reasoning;
+      }
     } else {
       isFallback = true;
+      targetSpecialist = 'general_assistant';
+      detectedIntent = 'GENERAL_INQUIRY';
       routingReason = `Classifier fallback: ${classification.error.message}`;
     }
   }
@@ -365,6 +363,7 @@ export const SPECIALIST_NODE_NAMES = [
   'refund',
   'profile',
   'account_access',
+  'general_assistant',
 ] as const;
 
 export type SpecialistNodeAction = (
@@ -425,6 +424,13 @@ export const accountAccessSpecialistNode: SpecialistNodeAction = async (state, c
   return accountAccessNode(state, config);
 };
 
+export const generalAssistantSpecialistNode: SpecialistNodeAction = async (state, config) => {
+  if (hasStubOverride('general_assistant', config)) {
+    return SPECIALIST_STUBS.general_assistant(state, config);
+  }
+  return generalAssistantNode(state);
+};
+
 export interface ParentGraphOptions {
   specialists?: Partial<Record<SpecialistId, SpecialistNodeAction>>;
 }
@@ -440,6 +446,7 @@ export function buildParentGraph(
     refund: options?.specialists?.refund ?? refundSpecialistNode,
     profile: options?.specialists?.profile ?? profileSpecialistNode,
     account_access: options?.specialists?.account_access ?? accountAccessSpecialistNode,
+    general_assistant: options?.specialists?.general_assistant ?? generalAssistantSpecialistNode,
   };
 
   const workflow = new StateGraph(ConversationStateAnnotation)
@@ -464,13 +471,17 @@ export function buildParentGraph(
     .addNode('account_access', specialistNodes.account_access, {
       ends: ['router', END],
     })
+    .addNode('general_assistant', specialistNodes.general_assistant, {
+      ends: ['router', END],
+    })
     .addEdge(START, 'router')
     .addEdge('order_tracking', END)
     .addEdge('returns', END)
     .addEdge('payment', END)
     .addEdge('refund', END)
     .addEdge('profile', END)
-    .addEdge('account_access', END);
+    .addEdge('account_access', END)
+    .addEdge('general_assistant', END);
 
   return workflow.compile({ checkpointer });
 }

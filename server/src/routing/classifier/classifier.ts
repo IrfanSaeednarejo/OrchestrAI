@@ -47,15 +47,16 @@ function buildClassificationPrompt(
 Your task is to analyze the user's message and classify it into the correct domain specialist and specific intent.
 
 Specialists available:
-- order_tracking: Order status, shipment tracking, order history, delivery timing, general store queries.
+- order_tracking: Order status, shipment tracking, order history, delivery timing.
 - returns: Initiating returns, checking return status, return policy eligibility.
 - payment: Payment inquiries, payment method issues, duplicate charges, billing disputes.
 - refund: Refund requests, refund status checks, refund processing.
 - profile: Viewing or updating customer profile information (name, shipping address).
 - account_access: Login issues, identity verification, password resets.
+- general_assistant: Greetings, capability inquiries ("what can you do?", "what else can you do?"), help, store chit-chat, unsupported requests.
 
 If the user message is an order ID, tracking reference, or UUID responding to a specialist inquiry, classify it into the active domain (defaulting to order_tracking if none active).
-If the user message is simply a greeting or casual opening ("hello", "hi", "good morning") without a specific domain request, classify intent as "GREETING" and specialist as "order_tracking".
+If the user message is a greeting or capability question ("hello", "what can you do?"), classify intent as "GREETING" or "CAPABILITY_QUERY" and specialist as "general_assistant".
 
 Context:
 ${domainContext}
@@ -66,7 +67,7 @@ User Message:
 
 Respond with a JSON object matching this schema:
 {
-  "specialist": "order_tracking" | "returns" | "payment" | "refund" | "profile" | "account_access",
+  "specialist": "order_tracking" | "returns" | "payment" | "refund" | "profile" | "account_access" | "general_assistant",
   "intent": "<SPECIFIC_INTENT_NAME>",
   "confidence": <number between 0.0 and 1.0>,
   "reasoning": "<concise explanation>"

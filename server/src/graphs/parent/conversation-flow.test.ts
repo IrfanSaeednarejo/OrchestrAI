@@ -29,7 +29,7 @@ vi.mock('@google/genai', () => ({
 }));
 
 import { buildParentGraph } from './parent-graph.js';
-import type { ConversationState, ConversationStateUpdate } from '../../state/conversation-state.js';
+import type { ConversationStateUpdate } from '../../state/conversation-state.js';
 
 describe('Phase 24: Conversational Routing Regression Suite', () => {
   beforeEach(() => {
@@ -56,11 +56,11 @@ describe('Phase 24: Conversational Routing Regression Suite', () => {
         workflowStatus: 'COMPLETED',
         messages: [new AIMessage('Your order #11111111-1111-4111-a111-111111111111 is delivered.')],
       }),
-      returns: async () => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Returns')] }),
-      payment: async () => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Payment')] }),
-      refund: async () => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Refund')] }),
-      profile: async () => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Profile')] }),
-      account_access: async () => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Account')] }),
+      returns: async (): Promise<ConversationStateUpdate> => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Returns')] }),
+      payment: async (): Promise<ConversationStateUpdate> => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Payment')] }),
+      refund: async (): Promise<ConversationStateUpdate> => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Refund')] }),
+      profile: async (): Promise<ConversationStateUpdate> => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Profile')] }),
+      account_access: async (): Promise<ConversationStateUpdate> => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Account')] }),
     };
 
     const graph = buildParentGraph(checkpointer, { specialists: testSpecialists });
@@ -111,7 +111,7 @@ describe('Phase 24: Conversational Routing Regression Suite', () => {
 
     const checkpointer = new MemorySaver();
     const testSpecialists = {
-      order_tracking: async (state: ConversationState): Promise<ConversationStateUpdate> => {
+      order_tracking: async (): Promise<ConversationStateUpdate> => {
         // First turn without UUID asks for ID
         return {
           workflowStatus: 'WAITING_FOR_USER_INPUT',
@@ -122,10 +122,10 @@ describe('Phase 24: Conversational Routing Regression Suite', () => {
         workflowStatus: 'COMPLETED',
         messages: [new AIMessage('Profile updated.')],
       }),
-      returns: async () => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Returns')] }),
-      payment: async () => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Payment')] }),
-      refund: async () => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Refund')] }),
-      account_access: async () => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Account')] }),
+      returns: async (): Promise<ConversationStateUpdate> => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Returns')] }),
+      payment: async (): Promise<ConversationStateUpdate> => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Payment')] }),
+      refund: async (): Promise<ConversationStateUpdate> => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Refund')] }),
+      account_access: async (): Promise<ConversationStateUpdate> => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Account')] }),
     };
 
     const graph = buildParentGraph(checkpointer, { specialists: testSpecialists });
@@ -187,10 +187,10 @@ describe('Phase 24: Conversational Routing Regression Suite', () => {
         workflowStatus: 'COMPLETED',
         messages: [new AIMessage('Refund requested.')],
       }),
-      returns: async () => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Returns')] }),
-      payment: async () => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Payment')] }),
-      profile: async () => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Profile')] }),
-      account_access: async () => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Account')] }),
+      returns: async (): Promise<ConversationStateUpdate> => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Returns')] }),
+      payment: async (): Promise<ConversationStateUpdate> => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Payment')] }),
+      profile: async (): Promise<ConversationStateUpdate> => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Profile')] }),
+      account_access: async (): Promise<ConversationStateUpdate> => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Account')] }),
     };
 
     const graph = buildParentGraph(checkpointer, { specialists: testSpecialists });
@@ -222,7 +222,7 @@ describe('Phase 24: Conversational Routing Regression Suite', () => {
     // """can I get a refund for this order?""" without the prior turn or order ID context.
     const lastCall = mockGenerateContent.mock.calls.at(-1);
     expect(lastCall).toBeDefined();
-    const promptArg = lastCall[0]?.contents as string;
+    const promptArg = lastCall ? (lastCall[0]?.contents as string) : '';
 
     // Must include the prior context / orderId in the classifier prompt
     expect(promptArg).toContain(orderId);
@@ -251,7 +251,7 @@ describe('Phase 24: Conversational Routing Regression Suite', () => {
           originatingIntent: 'DUPLICATE_CHARGE',
           currentStep: 'await_duplicate_confirmation',
           blockedBy: null,
-          returnTo: { agent: 'payment', domain: 'payment' },
+          returnTo: { agent: 'payment', domain: 'payment', workflowStep: 'duplicate_confirmation' },
           resumeContext: { awaitingDuplicateConfirmation: true },
         },
         messages: [new AIMessage('Did you intend to place both charges? Reply YES or NO.')],
@@ -260,10 +260,10 @@ describe('Phase 24: Conversational Routing Regression Suite', () => {
         workflowStatus: 'COMPLETED',
         messages: [new AIMessage('Here is your package tracking.')],
       }),
-      returns: async () => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Returns')] }),
-      refund: async () => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Refund')] }),
-      profile: async () => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Profile')] }),
-      account_access: async () => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Account')] }),
+      returns: async (): Promise<ConversationStateUpdate> => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Returns')] }),
+      refund: async (): Promise<ConversationStateUpdate> => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Refund')] }),
+      profile: async (): Promise<ConversationStateUpdate> => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Profile')] }),
+      account_access: async (): Promise<ConversationStateUpdate> => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Account')] }),
     };
 
     const graph = buildParentGraph(checkpointer, { specialists: testSpecialists });
@@ -317,7 +317,7 @@ describe('Phase 24: Conversational Routing Regression Suite', () => {
     const checkpointer = new MemorySaver();
     let turnCount = 0;
     const testSpecialists = {
-      order_tracking: async (state: ConversationState): Promise<ConversationStateUpdate> => {
+      order_tracking: async (): Promise<ConversationStateUpdate> => {
         turnCount++;
         if (turnCount === 1) {
           return {
@@ -330,11 +330,11 @@ describe('Phase 24: Conversational Routing Regression Suite', () => {
           messages: [new AIMessage(`Order ${orderId} is currently in transit.`)],
         };
       },
-      returns: async () => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Returns')] }),
-      payment: async () => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Payment')] }),
-      refund: async () => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Refund')] }),
-      profile: async () => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Profile')] }),
-      account_access: async () => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Account')] }),
+      returns: async (): Promise<ConversationStateUpdate> => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Returns')] }),
+      payment: async (): Promise<ConversationStateUpdate> => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Payment')] }),
+      refund: async (): Promise<ConversationStateUpdate> => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Refund')] }),
+      profile: async (): Promise<ConversationStateUpdate> => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Profile')] }),
+      account_access: async (): Promise<ConversationStateUpdate> => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Account')] }),
     };
 
     const graph = buildParentGraph(checkpointer, { specialists: testSpecialists });
@@ -369,7 +369,7 @@ describe('Phase 24: Conversational Routing Regression Suite', () => {
           originatingIntent: 'CREATE_RETURN',
           currentStep: 'verify_identity',
           blockedBy: 'VERIFICATION_FULL',
-          returnTo: { agent: 'returns', domain: 'orders' },
+          returnTo: { agent: 'returns', domain: 'orders', workflowStep: 'create_return' },
           resumeContext: null,
         },
         messages: [new AIMessage('Please enter the 6-digit verification code.')],
@@ -378,10 +378,10 @@ describe('Phase 24: Conversational Routing Regression Suite', () => {
         workflowStatus: 'COMPLETED',
         messages: [new AIMessage('Identity verified successfully.')],
       }),
-      order_tracking: async () => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Order')] }),
-      payment: async () => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Payment')] }),
-      refund: async () => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Refund')] }),
-      profile: async () => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Profile')] }),
+      order_tracking: async (): Promise<ConversationStateUpdate> => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Order')] }),
+      payment: async (): Promise<ConversationStateUpdate> => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Payment')] }),
+      refund: async (): Promise<ConversationStateUpdate> => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Refund')] }),
+      profile: async (): Promise<ConversationStateUpdate> => ({ workflowStatus: 'COMPLETED', messages: [new AIMessage('Profile')] }),
     };
 
     const graph = buildParentGraph(checkpointer, { specialists: testSpecialists });

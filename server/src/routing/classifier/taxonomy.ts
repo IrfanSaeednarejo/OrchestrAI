@@ -38,6 +38,15 @@ export const ACCOUNT_ACCESS_INTENTS = [
   'LOGIN_ISSUE',
 ] as const;
 
+export const GENERAL_ASSISTANT_INTENTS = [
+  'GREETING',
+  'CAPABILITY_QUERY',
+  'CHIT_CHAT',
+  'GENERAL_INQUIRY',
+  'UNSUPPORTED_REQUEST',
+  'CLARIFICATION_REQUIRED',
+] as const;
+
 export const ALL_INTENTS = [
   ...ORDER_TRACKING_INTENTS,
   ...RETURNS_INTENTS,
@@ -45,8 +54,7 @@ export const ALL_INTENTS = [
   ...REFUND_INTENTS,
   ...PROFILE_INTENTS,
   ...ACCOUNT_ACCESS_INTENTS,
-  'GREETING',
-  'GENERAL_INQUIRY',
+  ...GENERAL_ASSISTANT_INTENTS,
   'UNKNOWN',
 ] as const;
 
@@ -69,9 +77,13 @@ export const INTENT_SPECIALIST_MAP: Record<RecognizedIntent, SpecialistId> = {
   PASSWORD_RESET: 'account_access',
   VERIFY_ACCOUNT: 'account_access',
   LOGIN_ISSUE: 'account_access',
-  GREETING: 'order_tracking', // fallback if forwarded
-  GENERAL_INQUIRY: 'order_tracking', // default fallback for general store queries
-  UNKNOWN: 'order_tracking',
+  GREETING: 'general_assistant',
+  CAPABILITY_QUERY: 'general_assistant',
+  CHIT_CHAT: 'general_assistant',
+  GENERAL_INQUIRY: 'general_assistant',
+  UNSUPPORTED_REQUEST: 'general_assistant',
+  CLARIFICATION_REQUIRED: 'general_assistant',
+  UNKNOWN: 'general_assistant',
 };
 
 export function isGreetingMessage(text: string): boolean {
@@ -86,6 +98,13 @@ export function isGreetingMessage(text: string): boolean {
   return !domainPattern.test(trimmed);
 }
 
+export function isCapabilityMessage(text: string): boolean {
+  const trimmed = text.trim();
+  if (!trimmed) return false;
+  const capabilityPattern = /\b(what\s+(else\s+)?(can\s+you\s+do|are\s+your\s+capabilities)|how\s+can\s+you\s+help|what\s+services|what\s+do\s+you\s+do)\b/i;
+  return capabilityPattern.test(trimmed);
+}
+
 export function getSpecialistForIntent(intent: RecognizedIntent): SpecialistId {
   return INTENT_SPECIALIST_MAP[intent];
 }
@@ -97,6 +116,7 @@ export function isValidSpecialistId(id: string): id is SpecialistId {
     id === 'payment' ||
     id === 'refund' ||
     id === 'profile' ||
-    id === 'account_access'
+    id === 'account_access' ||
+    id === 'general_assistant'
   );
 }
