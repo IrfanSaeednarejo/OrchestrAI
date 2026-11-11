@@ -29,6 +29,8 @@ describe('Phase 15: 8 Binary Evaluators Unit Tests', () => {
     user: { id: 'usr-1' },
     identity: { status: 'LIGHTLY_VERIFIED', verificationMethod: 'order_number', verifiedAt: new Date().toISOString() },
     activeWorkflow: null,
+    lastKnownEntities: null,
+    pendingTask: null,
     currentDomain: 'orders',
     currentIntent: 'ORDER_STATUS',
     workflowStatus: 'COMPLETED',

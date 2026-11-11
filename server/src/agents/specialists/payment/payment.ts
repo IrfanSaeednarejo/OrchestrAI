@@ -578,6 +578,11 @@ export async function paymentNode(
     return {
       workflowStatus: 'COMPLETED',
       activeWorkflow: null,
+      pendingTask: null,
+      lastKnownEntities: {
+        paymentId: payment.id,
+        orderId: payment.orderId ?? null,
+      },
       messages: [new AIMessage(response)],
     };
   }
@@ -605,6 +610,11 @@ export async function paymentNode(
   return {
     workflowStatus: 'COMPLETED',
     activeWorkflow: null,
+    pendingTask: null,
+    lastKnownEntities: {
+      paymentId: payment.id,
+      orderId: payment.orderId ?? null,
+    },
     messages: [new AIMessage(response)],
   };
 }

@@ -145,6 +145,8 @@ function buildBaseState(overrides: Partial<ConversationState> = {}): Conversatio
       verifiedAt: '2026-11-05T00:00:00Z',
     },
     activeWorkflow: null,
+    lastKnownEntities: null,
+    pendingTask: null,
     ...overrides,
   };
 }

@@ -36,6 +36,19 @@ export interface ReturnTo {
   workflowStep: string | null;
 }
 
+export interface LastKnownEntities {
+  orderId?: string | null;
+  paymentId?: string | null;
+  returnId?: string | null;
+  lastUpdated?: string | null; // ISO string
+}
+
+export interface PendingTaskState {
+  specialist: string;
+  awaitingField: string;
+  context?: Record<string, unknown> | null;
+}
+
 export interface ActiveWorkflowState {
   workflowId: string | null;
   originatingIntent: string | null;
@@ -132,6 +145,29 @@ export const ConversationStateAnnotation = Annotation.Root({
   // back to the original specialist and clears/updates this field.
   activeWorkflow: Annotation<ActiveWorkflowState | null>({
     reducer: (state, update) => update !== undefined ? update : state,
+    default: () => null,
+  }),
+
+  // Additive entity memory approved in Phase 24 (OD-24a) to resolve contextual references
+  // across topic changes and specialist handoffs (e.g. "can I refund this order?").
+  // Merges partial updates so specialists can record an orderId or paymentId independently.
+  lastKnownEntities: Annotation<LastKnownEntities | null | undefined, Partial<LastKnownEntities> | null>({
+    reducer: (state, update) => {
+      if (update === undefined) return state ?? null;
+      if (update === null) return null;
+      return {
+        ...(state ?? {}),
+        ...update,
+        lastUpdated: update.lastUpdated ?? new Date().toISOString(),
+      };
+    },
+    default: () => null,
+  }),
+
+  // Pending task state records missing information requested by a specialist (e.g. awaiting_order_id)
+  // so the router can identify whether the user is answering the request or switching topics.
+  pendingTask: Annotation<PendingTaskState | null | undefined>({
+    reducer: (state, update) => update !== undefined ? update : (state ?? null),
     default: () => null,
   }),
 });

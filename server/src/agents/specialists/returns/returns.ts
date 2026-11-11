@@ -554,6 +554,11 @@ export async function returnsNode(
   return {
     workflowStatus: 'COMPLETED',
     activeWorkflow: null,
+    pendingTask: null,
+    lastKnownEntities: {
+      orderId,
+      returnId: createResult.data.id,
+    },
     messages: [new AIMessage(responseText)],
   };
 }

@@ -71,6 +71,8 @@ function buildBaseState(overrides: Partial<ConversationState> = {}): Conversatio
     currentIntent: 'DUPLICATE_CHARGE',
     workflowStatus: 'ACTIVE',
     activeWorkflow: null,
+    lastKnownEntities: null,
+    pendingTask: null,
     ...overrides,
   };
 }

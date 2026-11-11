@@ -92,6 +92,8 @@ function makeState(overrides: Partial<ConversationState> = {}): ConversationStat
     workflowStatus: 'ACTIVE',
     identity: { status: 'UNVERIFIED', verificationMethod: null, verifiedAt: null },
     activeWorkflow: null,
+    lastKnownEntities: null,
+    pendingTask: null,
     ...overrides,
   };
 }

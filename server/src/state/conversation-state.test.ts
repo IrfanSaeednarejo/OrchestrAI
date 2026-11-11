@@ -145,4 +145,32 @@ describe('ConversationState Reducers', () => {
     state = await app.invoke({ user: null }, config);
     expect(state.user).toBeNull();
   });
+
+  it('lastKnownEntities: merges partial updates and updates timestamp', async () => {
+    const { app, config } = buildTestApp();
+
+    let state = await app.invoke({ lastKnownEntities: { orderId: 'ord-123' } }, config);
+    expect(state.lastKnownEntities?.orderId).toBe('ord-123');
+    expect(state.lastKnownEntities?.lastUpdated).toBeDefined();
+
+    state = await app.invoke({ lastKnownEntities: { paymentId: 'pay-456' } }, config);
+    expect(state.lastKnownEntities?.orderId).toBe('ord-123');
+    expect(state.lastKnownEntities?.paymentId).toBe('pay-456');
+
+    state = await app.invoke({ lastKnownEntities: null }, config);
+    expect(state.lastKnownEntities).toBeNull();
+  });
+
+  it('pendingTask: simple overwrite and null reset', async () => {
+    const { app, config } = buildTestApp();
+
+    let state = await app.invoke({
+      pendingTask: { specialist: 'order_tracking', awaitingField: 'order_id' },
+    }, config);
+    expect(state.pendingTask?.specialist).toBe('order_tracking');
+    expect(state.pendingTask?.awaitingField).toBe('order_id');
+
+    state = await app.invoke({ pendingTask: null }, config);
+    expect(state.pendingTask).toBeNull();
+  });
 });
