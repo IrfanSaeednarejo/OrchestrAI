@@ -41,7 +41,7 @@ const allowlist: Record<SpecialistId, readonly ToolName[]> = {
   refund: ['get_order', 'get_payment', 'get_return_status', 'get_return_by_order', 'create_refund', 'get_refund_status', 'search_knowledge'],
   profile: ['get_profile', 'update_profile'],
   account_access: ['start_identity_verification', 'verify_identity', 'initiate_password_reset', 'search_knowledge'],
-  general_assistant: ['search_knowledge'],
+  general_assistant: [],
 };
 
 export const TOOL_ALLOWLIST: Readonly<Record<SpecialistId, ReadonlySet<string>>> = {
