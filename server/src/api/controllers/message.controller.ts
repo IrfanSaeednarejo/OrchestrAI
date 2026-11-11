@@ -401,6 +401,7 @@ export async function sendMessageHandler(
         routing: {
           currentAgent: finalState.routing.currentAgent,
           handoffCount: finalState.routing.handoffCount,
+          workflowStatus: finalState.workflowStatus,
           blockedBy,
           currentStep,
           ...(serviceOptions ? { options: serviceOptions } : {}),
