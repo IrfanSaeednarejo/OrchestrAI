@@ -14,6 +14,11 @@ export interface SSENodeEvent {
   timestamp: string;
 }
 
+export interface SSEActivityEvent {
+  activity: string;
+  timestamp: string;
+}
+
 export interface SSEMessageEvent {
   role: 'assistant';
   content: string;
@@ -39,6 +44,7 @@ export interface SSEErrorEvent {
 export type SSEEventPayload =
   | { type: 'start'; data: SSEStartEvent }
   | { type: 'node'; data: SSENodeEvent }
+  | { type: 'activity'; data: SSEActivityEvent }
   | { type: 'message'; data: SSEMessageEvent }
   | { type: 'routing'; data: SSERoutingEvent }
   | { type: 'done'; data: SSEDoneEvent }
@@ -47,6 +53,7 @@ export type SSEEventPayload =
 export interface SSECallbacks {
   onStart?: (data: SSEStartEvent) => void;
   onNode?: (data: SSENodeEvent) => void;
+  onActivity?: (data: SSEActivityEvent) => void;
   onMessage?: (data: SSEMessageEvent) => void;
   onRouting?: (data: SSERoutingEvent) => void;
   onDone?: (data: SSEDoneEvent) => void;

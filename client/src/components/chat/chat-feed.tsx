@@ -15,6 +15,7 @@ interface ChatFeedProps {
   isStreaming?: boolean;
   streamingText?: string;
   currentNode?: string | null;
+  currentActivity?: string | null;
   className?: string;
   serviceOptions?: ServiceOption[] | null;
   onOptionSelect?: (message: string) => void;
@@ -26,6 +27,7 @@ export function ChatFeed({
   isStreaming = false,
   streamingText = '',
   currentNode = null,
+  currentActivity = null,
   className = '',
   serviceOptions = null,
   onOptionSelect,
@@ -147,14 +149,14 @@ export function ChatFeed({
           </div>
 
           <div className="max-w-[80%] rounded-2xl rounded-tl-sm px-4 py-3 text-sm bg-white border border-slate-200 text-slate-800 shadow-sm space-y-2">
-            {/* Live Node Progress Pill */}
-            {currentNode && (
+            {/* Live Activity Progress Pill */}
+            {(currentActivity || currentNode) && (
               <div
                 data-testid="node-progress-indicator"
                 className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-200 animate-pulse"
               >
                 <Loader2 className="h-3 w-3 animate-spin text-indigo-500" />
-                <span>Working: {currentNode.replace(/_/g, ' ')}...</span>
+                <span>{currentActivity || `Working: ${currentNode?.replace(/_/g, ' ')}...`}</span>
               </div>
             )}
 
@@ -163,7 +165,7 @@ export function ChatFeed({
               <div data-testid="streaming-text">
                 <MarkdownRenderer content={streamingText} />
               </div>
-            ) : !currentNode ? (
+            ) : !currentNode && !currentActivity ? (
               <div
                 data-testid="typing-indicator"
                 className="flex items-center gap-1.5 py-1 px-1 text-slate-400"

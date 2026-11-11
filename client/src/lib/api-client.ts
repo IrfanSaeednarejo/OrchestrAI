@@ -25,6 +25,7 @@ import type {
   SSECallbacks,
   SSEStartEvent,
   SSENodeEvent,
+  SSEActivityEvent,
   SSEMessageEvent,
   SSERoutingEvent,
   SSEDoneEvent,
@@ -347,6 +348,9 @@ export async function streamMessage(
               break;
             case 'node':
               callbacks.onNode?.(parsedData as SSENodeEvent);
+              break;
+            case 'activity':
+              callbacks.onActivity?.(parsedData as SSEActivityEvent);
               break;
             case 'message':
               callbacks.onMessage?.(parsedData as SSEMessageEvent);

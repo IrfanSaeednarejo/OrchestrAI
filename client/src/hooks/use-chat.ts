@@ -17,6 +17,7 @@ export interface ChatState {
   isStreaming: boolean;
   streamingText: string;
   currentNode: string | null;
+  currentActivity: string | null;
   currentAgent: string | null;
   handoffCount: number;
   workflowStatus: WorkflowStatus;
@@ -44,6 +45,12 @@ export type ChatAction =
       type: 'STREAM_NODE';
       payload: {
         node: string;
+      };
+    }
+  | {
+      type: 'STREAM_ACTIVITY';
+      payload: {
+        activity: string;
       };
     }
   | {
@@ -78,6 +85,7 @@ export const initialChatState: ChatState = {
   isStreaming: false,
   streamingText: '',
   currentNode: null,
+  currentActivity: null,
   currentAgent: null,
   handoffCount: 0,
   workflowStatus: 'ACTIVE',
@@ -130,6 +138,7 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
         isStreaming: true,
         streamingText: '',
         currentNode: null,
+        currentActivity: null,
         error: null,
         serviceOptions: null,
       };
@@ -139,6 +148,13 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
       return {
         ...state,
         currentNode: action.payload.node,
+      };
+    }
+
+    case 'STREAM_ACTIVITY': {
+      return {
+        ...state,
+        currentActivity: action.payload.activity,
       };
     }
 
@@ -202,18 +218,7 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
 
     case 'RESET_STATE': {
       return {
-        conversationId: null,
-        messages: [],
-        isStreaming: false,
-        streamingText: '',
-        currentNode: null,
-        currentAgent: null,
-        handoffCount: 0,
-        workflowStatus: 'ACTIVE',
-        blockedBy: null,
-        currentStep: null,
-        error: null,
-        serviceOptions: null,
+        ...initialChatState,
       };
     }
 
@@ -309,6 +314,9 @@ export function useChat(
           {
             onNode: (data) => {
               dispatch({ type: 'STREAM_NODE', payload: { node: data.node } });
+            },
+            onActivity: (data) => {
+              dispatch({ type: 'STREAM_ACTIVITY', payload: { activity: data.activity } });
             },
             onMessage: (data) => {
               dispatch({ type: 'STREAM_MESSAGE', payload: { chunk: data.content } });
