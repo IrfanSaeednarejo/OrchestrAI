@@ -216,12 +216,23 @@ export async function routerNode(
   let detectedIntent = 'GENERAL_INQUIRY';
   let routingReason = 'Initial default routing';
   let isFallback = false;
+  let queuedIntentsUpdate: import('../../state/conversation-state.js').QueuedIntent[] | null = null;
 
   const uuidOnlyMatch = userText.trim().match(
     /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
   );
 
-  if (isGreetingMessage(userText)) {
+  // Check if there is an active queued intent from a previous multi-intent turn
+  if (state.intentQueue && state.intentQueue.length > 0) {
+    const nextIntent = state.intentQueue[0];
+    const remainingQueue = state.intentQueue.slice(1);
+    if (nextIntent && (SPECIALIST_NODE_NAMES as readonly string[]).includes(nextIntent.specialist)) {
+      targetSpecialist = nextIntent.specialist as SpecialistId;
+      detectedIntent = nextIntent.intent;
+      routingReason = `Executing queued secondary intent: ${nextIntent.reasoning}`;
+      queuedIntentsUpdate = remainingQueue.length > 0 ? remainingQueue : null;
+    }
+  } else if (isGreetingMessage(userText)) {
     detectedIntent = 'GREETING';
     targetSpecialist = 'general_assistant';
     routingReason = 'Customer greeting and general triage';
@@ -270,6 +281,12 @@ export async function routerNode(
         targetSpecialist = classification.data.specialist;
         detectedIntent = classification.data.intent;
         routingReason = classification.data.reasoning;
+        if (
+          classification.data.secondaryIntents &&
+          classification.data.secondaryIntents.length > 0
+        ) {
+          queuedIntentsUpdate = classification.data.secondaryIntents;
+        }
       }
     } else {
       isFallback = true;
@@ -353,7 +370,10 @@ export async function routerNode(
 
   return new Command({
     goto: targetSpecialist,
-    update: routingUpdate,
+    update: {
+      ...routingUpdate,
+      ...(queuedIntentsUpdate !== undefined ? { intentQueue: queuedIntentsUpdate } : {}),
+    },
   });
 }
 
@@ -454,6 +474,13 @@ export function buildParentGraph(
     general_assistant: options?.specialists?.general_assistant ?? generalAssistantSpecialistNode,
   };
 
+  const shouldReturnToRouter = (state: ConversationState): 'router' | typeof END => {
+    if (state.intentQueue && state.intentQueue.length > 0) {
+      return 'router';
+    }
+    return END;
+  };
+
   const workflow = new StateGraph(ConversationStateAnnotation)
     .addNode('router', routerNode, {
       ends: [...SPECIALIST_NODE_NAMES, END],
@@ -480,13 +507,13 @@ export function buildParentGraph(
       ends: ['router', END],
     })
     .addEdge(START, 'router')
-    .addEdge('order_tracking', END)
-    .addEdge('returns', END)
-    .addEdge('payment', END)
-    .addEdge('refund', END)
-    .addEdge('profile', END)
-    .addEdge('account_access', END)
-    .addEdge('general_assistant', END);
+    .addConditionalEdges('order_tracking', shouldReturnToRouter)
+    .addConditionalEdges('returns', shouldReturnToRouter)
+    .addConditionalEdges('payment', shouldReturnToRouter)
+    .addConditionalEdges('refund', shouldReturnToRouter)
+    .addConditionalEdges('profile', shouldReturnToRouter)
+    .addConditionalEdges('account_access', shouldReturnToRouter)
+    .addConditionalEdges('general_assistant', shouldReturnToRouter);
 
   return workflow.compile({ checkpointer });
 }

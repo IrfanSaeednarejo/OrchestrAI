@@ -31,6 +31,7 @@ describe('Phase 15: 8 Binary Evaluators Unit Tests', () => {
     activeWorkflow: null,
     lastKnownEntities: null,
     pendingTask: null,
+    intentQueue: null,
     currentDomain: 'orders',
     currentIntent: 'ORDER_STATUS',
     workflowStatus: 'COMPLETED',

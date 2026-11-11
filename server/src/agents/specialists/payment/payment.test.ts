@@ -139,6 +139,7 @@ function buildBaseState(overrides: Partial<ConversationState> = {}): Conversatio
     activeWorkflow: null,
     lastKnownEntities: null,
     pendingTask: null,
+    intentQueue: null,
     ...overrides,
   };
 }

@@ -72,6 +72,7 @@ function makeState(overrides: Partial<ConversationState> = {}): ConversationStat
     activeWorkflow: null,
     lastKnownEntities: null,
     pendingTask: null,
+    intentQueue: null,
     ...overrides,
   };
 }

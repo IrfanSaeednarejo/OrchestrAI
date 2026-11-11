@@ -49,6 +49,13 @@ export interface PendingTaskState {
   context?: Record<string, unknown> | null;
 }
 
+export interface QueuedIntent {
+  specialist: string;
+  intent: string;
+  confidence: number;
+  reasoning: string;
+}
+
 export interface ActiveWorkflowState {
   workflowId: string | null;
   originatingIntent: string | null;
@@ -167,6 +174,13 @@ export const ConversationStateAnnotation = Annotation.Root({
   // Pending task state records missing information requested by a specialist (e.g. awaiting_order_id)
   // so the router can identify whether the user is answering the request or switching topics.
   pendingTask: Annotation<PendingTaskState | null | undefined>({
+    reducer: (state, update) => update !== undefined ? update : (state ?? null),
+    default: () => null,
+  }),
+
+  // Multi-intent queue for compound customer requests (e.g. "where is my order and can I return it?").
+  // Hard-capped at 2 intents total (1 active + 1 queued) per OD-24d.
+  intentQueue: Annotation<QueuedIntent[] | null | undefined>({
     reducer: (state, update) => update !== undefined ? update : (state ?? null),
     default: () => null,
   }),

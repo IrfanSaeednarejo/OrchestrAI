@@ -13,6 +13,18 @@ import { formatEntityContext, formatPendingTaskContext } from '../../agents/comm
 // Schema & Types
 // ---------------------------------------------------------------------------
 
+export const IntentItemSchema = z.object({
+  specialist: z.enum(SPECIALIST_IDS),
+  intent: z.string().min(1, 'intent must not be empty'),
+  confidence: z
+    .number()
+    .min(0, 'confidence must be >= 0')
+    .max(1, 'confidence must be <= 1'),
+  reasoning: z.string().min(1, 'reasoning must not be empty'),
+});
+
+export type IntentItem = z.infer<typeof IntentItemSchema>;
+
 export const ClassificationResultSchema = z.object({
   specialist: z.enum(SPECIALIST_IDS),
   intent: z.string().min(1, 'intent must not be empty'),
@@ -21,6 +33,7 @@ export const ClassificationResultSchema = z.object({
     .min(0, 'confidence must be >= 0')
     .max(1, 'confidence must be <= 1'),
   reasoning: z.string().min(1, 'reasoning must not be empty'),
+  secondaryIntents: z.array(IntentItemSchema).max(1).default([]),
 });
 
 export type ClassificationResult = z.infer<typeof ClassificationResultSchema>;
@@ -69,6 +82,7 @@ Contextual Guidance:
 - If the customer refers to "this order", "that package", or "my return", use the Known Entities and Recent Transcript to determine the context.
 - If a specialist is currently awaiting specific information (Pending Task) and the user provides that info, continue with that specialist.
 - If the user changes topic away from a pending task (e.g. asking a profile question or capability question), route to the new specialist instead of forcing continuation.
+- If the user expresses multiple distinct intents in one message (e.g., "where is my order and can I return it?"), identify the primary intent for immediate execution and put at most one secondary intent in "secondaryIntents".
 - If the user message is a greeting or capability question ("hello", "what can you do?"), classify intent as "GREETING" or "CAPABILITY_QUERY" and specialist as "general_assistant".
 
 Context:
@@ -87,7 +101,15 @@ Respond with a JSON object matching this schema:
   "specialist": "order_tracking" | "returns" | "payment" | "refund" | "profile" | "account_access" | "general_assistant",
   "intent": "<SPECIFIC_INTENT_NAME>",
   "confidence": <number between 0.0 and 1.0>,
-  "reasoning": "<concise explanation>"
+  "reasoning": "<concise explanation>",
+  "secondaryIntents": [
+    {
+      "specialist": "<specialist>",
+      "intent": "<intent>",
+      "confidence": <number>,
+      "reasoning": "<explanation>"
+    }
+  ]
 }`;
 }
 
