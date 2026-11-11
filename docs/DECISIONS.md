@@ -226,6 +226,26 @@ Small focused steps; explicit typed state; clear agent boundaries; no agent spag
   - 10-second timeout with single exponential-backoff retry on transient errors in `llm/client.ts`.
   - Mutation tools (`create_return`, `create_refund`, `update_profile`, `start_verification`, `verify_identity`) restricted to zero retries in `tools/execution.ts`; idempotent read tools retry on transient database errors.
 
+## Phase 25 (Conversational Routing & Memory Overhaul) — approved 2026-11-11
+- OD-25a (Elimination of Sticky Continuation Locks):
+  - In `routerNode`, removed legacy continuation guards 3b (order tracking) and 3c (payment confirmation). Narrowed verification guard 3a to pure 6-digit numeric OTP regex (`/^\d{6}$/`) during active verification, and kept narrow bare-UUID regex fast path. All other messages reach the contextual classifier dynamically.
+- OD-25b (Grounded General Assistant Specialist Node):
+  - Created `general_assistant` specialist node (`server/src/agents/specialists/general-assistant/`) grounded strictly in a typed platform capabilities registry. Answers greetings, capability inquiries ("what else can you do?"), and store questions with structured suggestions, transitioning state to `workflowStatus: 'WAITING_FOR_USER_INPUT'`.
+  - Abandon pending non-verification tasks upon conversational topic switches.
+- OD-25c (Conversation Entity Memory & Pending-Task Tracking):
+  - Added additive `lastKnownEntities` and `pendingTask` fields to `ConversationState` (`server/src/state/conversation-state.ts`, protected file).
+  - Specialists write resolved `orderId`, `paymentId`, and `returnId` to `lastKnownEntities` on completion. Subsequent turns reference "this order" seamlessly across specialists.
+- OD-25d (Transcript & Entity Context Injection):
+  - Created `server/src/agents/common/context.ts` providing `formatConversationTranscript(messages, limit = 6)` and entity formatters.
+  - Injected transcript, pending task state, and entity memory into classifier and specialist prompts.
+- OD-25e (Friendly Activity Streaming & UI Progress Decoupling):
+  - Express SSE controller emits typed `event: activity` delivering friendly progress messages (`"Looking up order and shipment details..."`) to user chat while preserving raw node names in ops traces.
+  - Client `ChatFeed` renders friendly activity text without exposing backend specialist node names to customers.
+- OD-25f (Multi-Intent Classification & Queued Intent Routing):
+  - Classifier detects compound requests with up to 2 intents (primary + secondary).
+  - Router dispatches primary intent and saves secondary intent in `state.intentQueue`.
+  - Added conditional edges from specialists returning to router when `intentQueue` has pending items, capping execution safely.
+
 
 
 
