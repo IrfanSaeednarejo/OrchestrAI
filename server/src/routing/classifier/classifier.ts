@@ -6,6 +6,8 @@
 import { z } from 'zod';
 import { generateStructuredOutput, type LLMResult } from '../../agents/llm/client.js';
 import { SPECIALIST_IDS } from '../../tools/permissions.js';
+import type { LastKnownEntities, PendingTaskState } from '../../state/conversation-state.js';
+import { formatEntityContext, formatPendingTaskContext } from '../../agents/common/context.js';
 
 // ---------------------------------------------------------------------------
 // Schema & Types
@@ -26,6 +28,9 @@ export type ClassificationResult = z.infer<typeof ClassificationResultSchema>;
 export interface ClassifierContext {
   currentDomain?: string | null;
   previousAgent?: string | null;
+  transcript?: string | null;
+  lastKnownEntities?: LastKnownEntities | null;
+  pendingTask?: PendingTaskState | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -42,6 +47,11 @@ function buildClassificationPrompt(
   const previousAgentContext = context?.previousAgent
     ? `Previous specialist agent: ${context.previousAgent}`
     : 'No previous agent.';
+  const transcriptContext = context?.transcript
+    ? `Recent Conversation Transcript:\n${context.transcript}`
+    : 'No prior transcript.';
+  const entitiesContext = `Known Entities: ${formatEntityContext(context?.lastKnownEntities)}`;
+  const pendingTaskContext = `Pending Task: ${formatPendingTaskContext(context?.pendingTask)}`;
 
   return `You are the Master Router for OrchestrAI, an autonomous e-commerce customer support platform.
 Your task is to analyze the user's message and classify it into the correct domain specialist and specific intent.
@@ -55,12 +65,19 @@ Specialists available:
 - account_access: Login issues, identity verification, password resets.
 - general_assistant: Greetings, capability inquiries ("what can you do?", "what else can you do?"), help, store chit-chat, unsupported requests.
 
-If the user message is an order ID, tracking reference, or UUID responding to a specialist inquiry, classify it into the active domain (defaulting to order_tracking if none active).
-If the user message is a greeting or capability question ("hello", "what can you do?"), classify intent as "GREETING" or "CAPABILITY_QUERY" and specialist as "general_assistant".
+Contextual Guidance:
+- If the customer refers to "this order", "that package", or "my return", use the Known Entities and Recent Transcript to determine the context.
+- If a specialist is currently awaiting specific information (Pending Task) and the user provides that info, continue with that specialist.
+- If the user changes topic away from a pending task (e.g. asking a profile question or capability question), route to the new specialist instead of forcing continuation.
+- If the user message is a greeting or capability question ("hello", "what can you do?"), classify intent as "GREETING" or "CAPABILITY_QUERY" and specialist as "general_assistant".
 
 Context:
 ${domainContext}
 ${previousAgentContext}
+${entitiesContext}
+${pendingTaskContext}
+
+${transcriptContext}
 
 User Message:
 """${userMessage}"""

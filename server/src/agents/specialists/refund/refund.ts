@@ -301,7 +301,7 @@ export async function refundNode(
 
   if (!orderId) {
     const extraction = await extractRefundIntent(userText);
-    orderId = extraction.orderId;
+    orderId = extraction.orderId || (state.lastKnownEntities?.orderId ?? null);
     refundId = extraction.refundId;
   }
 

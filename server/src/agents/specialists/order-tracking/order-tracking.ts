@@ -229,7 +229,10 @@ export async function orderTrackingNode(
       ? state.activeWorkflow.resumeContext['orderId']
       : undefined;
 
-  const orderId = extraction.orderId || resumeOrderId;
+  const orderId =
+    extraction.orderId ||
+    resumeOrderId ||
+    (typeof state.lastKnownEntities?.orderId === 'string' ? state.lastKnownEntities.orderId : undefined);
 
   if (!orderId) {
     return {

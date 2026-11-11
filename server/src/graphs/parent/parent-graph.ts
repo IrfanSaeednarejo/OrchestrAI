@@ -24,6 +24,7 @@ import {
   isRoutingLoop,
 } from '../../routing/guards.js';
 import { classifyMessage } from '../../routing/classifier/classifier.js';
+import { formatConversationTranscript } from '../../agents/common/context.js';
 import { isGreetingMessage } from '../../routing/classifier/taxonomy.js';
 import { generateStructuredOutput } from '../../agents/llm/client.js';
 import {
@@ -251,9 +252,13 @@ export async function routerNode(
     detectedIntent = state.currentIntent ?? 'ORDER_STATUS';
     routingReason = `Follow-up UUID reference provided for active specialist ${state.routing.currentAgent}`;
   } else if (userText.trim().length > 0) {
+    const transcript = formatConversationTranscript(state.messages, 6);
     const classification = await classifyMessage(userText, {
       currentDomain: state.currentDomain,
       previousAgent: state.routing.previousAgent,
+      transcript,
+      lastKnownEntities: state.lastKnownEntities,
+      pendingTask: state.pendingTask,
     });
 
     if (classification.success) {

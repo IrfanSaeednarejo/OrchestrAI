@@ -267,7 +267,7 @@ export async function returnsNode(
 
   if (!orderId) {
     const extraction = await extractReturnIntent(userText);
-    orderId = extraction.orderId;
+    orderId = extraction.orderId || (state.lastKnownEntities?.orderId ?? null);
     reason = extraction.reason;
     intent = extraction.intent;
   }
