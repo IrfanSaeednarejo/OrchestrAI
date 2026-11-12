@@ -16,6 +16,7 @@
     "checkpointer:setup": "tsx src/persistence/checkpointer/setup.ts",
     "knowledge:ingest": "tsx src/knowledge/ingest.ts",
     "eval": "tsx src/evaluation/cli/run-eval.ts",
+    "email:smoke": "tsx src/services/email-smoke.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
@@ -51,6 +52,7 @@
     "express": "^5.3.0",
     "pg": "^8.23.0",
     "redis": "^6.2.1",
+    "resend": "^6.38.0",
     "zod": "^4.6.4"
   }
 }
