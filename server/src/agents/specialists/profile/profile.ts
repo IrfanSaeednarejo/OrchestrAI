@@ -25,6 +25,7 @@ import { loadPrompt } from '../../prompts/template-loader.js';
 import { gatedExecuteTool } from '../../../tools/gated-execution.js';
 import { createBlockedResponse } from '../../../state/blocked-workflow.js';
 import { recordAgentExecution } from '../../../routing/events.js';
+import { formatConversationTranscript } from '../../common/context.js';
 import { getProfile, getProfileMetadata } from '../../../tools/queries/profile.tools.js';
 import { updateProfile, updateProfileMetadata } from '../../../tools/mutations/profile.tools.js';
 
@@ -65,6 +66,7 @@ refunds, account security (handled by Account Access specialist).`,
 
 const ProfileIntentSchema = z.object({
   intent: z.enum(['view_profile', 'update_profile']),
+  targetField: z.enum(['name', 'defaultAddress', 'both', 'unknown']).nullable().default(null),
   name: z.string().nullable(),
   defaultAddress: z.string().nullable(),
   confidence: z.number().min(0).max(1),
@@ -86,20 +88,33 @@ export function extractLastUserText(state: Pick<ConversationState, 'messages'>):
   return '';
 }
 
-export async function extractProfileIntent(userText: string): Promise<ProfileIntent> {
+export async function extractProfileIntent(
+  userText: string,
+  contextTranscript?: string
+): Promise<ProfileIntent> {
   if (userText.trim().length === 0) {
-    return { intent: 'view_profile', name: null, defaultAddress: null, confidence: 0 };
+    return { intent: 'view_profile', targetField: null, name: null, defaultAddress: null, confidence: 0 };
   }
 
-  const prompt = `Extract the customer's profile intent from the following message.
-Determine if they want to VIEW their profile or UPDATE specific fields.
-If updating, extract the new name and/or defaultAddress (shipping address) they want to set.
+  const transcriptSection =
+    contextTranscript && contextTranscript !== 'No prior conversation turns.'
+      ? `\nPrior conversation:\n${contextTranscript}\n`
+      : '';
 
+  const prompt = `Extract the customer's profile intent from the following message and conversation history.
+Determine if they want to VIEW their profile or UPDATE specific fields.
+If updating:
+- targetField: "name" | "defaultAddress" | "both" | "unknown" (what field they intend to modify)
+- name: new name string if provided, else null
+- defaultAddress: new default address string if provided, else null
+- If the customer specifies a field to change (e.g. "so change the account name") without providing the new value yet, set targetField accordingly and leave name/defaultAddress as null.
+${transcriptSection}
 Customer message: "${userText}"
 
 Respond with JSON:
 {
   "intent": "view_profile" | "update_profile",
+  "targetField": "name" | "defaultAddress" | "both" | "unknown" | null,
   "name": "<new name or null>",
   "defaultAddress": "<new default address or null>",
   "confidence": <0.0-1.0>
@@ -113,7 +128,7 @@ Respond with JSON:
     return result.data;
   }
 
-  return { intent: 'view_profile', name: null, defaultAddress: null, confidence: 0 };
+  return { intent: 'view_profile', targetField: null, name: null, defaultAddress: null, confidence: 0 };
 }
 
 export async function generateProfileViewResponse(params: {
@@ -222,6 +237,7 @@ export async function profileNode(
 
   // 2. Resolve intent (check resumeContext first if resuming from verification, else extract from user message)
   let intent: 'view_profile' | 'update_profile';
+  let targetField: 'name' | 'defaultAddress' | 'both' | 'unknown' | null = null;
   let newName: string | undefined = undefined;
   let newDefaultAddress: string | undefined = undefined;
 
@@ -241,8 +257,10 @@ export async function profileNode(
       intent = 'view_profile';
     }
   } else {
-    const intentExtraction = await extractProfileIntent(userText);
+    const transcript = formatConversationTranscript(state.messages, 6);
+    const intentExtraction = await extractProfileIntent(userText, transcript);
     intent = intentExtraction.intent;
+    targetField = intentExtraction.targetField ?? null;
     newName = intentExtraction.name ?? undefined;
     newDefaultAddress = intentExtraction.defaultAddress ?? undefined;
   }
@@ -325,13 +343,24 @@ export async function profileNode(
 
   // If nothing to update was extracted, ask the customer what they want to change
   if (newName === undefined && newDefaultAddress === undefined) {
+    const wantsName = targetField === 'name' || /\bname\b/i.test(userText);
+    const wantsAddress = targetField === 'defaultAddress' || /\b(address|shipping)\b/i.test(userText);
+
+    let messageText: string;
+    if (wantsName && !wantsAddress) {
+      messageText =
+        "I'd be happy to update your name. What new name would you like to set on your profile?";
+    } else if (wantsAddress && !wantsName) {
+      messageText =
+        "I'd be happy to update your shipping address. What new address would you like to set?";
+    } else {
+      messageText =
+        "I'd be happy to update your profile. Could you please tell me what you'd like to change — your name or your default shipping address?";
+    }
+
     return {
       workflowStatus: 'WAITING_FOR_USER_INPUT',
-      messages: [
-        new AIMessage(
-          "I'd be happy to update your profile. Could you please tell me what you'd like to change — your name or your default shipping address?"
-        ),
-      ],
+      messages: [new AIMessage(messageText)],
     };
   }
 

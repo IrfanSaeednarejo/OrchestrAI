@@ -341,4 +341,40 @@ describe('Profile specialist — profileNode', () => {
     expect(result.workflowStatus).toBe('WAITING_FOR_USER_INPUT');
     expect(result.messages?.[0]?.content).toMatch(/name or your default/i);
   });
+
+  it('update_profile: asks specifically for name when user targets name without a new value', async () => {
+    const state = makeState({ messages: [new HumanMessage('so change the account name')] });
+
+    mockGenerateContent.mockResolvedValueOnce({
+      text: JSON.stringify({
+        intent: 'update_profile',
+        targetField: 'name',
+        name: null,
+        defaultAddress: null,
+        confidence: 0.9,
+      }),
+    });
+
+    const result = await profileNode(state) as { workflowStatus?: string; messages?: Array<{ content: string }> };
+    expect(result.workflowStatus).toBe('WAITING_FOR_USER_INPUT');
+    expect(result.messages?.[0]?.content).toMatch(/What new name would you like to set/i);
+  });
+
+  it('update_profile: asks specifically for shipping address when user targets address without a new value', async () => {
+    const state = makeState({ messages: [new HumanMessage('change my shipping address')] });
+
+    mockGenerateContent.mockResolvedValueOnce({
+      text: JSON.stringify({
+        intent: 'update_profile',
+        targetField: 'defaultAddress',
+        name: null,
+        defaultAddress: null,
+        confidence: 0.9,
+      }),
+    });
+
+    const result = await profileNode(state) as { workflowStatus?: string; messages?: Array<{ content: string }> };
+    expect(result.workflowStatus).toBe('WAITING_FOR_USER_INPUT');
+    expect(result.messages?.[0]?.content).toMatch(/What new address would you like to set/i);
+  });
 });
