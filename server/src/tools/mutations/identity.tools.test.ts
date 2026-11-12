@@ -1,6 +1,14 @@
-import { describe, it, expect, beforeAll, afterAll, afterEach } from 'vitest';
-import { startIdentityVerification, verifyIdentity, initiatePasswordReset } from './identity.tools.js';
+import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach, vi } from 'vitest';
 
+const { mockSendEmail } = vi.hoisted(() => ({
+  mockSendEmail: vi.fn(),
+}));
+
+vi.mock('../../services/email.service.js', () => ({
+  sendEmail: mockSendEmail,
+}));
+
+import { startIdentityVerification, verifyIdentity, initiatePasswordReset } from './identity.tools.js';
 import { db } from '../../persistence/db/client.js';
 import { users } from '../../persistence/db/schema.js';
 import { createUser } from '../../persistence/repositories/marketplace.repository.js';
@@ -9,6 +17,13 @@ import { eq } from 'drizzle-orm';
 
 describe('identity.tools', () => {
   let userId: string;
+
+  async function getCodeFromRedis(uId: string): Promise<string> {
+    const raw = await redisClient.get(`verify:${uId}`);
+    if (!raw) throw new Error(`No verification code found in Redis for ${uId}`);
+    const parsed = JSON.parse(raw);
+    return parsed.code;
+  }
 
   beforeAll(async () => {
     await connectRedis();
@@ -27,17 +42,94 @@ describe('identity.tools', () => {
     }
   });
 
+  beforeEach(async () => {
+    mockSendEmail.mockReset();
+    mockSendEmail.mockResolvedValue({ success: true, data: { messageId: 'test-msg-id' } });
+    if (userId) {
+      await redisClient.del(`verify:${userId}`);
+      await redisClient.del(`verify:cooldown:${userId}`);
+      await redisClient.del(`verify:lockout:${userId}`);
+    }
+  });
+
   afterEach(async () => {
-    await redisClient.del(`verify:${userId}`);
+    if (userId) {
+      await redisClient.del(`verify:${userId}`);
+      await redisClient.del(`verify:cooldown:${userId}`);
+      await redisClient.del(`verify:lockout:${userId}`);
+    }
   });
 
   describe('start_identity_verification', () => {
-    it('happy path', async () => {
+    it('happy path: returns masked email metadata and sends email without revealing code', async () => {
       const result = await startIdentityVerification({ userId });
       expect(result.success).toBe(true);
       if (result.success) {
-        expect(result.data.code).toMatch(/^\d{6}$/);
+        expect(result.data).toEqual({
+          sent: true,
+          maskedEmail: expect.stringMatching(/^i\*\*\*@/),
+          expiresInSeconds: 600,
+        });
+        expect((result.data as unknown as { code?: string }).code).toBeUndefined();
       }
+
+      // Verify email service was invoked
+      expect(mockSendEmail).toHaveBeenCalledTimes(1);
+      const call = mockSendEmail.mock.calls[0];
+      expect(call).toBeDefined();
+      const emailArgs = call ? call[0] : undefined;
+      expect(emailArgs?.to).toContain('@example.com');
+      expect(emailArgs?.subject).toBe('Your OrchestrAI verification code');
+
+      // Verify the code exists in Redis directly
+      const savedCode = await getCodeFromRedis(userId);
+      expect(savedCode).toMatch(/^\d{6}$/);
+      expect(emailArgs?.text).toContain(savedCode);
+    });
+
+    it('enforces 60-second cooldown on consecutive requests', async () => {
+      const first = await startIdentityVerification({ userId });
+      expect(first.success).toBe(true);
+
+      const second = await startIdentityVerification({ userId });
+      expect(second.success).toBe(false);
+      if (!second.success) {
+        expect(second.error.code).toBe('RESEND_COOLDOWN');
+        expect(second.error.message).toMatch(/wait \d+ seconds/i);
+      }
+    });
+
+    it('sendEmail failure revokes the code from Redis and returns failure', async () => {
+      mockSendEmail.mockResolvedValueOnce({
+        success: false,
+        error: { code: 'EMAIL_SEND_FAILED', message: 'Provider rejected' },
+      });
+
+      const result = await startIdentityVerification({ userId });
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.code).toBe('EMAIL_SEND_FAILED');
+      }
+
+      // Code must be revoked from Redis
+      const raw = await redisClient.get(`verify:${userId}`);
+      expect(raw).toBeNull();
+    });
+
+    it('sendEmail timeout revokes the code from Redis and returns EMAIL_TIMEOUT', async () => {
+      mockSendEmail.mockResolvedValueOnce({
+        success: false,
+        error: { code: 'EMAIL_TIMEOUT', message: 'Delivery timed out' },
+      });
+
+      const result = await startIdentityVerification({ userId });
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.code).toBe('EMAIL_TIMEOUT');
+      }
+
+      const raw = await redisClient.get(`verify:${userId}`);
+      expect(raw).toBeNull();
     });
 
     it('NOT_FOUND for missing user', async () => {
@@ -63,7 +155,8 @@ describe('identity.tools', () => {
       expect(startResult.success).toBe(true);
       if (!startResult.success) return;
 
-      const verifyResult = await verifyIdentity({ userId, code: startResult.data.code });
+      const code = await getCodeFromRedis(userId);
+      const verifyResult = await verifyIdentity({ userId, code });
       expect(verifyResult.success).toBe(true);
       if (verifyResult.success) {
         expect(verifyResult.data.verified).toBe(true);
@@ -75,7 +168,8 @@ describe('identity.tools', () => {
       expect(startResult.success).toBe(true);
       if (!startResult.success) return;
 
-      const wrongCode = startResult.data.code === '000000' ? '111111' : '000000';
+      const code = await getCodeFromRedis(userId);
+      const wrongCode = code === '000000' ? '111111' : '000000';
       const verifyResult = await verifyIdentity({ userId, code: wrongCode });
       expect(verifyResult.success).toBe(false);
       if (!verifyResult.success) {
@@ -96,7 +190,8 @@ describe('identity.tools', () => {
       expect(startResult.success).toBe(true);
       if (!startResult.success) return;
 
-      const wrongCode = startResult.data.code === '000000' ? '111111' : '000000';
+      const code = await getCodeFromRedis(userId);
+      const wrongCode = code === '000000' ? '111111' : '000000';
       
       // 4 wrong attempts
       for (let i = 0; i < 4; i++) {
