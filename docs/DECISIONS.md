@@ -219,6 +219,28 @@ Small focused steps; explicit typed state; clear agent boundaries; no agent spag
   - Option A adopted: `routing.handoffCount` is turn-scoped (initialized to 0 per user turn via graph input `{ routing: { handoffCount: 0 } }` in `message.controller.ts`). Only the parent router mutates `handoffCount` when executing a `HANDOFF` or `RE_ROUTE`; specialists never emit handoff count updates. Resume transitions (`RE_ROUTE`) are exempt from loop detection.
 - Universal Blocked-Reply Helper & State Cleanup:
   - `createBlockedResponse` helper in `state/blocked-workflow.ts` standardizes polite, explanatory customer replies across all specialist gate blockages. Specialists clear `activeWorkflow: null` upon successful completion.
+
+## Phase 25 (Email Verification & Multi-Turn Profile Verification Flow) — approved 2026-11-12
+- Resend Email Service & Verification Code Template:
+  - Added Resend-based `sendEmail` service in `server/src/services/email.service.ts` with lazy client initialization, 8-second timeout (`Promise.race`), and `config.email.dryRun` defaulting to true in test environments.
+  - Zero PII in logs: logs only `messageId` and the recipient domain (e.g. `@gmail.com`).
+  - Added pure `renderVerificationCodeEmail` template generating accessible table-based HTML and plain-text versions without external assets or links.
+- Verification Service Hardening:
+  - Single source of truth `VERIFICATION_CODE_TTL_SECONDS = 600`.
+  - 60-second per-user resend cooldown enforced via Redis key `verify:cooldown:{userId}` (`SET NX EX 60`).
+  - Added `revokeVerificationCode(userId)` to delete `verify:{userId}` if email delivery fails.
+- `start_identity_verification` Tool Contract:
+  - Never returns the raw code; returns `{ sent: true, maskedEmail: string, expiresInSeconds: number }`.
+  - Recipient is loaded strictly from the database for `userId`; never accepted from tool input.
+  - On cooldown, returns `RESEND_COOLDOWN` failure with retry seconds remaining.
+- Context-Aware Field Identification in `profileNode`:
+  - `ProfileIntentSchema` includes `targetField` (`name` | `defaultAddress` | `both` | `unknown`).
+  - Injected bounded conversation transcript via `formatConversationTranscript` into intent extraction prompt.
+  - When no new value is supplied, asks specifically for the targeted field (e.g. name or address).
+  - Guarded `isResuming` by `state.identity?.status === 'VERIFIED'`, preventing premature execution of old pending requests on mid-flow refinement turns.
+- Router Domain Override for Verification Requests:
+  - When an active workflow is blocked by verification, requests for a verification code route to `account_access`, overriding domain bias from `currentDomain`.
+  - Narrowed Guard 3a catches 6-digit codes (`/\b\d{6}\b/`) directly to `account_access` without re-classifying.
 - Database Idempotency & Concurrency Hardening:
   - Applied unique index on `returns(order_id)` and partial unique index on `refunds(payment_id) WHERE status != 'failed'` (migration `0009_chemical_tana_nile.sql`).
   - Added transaction-level PostgreSQL advisory locking (`pg_try_advisory_xact_lock(hashtext(conversationId))`) in `message.controller.ts` to serialize turns per conversation and return 409 Conflict on concurrent POST requests.
