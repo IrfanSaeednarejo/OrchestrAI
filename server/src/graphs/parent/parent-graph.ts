@@ -241,25 +241,16 @@ export async function routerNode(
     targetSpecialist = 'general_assistant';
     routingReason = 'Customer inquiry about platform capabilities';
   } else if (
-    // 3a. Verification guard: when active workflow is awaiting identity verification,
-    // route directly to account_access if the message is a pure 6-digit OTP code or asking for a verification code.
-    (state.activeWorkflow?.currentStep === 'verify_identity' ||
-      state.activeWorkflow?.blockedBy === 'VERIFICATION_FULL' ||
-      state.activeWorkflow?.blockedBy === 'VERIFICATION_LIGHT') &&
+    // 3a. Narrowed verification guard: when active workflow is awaiting identity verification,
+    // and the message contains a 6-digit OTP code, route directly to account_access.
+    state.activeWorkflow?.currentStep === 'verify_identity' &&
     state.activeWorkflow?.blockedBy !== null &&
     state.activeWorkflow?.blockedBy !== undefined &&
-    state.identity?.status !== 'VERIFIED' &&
-    (/^\d{6}$/.test(userText.trim()) ||
-      /\b(send|get|request|need|email|issue|resend).*(verification|code|otp)\b/i.test(userText) ||
-      /\bverification\s+code\b/i.test(userText) ||
-      /\b(send|resend)\s+code\b/i.test(userText))
+    /\b\d{6}\b/.test(userText.trim())
   ) {
-    const isOtp = /^\d{6}$/.test(userText.trim());
     targetSpecialist = 'account_access';
-    detectedIntent = isOtp ? 'ACCOUNT_SECURITY' : 'VERIFY_ACCOUNT';
-    routingReason = isOtp
-      ? 'Direct routing of 6-digit OTP to account_access for pending identity verification'
-      : 'Direct routing of verification code request to account_access for pending identity verification';
+    detectedIntent = 'ACCOUNT_SECURITY';
+    routingReason = 'Direct routing of 6-digit OTP to account_access for pending identity verification';
   } else if (
     uuidOnlyMatch &&
     state.routing.currentAgent &&
@@ -290,6 +281,22 @@ export async function routerNode(
         targetSpecialist = classification.data.specialist;
         detectedIntent = classification.data.intent;
         routingReason = classification.data.reasoning;
+
+        // Domain override for verification requests during blocked workflow:
+        // When activeWorkflow is blocked by verification and the customer requests a code,
+        // route to account_access even if classifier was biased by currentDomain.
+        if (
+          state.activeWorkflow?.blockedBy &&
+          state.identity?.status !== 'VERIFIED' &&
+          (/\b(send|get|request|need|email|issue|resend).*(verification|code|otp)\b/i.test(userText) ||
+            /\bverification\s+code\b/i.test(userText) ||
+            /\b(VERIFY|SECURITY|CODE|OTP)\b/i.test(classification.data.intent))
+        ) {
+          targetSpecialist = 'account_access';
+          detectedIntent = 'VERIFY_ACCOUNT';
+          routingReason = 'Routing to account_access for verification code during blocked workflow (overriding domain bias)';
+        }
+
         if (
           classification.data.secondaryIntents &&
           classification.data.secondaryIntents.length > 0

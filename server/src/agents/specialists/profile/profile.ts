@@ -244,7 +244,8 @@ export async function profileNode(
   const isResuming =
     state.activeWorkflow?.returnTo?.agent === specialist &&
     state.activeWorkflow.resumeContext !== null &&
-    state.activeWorkflow.resumeContext !== undefined;
+    state.activeWorkflow.resumeContext !== undefined &&
+    state.identity?.status === 'VERIFIED';
 
   if (isResuming) {
     const activeWf = state.activeWorkflow as NonNullable<typeof state.activeWorkflow>;

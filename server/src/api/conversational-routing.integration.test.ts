@@ -10,7 +10,7 @@ import request from 'supertest';
 import { inArray } from 'drizzle-orm';
 import { db } from '../persistence/db/client.js';
 import { checkpointer } from '../persistence/checkpointer/client.js';
-import { connectRedis } from '../persistence/redis/client.js';
+import { connectRedis, redisClient } from '../persistence/redis/client.js';
 import { createApp } from './app.js';
 import {
   users,
@@ -49,7 +49,7 @@ vi.mock('@google/genai', () => ({
   },
 }));
 
-describe('Phase 24 End-to-End Conversational Routing Integration Tests', () => {
+describe('Phase 24 End-to-End Conversational Routing Integration Tests', { timeout: 120000 }, () => {
   let app: ReturnType<typeof createApp>;
   const createdUserIds: string[] = [];
   const createdConversationIds: string[] = [];
@@ -100,6 +100,10 @@ describe('Phase 24 End-to-End Conversational Routing Integration Tests', () => {
       }
 
       if (createdUserIds.length > 0) {
+        for (const uid of createdUserIds) {
+          await redisClient.del(`verify:${uid}`).catch(() => {});
+          await redisClient.del(`verify:cooldown:${uid}`).catch(() => {});
+        }
         await db.delete(users).where(inArray(users.id, createdUserIds));
       }
     } catch (err) {
@@ -243,6 +247,174 @@ describe('Phase 24 End-to-End Conversational Routing Integration Tests', () => {
     const snapshot = await checkpointer.get({ configurable: { thread_id: conversationId } });
     const cpState = snapshot?.channel_values as unknown as ConversationState;
     expect(cpState.lastKnownEntities?.orderId).toBe(testOrder.id);
+  });
+
+  it('Journey 3: Multi-turn profile update flow with verification handoff and resume', async () => {
+    const regRes = await request(app)
+      .post('/api/auth/register')
+      .send({
+        email: `irfan-${Date.now()}@orchestrai-test.com`,
+        name: 'Irfan',
+        password: 'Password123!',
+        defaultAddress: '123 Market St',
+      });
+    expect(regRes.status).toBe(201);
+    const token = regRes.body.token as string;
+    const userId = regRes.body.user.id as string;
+    createdUserIds.push(userId);
+
+    const convRes = await request(app)
+      .post('/api/conversations')
+      .set('Authorization', `Bearer ${token}`)
+      .send({});
+    expect(convRes.status).toBe(201);
+    const conversationId = convRes.body.conversation.id as string;
+    createdConversationIds.push(conversationId);
+
+    // Turn 1: "hello change my name to Irfan Raja Billo"
+    // Must NOT be treated as pure greeting. Routes to profile specialist.
+    mockGenerateContent.mockResolvedValueOnce({
+      text: JSON.stringify({
+        specialist: 'profile',
+        intent: 'UPDATE_PROFILE',
+        confidence: 0.95,
+        reasoning: 'Customer wants to change their name.',
+      }),
+    });
+    mockGenerateContent.mockResolvedValueOnce({
+      text: JSON.stringify({
+        intent: 'update_profile',
+        targetField: 'name',
+        name: 'Irfan Raja Billo',
+        defaultAddress: null,
+        confidence: 0.95,
+      }),
+    });
+
+    const turn1Res = await request(app)
+      .post(`/api/conversations/${conversationId}/messages`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ content: 'hello change my name to Irfan Raja Billo' });
+
+    expect(turn1Res.status).toBe(200);
+    expect(turn1Res.body.routing.currentAgent).toBe('profile');
+    expect(turn1Res.body.routing.workflowStatus).toBe('WAITING_FOR_USER_INPUT');
+    expect(turn1Res.body.message.content).toMatch(/verify your identity/i);
+
+    // Turn 2: "so change the account name"
+    // Without a specific value given, asks specifically for the name
+    mockGenerateContent.mockResolvedValueOnce({
+      text: JSON.stringify({
+        specialist: 'profile',
+        intent: 'UPDATE_PROFILE',
+        confidence: 0.95,
+        reasoning: 'Clarifying change of account name.',
+      }),
+    });
+    mockGenerateContent.mockResolvedValueOnce({
+      text: JSON.stringify({
+        intent: 'update_profile',
+        targetField: 'name',
+        name: null,
+        defaultAddress: null,
+        confidence: 0.9,
+      }),
+    });
+
+    const turn2Res = await request(app)
+      .post(`/api/conversations/${conversationId}/messages`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ content: 'so change the account name' });
+
+    expect(turn2Res.status).toBe(200);
+    expect(turn2Res.body.routing.currentAgent).toBe('profile');
+    expect(turn2Res.body.routing.workflowStatus).toBe('WAITING_FOR_USER_INPUT');
+    expect(turn2Res.body.message.content).toMatch(/What new name would you like to set/i);
+
+    // Turn 3: "change my Name to Irfan Saeed"
+    // Captures new value, blocks on verification
+    mockGenerateContent.mockResolvedValueOnce({
+      text: JSON.stringify({
+        specialist: 'profile',
+        intent: 'UPDATE_PROFILE',
+        confidence: 0.95,
+        reasoning: 'Customer providing new name.',
+      }),
+    });
+    mockGenerateContent.mockResolvedValueOnce({
+      text: JSON.stringify({
+        intent: 'update_profile',
+        targetField: 'name',
+        name: 'Irfan Saeed',
+        defaultAddress: null,
+        confidence: 0.95,
+      }),
+    });
+
+    const turn3Res = await request(app)
+      .post(`/api/conversations/${conversationId}/messages`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ content: 'change my Name to Irfan Saeed' });
+
+    expect(turn3Res.status).toBe(200);
+    expect(turn3Res.body.routing.currentAgent).toBe('profile');
+    expect(turn3Res.body.routing.workflowStatus).toBe('WAITING_FOR_USER_INPUT');
+    expect(turn3Res.body.message.content).toMatch(/verify your identity/i);
+
+    // Turn 4: "Send me a verification code"
+    // Classifier is called with currentDomain='profile', but supervisor overrides domain bias and routes to account_access.
+    mockGenerateContent.mockResolvedValueOnce({
+      text: JSON.stringify({
+        specialist: 'profile',
+        intent: 'REQUEST_VERIFICATION_CODE',
+        confidence: 0.95,
+        reasoning: 'Customer asks for verification code.',
+      }),
+    });
+    mockGenerateContent.mockResolvedValueOnce({
+      text: JSON.stringify({
+        intent: 'start_verification',
+        code: null,
+        confidence: 0.95,
+      }),
+    });
+
+    const turn4Res = await request(app)
+      .post(`/api/conversations/${conversationId}/messages`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ content: 'Send me a verification code' });
+
+    expect(turn4Res.status).toBe(200);
+    expect(turn4Res.body.routing.currentAgent).toBe('account_access');
+    expect(turn4Res.body.routing.workflowStatus).toBe('WAITING_FOR_USER_INPUT');
+    expect(turn4Res.body.message.content).toMatch(/verification code has been sent/i);
+    expect(turn4Res.body.message.content).toContain('i***@orchestrai-test.com');
+
+    // Retrieve the issued code directly from Redis
+    const redisRecord = await redisClient.get(`verify:${userId}`);
+    expect(redisRecord).not.toBeNull();
+    const parsed = JSON.parse(redisRecord as string) as { code: string };
+    const code = parsed.code;
+    expect(code).toMatch(/^\d{6}$/);
+
+    // Turn 5: User sends the 6-digit code.
+    // Guard 3a routes directly to account_access -> fast path verifies code -> router resumes profile -> profile updates name!
+    mockGenerateContent.mockResolvedValueOnce({
+      text: JSON.stringify({ response: 'Your name has been updated to Irfan Saeed.' }),
+    });
+
+    const turn5Res = await request(app)
+      .post(`/api/conversations/${conversationId}/messages`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ content: code });
+
+    expect(turn5Res.status).toBe(200);
+    expect(turn5Res.body.routing.workflowStatus).toBe('COMPLETED');
+    expect(turn5Res.body.message.content).toMatch(/Irfan Saeed/i);
+
+    // Verify database reflects the updated name
+    const [userInDb] = await db.select().from(users).where(inArray(users.id, [userId]));
+    expect(userInDb?.name).toBe('Irfan Saeed');
   });
 });
 

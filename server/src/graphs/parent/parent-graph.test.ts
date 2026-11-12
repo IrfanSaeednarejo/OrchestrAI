@@ -394,14 +394,25 @@ describe('Parent Graph & Stateful Router', () => {
     expect(result.routing.currentAgent).toBe('account_access');
   });
 
-  it('routes verification code request to account_access during blocked workflow without calling LLM', async () => {
+  it('routes verification code request to account_access during blocked workflow overriding domain bias', async () => {
     const checkpointer = new MemorySaver();
     const graph = buildParentGraph(checkpointer, { specialists: SPECIALIST_STUBS });
     const threadId = crypto.randomUUID();
 
+    // Classifier is biased toward profile because currentDomain is profile
+    mockGenerateContent.mockResolvedValueOnce({
+      text: JSON.stringify({
+        specialist: 'profile',
+        intent: 'UPDATE_PROFILE',
+        confidence: 0.9,
+        reasoning: 'Customer asked for a verification code while updating profile.',
+      }),
+    });
+
     const result = await graph.invoke(
       {
         messages: [new HumanMessage('Send me a verification code')],
+        currentDomain: 'profile',
         activeWorkflow: {
           workflowId: 'wf-prof-1',
           originatingIntent: 'UPDATE_PROFILE',
@@ -415,9 +426,7 @@ describe('Parent Graph & Stateful Router', () => {
       { configurable: { thread_id: threadId } }
     );
 
-    // Classifier LLM should not be called
-    expect(mockGenerateContent).not.toHaveBeenCalled();
-    // Routed to account_access
+    // Overrides domain bias and routes to account_access
     expect(result.routing.currentAgent).toBe('account_access');
     expect(result.currentIntent).toBe('VERIFY_ACCOUNT');
   });

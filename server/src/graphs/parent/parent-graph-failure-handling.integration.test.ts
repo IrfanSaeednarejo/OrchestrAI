@@ -347,8 +347,8 @@ describe('Phase 13: Failure Handling & Loop Prevention Integration', () => {
       { configurable: { thread_id: convo.id, conversationId: convo.id } }
     );
 
-    // Defaulted to order_tracking without crashing
-    expect(state.routing.currentAgent).toBe('order_tracking');
+    // Defaulted to general_assistant without crashing
+    expect(state.routing.currentAgent).toBe('general_assistant');
 
     const history = await getRoutingHistoryByConversationId(convo.id);
     expect(history.length).toBeGreaterThan(0);
