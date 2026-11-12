@@ -392,9 +392,13 @@ export async function accountAccessNode(
 
     if (!issueResult.success) {
       return {
-        workflowStatus: 'FAILED',
+        activeWorkflow: state.activeWorkflow,
+        workflowStatus: 'WAITING_FOR_USER_INPUT',
         messages: [
-          new AIMessage('I encountered an error issuing your verification code. Please try again shortly.'),
+          new AIMessage(
+            issueResult.error?.message ||
+              'I encountered an error issuing your verification code. Please try again shortly.'
+          ),
         ],
       };
     }
@@ -411,12 +415,15 @@ export async function accountAccessNode(
           resumeContext: null,
         };
 
+    const maskedEmail = issueResult.data?.maskedEmail;
+    const recipientText = maskedEmail ? `to ${maskedEmail}` : 'to your email';
+
     return {
       activeWorkflow: updatedWorkflow,
       workflowStatus: 'WAITING_FOR_USER_INPUT',
       messages: [
         new AIMessage(
-          'To proceed, we need to verify your identity. A 6-digit verification code has been sent to your email. Please enter the code when you receive it.'
+          `To proceed, we need to verify your identity. A 6-digit verification code has been sent ${recipientText}. Please enter the code when you receive it.`
         ),
       ],
     };
