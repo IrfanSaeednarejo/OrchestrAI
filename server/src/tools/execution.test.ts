@@ -4,9 +4,9 @@ import { db } from '../persistence/db/client.js';
 import { users, conversations, agentExecutions, toolExecutions, orders } from '../persistence/db/schema.js';
 import { createAgentExecution, AgentExecution } from '../persistence/repositories/orchestration.repository.js';
 import { getOrder, getOrderMetadata } from './queries/order.tools.js';
-import { verifyIdentity, verifyIdentityMetadata, startIdentityVerification, startIdentityVerificationMetadata } from './mutations/identity.tools.js';
+import { verifyIdentity, verifyIdentityMetadata } from './mutations/identity.tools.js';
 import { eq, desc } from 'drizzle-orm';
-import { ToolResult } from './types.js';
+import { ToolResult, ToolMetadata } from './types.js';
 import { connectRedis } from '../persistence/redis/client.js';
 
 describe('executeTool wrapper', () => {
@@ -131,27 +131,32 @@ describe('executeTool wrapper', () => {
     expect(logRow?.input).toEqual({ userId: testUserId, code: '[REDACTED]' });
   });
 
-  it('Output redaction: wrapping startIdentityVerification correctly redacts code in output', async () => {
-    const input = { userId: testUserId };
+  it('Output redaction: wrapping tool with sensitiveOutputFields correctly redacts in log', async () => {
+    const fakeToolWithSecret = async (): Promise<ToolResult<{ secretToken: string; publicInfo: string }>> => {
+      return { success: true, data: { secretToken: 'topsecret-123', publicInfo: 'visible' } };
+    };
+    const fakeMetadata: ToolMetadata = {
+      name: 'fake_secret_tool',
+      requiredVerification: 'NONE',
+      sensitiveOutputFields: ['secretToken'],
+    };
+
     const result = await executeTool(
-      startIdentityVerification,
-      startIdentityVerificationMetadata,
-      input,
+      fakeToolWithSecret,
+      fakeMetadata,
+      {},
       { agentExecutionId: testExecution.id }
     );
 
     expect(result.success).toBe(true);
-    
-    // The returned result to the caller should have the real code
     if (result.success) {
-      expect(result.data.code).toMatch(/^\d{6}$/);
+      expect(result.data.secretToken).toBe('topsecret-123');
+      expect(result.data.publicInfo).toBe('visible');
     }
 
     const logRow = await getLatestToolExecution();
     expect(logRow).toBeDefined();
-    
-    // The logged row should be redacted
-    expect(logRow?.output).toEqual({ code: '[REDACTED]' });
+    expect(logRow?.output).toEqual({ secretToken: '[REDACTED]', publicInfo: 'visible' });
   });
 
   it('Contract-violation safety net: catches synchronous throws', async () => {
