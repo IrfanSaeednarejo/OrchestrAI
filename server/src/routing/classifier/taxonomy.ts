@@ -94,7 +94,7 @@ export function isGreetingMessage(text: string): boolean {
     return false;
   }
   // If the user greeted but immediately included a domain keyword, treat it as domain-specific
-  const domainPattern = /\b(order|track|shipment|deliver|return|refund|pay|charge|bill|invoice|profile|address|password|login|verify|account)\b/i;
+  const domainPattern = /\b(order|track|shipment|deliver|return|refund|pay|charge|bill|invoice|profile|address|password|login|verify|account|name|change|update|shipping)\b/i;
   return !domainPattern.test(trimmed);
 }
 
