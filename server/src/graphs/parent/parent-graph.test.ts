@@ -394,6 +394,34 @@ describe('Parent Graph & Stateful Router', () => {
     expect(result.routing.currentAgent).toBe('account_access');
   });
 
+  it('routes verification code request to account_access during blocked workflow without calling LLM', async () => {
+    const checkpointer = new MemorySaver();
+    const graph = buildParentGraph(checkpointer, { specialists: SPECIALIST_STUBS });
+    const threadId = crypto.randomUUID();
+
+    const result = await graph.invoke(
+      {
+        messages: [new HumanMessage('Send me a verification code')],
+        activeWorkflow: {
+          workflowId: 'wf-prof-1',
+          originatingIntent: 'UPDATE_PROFILE',
+          currentStep: 'verify_identity',
+          blockedBy: 'VERIFICATION_FULL',
+          returnTo: { domain: 'profile', agent: 'profile', workflowStep: 'update_profile' },
+          resumeContext: { userId: 'user-123' },
+        },
+        workflowStatus: 'WAITING_FOR_USER_INPUT',
+      },
+      { configurable: { thread_id: threadId } }
+    );
+
+    // Classifier LLM should not be called
+    expect(mockGenerateContent).not.toHaveBeenCalled();
+    // Routed to account_access
+    expect(result.routing.currentAgent).toBe('account_access');
+    expect(result.currentIntent).toBe('VERIFY_ACCOUNT');
+  });
+
   it('resumes activeWorkflow without triggering loop detection even if previously visited', async () => {
     const checkpointer = new MemorySaver();
     const graph = buildParentGraph(checkpointer, { specialists: SPECIALIST_STUBS });

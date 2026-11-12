@@ -241,16 +241,25 @@ export async function routerNode(
     targetSpecialist = 'general_assistant';
     routingReason = 'Customer inquiry about platform capabilities';
   } else if (
-    // 3a. Narrowed verification guard: when active workflow is awaiting identity verification,
-    // and the message is a pure 6-digit OTP code, route directly to account_access.
-    state.activeWorkflow?.currentStep === 'verify_identity' &&
+    // 3a. Verification guard: when active workflow is awaiting identity verification,
+    // route directly to account_access if the message is a pure 6-digit OTP code or asking for a verification code.
+    (state.activeWorkflow?.currentStep === 'verify_identity' ||
+      state.activeWorkflow?.blockedBy === 'VERIFICATION_FULL' ||
+      state.activeWorkflow?.blockedBy === 'VERIFICATION_LIGHT') &&
     state.activeWorkflow?.blockedBy !== null &&
     state.activeWorkflow?.blockedBy !== undefined &&
-    /^\d{6}$/.test(userText.trim())
+    state.identity?.status !== 'VERIFIED' &&
+    (/^\d{6}$/.test(userText.trim()) ||
+      /\b(send|get|request|need|email|issue|resend).*(verification|code|otp)\b/i.test(userText) ||
+      /\bverification\s+code\b/i.test(userText) ||
+      /\b(send|resend)\s+code\b/i.test(userText))
   ) {
+    const isOtp = /^\d{6}$/.test(userText.trim());
     targetSpecialist = 'account_access';
-    detectedIntent = 'ACCOUNT_SECURITY';
-    routingReason = 'Direct routing of 6-digit OTP to account_access for pending identity verification';
+    detectedIntent = isOtp ? 'ACCOUNT_SECURITY' : 'VERIFY_ACCOUNT';
+    routingReason = isOtp
+      ? 'Direct routing of 6-digit OTP to account_access for pending identity verification'
+      : 'Direct routing of verification code request to account_access for pending identity verification';
   } else if (
     uuidOnlyMatch &&
     state.routing.currentAgent &&

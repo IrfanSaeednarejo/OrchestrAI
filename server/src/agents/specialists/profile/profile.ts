@@ -293,7 +293,7 @@ export async function profileNode(
           returnTo,
           workflowId: null,
           originatingIntent: state.currentIntent,
-          currentStep: 'get_profile',
+          currentStep: 'verify_identity',
           resumeContext: { userId, intent: 'view_profile' },
         },
         'To access your profile, we need to verify your identity first. Please request a verification code to receive a 6-digit code via email, or enter your code if you already have one.'
@@ -392,7 +392,7 @@ export async function profileNode(
         returnTo,
         workflowId: null,
         originatingIntent: state.currentIntent,
-        currentStep: 'update_profile',
+        currentStep: 'verify_identity',
         resumeContext: { userId, intent: 'update_profile', name: newName ?? null, defaultAddress: newDefaultAddress ?? null },
       },
       'To update your profile, we need to verify your identity first. Please request a verification code to receive a 6-digit code via email, or enter your code if you already have one.'
