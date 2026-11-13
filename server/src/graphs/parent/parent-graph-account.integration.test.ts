@@ -1,4 +1,4 @@
-﻿// src/graphs/parent/parent-graph-account.integration.test.ts
+// src/graphs/parent/parent-graph-account.integration.test.ts
 // Phase 11: Integration tests for Account Specialists & Pattern C resume workflows.
 // Covers REFERENCE.md Scenarios 5, 6, 7, 13, and 14 against real PostgreSQL,
 // Redis verification service, and PostgresSaver checkpointer.

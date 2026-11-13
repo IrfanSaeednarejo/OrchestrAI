@@ -1,4 +1,4 @@
-﻿// src/api/conversational-routing.integration.test.ts
+// src/api/conversational-routing.integration.test.ts
 // Phase 24 Step 8: Multi-turn end-to-end integration test suite.
 // Verifies:
 // 1. Elimination of sticky guards: WAITING_FOR_USER_INPUT does not lock user to specialist; switching to capability inquiry routes to general_assistant.
@@ -311,9 +311,17 @@ describe('Phase 24 End-to-End Conversational Routing Integration Tests', { timeo
     expect(turn1Res.body.message.content).toMatch(/Irfan Raja Billo/i);
 
     // Turn 2: "yes"
+    // Router classifier classifies "yes" in context as profile update confirmation.
     // Profile specialist detects confirmation via fast-path heuristic (no LLM call).
     // Auto-sends code via issueAndSendCode → returns CODE_SENT message with masked email.
-    // No mockGenerateContent needed.
+    mockGenerateContent.mockResolvedValueOnce({
+      text: JSON.stringify({
+        specialist: 'profile',
+        intent: 'UPDATE_PROFILE',
+        confidence: 0.95,
+        reasoning: 'Customer confirms profile update.',
+      }),
+    });
 
     const turn2Res = await request(app)
       .post(`/api/conversations/${conversationId}/messages`)
@@ -337,8 +345,17 @@ describe('Phase 24 End-to-End Conversational Routing Integration Tests', { timeo
     expect(code).toMatch(/^\d{6}$/);
 
     // Turn 3: User sends the 6-digit code.
+    // Router classifier classifies the 6-digit code as profile verification.
     // Profile specialist (Branch B: awaiting_code) verifies the hash and applies the
-    // conditional DB update. No LLM calls needed.
+    // conditional DB update. No profile LLM calls needed.
+    mockGenerateContent.mockResolvedValueOnce({
+      text: JSON.stringify({
+        specialist: 'profile',
+        intent: 'UPDATE_PROFILE',
+        confidence: 0.95,
+        reasoning: 'Customer provides verification code for profile update.',
+      }),
+    });
 
     const turn3Res = await request(app)
       .post(`/api/conversations/${conversationId}/messages`)
