@@ -3,6 +3,7 @@
 // Phase 17 Step 1c: Mount dev-gated demo and verification routes outside x-user-id middleware.
 // Phase 18 Step 1: Mount dev-gated ops routes.
 // Phase 21: Mount auth routes (register/login/logout/me) and storefront routes.
+// Phase 26: Mount profile-update routes.
 
 import express from 'express';
 import cors from 'cors';
@@ -12,6 +13,7 @@ import { demoRouter } from './routes/demo.routes.js';
 import { opsRouter } from './routes/ops.routes.js';
 import { authRouter } from './routes/auth.routes.js';
 import { orderRouter } from './routes/order.routes.js';
+import { profileUpdateRouter } from './routes/profile-update.routes.js';
 import { errorHandler } from './middleware/error.middleware.js';
 import { NotFoundError } from './errors/app-error.js';
 import { config } from '../shared/config.js';
@@ -37,6 +39,10 @@ export function createApp(
 
   // Mount storefront routes (products public, orders require auth)
   app.use('/api', orderRouter);
+
+  // Mount profile-update routes (Phase 26) — dual-mount for direct and API-prefixed access
+  app.use('/profile/update', profileUpdateRouter);
+  app.use('/api/profile/update', profileUpdateRouter);
 
   // Mount demo routes outside auth middleware (Phase 17 Step 1c)
   app.use('/api', demoRouter);
