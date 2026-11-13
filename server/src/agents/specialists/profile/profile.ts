@@ -1,8 +1,16 @@
 // src/agents/specialists/profile/profile.ts
 // Phase 11: Profile specialist subgraph.
-// Handles Scenario — view profile (get_profile, FULL-gated) and update profile
-// (update_profile, FULL-gated, name/defaultAddress only). No RAG access.
-// On FULL verification block → Pattern C activeWorkflow pointing to Account Access.
+// Phase 26: Rewritten to own the full profile-update verification flow end-to-end.
+//
+// State machine steps (activeWorkflow.currentStep):
+//   collect_value  — waiting for the user to provide the new field value(s)
+//   confirm_change — waiting for the user to confirm the normalized value
+//   awaiting_code  — code sent; waiting for the 6-digit input
+//   <null/other>   — first visit or view_profile path
+//
+// No Pattern C handoff to Account Access for profile updates.
+// Account Access is still invoked for FULL identity verification (get_profile),
+// and for standalone verification resuming via isResuming.
 
 import crypto from 'node:crypto';
 import { AIMessage } from '@langchain/core/messages';
@@ -27,7 +35,24 @@ import { createBlockedResponse } from '../../../state/blocked-workflow.js';
 import { recordAgentExecution } from '../../../routing/events.js';
 import { formatConversationTranscript } from '../../common/context.js';
 import { getProfile, getProfileMetadata } from '../../../tools/queries/profile.tools.js';
-import { updateProfile, updateProfileMetadata } from '../../../tools/mutations/profile.tools.js';
+import { normalizeName, maskEmail } from '../../../shared/normalization.js';
+import {
+  issueProfileVerificationCode,
+  verifyProfileVerificationCode,
+  resendProfileVerificationCode,
+  recordDeliveryFailure,
+  clearProfileVerification,
+  VERIFICATION_TTL_SECONDS,
+  RESEND_COOLDOWN_SECONDS,
+  FAILURE_COOLDOWN_SECONDS,
+} from '../../../services/profile-verification.service.js';
+import { sendEmail } from '../../../services/email.service.js';
+import { renderVerificationCodeEmail } from '../../../services/email-templates/verification-code.js';
+import { getUserById } from '../../../persistence/repositories/marketplace.repository.js';
+import { db } from '../../../persistence/db/client.js';
+import { users } from '../../../persistence/db/schema.js';
+import { eq, and } from 'drizzle-orm';
+import { MESSAGES } from './profile-messages.js';
 
 // ---------------------------------------------------------------------------
 // Prompt template (5 required sections)
@@ -47,14 +72,11 @@ refunds, account security (handled by Account Access specialist).`,
 
     'Phased-Workflow': `1. Determine whether the customer wants to view their profile or update specific fields.
 2. If viewing: retrieve the profile and present it clearly.
-3. If updating: identify the fields to change (name and/or defaultAddress) from the customer message.
-4. Execute the appropriate tool (requires identity verification).
-5. Confirm the outcome or explain any issue encountered.`,
+3. If updating: collect the new value, confirm with the user, trigger verification, then apply.`,
 
     Guidelines: `- Never update email — it is immutable per policy.
 - Only update fields explicitly mentioned by the customer; never infer or assume changes.
-- If verification is required and not yet satisfied, the system will route the customer
-  through verification automatically.
+- Normalize names conservatively (preserve McDonald, O'Brien, van der Berg).
 - Present profile data cleanly; never expose internal IDs unnecessarily.
 - Be concise and professional in all responses.`,
   },
@@ -74,6 +96,11 @@ const ProfileIntentSchema = z.object({
 
 export type ProfileIntent = z.infer<typeof ProfileIntentSchema>;
 
+const ConfirmSchema = z.object({
+  confirmed: z.boolean(),
+  correction: z.string().nullable(),
+});
+
 // ---------------------------------------------------------------------------
 // Private helpers
 // ---------------------------------------------------------------------------
@@ -86,6 +113,11 @@ export function extractLastUserText(state: Pick<ConversationState, 'messages'>):
     }
   }
   return '';
+}
+
+export function extractSixDigitCode(text: string): string | null {
+  const match = text.match(/\b\d{6}\b/);
+  return match ? (match[0] ?? null) : null;
 }
 
 export async function extractProfileIntent(
@@ -131,6 +163,35 @@ Respond with JSON:
   return { intent: 'view_profile', targetField: null, name: null, defaultAddress: null, confidence: 0 };
 }
 
+export async function extractConfirmation(
+  userText: string
+): Promise<{ confirmed: boolean; correction: string | null }> {
+  const lower = userText.toLowerCase().trim();
+  // Fast heuristic
+  if (/^(yes|yeah|yep|correct|confirm|ok|okay|sure|proceed)/.test(lower)) {
+    return { confirmed: true, correction: null };
+  }
+  if (/^(no|nope|wrong|incorrect|actually|wait)/.test(lower)) {
+    return { confirmed: false, correction: userText };
+  }
+
+  const prompt = `The customer was asked to confirm a profile change.
+Customer reply: "${userText}"
+
+Is this a confirmation (yes) or a correction (no)?
+If a correction, extract the corrected value they want to use.
+
+Respond with JSON:
+{
+  "confirmed": true | false,
+  "correction": "<corrected value or null if confirmed>"
+}`;
+
+  const result = await generateStructuredOutput(ConfirmSchema, prompt, { temperature: 0.0 });
+  if (result.success) return result.data;
+  return { confirmed: false, correction: userText };
+}
+
 export async function generateProfileViewResponse(params: {
   profile: { name: string; email: string; defaultAddress: string };
   userText: string;
@@ -156,33 +217,6 @@ export async function generateProfileViewResponse(params: {
   return `Here is your current profile:\n- Name: ${profile.name}\n- Email: ${profile.email}\n- Default Address: ${profile.defaultAddress}`;
 }
 
-export async function generateProfileUpdateResponse(params: {
-  updatedProfile: { name: string; email: string; defaultAddress: string };
-  changedFields: string[];
-  userText: string;
-}): Promise<string> {
-  const { updatedProfile, changedFields, userText } = params;
-  const basePrompt = loadPrompt(PROFILE_TEMPLATE, {});
-
-  const contextPrompt =
-    `${basePrompt}\n\n` +
-    `## Updated Profile\nName: ${updatedProfile.name}\nEmail: ${updatedProfile.email}\nDefault Address: ${updatedProfile.defaultAddress}\n\n` +
-    `## Fields Changed\n${changedFields.join(', ')}\n\n` +
-    `## Customer Message\n"${userText}"\n\n` +
-    `Confirm the profile update was successful and summarize what changed.`;
-
-  const ResponseSchema = z.object({ response: z.string().min(1) });
-  const llmResult = await generateStructuredOutput(ResponseSchema, contextPrompt, {
-    temperature: 0.2,
-  });
-
-  if (llmResult.success) {
-    return llmResult.data.response;
-  }
-
-  return `Your profile has been updated successfully. Changed: ${changedFields.join(', ')}.`;
-}
-
 async function createAgentExecutionSafely(
   conversationId: string | undefined,
   agent: 'profile'
@@ -200,6 +234,69 @@ async function createAgentExecutionSafely(
     }
   }
   return crypto.randomUUID();
+}
+
+/** Issue + email a profile verification code. Returns a user-facing message. */
+async function issueAndSendCode(params: {
+  userId: string;
+  userName: string;
+  userEmail: string;
+  pendingName?: string;
+  pendingAddress?: string;
+  field: 'name' | 'defaultAddress' | 'both';
+  originalSnapshot: { name: string; defaultAddress: string };
+}): Promise<{ message: string; sent: boolean; resendAfterSeconds: number }> {
+  const { userId, userName, userEmail, pendingName, pendingAddress, field, originalSnapshot } = params;
+
+  const issueResult = await issueProfileVerificationCode(userId, {
+    field,
+    name: pendingName,
+    defaultAddress: pendingAddress,
+    originalSnapshot,
+  });
+
+  if (!issueResult.success) {
+    if (issueResult.error.code === 'RESEND_COOLDOWN') {
+      return {
+        message: MESSAGES.COOLDOWN_ACTIVE(issueResult.error.retryAfterSeconds),
+        sent: false,
+        resendAfterSeconds: issueResult.error.retryAfterSeconds,
+      };
+    }
+    return {
+      message: MESSAGES.SERVICE_UNAVAILABLE,
+      sent: false,
+      resendAfterSeconds: 0,
+    };
+  }
+
+  const { code, resendAfter } = issueResult.data;
+  const ttlMinutes = Math.round(VERIFICATION_TTL_SECONDS / 60);
+  const emailContent = renderVerificationCodeEmail({ name: userName, code, ttlMinutes });
+
+  const sendResult = await sendEmail({
+    to: userEmail,
+    subject: emailContent.subject,
+    html: emailContent.html,
+    text: emailContent.text,
+  });
+
+  if (!sendResult.success) {
+    await recordDeliveryFailure(userId);
+    const maskedEmail = maskEmail(userEmail);
+    return {
+      message: MESSAGES.SEND_FAILED(maskedEmail, FAILURE_COOLDOWN_SECONDS),
+      sent: false,
+      resendAfterSeconds: FAILURE_COOLDOWN_SECONDS,
+    };
+  }
+
+  const maskedEmail = maskEmail(userEmail);
+  return {
+    message: MESSAGES.CODE_SENT(maskedEmail, ttlMinutes, resendAfter),
+    sent: true,
+    resendAfterSeconds: resendAfter,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -220,7 +317,6 @@ export async function profileNode(
 
   const agentExecutionId = await createAgentExecutionSafely(conversationId, specialist);
 
-  // 1. Require a user in state (should always be present in a real conversation)
   if (!state.user?.id) {
     return {
       workflowStatus: 'FAILED',
@@ -234,13 +330,13 @@ export async function profileNode(
 
   const userId = state.user.id;
   const userText = extractLastUserText(state);
+  const currentStep = state.activeWorkflow?.currentStep ?? null;
 
-  // 2. Resolve intent (check resumeContext first if resuming from verification, else extract from user message)
-  let intent: 'view_profile' | 'update_profile';
-  let targetField: 'name' | 'defaultAddress' | 'both' | 'unknown' | null = null;
-  let newName: string | undefined = undefined;
-  let newDefaultAddress: string | undefined = undefined;
-
+  // ──────────────────────────────────────────────────────────────────────────
+  // BRANCH A: Resuming from Account Access verification (Pattern C, get_profile)
+  // The identity status is VERIFIED and returnTo points here — this is the
+  // legacy path for view_profile + FULL verification.
+  // ──────────────────────────────────────────────────────────────────────────
   const isResuming =
     state.activeWorkflow?.returnTo?.agent === specialist &&
     state.activeWorkflow.resumeContext !== null &&
@@ -248,41 +344,417 @@ export async function profileNode(
     state.identity?.status === 'VERIFIED';
 
   if (isResuming) {
-    const activeWf = state.activeWorkflow as NonNullable<typeof state.activeWorkflow>;
-    const ctx = activeWf.resumeContext as Record<string, unknown>;
-    if (ctx['intent'] === 'update_profile') {
-      intent = 'update_profile';
-      if (typeof ctx['name'] === 'string') newName = ctx['name'];
-      if (typeof ctx['defaultAddress'] === 'string') newDefaultAddress = ctx['defaultAddress'];
-    } else {
-      intent = 'view_profile';
+    const ctx = state.activeWorkflow?.resumeContext as Record<string, unknown>;
+    if (ctx['intent'] === 'view_profile') {
+      const profileResult = await gatedExecuteTool(
+        getProfile,
+        getProfileMetadata,
+        { userId },
+        { agentExecutionId, specialist, identity: state.identity }
+      );
+      if (!profileResult.success) {
+        return {
+          workflowStatus: 'FAILED',
+          messages: [new AIMessage('I encountered an error retrieving your profile. Please try again shortly.')],
+        };
+      }
+      const profile = profileResult.data;
+      const responseText = await generateProfileViewResponse({
+        profile: { name: profile.name, email: profile.email, defaultAddress: profile.defaultAddress },
+        userText,
+      });
+      return {
+        workflowStatus: 'COMPLETED',
+        activeWorkflow: null,
+        messages: [new AIMessage(responseText)],
+      };
     }
-  } else {
-    const transcript = formatConversationTranscript(state.messages, 6);
-    const intentExtraction = await extractProfileIntent(userText, transcript);
-    intent = intentExtraction.intent;
-    targetField = intentExtraction.targetField ?? null;
-    newName = intentExtraction.name ?? undefined;
-    newDefaultAddress = intentExtraction.defaultAddress ?? undefined;
   }
 
-  // ---------------------------------------------------------------------------
-  // 3a. VIEW PROFILE path
-  // ---------------------------------------------------------------------------
+  // ──────────────────────────────────────────────────────────────────────────
+  // BRANCH B: awaiting_code — user is responding to a code prompt
+  // ──────────────────────────────────────────────────────────────────────────
+  if (currentStep === 'awaiting_code') {
+    const ctx = (state.activeWorkflow?.resumeContext ?? {}) as Record<string, unknown>;
+    const field = (ctx['field'] as 'name' | 'defaultAddress' | 'both') ?? 'name';
+    const pendingName = typeof ctx['pendingName'] === 'string' ? ctx['pendingName'] : undefined;
+    const pendingAddress = typeof ctx['pendingAddress'] === 'string' ? ctx['pendingAddress'] : undefined;
+    const originalSnapshot = (ctx['originalSnapshot'] as { name: string; defaultAddress: string }) ?? {
+      name: '',
+      defaultAddress: '',
+    };
+
+    // Check if user wants to resend
+    const wantsResend = /\b(resend|send again|new code|another code)\b/i.test(userText);
+
+    if (wantsResend) {
+      const freshUser = await getUserById(userId);
+      if (!freshUser?.email) {
+        return {
+          workflowStatus: 'WAITING_FOR_USER_INPUT',
+          messages: [new AIMessage(MESSAGES.NO_EMAIL_ON_FILE)],
+        };
+      }
+
+      // Try resend via service (resets attempts to 0)
+      const resendResult = await resendProfileVerificationCode(userId);
+      if (!resendResult.success) {
+        if (resendResult.error.code === 'RESEND_COOLDOWN') {
+          return {
+            activeWorkflow: state.activeWorkflow,
+            workflowStatus: 'WAITING_FOR_USER_INPUT',
+            messages: [new AIMessage(MESSAGES.COOLDOWN_ACTIVE(
+              'retryAfterSeconds' in resendResult.error ? resendResult.error.retryAfterSeconds : RESEND_COOLDOWN_SECONDS
+            ))],
+          };
+        }
+        // No session found — issue fresh
+        const { message } = await issueAndSendCode({
+          userId,
+          userName: freshUser.name,
+          userEmail: freshUser.email,
+          pendingName,
+          pendingAddress,
+          field,
+          originalSnapshot,
+        });
+        return {
+          activeWorkflow: {
+            workflowId: state.activeWorkflow?.workflowId ?? null,
+            originatingIntent: state.activeWorkflow?.originatingIntent ?? state.currentIntent,
+            blockedBy: state.activeWorkflow?.blockedBy ?? null,
+            returnTo: state.activeWorkflow?.returnTo ?? null,
+            resumeContext: state.activeWorkflow?.resumeContext ?? null,
+            currentStep: 'awaiting_code',
+          },
+          workflowStatus: 'WAITING_FOR_USER_INPUT',
+          messages: [new AIMessage(message)],
+        };
+      }
+
+      // Re-send new code
+      const { code, resendAfter } = resendResult.data;
+      const ttlMinutes = Math.round(VERIFICATION_TTL_SECONDS / 60);
+      const emailContent = renderVerificationCodeEmail({ name: freshUser.name, code, ttlMinutes });
+      const sendResult = await sendEmail({
+        to: freshUser.email,
+        subject: emailContent.subject,
+        html: emailContent.html,
+        text: emailContent.text,
+      });
+
+      if (!sendResult.success) {
+        await recordDeliveryFailure(userId);
+        return {
+          activeWorkflow: state.activeWorkflow,
+          workflowStatus: 'WAITING_FOR_USER_INPUT',
+          messages: [new AIMessage(MESSAGES.SEND_FAILED(maskEmail(freshUser.email), FAILURE_COOLDOWN_SECONDS))],
+        };
+      }
+
+      return {
+        activeWorkflow: state.activeWorkflow,
+        workflowStatus: 'WAITING_FOR_USER_INPUT',
+        messages: [new AIMessage(MESSAGES.CODE_SENT(maskEmail(freshUser.email), ttlMinutes, resendAfter))],
+      };
+    }
+
+    // Extract 6-digit code
+    const submittedCode = extractSixDigitCode(userText);
+    if (!submittedCode) {
+      return {
+        activeWorkflow: state.activeWorkflow,
+        workflowStatus: 'WAITING_FOR_USER_INPUT',
+        messages: [new AIMessage(MESSAGES.ENTER_CODE_PROMPT)],
+      };
+    }
+
+    const verifyResult = await verifyProfileVerificationCode(userId, submittedCode);
+
+    if (!verifyResult.success) {
+      if (verifyResult.status === 'SERVICE_UNAVAILABLE') {
+        return {
+          activeWorkflow: state.activeWorkflow,
+          workflowStatus: 'WAITING_FOR_USER_INPUT',
+          messages: [new AIMessage(MESSAGES.SERVICE_UNAVAILABLE)],
+        };
+      }
+
+      if (verifyResult.status === 'INVALID') {
+        return {
+          activeWorkflow: state.activeWorkflow,
+          workflowStatus: 'WAITING_FOR_USER_INPUT',
+          messages: [new AIMessage(MESSAGES.CODE_INVALID(verifyResult.remainingAttempts))],
+        };
+      }
+
+      if (verifyResult.status === 'TOO_MANY_ATTEMPTS') {
+        // Auto-resend fresh code (resets attempts to 0)
+        const freshUser = await getUserById(userId);
+        if (freshUser?.email) {
+          const { message } = await issueAndSendCode({
+            userId,
+            userName: freshUser.name,
+            userEmail: freshUser.email,
+            pendingName,
+            pendingAddress,
+            field,
+            originalSnapshot,
+          });
+          return {
+            activeWorkflow: state.activeWorkflow,
+            workflowStatus: 'WAITING_FOR_USER_INPUT',
+            messages: [new AIMessage(`${MESSAGES.TOO_MANY_ATTEMPTS}\n\n${message}`)],
+          };
+        }
+        return {
+          activeWorkflow: state.activeWorkflow,
+          workflowStatus: 'WAITING_FOR_USER_INPUT',
+          messages: [new AIMessage(MESSAGES.TOO_MANY_ATTEMPTS + ' Please contact support if this persists.')],
+        };
+      }
+
+      if (verifyResult.status === 'EXPIRED') {
+        // Auto-resend fresh code
+        const freshUser = await getUserById(userId);
+        if (freshUser?.email) {
+          const { message } = await issueAndSendCode({
+            userId,
+            userName: freshUser.name,
+            userEmail: freshUser.email,
+            pendingName,
+            pendingAddress,
+            field,
+            originalSnapshot,
+          });
+          return {
+            activeWorkflow: state.activeWorkflow,
+            workflowStatus: 'WAITING_FOR_USER_INPUT',
+            messages: [new AIMessage(`${MESSAGES.CODE_EXPIRED}\n\n${message}`)],
+          };
+        }
+        return {
+          activeWorkflow: state.activeWorkflow,
+          workflowStatus: 'WAITING_FOR_USER_INPUT',
+          messages: [new AIMessage(MESSAGES.CODE_EXPIRED + ' Please contact support if this persists.')],
+        };
+      }
+
+      // NOT_FOUND / INVALID_STATE
+      return {
+        activeWorkflow: state.activeWorkflow,
+        workflowStatus: 'WAITING_FOR_USER_INPUT',
+        messages: [new AIMessage(MESSAGES.NOT_FOUND)],
+      };
+    }
+
+    // ── Code correct — apply conditional DB update ──────────────────────────
+    const setFields: { name?: string; defaultAddress?: string } = {};
+    const updatedFieldNames: string[] = [];
+
+    if (field !== 'defaultAddress' && pendingName !== undefined) {
+      setFields.name = pendingName;
+      updatedFieldNames.push('name');
+    }
+    if (field !== 'name' && pendingAddress !== undefined) {
+      setFields.defaultAddress = pendingAddress;
+      updatedFieldNames.push('defaultAddress');
+    }
+
+    const updateResult = await db
+      .update(users)
+      .set(setFields)
+      .where(
+        and(
+          eq(users.id, userId),
+          eq(users.name, originalSnapshot.name),
+          eq(users.defaultAddress, originalSnapshot.defaultAddress),
+        )
+      )
+      .returning();
+
+    await clearProfileVerification(userId);
+
+    if (updateResult.length === 0) {
+      return {
+        workflowStatus: 'FAILED',
+        activeWorkflow: null,
+        messages: [new AIMessage(MESSAGES.CONFLICT)],
+      };
+    }
+
+    const updated = updateResult[0] as NonNullable<typeof updateResult[0]>;
+    return {
+      workflowStatus: 'COMPLETED',
+      activeWorkflow: null,
+      messages: [new AIMessage(MESSAGES.UPDATE_SUCCESS(updated.name, updated.defaultAddress, updatedFieldNames))],
+    };
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // BRANCH C: confirm_change — waiting for user to say yes/no
+  // ──────────────────────────────────────────────────────────────────────────
+  if (currentStep === 'confirm_change') {
+    const ctx = (state.activeWorkflow?.resumeContext ?? {}) as Record<string, unknown>;
+    const field = (ctx['field'] as 'name' | 'defaultAddress' | 'both') ?? 'name';
+    const pendingName = typeof ctx['pendingName'] === 'string' ? ctx['pendingName'] : undefined;
+    const pendingAddress = typeof ctx['pendingAddress'] === 'string' ? ctx['pendingAddress'] : undefined;
+    const originalSnapshot = (ctx['originalSnapshot'] as { name: string; defaultAddress: string }) ?? {
+      name: '',
+      defaultAddress: '',
+    };
+
+    const { confirmed, correction } = await extractConfirmation(userText);
+
+    if (!confirmed) {
+      // User provided a correction — normalize and re-confirm
+      const correctionText = correction ?? userText;
+      let correctedName = pendingName;
+      let correctedAddress = pendingAddress;
+
+      if (field !== 'defaultAddress') {
+        const norm = normalizeName(correctionText);
+        if (norm.isValid) correctedName = norm.normalized;
+      } else {
+        correctedAddress = correctionText.trim().replace(/\s+/g, ' ');
+      }
+
+      const displayField = field === 'name' ? 'name' : field === 'defaultAddress' ? 'default shipping address' : 'name and address';
+      const displayValue = field === 'name'
+        ? (correctedName ?? correctionText)
+        : field === 'defaultAddress'
+          ? (correctedAddress ?? correctionText)
+          : `name: ${correctedName ?? ''}, address: ${correctedAddress ?? ''}`;
+
+      return {
+        activeWorkflow: {
+          workflowId: state.activeWorkflow?.workflowId ?? null,
+          originatingIntent: state.activeWorkflow?.originatingIntent ?? state.currentIntent,
+          blockedBy: state.activeWorkflow?.blockedBy ?? null,
+          returnTo: state.activeWorkflow?.returnTo ?? null,
+          currentStep: 'confirm_change',
+          resumeContext: {
+            field,
+            pendingName: correctedName,
+            pendingAddress: correctedAddress,
+            originalSnapshot,
+          },
+        },
+        workflowStatus: 'WAITING_FOR_USER_INPUT',
+        messages: [new AIMessage(MESSAGES.CONFIRM_CHANGE(displayValue, correctionText, displayField))],
+      };
+    }
+
+    // User confirmed — check email and send code
+    const freshUser = await getUserById(userId);
+    if (!freshUser?.email) {
+      return {
+        workflowStatus: 'WAITING_FOR_USER_INPUT',
+        messages: [new AIMessage(MESSAGES.NO_EMAIL_ON_FILE)],
+      };
+    }
+
+    // No-change guard
+    const nameUnchanged = field === 'defaultAddress' || freshUser.name === pendingName;
+    const addressUnchanged = field === 'name' || freshUser.defaultAddress === pendingAddress;
+    if (nameUnchanged && addressUnchanged) {
+      return {
+        workflowStatus: 'COMPLETED',
+        activeWorkflow: null,
+        messages: [new AIMessage("That value is the same as what's already on your profile — no changes were made.")],
+      };
+    }
+
+    const { message } = await issueAndSendCode({
+      userId,
+      userName: freshUser.name,
+      userEmail: freshUser.email,
+      pendingName,
+      pendingAddress,
+      field,
+      originalSnapshot,
+    });
+
+    return {
+      activeWorkflow: {
+        workflowId: state.activeWorkflow?.workflowId ?? null,
+        originatingIntent: state.activeWorkflow?.originatingIntent ?? state.currentIntent,
+        currentStep: 'awaiting_code',
+        blockedBy: null,
+        returnTo: null,
+        resumeContext: { field, pendingName, pendingAddress, originalSnapshot },
+      },
+      workflowStatus: 'WAITING_FOR_USER_INPUT',
+      messages: [new AIMessage(message)],
+    };
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // BRANCH D: collect_value — waiting for user to give us the new value
+  // ──────────────────────────────────────────────────────────────────────────
+  if (currentStep === 'collect_value') {
+    const ctx = (state.activeWorkflow?.resumeContext ?? {}) as Record<string, unknown>;
+    const field = (ctx['field'] as 'name' | 'defaultAddress' | 'both') ?? 'name';
+    const originalSnapshot = (ctx['originalSnapshot'] as { name: string; defaultAddress: string }) ?? {
+      name: '',
+      defaultAddress: '',
+    };
+
+    let pendingName: string | undefined;
+    let pendingAddress: string | undefined;
+    let displayValue: string;
+    let rawInput = userText;
+
+    if (field === 'name' || field === 'both') {
+      const norm = normalizeName(userText);
+      if (!norm.isValid) {
+        return {
+          activeWorkflow: state.activeWorkflow,
+          workflowStatus: 'WAITING_FOR_USER_INPUT',
+          messages: [new AIMessage("That doesn't look like a valid name (must be between 2 and 100 characters). Please try again.")],
+        };
+      }
+      pendingName = norm.normalized;
+      displayValue = norm.normalized;
+      rawInput = norm.raw;
+    } else {
+      pendingAddress = userText.trim().replace(/\s+/g, ' ');
+      displayValue = pendingAddress;
+    }
+
+    const displayField = field === 'name' ? 'name' : field === 'defaultAddress' ? 'default shipping address' : 'name';
+
+    return {
+      activeWorkflow: {
+        workflowId: state.activeWorkflow?.workflowId ?? null,
+        originatingIntent: state.activeWorkflow?.originatingIntent ?? state.currentIntent,
+        currentStep: 'confirm_change',
+        blockedBy: null,
+        returnTo: null,
+        resumeContext: { field, pendingName, pendingAddress, originalSnapshot },
+      },
+      workflowStatus: 'WAITING_FOR_USER_INPUT',
+      messages: [new AIMessage(MESSAGES.CONFIRM_CHANGE(displayValue, rawInput, displayField))],
+    };
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // BRANCH E: First visit — classify intent
+  // ──────────────────────────────────────────────────────────────────────────
+  const transcript = formatConversationTranscript(state.messages, 6);
+  const intentExtraction = await extractProfileIntent(userText, transcript);
+  const { intent, targetField, name: extractedName, defaultAddress: extractedAddress } = intentExtraction;
+
+  // ── View profile path ────────────────────────────────────────────────────
   if (intent === 'view_profile') {
     const profileResult = await gatedExecuteTool(
       getProfile,
       getProfileMetadata,
       { userId },
-      {
-        agentExecutionId,
-        specialist,
-        identity: state.identity,
-      }
+      { agentExecutionId, specialist, identity: state.identity }
     );
 
     if (profileResult.gate.outcome === 'BLOCKED') {
-      // Pattern C: needs FULL verification → route to Account Access
       const returnTo: ReturnTo = {
         domain: specialist,
         agent: specialist,
@@ -297,7 +769,7 @@ export async function profileNode(
           currentStep: 'verify_identity',
           resumeContext: { userId, intent: 'view_profile' },
         },
-        'To access your profile, we need to verify your identity first. Please request a verification code to receive a 6-digit code via email, or enter your code if you already have one.'
+        'To view your profile, we need to verify your identity first. Please wait while I send a verification code to your email.'
       );
     }
 
@@ -323,11 +795,7 @@ export async function profileNode(
 
     const profile = profileResult.data;
     const responseText = await generateProfileViewResponse({
-      profile: {
-        name: profile.name,
-        email: profile.email,
-        defaultAddress: profile.defaultAddress,
-      },
+      profile: { name: profile.name, email: profile.email, defaultAddress: profile.defaultAddress },
       userText,
     });
 
@@ -338,105 +806,91 @@ export async function profileNode(
     };
   }
 
-  // ---------------------------------------------------------------------------
-  // 3b. UPDATE PROFILE path
-  // ---------------------------------------------------------------------------
+  // ── Update profile path ───────────────────────────────────────────────────
 
-  // If nothing to update was extracted, ask the customer what they want to change
-  if (newName === undefined && newDefaultAddress === undefined) {
-    const wantsName = targetField === 'name' || /\bname\b/i.test(userText);
-    const wantsAddress = targetField === 'defaultAddress' || /\b(address|shipping)\b/i.test(userText);
+  // If the user gave us a value already in this message, skip collect_value
+  const hasName = typeof extractedName === 'string' && extractedName.trim().length > 0;
+  const hasAddress = typeof extractedAddress === 'string' && extractedAddress.trim().length > 0;
+  const resolvedField: 'name' | 'defaultAddress' | 'both' =
+    hasName && hasAddress ? 'both' :
+    hasName ? 'name' :
+    hasAddress ? 'defaultAddress' :
+    targetField && targetField !== 'unknown' ? (targetField as 'name' | 'defaultAddress' | 'both') :
+    'name'; // default to asking for name
 
-    let messageText: string;
-    if (wantsName && !wantsAddress) {
-      messageText =
-        "I'd be happy to update your name. What new name would you like to set on your profile?";
-    } else if (wantsAddress && !wantsName) {
-      messageText =
-        "I'd be happy to update your shipping address. What new address would you like to set?";
+  if (!hasName && !hasAddress) {
+    // Need to ask for the value
+    const freshUser = await getUserById(userId);
+    const snap = {
+      name: freshUser?.name ?? '',
+      defaultAddress: freshUser?.defaultAddress ?? '',
+    };
+
+    let promptMessage: string;
+    if (targetField === 'name') {
+      promptMessage = MESSAGES.ASK_FOR_NAME;
+    } else if (targetField === 'defaultAddress') {
+      promptMessage = MESSAGES.ASK_FOR_ADDRESS;
     } else {
-      messageText =
-        "I'd be happy to update your profile. Could you please tell me what you'd like to change — your name or your default shipping address?";
+      promptMessage = MESSAGES.ASK_WHAT_TO_CHANGE;
     }
 
     return {
-      workflowStatus: 'WAITING_FOR_USER_INPUT',
-      messages: [new AIMessage(messageText)],
-    };
-  }
-
-  const updateInput: { userId: string; name?: string; defaultAddress?: string } = { userId };
-  if (newName !== undefined) updateInput.name = newName;
-  if (newDefaultAddress !== undefined) updateInput.defaultAddress = newDefaultAddress;
-
-  const updateResult = await gatedExecuteTool(
-    updateProfile,
-    updateProfileMetadata,
-    updateInput,
-    {
-      agentExecutionId,
-      specialist,
-      identity: state.identity,
-    }
-  );
-
-  if (updateResult.gate.outcome === 'BLOCKED') {
-    // Pattern C: needs FULL verification → route to Account Access
-    const returnTo: ReturnTo = {
-      domain: specialist,
-      agent: specialist,
-      workflowStep: 'update_profile',
-    };
-    return createBlockedResponse(
-      {
-        decision: updateResult.gate,
-        returnTo,
+      activeWorkflow: {
         workflowId: null,
         originatingIntent: state.currentIntent,
-        currentStep: 'verify_identity',
-        resumeContext: { userId, intent: 'update_profile', name: newName ?? null, defaultAddress: newDefaultAddress ?? null },
+        currentStep: 'collect_value',
+        blockedBy: null,
+        returnTo: null,
+        resumeContext: { field: resolvedField !== 'name' && targetField && targetField !== 'unknown' ? targetField : (resolvedField), originalSnapshot: snap },
       },
-      'To update your profile, we need to verify your identity first. Please request a verification code to receive a 6-digit code via email, or enter your code if you already have one.'
-    );
-  }
-
-  if (updateResult.gate.outcome === 'DENIED') {
-    return {
-      workflowStatus: 'FAILED',
-      messages: [new AIMessage('I am not permitted to update profile information.')],
+      workflowStatus: 'WAITING_FOR_USER_INPUT',
+      messages: [new AIMessage(promptMessage)],
     };
   }
 
-  if (!updateResult.success) {
-    return {
-      workflowStatus: 'FAILED',
-      messages: [
-        new AIMessage(
-          `Unable to update profile: ${updateResult.error.message || 'unknown error'}`
-        ),
-      ],
-    };
+  // We have a value — normalize and confirm
+  const freshUser = await getUserById(userId);
+  const originalSnapshot = {
+    name: freshUser?.name ?? '',
+    defaultAddress: freshUser?.defaultAddress ?? '',
+  };
+
+  let pendingName: string | undefined;
+  let pendingAddress: string | undefined;
+  let displayValue: string;
+  let rawInput: string;
+
+  if (hasName) {
+    const norm = normalizeName(extractedName ?? '');
+    if (!norm.isValid) {
+      return {
+        workflowStatus: 'WAITING_FOR_USER_INPUT',
+        messages: [new AIMessage("That doesn't look like a valid name. Please provide a name between 2 and 100 characters.")],
+      };
+    }
+    pendingName = norm.normalized;
+    displayValue = norm.normalized;
+    rawInput = norm.raw;
+  } else {
+    pendingAddress = (extractedAddress ?? '').trim().replace(/\s+/g, ' ');
+    displayValue = pendingAddress;
+    rawInput = extractedAddress ?? '';
   }
 
-  const changedFields: string[] = [];
-  if (newName !== undefined) changedFields.push('name');
-  if (newDefaultAddress !== undefined) changedFields.push('defaultAddress');
-
-  const updatedProfile = updateResult.data;
-  const responseText = await generateProfileUpdateResponse({
-    updatedProfile: {
-      name: updatedProfile.name,
-      email: updatedProfile.email,
-      defaultAddress: updatedProfile.defaultAddress,
-    },
-    changedFields,
-    userText,
-  });
+  const displayField = resolvedField === 'name' ? 'name' : resolvedField === 'defaultAddress' ? 'default shipping address' : 'name';
 
   return {
-    workflowStatus: 'COMPLETED',
-    activeWorkflow: null,
-    messages: [new AIMessage(responseText)],
+    activeWorkflow: {
+      workflowId: null,
+      originatingIntent: state.currentIntent,
+      currentStep: 'confirm_change',
+      blockedBy: null,
+      returnTo: null,
+      resumeContext: { field: resolvedField, pendingName, pendingAddress, originalSnapshot },
+    },
+    workflowStatus: 'WAITING_FOR_USER_INPUT',
+    messages: [new AIMessage(MESSAGES.CONFIRM_CHANGE(displayValue, rawInput, displayField))],
   };
 }
 
