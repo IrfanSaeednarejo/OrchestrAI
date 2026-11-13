@@ -229,6 +229,17 @@ export async function issueProfileVerificationCode(
       EX: REDIS_STORAGE_TTL_SECONDS,
     });
 
+    // Dev/test only: write raw code to a short-lived peek key so integration
+    // tests can retrieve it without storing it in the main record or logs.
+    // Never executed in production (config.env === 'production' is excluded).
+    if (process.env['NODE_ENV'] !== 'production') {
+      await redisClient.set(
+        `profile:verify:peek:${userId}`,
+        code,
+        { EX: 120 } // 2-minute TTL — enough for a test run, never persists
+      );
+    }
+
     return {
       success: true,
       data: {
@@ -247,6 +258,21 @@ export async function issueProfileVerificationCode(
         message: 'Verification service is temporarily unavailable. Please try again shortly.',
       },
     };
+  }
+}
+
+/**
+ * Dev/test only: peek at the raw verification code stored by the latest
+ * issueProfileVerificationCode call. Returns null in production or when no
+ * code is pending. Used exclusively by the demo route and integration tests.
+ */
+export async function peekProfileVerificationCode(userId: string): Promise<string | null> {
+  if (process.env['NODE_ENV'] === 'production') return null;
+  try {
+    await connectRedis();
+    return await redisClient.get(`profile:verify:peek:${userId}`);
+  } catch {
+    return null;
   }
 }
 

@@ -1,4 +1,4 @@
-// src/graphs/parent/parent-graph-account.integration.test.ts
+﻿// src/graphs/parent/parent-graph-account.integration.test.ts
 // Phase 11: Integration tests for Account Specialists & Pattern C resume workflows.
 // Covers REFERENCE.md Scenarios 5, 6, 7, 13, and 14 against real PostgreSQL,
 // Redis verification service, and PostgresSaver checkpointer.
@@ -438,6 +438,11 @@ describe('Phase 11: Account Specialists Integration (Scenarios 5, 6, 7, 13, 14)'
   // Scenario 7: Login issue mid-Returns flow -> Account Access -> resume Returns
   // ---------------------------------------------------------------------------
   it('Scenario 7: Login issue mid-Returns flow -> Account Access -> resume Returns', async () => {
+    // Scenario 6 runs before this and issues a code for user6Id, leaving a 60s cooldown.
+    // Clear both keys to ensure test isolation (prevent RESEND_COOLDOWN error).
+    await redisClient.del(`verify:cooldown:${user6Id}`);
+    await redisClient.del(`verify:${user6Id}`);
+
     const convo = await startConversation(user6Id);
     createdConversationIds.push(convo.id);
 

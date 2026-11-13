@@ -23,3 +23,4 @@ profileUpdateRouter.use(authMiddleware, requireAuth);
 profileUpdateRouter.post('/request-code', handleRequestCode);
 profileUpdateRouter.post('/verify', handleVerify);
 profileUpdateRouter.post('/resend-code', handleResendCode);
+
