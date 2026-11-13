@@ -60,6 +60,14 @@ Approved items move to DECISIONS.md. Items marked [CONFLICT] are inconsistencies
     - OD-24c [RESOLVED 2026-11-09]: Per-Turn Handoff Counter Semantics in `ConversationState`:
       Option A adopted — Made `handoffCount` turn-scoped (reset to 0 at the start of each user turn in `message.controller.ts` via graph input `{ routing: { handoffCount: 0 } }`). Single authoritative owner: only the parent router updates `handoffCount` when executing a `HANDOFF` or `RE_ROUTE`. Specialists never emit `handoffCount` deltas. Resume transitions (`RE_ROUTE`) are exempt from loop detection. Prevents false-positive escalations while maintaining loop safety per turn. Recorded in DECISIONS.md under Phase 24.
 
+26. [RESOLVED 2026-11-13] Phase 26 Profile Update & Identity Verification Flow:
+    - OD-26a [RESOLVED 2026-11-13]: Profile-Owned Flow Architecture: Profile update flow is owned entirely by the profile specialist across a 4-step state machine (`collect_value` -> `confirm_change` -> `awaiting_code` -> database update). No Pattern C handoff to Account Access for updates.
+    - OD-26b [RESOLVED 2026-11-13]: Redis Key Architecture & Namespace Isolation: `profile:verify:{userId}` (hash containing codeHash, pendingUpdates, snapshot, attempts, expiresAtMs; TTL 900s) and `profile:verify:cooldown:{userId}` (60s resend cooldown; 15s failure cooldown). In non-prod, `profile:verify:peek:{userId}` (120s TTL) supports dev/integration tests.
+    - OD-26c [RESOLVED 2026-11-13]: Atomic Lua Verification & Attempt Reset: Atomic Lua script verification (`OK`, `EXPIRED`, `TOO_MANY_ATTEMPTS`, `INVALID`). Only INVALID writes (increments attempt counter). Resend resets attempts to 0. Successful verify deletes code and cooldown.
+    - OD-26d [RESOLVED 2026-11-13]: Non-Throwing Email Service & Transient Failure Cooldown: `sendEmail` returns `Promise<EmailResult>` without throwing. On mail send failure, deleted unusable code, sets 15s failure cooldown to prevent rapid spamming.
+    - OD-26e [RESOLVED 2026-11-13]: Snapshot-Based Optimistic Concurrency Control: SQL conditional update `WHERE id = :userId AND name = :nameSnapshot AND default_address = :addressSnapshot`. 0 rows affected returns `{ status: "conflict" }`.
+    - OD-26f [RESOLVED 2026-11-13]: Frontend 7-State Machine: `VerificationPrompt` component executes `idle`, `requesting`, `awaiting_input`, `verifying`, `resending`, `success`, `locked_out` with server-timestamp countdowns and friendly customer copy. Recorded in DECISIONS.md under Phase 26.
+
 
 
 
