@@ -13,7 +13,7 @@ const ORACLE_ALLOWLIST: Record<ToolName, SpecialistId[]> = {
   get_return_by_order: ['returns', 'refund'],
   check_return_eligibility: ['returns'],
   create_return: ['returns'],
-  get_payment: ['payment'],
+  get_payment: ['payment', 'refund'],
   detect_duplicate_charge: ['payment'],
   get_refund_status: ['refund'],
   create_refund: ['refund'],

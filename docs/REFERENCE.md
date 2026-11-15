@@ -5,7 +5,7 @@ Orders: Order Tracking, Returns. Payments: Payment, Refund. Account: Profile, Ac
 
 ## Tool -> allowed specialists (enforced by the gate allowlist)
 get_order: Order Tracking, Returns, Payment, Refund | get_shipment_status: Order Tracking, Returns | check_return_eligibility, create_return: Returns |
-get_return_status, get_return_by_order: Returns, Refund | get_payment, detect_duplicate_charge: Payment | create_refund, get_refund_status: Refund |
+get_return_status, get_return_by_order: Returns, Refund | get_payment: Payment, Refund | detect_duplicate_charge: Payment | create_refund, get_refund_status: Refund |
 get_profile, update_profile: Profile | start_identity_verification, verify_identity, initiate_password_reset: Account Access.
 search_knowledge: every specialist except Profile (scoped per below).
 

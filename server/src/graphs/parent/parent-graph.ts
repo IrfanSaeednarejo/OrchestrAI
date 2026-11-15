@@ -31,6 +31,8 @@ import {
 import { SPECIALIST_STUBS } from '../../agents/specialists/stubs.js';
 import { orderTrackingNode } from '../../agents/specialists/order-tracking/order-tracking.js';
 import { returnsNode } from '../../agents/specialists/returns/returns.js';
+import { paymentNode } from '../../agents/specialists/payment/payment.js';
+import { refundNode } from '../../agents/specialists/refund/refund.js';
 import type { SpecialistId } from '../../tools/permissions.js';
 
 // ---------------------------------------------------------------------------
@@ -251,6 +253,20 @@ export const returnsSpecialistNode: SpecialistNodeAction = async (state, config)
   return returnsNode(state, config);
 };
 
+export const paymentSpecialistNode: SpecialistNodeAction = async (state, config) => {
+  if (hasStubOverride('payment', config)) {
+    return SPECIALIST_STUBS.payment(state, config);
+  }
+  return paymentNode(state, config);
+};
+
+export const refundSpecialistNode: SpecialistNodeAction = async (state, config) => {
+  if (hasStubOverride('refund', config)) {
+    return SPECIALIST_STUBS.refund(state, config);
+  }
+  return refundNode(state, config);
+};
+
 export interface ParentGraphOptions {
   specialists?: Partial<Record<SpecialistId, SpecialistNodeAction>>;
 }
@@ -262,8 +278,8 @@ export function buildParentGraph(
   const specialistNodes: Record<SpecialistId, SpecialistNodeAction> = {
     order_tracking: options?.specialists?.order_tracking ?? orderTrackingSpecialistNode,
     returns: options?.specialists?.returns ?? returnsSpecialistNode,
-    payment: options?.specialists?.payment ?? SPECIALIST_STUBS.payment,
-    refund: options?.specialists?.refund ?? SPECIALIST_STUBS.refund,
+    payment: options?.specialists?.payment ?? paymentSpecialistNode,
+    refund: options?.specialists?.refund ?? refundSpecialistNode,
     profile: options?.specialists?.profile ?? SPECIALIST_STUBS.profile,
     account_access: options?.specialists?.account_access ?? SPECIALIST_STUBS.account_access,
   };

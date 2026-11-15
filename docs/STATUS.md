@@ -1,14 +1,15 @@
 # STATUS (update at the end of every step/phase)
 
-Last verified suite figure reported: 350/350 passing (46 files) at Phase 9. Baseline test count: 350.
+Last verified suite figure reported: 370/370 passing (49 files) at Phase 10. Baseline test count: 370.
 
 ## Phase state
-- Phases 1-9: COMPLETE and signed off.
+- Phases 1-10: COMPLETE and signed off.
   - Phase 6 (Access Control / Verification Gate): Steps 0-5 closed; Step 6a proof graph verified; Step 6b close-out and type unification completed.
   - Phase 7 (Agent Foundation): Steps 0-5 closed; LLM client, prompt loader, handoff contract, common node patterns, and subgraph harness verified (294 tests).
   - Phase 8 (Meta Orchestrator & Stateful Router Skeleton): Steps 0-5 closed; intent taxonomy, LLM classifier, deterministic guards, specialist stubs, parent graph with Command(goto) dispatch, and end-to-end integration tests verified (331 tests).
   - Phase 9 (Orders Specialists): Steps 0-4 closed; Order Tracking and Returns specialist subgraphs, prompt templates, RAG integration, Scenario 1 & 9 integration tests verified (350 tests).
-- Phases 10-19: not started. Concrete subgraphs (`graphs/subgraphs`) and domain specialists for Payments and Account are still stubs.
+  - Phase 10 (Payments Specialists): Steps 0-5 closed; Payment and Refund specialist subgraphs, Pattern B lateral re-route, OD-8 allowlist update, Scenarios 3, 4 & 8 integration tests verified (370 tests).
+- Phases 11-19: not started. Concrete subgraphs (`graphs/subgraphs`) and domain specialists for Account (Profile, Account Access) are still stubs.
 
 ## Built so far
 Domain data model + repositories + seed; conversation/message services; ConversationState + PostgresSaver checkpointing; routing/agent/tool event logging;
@@ -18,7 +19,10 @@ Gemini LLM wrapper with structured Zod output; 5-section prompt template loader;
 intent taxonomy + LLM classifier (temperature 0.0, structured output); deterministic pre-classification guards (handoff cap, loop detection, resume preconditions);
 specialist stub factory (COMPLETE/HANDOFF/BLOCK/FAIL behaviors); parent graph with `routerNode` and `Command({ goto })` dispatch;
 Order Tracking specialist subgraph (`get_order`, `get_shipment_status`, RAG orders/shipping, argument extraction, grounded responses);
-Returns specialist subgraph (`check_return_eligibility`, `create_return` with FULL gate Pattern C block, RAG orders/returns, hard decline on ineligibility, resume from activeWorkflow).
+Returns specialist subgraph (`check_return_eligibility`, `create_return` with FULL gate Pattern C block, RAG orders/returns, hard decline on ineligibility, resume from activeWorkflow);
+Payment specialist subgraph (`get_payment`, `detect_duplicate_charge`, Pattern B handoff to Refund, RAG payments/payments);
+Refund specialist subgraph (`create_refund` for duplicate charges, `get_return_by_order`, Pattern B handoff to Returns for unlinked returns, structured `create_refund` for approved returns, RAG payments/refunds);
+Pattern B lateral handoff and router re-route verified end-to-end (Scenarios 3, 4, 8).
 
 ## Known issues (flagged, not fixed)
 1. `user` field reducer uses `update ?? state`, so an explicit `user: null` update is ignored.
@@ -28,7 +32,7 @@ Returns specialist subgraph (`check_return_eligibility`, `create_return` with FU
 6. 6a graph's ALLOWED branch does not clear `activeWorkflow`, so `blockedBy` goes stale after a successful resume (resolved in Phase 8: router writes RE_ROUTE event; specialist clears activeWorkflow on COMPLETED).
 
 ## Immediate next actions
-1. Plan Phase 10 (Payments Specialists — Payment and Refund; Pattern B re-route on duplicate charge).
+1. Plan Phase 11 (Account Specialists: Profile, Account Access; two-mode access, password reset boundary).
 
 ## Changelog
 - 2026-11-05: Phase 6 Step 6a integration proof graph and test suite verified (239 tests).
@@ -36,3 +40,4 @@ Returns specialist subgraph (`check_return_eligibility`, `create_return` with FU
 - 2026-11-05: Phase 7 Agent Foundation completed: LLM wrapper, prompt loader, handoff schema, common node patterns, subgraph harness (294 tests).
 - 2026-11-05: Phase 8 Meta Orchestrator & Stateful Router completed: taxonomy, classifier, guards, stubs, parent graph, integration tests (331 tests).
 - 2026-11-05: Phase 9 Orders Specialists completed: Order Tracking and Returns real subgraphs, RAG scoping, parent graph integration (350 tests).
+- 2026-11-05: Phase 10 Payments Specialists completed: Payment and Refund real subgraphs, Pattern B lateral re-route, Scenarios 3, 4 & 8 parent integration tests (370 tests).

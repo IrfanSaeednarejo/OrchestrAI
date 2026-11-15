@@ -37,7 +37,7 @@ const allowlist: Record<SpecialistId, readonly ToolName[]> = {
   order_tracking: ['get_order', 'get_shipment_status', 'search_knowledge'],
   returns: ['get_order', 'get_shipment_status', 'check_return_eligibility', 'create_return', 'get_return_status', 'get_return_by_order', 'search_knowledge'],
   payment: ['get_order', 'get_payment', 'detect_duplicate_charge', 'search_knowledge'],
-  refund: ['get_order', 'get_return_status', 'get_return_by_order', 'create_refund', 'get_refund_status', 'search_knowledge'],
+  refund: ['get_order', 'get_payment', 'get_return_status', 'get_return_by_order', 'create_refund', 'get_refund_status', 'search_knowledge'],
   profile: ['get_profile', 'update_profile'],
   account_access: ['start_identity_verification', 'verify_identity', 'initiate_password_reset', 'search_knowledge']
 };
