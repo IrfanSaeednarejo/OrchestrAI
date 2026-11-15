@@ -9,12 +9,11 @@ Approved items move to DECISIONS.md. Items marked [CONFLICT] are inconsistencies
 2. Router design: LLM classifier vs rules vs hybrid; intent taxonomy; default max-handoff and loop thresholds.
    Recommendation to evaluate: deterministic guards first (handoff cap, loop detection, resume when activeWorkflow.returnTo set) then an LLM structured-output classifier.
    Starting threshold to evaluate: escalate when handoffCount exceeds 3.
-3. Agent LLM: provider, model, temperature, structured-output approach for routers and specialists. Only the embedding model is decided (gemini-embedding-2, 768).
-   `@google/genai` and GEMINI_API_KEY already exist. Blocks Phase 7. Verify current model names before proposing.
+3. [RESOLVED 2026-11-05] Agent LLM: `gemini-2.5-flash`, `temperature: 0.0` for routing/tool decisions, `temperature: 0.2` for customer-facing generation, `responseMimeType: 'application/json'` + Zod `responseSchema` for structured output, mockable client interface in Vitest. Recorded in DECISIONS.md under Phase 7.
 4. Specialist designs, one block per specialist: scope in/out, phased workflow (entry/action/branch/exit), handoff triggers, escalation conditions, success/failure criteria.
 5. Handoff and resume semantics: contents of `resumeContext`; who clears `activeWorkflow`/stale `blockedBy` after a resume.
    Proposal to evaluate: resumeContext = pending tool + validated args + resolved IDs; parent router clears blockedBy when routing back; resumed specialist clears the object on completion.
-6. HandoffRequest payload final shape (sourceAgent, handoffReason, detectedIntent, recommendedDomain, relevantContext, attemptedActions, confidence) and validation.
+6. [RESOLVED 2026-11-05] HandoffRequest payload shape (sourceAgent, handoffReason, detectedIntent, recommendedDomain, relevantContext, attemptedActions, confidence) and Zod validation. Recorded in DECISIONS.md under Phase 7.
 7. Backend API framework (Phase 16): leaning Next.js API routes/Server Actions over a separate Express/Fastify service.
 8. Refund specialist has no get_payment in the locked matrix; it must receive paymentId via handoff context (Scenarios 3 and 8). Confirm.
 9. Original Stage 1/2 requirements doc is not available. Functional/non-functional requirements should be consolidated into docs/REQUIREMENTS.md during Phase 7 planning from DECISIONS + REFERENCE.
