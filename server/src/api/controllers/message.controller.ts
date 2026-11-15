@@ -2,6 +2,7 @@
 // Phase 16: Controller handling dual-mode message dispatch (JSON and SSE streaming).
 // Phase 17 Step 1b: Turn-scoped extraction, abort resilience, blockedBy/currentStep telemetry,
 //                   explicit streamMode: 'updates', 502/error-event on empty assistant reply.
+// Phase 23: Extract service options from AIMessage.additional_kwargs and forward in SSE routing event.
 
 import { randomUUID } from 'crypto';
 import type { Request, Response } from 'express';
@@ -13,9 +14,11 @@ import {
 import { checkpointer } from '../../persistence/checkpointer/client.js';
 import { buildParentGraph } from '../../graphs/parent/parent-graph.js';
 import { createTraceConfig } from '../../observability/tracer.js';
-import type { ConversationState } from '../../state/conversation-state.js';
+import type { ConversationState, IdentityState } from '../../state/conversation-state.js';
+import type { User } from '../../persistence/repositories/marketplace.repository.js';
 import { NotFoundError, UnauthorizedError } from '../errors/app-error.js';
 import { assertConversationOwnership } from '../utils/auth-helpers.js';
+import type { ServiceOption } from '../../graphs/parent/parent-graph.js';
 
 // ---------------------------------------------------------------------------
 // Graph singleton
@@ -76,6 +79,37 @@ function extractTurnAssistantText(
   return lastAiContent;
 }
 
+/**
+ * Extracts service options embedded in `additional_kwargs.options` of the last
+ * AI message produced after the pivot. Returns null if none present.
+ * This is the transport mechanism for Phase 23 interactive service options.
+ */
+function extractTurnServiceOptions(
+  messages: BaseMessage[] | undefined,
+  humanMessageId: string
+): ServiceOption[] | null {
+  if (!Array.isArray(messages)) return null;
+
+  const pivotIndex = messages.findIndex(
+    (m) => m.getType() === 'human' && m.id === humanMessageId
+  );
+  if (pivotIndex === -1) return null;
+
+  let lastOptions: ServiceOption[] | null = null;
+  for (let i = pivotIndex + 1; i < messages.length; i++) {
+    const msg = messages[i];
+    if (!msg) continue;
+    const isAi = msg instanceof AIMessage || msg.getType() === 'ai';
+    if (isAi) {
+      const raw = (msg as AIMessage).additional_kwargs?.['options'];
+      if (Array.isArray(raw) && raw.length > 0) {
+        lastOptions = raw as ServiceOption[];
+      }
+    }
+  }
+  return lastOptions;
+}
+
 // ---------------------------------------------------------------------------
 // Handler
 // ---------------------------------------------------------------------------
@@ -125,6 +159,33 @@ export async function sendMessageHandler(
 
   const humanMessage = new HumanMessage({ content, id: humanMessageId });
 
+  const isRegisteredUser = (req.user as User & { isGuest?: boolean })?.isGuest !== true;
+  let initialIdentityUpdate: { identity: IdentityState } | Record<string, never> = {};
+
+  if (isRegisteredUser) {
+    try {
+      const currentSnapshot = await graph.getState(traceConfig);
+      const currentIdentity = (currentSnapshot?.values as ConversationState | undefined)?.identity;
+      if (!currentIdentity || currentIdentity.status === 'UNVERIFIED') {
+        initialIdentityUpdate = {
+          identity: {
+            status: 'LIGHTLY_VERIFIED',
+            verificationMethod: 'order_number',
+            verifiedAt: new Date().toISOString(),
+          },
+        };
+      }
+    } catch {
+      initialIdentityUpdate = {
+        identity: {
+          status: 'LIGHTLY_VERIFIED',
+          verificationMethod: 'order_number',
+          verifiedAt: new Date().toISOString(),
+        },
+      };
+    }
+  }
+
   const isSSE = req.headers.accept?.includes('text/event-stream');
 
   if (isSSE) {
@@ -157,6 +218,7 @@ export async function sendMessageHandler(
         {
           messages: [humanMessage],
           user: { id: callerId },
+          ...initialIdentityUpdate,
         },
         { ...traceConfig, streamMode: 'updates' }
       );
@@ -183,6 +245,7 @@ export async function sendMessageHandler(
       const assistantText = extractTurnAssistantText(finalState.messages, humanMessageId);
       const blockedBy = finalState.activeWorkflow?.blockedBy ?? null;
       const currentStep = finalState.activeWorkflow?.currentStep ?? null;
+      const serviceOptions = extractTurnServiceOptions(finalState.messages, humanMessageId);
 
       if (assistantText === null) {
         // Agent produced no reply for this turn — emit terminal error event
@@ -208,6 +271,7 @@ export async function sendMessageHandler(
           handoffCount: finalState.routing.handoffCount,
           blockedBy,
           currentStep,
+          ...(serviceOptions ? { options: serviceOptions } : {}),
         },
       });
 
@@ -226,6 +290,7 @@ export async function sendMessageHandler(
             workflowStatus: finalState.workflowStatus,
             blockedBy,
             currentStep,
+            ...(serviceOptions ? { options: serviceOptions } : {}),
           })}\n\n`
         );
 
@@ -250,6 +315,7 @@ export async function sendMessageHandler(
       {
         messages: [humanMessage],
         user: { id: callerId },
+        ...initialIdentityUpdate,
       },
       traceConfig
     )) as ConversationState;
@@ -257,6 +323,7 @@ export async function sendMessageHandler(
     const assistantText = extractTurnAssistantText(finalState?.messages, humanMessageId);
     const blockedBy = finalState.activeWorkflow?.blockedBy ?? null;
     const currentStep = finalState.activeWorkflow?.currentStep ?? null;
+    const serviceOptions = extractTurnServiceOptions(finalState?.messages, humanMessageId);
 
     if (assistantText === null) {
       // Agent produced no reply — 502 Bad Gateway, no DB persist
@@ -280,6 +347,7 @@ export async function sendMessageHandler(
         handoffCount: finalState.routing.handoffCount,
         blockedBy,
         currentStep,
+        ...(serviceOptions ? { options: serviceOptions } : {}),
       },
     });
 
@@ -295,6 +363,7 @@ export async function sendMessageHandler(
         handoffCount: finalState.routing.handoffCount,
         blockedBy,
         currentStep,
+        ...(serviceOptions ? { options: serviceOptions } : {}),
       },
     });
   }

@@ -220,9 +220,32 @@ export async function profileNode(
   const userId = state.user.id;
   const userText = extractLastUserText(state);
 
-  // 2. Extract intent from user message
-  const intentExtraction = await extractProfileIntent(userText);
-  const intent = intentExtraction.intent;
+  // 2. Resolve intent (check resumeContext first if resuming from verification, else extract from user message)
+  let intent: 'view_profile' | 'update_profile';
+  let newName: string | undefined = undefined;
+  let newDefaultAddress: string | undefined = undefined;
+
+  const isResuming =
+    state.activeWorkflow?.returnTo?.agent === specialist &&
+    state.activeWorkflow.resumeContext !== null &&
+    state.activeWorkflow.resumeContext !== undefined;
+
+  if (isResuming) {
+    const activeWf = state.activeWorkflow as NonNullable<typeof state.activeWorkflow>;
+    const ctx = activeWf.resumeContext as Record<string, unknown>;
+    if (ctx['intent'] === 'update_profile') {
+      intent = 'update_profile';
+      if (typeof ctx['name'] === 'string') newName = ctx['name'];
+      if (typeof ctx['defaultAddress'] === 'string') newDefaultAddress = ctx['defaultAddress'];
+    } else {
+      intent = 'view_profile';
+    }
+  } else {
+    const intentExtraction = await extractProfileIntent(userText);
+    intent = intentExtraction.intent;
+    newName = intentExtraction.name ?? undefined;
+    newDefaultAddress = intentExtraction.defaultAddress ?? undefined;
+  }
 
   // ---------------------------------------------------------------------------
   // 3a. VIEW PROFILE path
@@ -243,7 +266,7 @@ export async function profileNode(
       // Pattern C: needs FULL verification → route to Account Access
       const returnTo: ReturnTo = {
         domain: specialist,
-        agent: 'account_access',
+        agent: specialist,
         workflowStep: 'get_profile',
       };
       const blockedUpdate = buildBlockedWorkflowUpdate({
@@ -259,7 +282,7 @@ export async function profileNode(
         workflowStatus: 'WAITING_FOR_USER_INPUT',
         messages: [
           new AIMessage(
-            'To access your profile, we need to verify your identity first. Please proceed with verification.'
+            'To access your profile, we need to verify your identity first. Please request a verification code to receive a 6-digit code via email, or enter your code if you already have one.'
           ),
         ],
       };
@@ -305,8 +328,6 @@ export async function profileNode(
   // ---------------------------------------------------------------------------
   // 3b. UPDATE PROFILE path
   // ---------------------------------------------------------------------------
-  const newName = intentExtraction.name ?? undefined;
-  const newDefaultAddress = intentExtraction.defaultAddress ?? undefined;
 
   // If nothing to update was extracted, ask the customer what they want to change
   if (newName === undefined && newDefaultAddress === undefined) {
@@ -339,7 +360,7 @@ export async function profileNode(
     // Pattern C: needs FULL verification → route to Account Access
     const returnTo: ReturnTo = {
       domain: specialist,
-      agent: 'account_access',
+      agent: specialist,
       workflowStep: 'update_profile',
     };
     const blockedUpdate = buildBlockedWorkflowUpdate({
@@ -355,7 +376,7 @@ export async function profileNode(
       workflowStatus: 'WAITING_FOR_USER_INPUT',
       messages: [
         new AIMessage(
-          'To update your profile, we need to verify your identity first. Please proceed with verification.'
+          'To update your profile, we need to verify your identity first. Please request a verification code to receive a 6-digit code via email, or enter your code if you already have one.'
         ),
       ],
     };

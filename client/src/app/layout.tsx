@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { Providers } from '../components/providers';
 
 export const metadata: Metadata = {
-  title: 'OrchestrAI — Support Chat',
-  description: 'Autonomous multi-agent customer support orchestration',
+  title: 'OrchestrAI — Support Chat & Store',
+  description: 'Autonomous multi-agent customer support orchestration and commerce',
 };
 
 export default function RootLayout({
@@ -13,8 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-slate-50 text-slate-900 antialiased">{children}</body>
+      <body className="bg-slate-50 text-slate-900 antialiased">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
-

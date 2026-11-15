@@ -1,6 +1,7 @@
 // src/types/api.ts
 // Phase 17 Step 3: API data contracts matching backend Express schemas.
 // Phase 21: Added AuthUser, AuthResponse, Product, Order, and Storefront types.
+// Phase 23: Added ServiceOption for interactive service menu buttons.
 
 export type WorkflowStatus =
   | 'ACTIVE'
@@ -10,12 +11,19 @@ export type WorkflowStatus =
   | 'ESCALATED'
   | 'FAILED';
 
+/** A single interactive service-menu option returned by the greeting response. */
+export interface ServiceOption {
+  label: string;
+  message: string;
+}
+
 export interface MessageMetadata {
   specialist?: string | null;
   workflowStatus?: WorkflowStatus | null;
   handoffCount?: number;
   blockedBy?: string | null;
   currentStep?: string | null;
+  options?: ServiceOption[] | null;
   [key: string]: unknown;
 }
 

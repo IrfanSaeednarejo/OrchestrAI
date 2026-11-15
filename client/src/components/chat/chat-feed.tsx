@@ -1,11 +1,14 @@
 // src/components/chat/chat-feed.tsx
 // Phase 17 Step 5c: Chat message feed with plain-text user bubbles, OTP masking,
 // safe markdown assistant bubbles, live node-progress, and auto-scroll.
+// Phase 23: Render ServiceOptionBar beneath the last assistant message when options are present.
 
 import React, { useEffect, useRef } from 'react';
 import { Bot, User, Loader2 } from 'lucide-react';
 import type { Message } from '../../types/api';
+import type { ServiceOption } from '../../types/api';
 import { MarkdownRenderer } from './markdown-renderer';
+import { ServiceOptionBar } from './service-option-bar';
 
 interface ChatFeedProps {
   messages: Message[];
@@ -13,6 +16,9 @@ interface ChatFeedProps {
   streamingText?: string;
   currentNode?: string | null;
   className?: string;
+  serviceOptions?: ServiceOption[] | null;
+  onOptionSelect?: (message: string) => void;
+  isEscalated?: boolean;
 }
 
 export function ChatFeed({
@@ -21,6 +27,9 @@ export function ChatFeed({
   streamingText = '',
   currentNode = null,
   className = '',
+  serviceOptions = null,
+  onOptionSelect,
+  isEscalated = false,
 }: ChatFeedProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -68,6 +77,8 @@ export function ChatFeed({
           const isUser = msg.role === 'user';
           const isOtpMasked = isUser && shouldMaskOtp(index);
           const displayContent = isOtpMasked ? '••••••' : msg.content;
+          const isLastAssistant =
+            !isUser && index === messages.length - 1;
 
           return (
             <div
@@ -88,24 +99,36 @@ export function ChatFeed({
                 {isUser ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
               </div>
 
-              {/* Message Bubble */}
-              <div
-                className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm shadow-sm transition-all ${
-                  isUser
-                    ? 'bg-blue-600 text-white rounded-tr-sm font-sans whitespace-pre-wrap break-words'
-                    : 'bg-white border border-slate-200 text-slate-800 rounded-tl-sm'
-                }`}
-              >
-                {isUser ? (
-                  <span
-                    data-testid={`user-message-text-${index}`}
-                    title={isOtpMasked ? 'Code hidden for security' : undefined}
-                    className={isOtpMasked ? 'font-mono tracking-widest text-base' : ''}
-                  >
-                    {displayContent}
-                  </span>
-                ) : (
-                  <MarkdownRenderer content={msg.content} />
+              {/* Message Bubble + optional service options */}
+              <div className={`max-w-[80%] flex flex-col ${isUser ? 'items-end' : 'items-start'}`}>
+                <div
+                  className={`rounded-2xl px-4 py-3 text-sm shadow-sm transition-all ${
+                    isUser
+                      ? 'bg-blue-600 text-white rounded-tr-sm font-sans whitespace-pre-wrap break-words'
+                      : 'bg-white border border-slate-200 text-slate-800 rounded-tl-sm'
+                  }`}
+                >
+                  {isUser ? (
+                    <span
+                      data-testid={`user-message-text-${index}`}
+                      title={isOtpMasked ? 'Code hidden for security' : undefined}
+                      className={isOtpMasked ? 'font-mono tracking-widest text-base' : ''}
+                    >
+                      {displayContent}
+                    </span>
+                  ) : (
+                    <MarkdownRenderer content={msg.content} />
+                  )}
+                </div>
+
+                {/* Interactive service options — only shown after the last assistant message */}
+                {isLastAssistant && serviceOptions && serviceOptions.length > 0 && onOptionSelect && (
+                  <ServiceOptionBar
+                    options={serviceOptions}
+                    onSelect={onOptionSelect}
+                    isStreaming={isStreaming}
+                    isEscalated={isEscalated}
+                  />
                 )}
               </div>
             </div>

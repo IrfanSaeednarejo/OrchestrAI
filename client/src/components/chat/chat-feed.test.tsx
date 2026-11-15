@@ -167,5 +167,69 @@ describe('ChatFeed', () => {
       screen.getByText('Let me look up your order details right now.')
     ).toBeInTheDocument();
   });
+
+  it('renders service options beneath the last assistant message when present', () => {
+    const messages: Message[] = [
+      {
+        id: 'msg-1',
+        conversationId: 'conv-1',
+        role: 'assistant',
+        content: 'Hello! How can I assist you today?',
+        timestamp: new Date().toISOString(),
+      },
+    ];
+
+    const options = [
+      { label: 'Track an Order', message: 'I need to track my order' },
+      { label: 'Request a Return', message: 'I would like to request a return' },
+    ];
+
+    const onOptionSelect = vi.fn();
+
+    render(
+      <ChatFeed
+        messages={messages}
+        serviceOptions={options}
+        onOptionSelect={onOptionSelect}
+      />
+    );
+
+    expect(screen.getByTestId('service-option-bar')).toBeInTheDocument();
+    expect(screen.getByText('Track an Order')).toBeInTheDocument();
+    expect(screen.getByText('Request a Return')).toBeInTheDocument();
+  });
+
+  it('does NOT render service options when the last message is from user', () => {
+    const messages: Message[] = [
+      {
+        id: 'msg-1',
+        conversationId: 'conv-1',
+        role: 'assistant',
+        content: 'Hello!',
+        timestamp: new Date().toISOString(),
+      },
+      {
+        id: 'msg-2',
+        conversationId: 'conv-1',
+        role: 'user',
+        content: 'I need help',
+        timestamp: new Date().toISOString(),
+      },
+    ];
+
+    const options = [
+      { label: 'Track an Order', message: 'I need to track my order' },
+    ];
+
+    render(
+      <ChatFeed
+        messages={messages}
+        serviceOptions={options}
+        onOptionSelect={vi.fn()}
+      />
+    );
+
+    expect(screen.queryByTestId('service-option-bar')).not.toBeInTheDocument();
+  });
 });
 

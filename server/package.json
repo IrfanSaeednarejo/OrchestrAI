@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "lint": "eslint src",
+    "build": "tsc",
     "format": "prettier --write src",
     "dev": "tsx src/index.ts",
     "start": "tsx src/api/server.ts",

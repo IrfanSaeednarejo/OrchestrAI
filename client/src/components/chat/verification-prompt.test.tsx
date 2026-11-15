@@ -41,6 +41,8 @@ describe('VerificationPrompt', () => {
     expect(
       screen.getByText(/Identity verification required\. Please follow the assistant’s instructions\./i)
     ).toBeInTheDocument();
+    expect(screen.getByTestId('verification-action-hint')).toBeInTheDocument();
+    expect(screen.getByText(/Send me a verification code/i)).toBeInTheDocument();
     expect(screen.queryByTestId('otp-hint')).not.toBeInTheDocument();
   });
 

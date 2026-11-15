@@ -98,26 +98,25 @@ describe('extractLastUserText', () => {
 
 describe('extractOrderId', () => {
   beforeEach(() => {
-    mockGenerateContent.mockClear();
+    mockGenerateContent.mockReset();
   });
 
-  it('returns the UUID when LLM finds one', async () => {
-    mockGenerateContent.mockResolvedValueOnce({
-      text: JSON.stringify({ orderId: FIXTURE_ORDER_ID, confidence: 0.98 }),
-    });
-
+  it('returns the UUID via fast-path regex when UUID is in the text (no LLM call)', async () => {
+    // With the UUID fast-path, the LLM is NOT called when the text contains a UUID directly.
     const result = await extractOrderId(`My order is ${FIXTURE_ORDER_ID}`);
     expect(result.orderId).toBe(FIXTURE_ORDER_ID);
-    expect(result.confidence).toBeGreaterThan(0.9);
+    expect(result.confidence).toBe(1.0);
+    expect(mockGenerateContent).not.toHaveBeenCalled();
   });
 
-  it('returns null when LLM finds no UUID', async () => {
+  it('falls back to LLM when no UUID in text and returns null when LLM finds none', async () => {
     mockGenerateContent.mockResolvedValueOnce({
       text: JSON.stringify({ orderId: null, confidence: 0.1 }),
     });
 
     const result = await extractOrderId('What happened to my package?');
     expect(result.orderId).toBeNull();
+    expect(mockGenerateContent).toHaveBeenCalledTimes(1);
   });
 
   it('returns null and does not call LLM when given empty string', async () => {
@@ -135,8 +134,8 @@ describe('orderTrackingNode', () => {
   const harness = buildSingleNodeHarness('order_tracking_node', orderTrackingNode);
 
   beforeEach(() => {
-    mockGenerateContent.mockClear();
-    mockGated.mockClear();
+    mockGenerateContent.mockReset();
+    mockGated.mockReset();
   });
 
   it('emits WAITING_FOR_USER_INPUT when no orderId extractable', async () => {
@@ -154,10 +153,7 @@ describe('orderTrackingNode', () => {
   });
 
   it('emits COMPLETED with order and shipment data', async () => {
-    // Phase A: extract UUID
-    mockGenerateContent.mockResolvedValueOnce({
-      text: JSON.stringify({ orderId: FIXTURE_ORDER_ID, confidence: 0.99 }),
-    });
+    // Note: extractOrderId uses UUID regex fast-path — no LLM call when UUID is in the text.
     // Phase B: get_order → allowed
     mockGated.mockResolvedValueOnce(makeAllowedOrderResult());
     // Phase B: get_shipment_status → allowed
@@ -176,9 +172,7 @@ describe('orderTrackingNode', () => {
   });
 
   it('emits FAILED when order is not found', async () => {
-    mockGenerateContent.mockResolvedValueOnce({
-      text: JSON.stringify({ orderId: FIXTURE_ORDER_ID, confidence: 0.95 }),
-    });
+    // Note: extractOrderId uses UUID regex fast-path — no LLM call when UUID is in the text.
     mockGated.mockResolvedValueOnce({
       gate: { outcome: 'ALLOWED' as const },
       success: false as const,
@@ -194,9 +188,7 @@ describe('orderTrackingNode', () => {
   });
 
   it('emits WAITING_FOR_USER_INPUT with activeWorkflow when LIGHT gate blocks', async () => {
-    mockGenerateContent.mockResolvedValueOnce({
-      text: JSON.stringify({ orderId: FIXTURE_ORDER_ID, confidence: 0.95 }),
-    });
+    // Note: extractOrderId uses UUID regex fast-path — no LLM call when UUID is in the text.
     mockGated.mockResolvedValueOnce({
       gate: {
         outcome: 'BLOCKED' as const,
@@ -221,9 +213,7 @@ describe('orderTrackingNode', () => {
   });
 
   it('uses fallback response text when LLM response generation fails', async () => {
-    mockGenerateContent.mockResolvedValueOnce({
-      text: JSON.stringify({ orderId: FIXTURE_ORDER_ID, confidence: 0.99 }),
-    });
+    // Note: extractOrderId uses UUID regex fast-path — no LLM call when UUID is in the text.
     mockGated.mockResolvedValueOnce(makeAllowedOrderResult());
     mockGated.mockResolvedValueOnce(makeAllowedShipmentResult());
     // Response generation returns empty → triggers fallback

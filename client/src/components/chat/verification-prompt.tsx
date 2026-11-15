@@ -87,6 +87,18 @@ export function VerificationPrompt({
               : 'Security confirmation required. Please confirm your identity details as requested.'}
           </p>
 
+          {isFull && !isAwaitingCode && (
+            <div
+              data-testid="verification-action-hint"
+              className="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-amber-800"
+            >
+              <KeyRound className="h-3.5 w-3.5 shrink-0" />
+              <span>
+                Tip: Reply with <strong>&quot;Send me a verification code&quot;</strong> or enter your 6-digit code.
+              </span>
+            </div>
+          )}
+
           {isAwaitingCode && (
             <div
               data-testid="otp-hint"

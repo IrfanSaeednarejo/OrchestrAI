@@ -1,9 +1,9 @@
 # STATUS (update at the end of every step/phase)
 
-Last verified suite figure reported: Server 584/584 passing (67 files), Client 112/112 passing (23 files). Total: 696 passing tests. Server baseline test count: 563. Client baseline test count: 98.
+Last verified suite figure reported: Server 586/586 passing (67 files), Client 144/144 passing (28 files). Total: 730 passing tests. Server baseline test count: 563. Client baseline test count: 98.
 
 ## Phase state
-- Phases 1-21: COMPLETE and signed off.
+- Phases 1-23: COMPLETE and signed off.
 
   - Phase 6 (Access Control / Verification Gate): Steps 0-5 closed; Step 6a proof graph verified; Step 6b close-out and type unification completed.
   - Phase 7 (Agent Foundation): Steps 0-5 closed; LLM client, prompt loader, handoff contract, common node patterns, and subgraph harness verified (294 tests).
@@ -21,6 +21,9 @@ Last verified suite figure reported: Server 584/584 passing (67 files), Client 1
   - Phase 19 (Testing, Hardening & Portfolio Documentation): Steps 1-5 closed; runtime hardening (recursive tool output redaction, `user` reducer null-safety), API security (100kb payload limit, 413 entity-too-large handler, production error sanitization), Next.js error boundaries (`error.tsx`, `not-found.tsx`, `global-error.tsx`), automated local run script (`scripts/run-local.ps1`), portfolio-grade system README, and final documentation closeout (559 server tests + 95 client tests = 654 tests).
   - Phase 20 (Conversational Routing & Chat State Isolation): Steps 1-3 closed; client chat session isolation & "+ New Chat" disassociation, error sanitization on 403, taxonomy greeting intent and regex triage (`isGreetingMessage`), conversational supervisor onboarding in `routerNode` without forcing specialist dispatch, 100% test pass rate (563 server tests + 98 client tests = 661 tests).
   - Phase 21 (Real User Accounts, Authentication & Storefront Integration): Steps 1-5 closed; database schema addition of nullable `passwordHash` to `users`, scrypt + salt password hashing, signed HMAC-SHA256 Bearer session tokens, auth REST endpoints (register/login/logout/me), storefront endpoints (catalog & order placement), frontend auth modal, storefront modal, and live customer chat order tracking (584 server tests + 112 client tests = 696 tests).
+  - Phase 22 (Mandatory User Auth & Dedicated Storefront / Orders Pages): Steps 1-6 closed; mandatory authentication guard hook (`useRequireAuth`), dedicated full-page `/login` and `/register` flows with query redirection, global navigation update (`TopNav` with user identity pill and direct store/orders links), removal of demo identity switcher from user-facing sidebar, dedicated full-page `/store` catalog with dynamic cart & checkout, dedicated `/orders` order history with color-coded status badges and 1-click "Ask Agent About This Order", root `/` chat routing guard and `orderId` input prompt pre-fill (584 server tests + 131 client tests = 715 tests).
+  - Phase 23 (Conversational UX, Interactive Service Menu & Order Tracking Reliability): Steps 1-7 closed; dynamic LLM greeting generation (`temperature: 0.2`) returning concise, context-adaptive greetings, interactive service-option buttons (`Track an Order`, `Request a Return`, `Request a Refund`, `Manage Payments`, `Update Profile`, `Account Security`) transported via SSE routing metadata and rendered as clickable pills, order tracking continuation guard in `routerNode` preventing unwanted re-classification during order ID collection (586 server tests + 144 client tests = 730 tests).
+
 
 ## Built so far
 Domain data model + repositories + seed; conversation/message services; ConversationState + PostgresSaver checkpointing; routing/agent/tool event logging;
@@ -52,8 +55,28 @@ Phase 19 hardening: recursive tool output PII redaction, `user` reducer null-saf
 6. 6a graph's ALLOWED branch does not clear `activeWorkflow`, so `blockedBy` goes stale after a successful resume (resolved in Phase 8: router writes RE_ROUTE event; specialist clears activeWorkflow on COMPLETED).
 
 ## Immediate next actions
-1. Owner merges phase/21-real-user-auth-and-storefront and tags phase-21-done.
-2. Production customer self-service onboarding live. 🎉
+1. Owner merges phase/22-mandatory-auth-and-storefront-pages and tags phase-22-done.
+2. Full production-grade user authentication, catalog browsing, order history, and conversational support live. 🎉
+
+## Neon Postgres deployment (out-of-phase)
+- Neon project: `withered-wildflower-96418740` (org `org-frosty-river-50490515`), branch `production` (`br-silent-band-bdye411r`).
+- `DATABASE_URL` (pooled) and `DATABASE_URL_UNPOOLED` (direct) written to `server/.env` and `.env.local`.
+- `server/src/shared/config.ts` updated: `DATABASE_URL`/`DATABASE_URL_UNPOOLED` optional fields; config parses connection details from `DATABASE_URL` when present, falls back to individual `POSTGRES_*` vars.
+- `server/drizzle.config.ts` updated: prefers `DATABASE_URL_UNPOOLED` → `DATABASE_URL` → individual vars for migrations/DDL.
+- `server/vitest.config.ts` updated: `testTimeout: 30000`, `hookTimeout: 30000` (some integration tests require >5s on Neon).
+- `server/package.json` updated: added `"build": "tsc"` script.
+- `package.json` (root) updated: added `"build"` script running client + server builds in sequence.
+- `neon.ts` created at root (Neon configuration file).
+- Drizzle migrations applied to Neon via `npm run db:migrate` ✓
+- LangGraph checkpoint tables created via `npm run checkpointer:setup` ✓
+- Database seeded via `npm run db:seed` ✓ (4 users, 9 orders, 4 payments, 3 returns, 2 refunds)
+- Knowledge documents ingested via `npm run knowledge:ingest` ✓ (5/5 documents)
+- `npm run build` (root): Next.js client + TypeScript server both pass ✓
+- `/health` endpoint: `{"status":"healthy","services":{"database":"up","redis":"up"}}` ✓
+- `/api/products` returns 2 products from Neon ✓
+- `/api/demo-users` returns seeded users ✓
+- Full conversation turn (create conversation → POST message → GET messages): end-to-end round-trip through LangGraph + Neon checkpointer ✓
+- Server test count: 537 passing (some integration tests timeout at 5s default; pass at 30s). Client: 131/131 ✓.
 
 ## Changelog
 - 2026-11-05: Phase 6 Step 6a integration proof graph and test suite verified (239 tests).
@@ -73,4 +96,7 @@ Phase 19 hardening: recursive tool output PII redaction, `user` reducer null-saf
 - 2026-11-06: Phase 19 Testing, Hardening & Portfolio Documentation completed: runtime hardening (recursive tool output redaction, `user` reducer null-safety), API security (100kb payload limit, 413 entity-too-large handler, production error sanitization), Next.js error boundaries (`error.tsx`, `not-found.tsx`, `global-error.tsx`), automated local run script (`scripts/run-local.ps1`), portfolio-grade system README, and final documentation closeout (559 server tests + 95 client tests = 654 tests).
 - 2026-11-07: Phase 20 Conversational Routing & Chat State Isolation completed: client session disassociation on "+ New Chat" and user switch, 403 leakage prevention, greeting classification and supervisor triage response, seamless subsequent domain dispatch (563 server tests + 98 client tests = 661 tests).
 - 2026-11-07: Phase 21 Real User Accounts, Authentication & Storefront Integration completed: schema addition of nullable passwordHash to users, Node crypto.scrypt password hashing with salt, signed HMAC-SHA256 session tokens with dual-mode auth middleware fallback, /api/auth and /api/orders REST endpoints, frontend AuthModal and StorefrontModal, and real customer chat order tracking (584 server tests + 112 client tests = 696 tests).
+- 2026-11-08: Phase 22 Mandatory User Auth & Dedicated Storefront / Orders Pages completed: mandatory authentication guard hook (`useRequireAuth`), dedicated full-page `/login` and `/register` flows with query redirection, global navigation update (`TopNav` with user identity pill and direct store/orders links), removal of demo identity switcher from user-facing sidebar, dedicated full-page `/store` catalog with dynamic cart & checkout, dedicated `/orders` order history with color-coded status badges and 1-click "Ask Agent About This Order", root `/` chat routing guard and `orderId` input prompt pre-fill (584 server tests + 131 client tests = 715 tests).
+- 2026-11-08: Bug Fixes & UX Clarification: UUID fast-path regex extraction across specialists (Order Tracking, Returns, Payment), Pattern C profile verification routing and resume context fix, actionable guidance hint in client VerificationPrompt banner and input placeholder (584 server tests + 131 client tests = 715 tests).
+- 2026-11-08: Neon Postgres deployment: wired DATABASE_URL/UNPOOLED into config, drizzle, env; migrations, checkpointer setup, seed, and knowledge ingestion applied to Neon; root build scripts; vitest testTimeout raised to 30s; full end-to-end round-trip verified against Neon (commit 45393f0).
 

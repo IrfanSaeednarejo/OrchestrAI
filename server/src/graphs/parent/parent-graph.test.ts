@@ -1,6 +1,8 @@
 // src/graphs/parent/parent-graph.test.ts
 // Phase 8: Unit tests for parent graph & stateful router.
 // Fast in-memory execution with MemorySaver and mocked @google/genai.
+// Phase 23: Updated greeting test for LLM-generated greeting + service options;
+//           added order tracking continuation guard test.
 
 import crypto from 'node:crypto';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
@@ -253,6 +255,21 @@ describe('Parent Graph & Stateful Router', () => {
     const graph = buildParentGraph(checkpointer, { specialists: SPECIALIST_STUBS });
     const threadId = crypto.randomUUID();
 
+    // Mock the LLM greeting call (generateStructuredOutput inside generateGreetingResponse)
+    mockGenerateContent.mockResolvedValueOnce({
+      text: JSON.stringify({
+        greeting: 'Hi there! How can I help you today?',
+        options: [
+          { label: 'Track an Order', message: 'I need to track my order' },
+          { label: 'Request a Return', message: 'I would like to request a return' },
+          { label: 'Request a Refund', message: 'I need help with a refund' },
+          { label: 'Manage Payments', message: 'I have a question about a payment' },
+          { label: 'Update Profile', message: 'I need to update my profile' },
+          { label: 'Account Security', message: 'I need help with my account or password' },
+        ],
+      }),
+    });
+
     // Turn 1: Greeting
     const turn1 = await graph.invoke(
       {
@@ -264,7 +281,14 @@ describe('Parent Graph & Stateful Router', () => {
     expect(turn1.workflowStatus).toBe('WAITING_FOR_USER_INPUT');
     expect(turn1.routing.currentAgent).toBe('router');
     expect(turn1.currentIntent).toBe('GREETING');
-    expect(turn1.messages.at(-1)?.content).toMatch(/OrchestrAI's autonomous customer support assistant/i);
+    // LLM-generated greeting should be short and NOT repeat the full static intro
+    const greetingContent = turn1.messages.at(-1)?.content as string;
+    expect(greetingContent).toBeTruthy();
+    expect(greetingContent.length).toBeGreaterThan(0);
+    // Service options should be encoded in additional_kwargs
+    const greetingMsg = turn1.messages.at(-1) as import('@langchain/core/messages').AIMessage;
+    expect(Array.isArray(greetingMsg.additional_kwargs?.['options'])).toBe(true);
+    expect((greetingMsg.additional_kwargs?.['options'] as unknown[]).length).toBe(6);
 
     // Turn 2: Customer provides order request
     mockGenerateContent.mockResolvedValueOnce({
@@ -287,6 +311,60 @@ describe('Parent Graph & Stateful Router', () => {
     expect(turn2.routing.currentAgent).toBe('order_tracking');
     expect(turn2.routing.handoffCount).toBe(0); // initial route from router supervisor, not lateral handoff
   });
-});
 
+  it('greets customer with fallback static greeting when LLM call fails', async () => {
+    // LLM throws — greeting should still work via static fallback
+    mockGenerateContent.mockRejectedValueOnce(new Error('LLM unavailable'));
+
+    const checkpointer = new MemorySaver();
+    const graph = buildParentGraph(checkpointer, { specialists: SPECIALIST_STUBS });
+    const threadId = crypto.randomUUID();
+
+    const turn1 = await graph.invoke(
+      { messages: [new HumanMessage('hi')] },
+      { configurable: { thread_id: threadId } }
+    );
+
+    expect(turn1.workflowStatus).toBe('WAITING_FOR_USER_INPUT');
+    expect(turn1.routing.currentAgent).toBe('router');
+    expect(turn1.currentIntent).toBe('GREETING');
+    const greetingContent = turn1.messages.at(-1)?.content as string;
+    expect(greetingContent.length).toBeGreaterThan(0);
+    // Fallback options should still be present
+    const greetingMsg = turn1.messages.at(-1) as import('@langchain/core/messages').AIMessage;
+    expect(Array.isArray(greetingMsg.additional_kwargs?.['options'])).toBe(true);
+  });
+
+  it('order tracking continuation guard: routes back to order_tracking without LLM when WAITING_FOR_USER_INPUT', async () => {
+    // The guard fires BEFORE the classifier — no LLM call should be made
+    const checkpointer = new MemorySaver();
+    const graph = buildParentGraph(checkpointer, { specialists: SPECIALIST_STUBS });
+    const threadId = crypto.randomUUID();
+
+    // Set up state that matches the guard condition:
+    // currentAgent = 'order_tracking', workflowStatus = 'WAITING_FOR_USER_INPUT'
+    const result = await graph.invoke(
+      {
+        messages: [new HumanMessage('my-order-ref-123')],
+        routing: {
+          currentAgent: 'order_tracking',
+          previousAgent: null,
+          history: [],
+          handoffCount: 0,
+          visitedAgents: ['order_tracking'],
+        },
+        workflowStatus: 'WAITING_FOR_USER_INPUT',
+        currentIntent: 'ORDER_STATUS',
+      },
+      { configurable: { thread_id: threadId } }
+    );
+
+    // The classifier LLM mock should NOT have been called (guard bypasses it)
+    expect(mockGenerateContent).not.toHaveBeenCalled();
+    // The order_tracking stub should have been called — it returns COMPLETED
+    expect(result.routing.currentAgent).toBe('order_tracking');
+    expect(result.workflowStatus).toBe('COMPLETED');
+  });
+
+});
 

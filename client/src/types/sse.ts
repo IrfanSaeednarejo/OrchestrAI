@@ -1,7 +1,8 @@
 // src/types/sse.ts
 // Phase 17 Step 3: SSE event contracts matching message.controller.ts streaming events.
+// Phase 23: Added optional `options` to SSERoutingEvent for interactive service menu.
 
-import type { WorkflowStatus } from './api';
+import type { WorkflowStatus, ServiceOption } from './api';
 
 export interface SSEStartEvent {
   conversationId: string;
@@ -24,6 +25,7 @@ export interface SSERoutingEvent {
   workflowStatus: WorkflowStatus | null;
   blockedBy?: string | null;
   currentStep?: string | null;
+  options?: ServiceOption[] | null;
 }
 
 export interface SSEDoneEvent {

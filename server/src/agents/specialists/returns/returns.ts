@@ -91,6 +91,11 @@ export async function extractReturnIntent(userText: string): Promise<ReturnExtra
     return { orderId: null, reason: null, intent: 'create_return', confidence: 0 };
   }
 
+  const uuidMatch = userText.match(
+    /\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/i
+  );
+  const directOrderId = uuidMatch ? uuidMatch[0].toLowerCase() : null;
+
   const prompt = `Extract the order ID (a UUID), return reason, and intent from the following customer message.
 If no valid UUID is found, set orderId to null.
 
@@ -109,10 +114,18 @@ Respond with JSON:
   });
 
   if (result.success) {
-    return result.data;
+    return {
+      ...result.data,
+      orderId: result.data.orderId || directOrderId,
+    };
   }
 
-  return { orderId: null, reason: null, intent: 'create_return', confidence: 0 };
+  return {
+    orderId: directOrderId,
+    reason: null,
+    intent: 'create_return',
+    confidence: directOrderId ? 0.8 : 0,
+  };
 }
 
 export async function generateDeclineResponse(params: {
@@ -278,7 +291,15 @@ export async function returnsNode(
       currentStep: 'check_return_eligibility',
       resumeContext: { orderId, reason },
     });
-    return { ...blockedUpdate, workflowStatus: 'WAITING_FOR_USER_INPUT' };
+    return {
+      ...blockedUpdate,
+      workflowStatus: 'WAITING_FOR_USER_INPUT',
+      messages: [
+        new AIMessage(
+          'To check return eligibility, please log in to your account or confirm your identity.'
+        ),
+      ],
+    };
   }
 
   if (eligibilityResult.gate.outcome === 'DENIED') {
@@ -377,7 +398,7 @@ export async function returnsNode(
       messages: [
         new AIMessage(
           'Your order is eligible for return! To submit the return request, we need to verify your identity. ' +
-            'Please proceed with verification.'
+            'Please request a verification code to receive a 6-digit code via email, or enter your code if you already have one.'
         ),
       ],
     };
