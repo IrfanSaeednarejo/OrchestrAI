@@ -1,13 +1,14 @@
 // src/knowledge/scoped-retrieval.ts
 import { retrieveKnowledge, KnowledgeHit } from './retrieval.js';
 import { MIN_SIMILARITY } from '../tools/queries/knowledge.tools.js';
-import { getKnowledgeScope, SpecialistName } from './specialist-scope.js';
+import { getKnowledgeScope } from './specialist-scope.js';
 import { ToolResult } from '../tools/types.js';
+import type { SpecialistId } from '../tools/permissions.js';
 
 export type ScopedSearchInput = { query: string; topK?: number };
 
 export async function searchKnowledgeForSpecialist(
-  specialist: SpecialistName,
+  specialist: SpecialistId,
   input: ScopedSearchInput
 ): Promise<ToolResult<KnowledgeHit[]>> {
   const scope = getKnowledgeScope(specialist);
