@@ -20,6 +20,9 @@ export const envSchema = z.object({
     .enum(['true', 'false'])
     .default('false')
     .transform((v) => v === 'true'),
+  // Phase 21: HMAC-SHA256 secret for signing Bearer session tokens.
+  // Must be at least 32 characters. Falls back to a dev-only default; production MUST set this.
+  TOKEN_SECRET: z.string().min(32).default('orchestrai-dev-token-secret-change-in-prod!!'),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -72,6 +75,12 @@ export const config = Object.freeze({
     apiKey: envVars.LANGCHAIN_API_KEY ?? null,
     project: envVars.LANGCHAIN_PROJECT,
     endpoint: envVars.LANGCHAIN_ENDPOINT,
+  },
+  auth: {
+    // Phase 21: HMAC-SHA256 secret for session token signing.
+    tokenSecret: envVars.TOKEN_SECRET,
+    // Token expiry: 7 days in milliseconds.
+    tokenExpiryMs: 7 * 24 * 60 * 60 * 1000,
   },
 });
 

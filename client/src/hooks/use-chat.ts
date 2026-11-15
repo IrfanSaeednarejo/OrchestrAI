@@ -215,7 +215,11 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
   }
 }
 
-export function useChat(userId: string, initialConversationId: string | null = null) {
+export function useChat(
+  userId: string,
+  initialConversationId: string | null = null,
+  token?: string | null
+) {
   const [state, dispatch] = useReducer(chatReducer, initialChatState);
   const isSendingRef = useRef(false);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -223,7 +227,7 @@ export function useChat(userId: string, initialConversationId: string | null = n
   const loadConversation = useCallback(
     async (convId: string) => {
       try {
-        const msgs = await fetchMessages(convId, userId);
+        const msgs = await fetchMessages(convId, userId, token);
         dispatch({
           type: 'SET_CONVERSATION',
           payload: { conversationId: convId, messages: msgs },
@@ -239,7 +243,7 @@ export function useChat(userId: string, initialConversationId: string | null = n
         });
       }
     },
-    [userId]
+    [userId, token]
   );
 
   const resetChat = useCallback(() => {
@@ -274,7 +278,7 @@ export function useChat(userId: string, initialConversationId: string | null = n
       try {
         // Create conversation if none exists
         if (!convId) {
-          const newConv = await createConversation(userId);
+          const newConv = await createConversation(userId, token);
           convId = newConv.id;
         }
 
@@ -312,7 +316,7 @@ export function useChat(userId: string, initialConversationId: string | null = n
               dispatch({ type: 'STREAM_DONE' });
               // Refresh messages to sync server IDs and authoritative state
               if (convId) {
-                fetchMessages(convId, userId)
+                fetchMessages(convId, userId, token)
                   .then((msgs) => {
                     dispatch({
                       type: 'SET_CONVERSATION',
@@ -325,7 +329,8 @@ export function useChat(userId: string, initialConversationId: string | null = n
               }
             },
           },
-          abortController.signal
+          abortController.signal,
+          token
         );
       } catch (err) {
         dispatch({
@@ -339,7 +344,7 @@ export function useChat(userId: string, initialConversationId: string | null = n
         abortControllerRef.current = null;
       }
     },
-    [state.conversationId, state.isStreaming, state.workflowStatus, userId]
+    [state.conversationId, state.isStreaming, state.workflowStatus, userId, token]
   );
 
   const abortStream = useCallback(() => {

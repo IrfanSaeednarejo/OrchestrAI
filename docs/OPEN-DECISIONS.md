@@ -36,4 +36,10 @@ Approved items move to DECISIONS.md. Items marked [CONFLICT] are inconsistencies
 20. [RESOLVED 2026-11-07] Conversational Router Agent Architecture for General Inquiries & Greetings:
     Option A adopted — When the user sends greetings ("hello", "hi") or unclassified store queries, the router handles them directly via a conversational LLM greeting detailing OrchestrAI capabilities without dispatching Command({ goto: 'order_tracking' }) or requiring an order ID. The router keeps workflowStatus: 'WAITING_FOR_USER_INPUT' and transitions to specialist dispatch on the subsequent turn once a domain intent is expressed. Recorded in DECISIONS.md under Phase 20.
 
+21. [RESOLVED 2026-11-07] Real User Authentication & Storefront Integration:
+    OD-21a [RESOLVED 2026-11-07]: Password Hashing & Security Service — Option A adopted: Node.js built-in `crypto.scrypt` with 16-byte random salt, 64-byte derived key, and constant-time `crypto.timingSafeEqual`. Requires zero external binary dependencies and provides production cryptographic security.
+    OD-21b [RESOLVED 2026-11-07]: Session Token Transport & Backward Compatibility — Option A adopted: Stateless signed HMAC-SHA256 Bearer session token (`Authorization: Bearer <token>`). `auth.middleware.ts` evaluates Bearer tokens first (for real registered users) and falls back cleanly to `x-user-id` header (for benchmark/eval test suites) and guest fallback for anonymous visits.
+    OD-21c [RESOLVED 2026-11-07]: Order & Shipment Initialization on Checkout — Option A adopted: `POST /api/orders` executes an atomic Drizzle transaction creating `orders` (status: 'paid'), `order_items` (with unit price snapshot), `payments` (status: 'captured'), and `shipments` (status: 'in_transit' with tracking number). Enables newly registered customers to immediately query the multi-agent system regarding their order in real time. Recorded in DECISIONS.md under Phase 21.
+
+
 

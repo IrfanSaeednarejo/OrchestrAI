@@ -1,16 +1,20 @@
 // src/components/sidebar/conversation-sidebar.tsx
 // Phase 17 Step 5b: Conversation sidebar with session switcher, "+ New Chat", and demo identity selector.
+// Phase 21: Added Store button, real user auth status, Sign In / Sign Out controls.
 
 import React from 'react';
-import { Plus, MessageSquare, User, Loader2, Sparkles } from 'lucide-react';
+import { Plus, MessageSquare, User, Loader2, Sparkles, ShoppingBag, LogIn, LogOut } from 'lucide-react';
 import type { Conversation } from '../../types/api';
 import { useUser } from '../../context/user-context';
+import { useAuth } from '../../context/auth-context';
 
 interface ConversationSidebarProps {
   conversations: Conversation[];
   selectedId: string | null;
   onSelect: (id: string) => void;
   onNewChat: () => void;
+  onOpenStore?: () => void;
+  onOpenAuth?: () => void;
   isLoading?: boolean;
   className?: string;
 }
@@ -42,17 +46,30 @@ export function ConversationSidebar({
   selectedId,
   onSelect,
   onNewChat,
+  onOpenStore,
+  onOpenAuth,
   isLoading = false,
   className = '',
 }: ConversationSidebarProps) {
   const { currentUser, users, switchUser } = useUser();
+  // useAuth may be accessed inside AuthProvider
+  let authContext: ReturnType<typeof useAuth> | null = null;
+  try {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    authContext = useAuth();
+  } catch {
+    // Fallback if rendered outside AuthProvider in legacy tests
+  }
+
+  const isAuthenticated = authContext?.isAuthenticated ?? false;
+  const authUser = authContext?.user;
 
   return (
     <aside
       data-testid="conversation-sidebar"
       className={`flex flex-col h-full bg-slate-900 text-slate-100 border-r border-slate-800 ${className}`}
     >
-      {/* Header: Title & New Chat */}
+      {/* Header: Title & Action Buttons */}
       <div className="p-4 border-b border-slate-800 space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 font-bold text-white tracking-tight text-base">
@@ -64,15 +81,29 @@ export function ConversationSidebar({
           </span>
         </div>
 
-        <button
-          type="button"
-          onClick={onNewChat}
-          data-testid="new-chat-button"
-          className="w-full flex items-center justify-center gap-2 py-2 px-3 text-sm font-medium rounded-lg bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-slate-900"
-        >
-          <Plus className="h-4 w-4" />
-          <span>New Chat</span>
-        </button>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={onNewChat}
+            data-testid="new-chat-button"
+            className="flex-1 flex items-center justify-center gap-2 py-2 px-3 text-sm font-medium rounded-lg bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-slate-900"
+          >
+            <Plus className="h-4 w-4" />
+            <span>New Chat</span>
+          </button>
+
+          {onOpenStore && (
+            <button
+              type="button"
+              onClick={onOpenStore}
+              data-testid="sidebar-store-button"
+              title="Open Storefront"
+              className="flex items-center justify-center p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-slate-700 transition-colors"
+            >
+              <ShoppingBag className="h-4 w-4" />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Conversations List */}
@@ -121,9 +152,41 @@ export function ConversationSidebar({
         )}
       </div>
 
-      {/* Footer: Demo Identity Switcher */}
+      {/* Footer: User Identity & Demo Switcher */}
       <div className="p-3 border-t border-slate-800 bg-slate-950/60 space-y-2">
-        <div className="flex items-center justify-between">
+        {/* Real User Auth Pill */}
+        {isAuthenticated && authUser ? (
+          <div className="p-2 rounded-lg bg-indigo-950/40 border border-indigo-800/60 flex items-center justify-between">
+            <div className="min-w-0 pr-2">
+              <div className="text-xs font-semibold text-white truncate">{authUser.name}</div>
+              <div className="text-[10px] text-indigo-300 truncate">{authUser.email}</div>
+            </div>
+            <button
+              type="button"
+              onClick={() => authContext?.logout()}
+              data-testid="sidebar-signout-btn"
+              title="Sign Out"
+              className="p-1 rounded text-slate-400 hover:text-rose-400 transition-colors"
+            >
+              <LogOut className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        ) : (
+          onOpenAuth && (
+            <button
+              type="button"
+              onClick={onOpenAuth}
+              data-testid="sidebar-signin-btn"
+              className="w-full flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 transition-colors"
+            >
+              <LogIn className="h-3.5 w-3.5 text-indigo-400" />
+              <span>Sign In / Register</span>
+            </button>
+          )
+        )}
+
+        {/* Demo Identity Disclaimer & Selector */}
+        <div className="flex items-center justify-between pt-1">
           <span className="text-[10px] font-semibold uppercase tracking-wider text-amber-400">
             Demo identity, not authentication
           </span>
@@ -158,4 +221,3 @@ export function ConversationSidebar({
     </aside>
   );
 }
-

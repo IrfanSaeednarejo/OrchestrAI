@@ -1,5 +1,6 @@
 // src/lib/api-client.ts
 // Phase 17 Step 3: Type-safe API client and strict SSE consumer.
+// Phase 21: Added Bearer token support, auth API methods, and storefront endpoints.
 
 import type {
   Conversation,
@@ -11,6 +12,14 @@ import type {
   DemoUsersResponse,
   DevVerificationCodeResponse,
   ApiErrorPayload,
+  AuthUser,
+  AuthResponse,
+  AuthMeResponse,
+  Product,
+  ProductsResponse,
+  Order,
+  OrdersResponse,
+  PlaceOrderResponse,
 } from '../types/api';
 import type {
   SSECallbacks,
@@ -61,15 +70,100 @@ async function handleResponse<T>(res: Response): Promise<T> {
   return (await res.json()) as T;
 }
 
-function getAuthHeaders(userId: string): Record<string, string> {
+export function getAuthHeaders(userId?: string, token?: string | null): Record<string, string> {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
   };
-  // Only include x-user-id if caller is not guest
+  // Priority 1: Bearer token for authenticated real users
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+    return headers;
+  }
+  // Priority 2: x-user-id if caller is not guest
   if (userId && userId !== '00000000-0000-4000-a000-000000000001') {
     headers['x-user-id'] = userId;
   }
   return headers;
+}
+
+// ---------------------------------------------------------------------------
+// Auth Endpoints (Phase 21)
+// ---------------------------------------------------------------------------
+
+export async function apiRegister(data: {
+  email: string;
+  name: string;
+  defaultAddress: string;
+  password: string;
+}): Promise<AuthResponse> {
+  const res = await fetch(`${API_BASE_URL}/api/auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  return handleResponse<AuthResponse>(res);
+}
+
+export async function apiLogin(data: {
+  email: string;
+  password: string;
+}): Promise<AuthResponse> {
+  const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  return handleResponse<AuthResponse>(res);
+}
+
+export async function apiLogout(): Promise<{ success: boolean }> {
+  const res = await fetch(`${API_BASE_URL}/api/auth/logout`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+  });
+  return handleResponse<{ success: boolean }>(res);
+}
+
+export async function apiMe(token: string): Promise<AuthUser> {
+  const res = await fetch(`${API_BASE_URL}/api/auth/me`, {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await handleResponse<AuthMeResponse>(res);
+  return data.user;
+}
+
+// ---------------------------------------------------------------------------
+// Storefront Endpoints (Phase 21)
+// ---------------------------------------------------------------------------
+
+export async function fetchProducts(): Promise<Product[]> {
+  const res = await fetch(`${API_BASE_URL}/api/products`);
+  const data = await handleResponse<ProductsResponse>(res);
+  return data.products;
+}
+
+export async function fetchUserOrders(token?: string | null, userId?: string): Promise<Order[]> {
+  const res = await fetch(`${API_BASE_URL}/api/orders`, {
+    headers: getAuthHeaders(userId, token),
+  });
+  const data = await handleResponse<OrdersResponse>(res);
+  return data.orders;
+}
+
+export async function apiPlaceOrder(
+  items: { productId: string; quantity: number }[],
+  token?: string | null,
+  userId?: string
+): Promise<PlaceOrderResponse> {
+  const res = await fetch(`${API_BASE_URL}/api/orders`, {
+    method: 'POST',
+    headers: getAuthHeaders(userId, token),
+    body: JSON.stringify({ items }),
+  });
+  return handleResponse<PlaceOrderResponse>(res);
 }
 
 // ---------------------------------------------------------------------------
@@ -85,12 +179,13 @@ export async function fetchDemoUsers(): Promise<DemoUser[]> {
 export async function fetchConversations(
   userId: string,
   limit = 20,
-  offset = 0
+  offset = 0,
+  token?: string | null
 ): Promise<ConversationListResponse> {
   const res = await fetch(
     `${API_BASE_URL}/api/conversations?limit=${limit}&offset=${offset}`,
     {
-      headers: getAuthHeaders(userId),
+      headers: getAuthHeaders(userId, token),
     }
   );
   return handleResponse<ConversationListResponse>(res);
@@ -98,19 +193,23 @@ export async function fetchConversations(
 
 export async function fetchConversation(
   conversationId: string,
-  userId: string
+  userId: string,
+  token?: string | null
 ): Promise<Conversation> {
   const res = await fetch(`${API_BASE_URL}/api/conversations/${conversationId}`, {
-    headers: getAuthHeaders(userId),
+    headers: getAuthHeaders(userId, token),
   });
   const data = await handleResponse<ConversationResponse>(res);
   return data.conversation;
 }
 
-export async function createConversation(userId: string): Promise<Conversation> {
+export async function createConversation(
+  userId: string,
+  token?: string | null
+): Promise<Conversation> {
   const res = await fetch(`${API_BASE_URL}/api/conversations`, {
     method: 'POST',
-    headers: getAuthHeaders(userId),
+    headers: getAuthHeaders(userId, token),
     body: JSON.stringify({}),
   });
   const data = await handleResponse<ConversationResponse>(res);
@@ -119,12 +218,13 @@ export async function createConversation(userId: string): Promise<Conversation> 
 
 export async function fetchMessages(
   conversationId: string,
-  userId: string
+  userId: string,
+  token?: string | null
 ): Promise<Message[]> {
   const res = await fetch(
     `${API_BASE_URL}/api/conversations/${conversationId}/messages`,
     {
-      headers: getAuthHeaders(userId),
+      headers: getAuthHeaders(userId, token),
     }
   );
   const data = await handleResponse<MessageListResponse>(res);
@@ -153,9 +253,10 @@ export async function streamMessage(
   content: string,
   userId: string,
   callbacks: SSECallbacks,
-  signal?: AbortSignal
+  signal?: AbortSignal,
+  token?: string | null
 ): Promise<void> {
-  const headers = getAuthHeaders(userId);
+  const headers = getAuthHeaders(userId, token);
   headers['Accept'] = 'text/event-stream';
 
   const res = await fetch(
@@ -280,4 +381,3 @@ export async function streamMessage(
     reader.releaseLock();
   }
 }
-
