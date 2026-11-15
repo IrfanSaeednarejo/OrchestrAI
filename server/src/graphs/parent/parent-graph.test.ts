@@ -20,7 +20,7 @@ vi.mock('@google/genai', () => {
 });
 
 import { buildParentGraph } from './parent-graph.js';
-import type { StubBehavior } from '../../agents/specialists/stubs.js';
+import { SPECIALIST_STUBS, type StubBehavior } from '../../agents/specialists/stubs.js';
 
 describe('Parent Graph & Stateful Router', () => {
   beforeEach(() => {
@@ -38,7 +38,7 @@ describe('Parent Graph & Stateful Router', () => {
     });
 
     const checkpointer = new MemorySaver();
-    const graph = buildParentGraph(checkpointer);
+    const graph = buildParentGraph(checkpointer, { specialists: SPECIALIST_STUBS });
     const threadId = crypto.randomUUID();
 
     const result = await graph.invoke(
@@ -57,7 +57,7 @@ describe('Parent Graph & Stateful Router', () => {
 
   it('routes directly to resume target when activeWorkflow preconditions are met without calling LLM', async () => {
     const checkpointer = new MemorySaver();
-    const graph = buildParentGraph(checkpointer);
+    const graph = buildParentGraph(checkpointer, { specialists: SPECIALIST_STUBS });
     const threadId = crypto.randomUUID();
 
     const result = await graph.invoke(
@@ -88,7 +88,7 @@ describe('Parent Graph & Stateful Router', () => {
 
   it('escalates to human agent when handoff cap (>= 3) is reached without calling LLM', async () => {
     const checkpointer = new MemorySaver();
-    const graph = buildParentGraph(checkpointer);
+    const graph = buildParentGraph(checkpointer, { specialists: SPECIALIST_STUBS });
     const threadId = crypto.randomUUID();
 
     const result = await graph.invoke(
@@ -122,7 +122,7 @@ describe('Parent Graph & Stateful Router', () => {
     });
 
     const checkpointer = new MemorySaver();
-    const graph = buildParentGraph(checkpointer);
+    const graph = buildParentGraph(checkpointer, { specialists: SPECIALIST_STUBS });
     const threadId = crypto.randomUUID();
 
     const result = await graph.invoke(
@@ -178,7 +178,7 @@ describe('Parent Graph & Stateful Router', () => {
     };
 
     const checkpointer = new MemorySaver();
-    const graph = buildParentGraph(checkpointer);
+    const graph = buildParentGraph(checkpointer, { specialists: SPECIALIST_STUBS });
     const threadId = crypto.randomUUID();
 
     const result = await graph.invoke(

@@ -11,7 +11,7 @@
       relevantContext, attemptedActions, confidence), subgraph test harness. Needs: 4, 5, 6. Must first resolve OPEN-DECISIONS #3 (LLM).
 - [x] 8 Meta Orchestrator & Stateful Router (skeleton) — Command(goto) routing, router reads full state, handoffCount/visitedAgents with configurable maxima,
       Command.PARENT handling, stub specialists. Needs: 3, 7. Resolves OPEN-DECISIONS #2/#4/#5/#6 as needed.
-- [ ] 9 Orders Specialists — Order Tracking, Returns (replace stubs, register in agent registry). Needs: 8, 5, 6.
+- [x] 9 Orders Specialists — Order Tracking, Returns (replace stubs, register in agent registry). Needs: 8, 5, 6.
 - [ ] 10 Payments Specialists — Payment, Refund; first real Pattern B re-route (duplicate charge -> REFUND_ACTION_REQUIRED handoff). Needs: 9.
 - [ ] 11 Account Specialists — Profile; two-mode Account Access (login recovery; subworkflow-resume with returnTo). Password reset never mutates identity.status. Needs: 10.
 - [ ] 12 Cross-Domain Integration Validation — all 14 scenarios live on real specialists; confirm Patterns A/B/C. Needs: 9, 10, 11.
