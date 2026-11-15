@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, beforeEach, afterEach } from 'vitest';
-import { verificationService } from './verification.service.js';
+import { verificationService, VERIFICATION_CODE_TTL_SECONDS } from './verification.service.js';
 import { redisClient, connectRedis } from '../persistence/redis/client.js';
 
 describe('verification.service', () => {
@@ -11,12 +11,24 @@ describe('verification.service', () => {
 
   beforeEach(async () => {
     await redisClient.del(`verify:${testUserId}`);
+    await redisClient.del(`verify:cooldown:${testUserId}`);
     await redisClient.del(`verify:lockout:${testUserId}`);
   });
 
   afterEach(async () => {
     await redisClient.del(`verify:${testUserId}`);
+    await redisClient.del(`verify:cooldown:${testUserId}`);
     await redisClient.del(`verify:lockout:${testUserId}`);
+  });
+
+  it('VERIFICATION_CODE_TTL_SECONDS is 600 and Redis key TTL is between 590 and 600', async () => {
+    expect(VERIFICATION_CODE_TTL_SECONDS).toBe(600);
+    const result = await verificationService.issueVerificationCode(testUserId);
+    expect('code' in result).toBe(true);
+
+    const ttl = await redisClient.ttl(`verify:${testUserId}`);
+    expect(ttl).toBeGreaterThanOrEqual(590);
+    expect(ttl).toBeLessThanOrEqual(600);
   });
 
   it('issueVerificationCode returns a 6-digit numeric string', async () => {
@@ -25,6 +37,37 @@ describe('verification.service', () => {
     if ('code' in result) {
       expect(result.code).toMatch(/^\d{6}$/);
     }
+  });
+
+  it('enforces 60-second cooldown on consecutive issue calls', async () => {
+    const issue1 = await verificationService.issueVerificationCode(testUserId);
+    expect('code' in issue1).toBe(true);
+
+    const issue2 = await verificationService.issueVerificationCode(testUserId);
+    expect(issue2).toEqual({
+      error: 'RESEND_COOLDOWN',
+      retryAfterSeconds: expect.any(Number),
+    });
+    if ('error' in issue2 && issue2.error === 'RESEND_COOLDOWN') {
+      expect(issue2.retryAfterSeconds).toBeGreaterThan(0);
+      expect(issue2.retryAfterSeconds).toBeLessThanOrEqual(60);
+    }
+  });
+
+  it('revokeVerificationCode deletes the active verification code but preserves cooldown', async () => {
+    const issue = await verificationService.issueVerificationCode(testUserId);
+    expect('code' in issue).toBe(true);
+
+    const revoked = await verificationService.revokeVerificationCode(testUserId);
+    expect(revoked).toBe(true);
+
+    // Code is deleted in Redis -> checking returns CODE_EXPIRED
+    const check = await verificationService.checkVerificationCode(testUserId, '123456');
+    expect(check).toEqual({ success: false, reason: 'CODE_EXPIRED' });
+
+    // Cooldown key remains active in Redis
+    const cooldownTtl = await redisClient.ttl(`verify:cooldown:${testUserId}`);
+    expect(cooldownTtl).toBeGreaterThan(0);
   });
 
   it('checkVerificationCode succeeds with correct code, and code is gone afterward', async () => {
@@ -92,6 +135,9 @@ describe('verification.service', () => {
       await verificationService.checkVerificationCode(testUserId, wrongCode);
     }
 
+    // Clear cooldown to allow re-issuing within the test
+    await redisClient.del(`verify:cooldown:${testUserId}`);
+
     // Re-issue code
     const issue2 = await verificationService.issueVerificationCode(testUserId);
     expect('code' in issue2).toBe(true);
@@ -105,6 +151,9 @@ describe('verification.service', () => {
     // 5th total attempt (2nd attempt on new code) -> MAX_ATTEMPTS_EXCEEDED (attempt 5/5)
     const check5 = await verificationService.checkVerificationCode(testUserId, newWrongCode);
     expect(check5).toEqual({ success: false, reason: 'MAX_ATTEMPTS_EXCEEDED' });
+
+    // Clear cooldown before testing lockout path on issue
+    await redisClient.del(`verify:cooldown:${testUserId}`);
 
     // Re-issuing after lockout returns MAX_ATTEMPTS_EXCEEDED
     const lockedIssue = await verificationService.issueVerificationCode(testUserId);

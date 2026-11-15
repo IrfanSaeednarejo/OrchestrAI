@@ -1,31 +1,42 @@
 import { z } from 'zod';
 
-export const envSchema = z.object({
-  NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
-  APP_PORT: z.coerce.number().default(4000),
-  DATABASE_URL: z.string().optional(),
-  DATABASE_URL_UNPOOLED: z.string().optional(),
-  POSTGRES_USER: z.string().optional(),
-  POSTGRES_PASSWORD: z.string().optional(),
-  POSTGRES_DB: z.string().optional(),
-  POSTGRES_PORT: z.coerce.number().optional(),
-  POSTGRES_HOST: z.string().default('localhost'),
-  REDIS_PORT: z.coerce.number(),
-  REDIS_HOST: z.string().default('localhost'),
-  GEMINI_API_KEY: z.string(),
-  LANGCHAIN_TRACING_V2: z.enum(['true', 'false']).default('false'),
-  LANGCHAIN_API_KEY: z.string().optional(),
-  LANGCHAIN_PROJECT: z.string().default('orchestrai'),
-  LANGCHAIN_ENDPOINT: z.string().default('https://api.smith.langchain.com'),
-  CLIENT_ORIGIN: z.string().url().default('http://localhost:3000'),
-  ENABLE_DEMO_ENDPOINTS: z
-    .enum(['true', 'false'])
-    .default('false')
-    .transform((v) => v === 'true'),
-  // Phase 21: HMAC-SHA256 secret for signing Bearer session tokens.
-  // Must be at least 32 characters. Falls back to a dev-only default; production MUST set this.
-  TOKEN_SECRET: z.string().min(32).default('orchestrai-dev-token-secret-change-in-prod!!'),
-});
+export const envSchema = z
+  .object({
+    NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+    APP_PORT: z.coerce.number().default(4000),
+    DATABASE_URL: z.string().optional(),
+    DATABASE_URL_UNPOOLED: z.string().optional(),
+    POSTGRES_USER: z.string().optional(),
+    POSTGRES_PASSWORD: z.string().optional(),
+    POSTGRES_DB: z.string().optional(),
+    POSTGRES_PORT: z.coerce.number().optional(),
+    POSTGRES_HOST: z.string().default('localhost'),
+    REDIS_PORT: z.coerce.number(),
+    REDIS_HOST: z.string().default('localhost'),
+    GEMINI_API_KEY: z.string(),
+    LANGCHAIN_TRACING_V2: z.enum(['true', 'false']).default('false'),
+    LANGCHAIN_API_KEY: z.string().optional(),
+    LANGCHAIN_PROJECT: z.string().default('orchestrai'),
+    LANGCHAIN_ENDPOINT: z.string().default('https://api.smith.langchain.com'),
+    CLIENT_ORIGIN: z.string().url().default('http://localhost:3000'),
+    ENABLE_DEMO_ENDPOINTS: z
+      .enum(['true', 'false'])
+      .default('false')
+      .transform((v) => v === 'true'),
+    // Phase 21: HMAC-SHA256 secret for signing Bearer session tokens.
+    // Must be at least 32 characters. Falls back to a dev-only default; production MUST set this.
+    TOKEN_SECRET: z.string().min(32).default('orchestrai-dev-token-secret-change-in-prod!!'),
+    RESEND_API_KEY: z.string().min(1).default('re_placeholder_for_tests'),
+    EMAIL_FROM: z.string().default('OrchestrAI Support <onboarding@resend.dev>'),
+    EMAIL_DRY_RUN: z.enum(['true', 'false']).optional(),
+  })
+  .transform((data) => ({
+    ...data,
+    EMAIL_DRY_RUN:
+      data.EMAIL_DRY_RUN !== undefined
+        ? data.EMAIL_DRY_RUN === 'true'
+        : data.NODE_ENV === 'test',
+  }));
 
 const parsed = envSchema.safeParse(process.env);
 
@@ -106,6 +117,11 @@ export const config = Object.freeze({
     tokenSecret: envVars.TOKEN_SECRET,
     // Token expiry: 7 days in milliseconds.
     tokenExpiryMs: 7 * 24 * 60 * 60 * 1000,
+  },
+  email: {
+    apiKey: envVars.RESEND_API_KEY,
+    from: envVars.EMAIL_FROM,
+    dryRun: envVars.EMAIL_DRY_RUN,
   },
 });
 

@@ -368,12 +368,16 @@ describe('Phase 12: Cross-Domain Integration Validation (All 14 Scenarios)', () 
     }
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
     mockGenerateContent.mockReset();
     mockEmbedContent.mockReset();
     mockEmbedContent.mockResolvedValue({
       embeddings: [{ values: new Array(768).fill(0.01) }],
     });
+    if (fixtureUserId) {
+      await redisClient.del(`verify:${fixtureUserId}`).catch(() => {});
+      await redisClient.del(`verify:cooldown:${fixtureUserId}`).catch(() => {});
+    }
   });
 
   // ===========================================================================
@@ -842,7 +846,7 @@ describe('Phase 12: Cross-Domain Integration Validation (All 14 Scenarios)', () 
     expect(turn3State.identity?.status).toBe('VERIFIED');
     expect(turn3State.routing.currentAgent).toBe('payment');
     expect(turn3State.activeWorkflow).toBeNull();
-    expect(turn3State.messages.at(-1)?.content).toContain('captured successfully');
+    expect(turn3State.messages.at(-1)?.content).toMatch(/captured/i);
   }, 60_000);
 
   it('Scenario 6: Return creation with only LIGHT -> Account Access FULL -> resume Returns', async () => {

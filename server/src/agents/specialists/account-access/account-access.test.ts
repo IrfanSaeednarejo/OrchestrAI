@@ -220,7 +220,7 @@ describe('Account Access specialist — accountAccessNode', () => {
     mockGated.mockResolvedValueOnce({
       gate: { outcome: 'ALLOWED' as const },
       success: true as const,
-      data: { code: '123456' },
+      data: { sent: true, maskedEmail: 'u***@example.com', expiresInSeconds: 600 },
     });
 
     const result = await accountAccessNode(state);
@@ -239,7 +239,45 @@ describe('Account Access specialist — accountAccessNode', () => {
       agent: 'payment',
       workflowStep: 'get_payment',
     });
-    expect(update.messages?.[0]?.content).toMatch(/verification code has been sent/i);
+    expect(update.messages?.[0]?.content).toMatch(/verification code has been sent to u\*\*\*@example\.com/i);
+  });
+
+  it('start verification failure due to cooldown: surfaces retry seconds and maintains WAITING_FOR_USER_INPUT', async () => {
+    const state = makeState({
+      messages: [new HumanMessage('send me a code')],
+      activeWorkflow: {
+        workflowId: 'wf-123',
+        originatingIntent: 'GET_PAYMENT',
+        currentStep: 'get_payment',
+        blockedBy: 'VERIFICATION_FULL',
+        returnTo: { domain: 'payment', agent: 'payment', workflowStep: 'get_payment' },
+        resumeContext: { orderId: 'ord-123' },
+      },
+    });
+
+    mockGenerateContent.mockResolvedValueOnce({
+      text: JSON.stringify({ intent: 'start_verification', code: null, confidence: 0.9 }),
+    });
+
+    mockGated.mockResolvedValueOnce({
+      gate: { outcome: 'ALLOWED' as const },
+      success: false as const,
+      error: {
+        code: 'RESEND_COOLDOWN',
+        message: 'Please wait 45 seconds before requesting a new verification code.',
+      },
+    });
+
+    const result = await accountAccessNode(state);
+    const update = result as {
+      workflowStatus?: string;
+      activeWorkflow?: unknown;
+      messages?: Array<{ content: string }>;
+    };
+
+    expect(update.workflowStatus).toBe('WAITING_FOR_USER_INPUT');
+    expect(update.activeWorkflow).toEqual(state.activeWorkflow);
+    expect(update.messages?.[0]?.content).toContain('wait 45 seconds');
   });
 
   // ---- Path 3: Verify Code Success with returnTo (Mode 2 Step B -> Pattern C resume) ----

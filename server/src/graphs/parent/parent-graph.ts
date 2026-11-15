@@ -242,11 +242,11 @@ export async function routerNode(
     routingReason = 'Customer inquiry about platform capabilities';
   } else if (
     // 3a. Narrowed verification guard: when active workflow is awaiting identity verification,
-    // and the message is a pure 6-digit OTP code, route directly to account_access.
+    // and the message contains a 6-digit OTP code, route directly to account_access.
     state.activeWorkflow?.currentStep === 'verify_identity' &&
     state.activeWorkflow?.blockedBy !== null &&
     state.activeWorkflow?.blockedBy !== undefined &&
-    /^\d{6}$/.test(userText.trim())
+    /\b\d{6}\b/.test(userText.trim())
   ) {
     targetSpecialist = 'account_access';
     detectedIntent = 'ACCOUNT_SECURITY';
@@ -281,6 +281,22 @@ export async function routerNode(
         targetSpecialist = classification.data.specialist;
         detectedIntent = classification.data.intent;
         routingReason = classification.data.reasoning;
+
+        // Domain override for verification requests during blocked workflow:
+        // When activeWorkflow is blocked by verification and the customer requests a code,
+        // route to account_access even if classifier was biased by currentDomain.
+        if (
+          state.activeWorkflow?.blockedBy &&
+          state.identity?.status !== 'VERIFIED' &&
+          (/\b(send|get|request|need|email|issue|resend).*(verification|code|otp)\b/i.test(userText) ||
+            /\bverification\s+code\b/i.test(userText) ||
+            /\b(VERIFY|SECURITY|CODE|OTP)\b/i.test(classification.data.intent))
+        ) {
+          targetSpecialist = 'account_access';
+          detectedIntent = 'VERIFY_ACCOUNT';
+          routingReason = 'Routing to account_access for verification code during blocked workflow (overriding domain bias)';
+        }
+
         if (
           classification.data.secondaryIntents &&
           classification.data.secondaryIntents.length > 0

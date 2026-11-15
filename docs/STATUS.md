@@ -1,20 +1,21 @@
 # STATUS (update at the end of every step/phase)
 
-Last verified suite figure reported: Server 615/615 passing (72 files, 1 skipped), Client 144/144 passing (28 files). Total: 759 passing tests. Server baseline test count: 615. Client baseline test count: 144.
+Last verified suite figure reported: Server 647+ passing, Client 144/144 passing. Server baseline test count: 615. Client baseline test count: 144.
 
 ## Phase state
 - Phases 1-23: COMPLETE and signed off.
 - Phase 24 (Stabilization): COMPLETE on branch `phase/23-stabilization`.
-- Phase 25 (Conversational Routing & Memory Overhaul): COMPLETE on branch `phase/24-conversational-routing`. All 9 steps verified and passing:
-  - Step 0: Regression Tests for Conversational Routing (`conversation-flow.test.ts`, Scenarios A–F)
-  - Step 1: Router Decision Model & General Assistant Node (`general_assistant` specialist node, capabilities registry, removal of sticky continuation guards 3b/3c)
-  - Step 2: Pending-Task State & Entity Memory (`lastKnownEntities` and `pendingTask` in `ConversationState`, specialist persistence)
-  - Step 3: History & Entity Context Injection (`formatConversationTranscript`, specialist and classifier prompt injection)
-  - Step 4: Dynamic Suggestions & Capabilities Injection (`GeneralResponseSchema`, suggestion chips)
-  - Step 5: Friendly Activity Events & UI Progress Decoupling (typed SSE `event: activity`, ChatFeed progress mapping)
-  - Step 6: Multi-Intent Classification & Queued Intent Routing (secondary intent detection, conditional return edges)
-  - Step 7: Specialist Permissions & Scope Alignment (`general_assistant` RAG and gate integration)
-  - Step 8: Multi-Turn End-to-End Integration Verification (`conversational-routing.integration.test.ts`, docs reconciliation)
+- Phase 25 (Conversational Routing & Memory Overhaul): COMPLETE on branch `phase/24-conversational-routing`.
+- Phase 26 (Email Verification & Multi-Turn Profile Verification Flow): COMPLETE on branch `phase/25-email-verification`. All 9 steps verified and passing:
+  - Step 1: Resend dependency and typed email configuration with env validation (`sendEmail`, `RESEND_API_KEY`, `EMAIL_FROM`, `EMAIL_DRY_RUN`).
+  - Step 2: Resend email service, verification code template (`renderVerificationCodeEmail`), and smoke script (`email-smoke.ts`).
+  - Step 3: Verification service hardening: 60s per-user resend cooldown (`verify:cooldown:{userId}`), `VERIFICATION_CODE_TTL_SECONDS = 600`, and `revokeVerificationCode(userId)`.
+  - Step 4: Email delivery for `start_identity_verification` with masked email delivery and raw code redaction from tool outputs.
+  - Step 5: Compound profile requests greeting regex hardening in `isGreetingMessage` (`taxonomy.ts`).
+  - Step 6: Context-aware field prompt and transcript memory in `profileNode` (`ProfileIntentSchema.targetField`, targeted clarification).
+  - Step 7: Verification handoff & supervisor domain override for verification code requests during blocked workflows.
+  - Step 8: Surface masked recipient email (`maskedEmail`) and cooldown retry seconds in `account_accessNode` prompt.
+  - Step 9: Multi-turn end-to-end integration test (`Journey 3` in `conversational-routing.integration.test.ts`), multi-turn verification, and suite validation.
 
   - Phase 6 (Access Control / Verification Gate): Steps 0-5 closed; Step 6a proof graph verified; Step 6b close-out and type unification completed.
   - Phase 7 (Agent Foundation): Steps 0-5 closed; LLM client, prompt loader, handoff contract, common node patterns, and subgraph harness verified (294 tests).

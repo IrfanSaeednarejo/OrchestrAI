@@ -394,6 +394,43 @@ describe('Parent Graph & Stateful Router', () => {
     expect(result.routing.currentAgent).toBe('account_access');
   });
 
+  it('routes verification code request to account_access during blocked workflow overriding domain bias', async () => {
+    const checkpointer = new MemorySaver();
+    const graph = buildParentGraph(checkpointer, { specialists: SPECIALIST_STUBS });
+    const threadId = crypto.randomUUID();
+
+    // Classifier is biased toward profile because currentDomain is profile
+    mockGenerateContent.mockResolvedValueOnce({
+      text: JSON.stringify({
+        specialist: 'profile',
+        intent: 'UPDATE_PROFILE',
+        confidence: 0.9,
+        reasoning: 'Customer asked for a verification code while updating profile.',
+      }),
+    });
+
+    const result = await graph.invoke(
+      {
+        messages: [new HumanMessage('Send me a verification code')],
+        currentDomain: 'profile',
+        activeWorkflow: {
+          workflowId: 'wf-prof-1',
+          originatingIntent: 'UPDATE_PROFILE',
+          currentStep: 'verify_identity',
+          blockedBy: 'VERIFICATION_FULL',
+          returnTo: { domain: 'profile', agent: 'profile', workflowStep: 'update_profile' },
+          resumeContext: { userId: 'user-123' },
+        },
+        workflowStatus: 'WAITING_FOR_USER_INPUT',
+      },
+      { configurable: { thread_id: threadId } }
+    );
+
+    // Overrides domain bias and routes to account_access
+    expect(result.routing.currentAgent).toBe('account_access');
+    expect(result.currentIntent).toBe('VERIFY_ACCOUNT');
+  });
+
   it('resumes activeWorkflow without triggering loop detection even if previously visited', async () => {
     const checkpointer = new MemorySaver();
     const graph = buildParentGraph(checkpointer, { specialists: SPECIALIST_STUBS });

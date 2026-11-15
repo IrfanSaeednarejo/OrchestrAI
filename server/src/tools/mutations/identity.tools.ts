@@ -1,6 +1,11 @@
 import { z } from 'zod';
 import { getUserById } from '../../persistence/repositories/marketplace.repository.js';
-import { verificationService } from '../../services/verification.service.js';
+import {
+  verificationService,
+  VERIFICATION_CODE_TTL_SECONDS,
+} from '../../services/verification.service.js';
+import { renderVerificationCodeEmail } from '../../services/email-templates/verification-code.js';
+import { sendEmail } from '../../services/email.service.js';
 import { ToolResult, ToolMetadata } from '../types.js';
 
 const uuidSchema = z.string().uuid();
@@ -15,9 +20,25 @@ export type StartIdentityVerificationInput = z.infer<
   typeof StartIdentityVerificationInputSchema
 >;
 
+export interface StartIdentityVerificationOutput {
+  sent: true;
+  maskedEmail: string;
+  expiresInSeconds: number;
+}
+
+function maskEmail(email: string): string {
+  const atIndex = email.indexOf('@');
+  if (atIndex <= 0) {
+    return '***';
+  }
+  const firstChar = email.charAt(0);
+  const domain = email.slice(atIndex);
+  return `${firstChar}***${domain}`;
+}
+
 export async function startIdentityVerification(
   rawInput: unknown
-): Promise<ToolResult<{ code: string }>> {
+): Promise<ToolResult<StartIdentityVerificationOutput>> {
   const parsed = StartIdentityVerificationInputSchema.safeParse(rawInput);
   if (!parsed.success) {
     return {
@@ -28,8 +49,9 @@ export async function startIdentityVerification(
 
   const { userId } = parsed.data;
 
+  let user;
   try {
-    const user = await getUserById(userId);
+    user = await getUserById(userId);
     if (!user) {
       return {
         success: false,
@@ -45,6 +67,16 @@ export async function startIdentityVerification(
 
   const result = await verificationService.issueVerificationCode(userId);
   if ('error' in result) {
+    if (result.error === 'RESEND_COOLDOWN') {
+      return {
+        success: false,
+        error: {
+          code: 'RESEND_COOLDOWN',
+          message: `Please wait ${result.retryAfterSeconds} seconds before requesting a new code.`,
+        },
+      };
+    }
+
     const message =
       result.error === 'MAX_ATTEMPTS_EXCEEDED'
         ? 'Maximum verification attempts exceeded. Please wait 10 minutes before requesting a new code.'
@@ -55,13 +87,67 @@ export async function startIdentityVerification(
     };
   }
 
-  return { success: true, data: { code: result.code } };
+  const ttlMinutes = Math.floor(VERIFICATION_CODE_TTL_SECONDS / 60);
+  let emailContent;
+  try {
+    emailContent = renderVerificationCodeEmail({
+      name: user.name,
+      code: result.code,
+      ttlMinutes,
+    });
+  } catch {
+    await verificationService.revokeVerificationCode(userId);
+    return {
+      success: false,
+      error: {
+        code: 'EMAIL_SEND_FAILED',
+        message: 'Failed to prepare verification email.',
+      },
+    };
+  }
+
+  try {
+    const sendResult = await sendEmail({
+      to: user.email,
+      subject: emailContent.subject,
+      html: emailContent.html,
+      text: emailContent.text,
+    });
+
+    if (!sendResult.success) {
+      await verificationService.revokeVerificationCode(userId);
+      return {
+        success: false,
+        error: {
+          code: sendResult.error.code,
+          message: 'Failed to deliver verification email. Please try again later.',
+        },
+      };
+    }
+  } catch {
+    await verificationService.revokeVerificationCode(userId);
+    return {
+      success: false,
+      error: {
+        code: 'EMAIL_SEND_FAILED',
+        message: 'Failed to deliver verification email. Please try again later.',
+      },
+    };
+  }
+
+  return {
+    success: true,
+    data: {
+      sent: true,
+      maskedEmail: maskEmail(user.email),
+      expiresInSeconds: VERIFICATION_CODE_TTL_SECONDS,
+    },
+  };
 }
 
 export const startIdentityVerificationMetadata: ToolMetadata = {
   name: 'start_identity_verification',
   requiredVerification: 'NONE',
-  sensitiveOutputFields: ['code'],
 };
 
 // --- verify_identity ---

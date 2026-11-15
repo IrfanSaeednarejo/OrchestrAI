@@ -12,7 +12,13 @@ export type VerificationCheckResult =
         | 'VERIFICATION_SERVICE_UNAVAILABLE';
     };
 
-const TTL_SECONDS = 600; // 10 minutes
+export type IssueVerificationResult =
+  | { code: string }
+  | { error: 'RESEND_COOLDOWN'; retryAfterSeconds: number }
+  | { error: 'VERIFICATION_SERVICE_UNAVAILABLE' | 'MAX_ATTEMPTS_EXCEEDED' };
+
+export const VERIFICATION_CODE_TTL_SECONDS = 600; // 10 minutes
+const COOLDOWN_SECONDS = 60; // 60 seconds resend cooldown
 const MAX_ATTEMPTS = 5;
 
 interface VerificationData {
@@ -28,10 +34,14 @@ function getLockoutKey(userId: string): string {
   return `verify:lockout:${userId}`;
 }
 
+function getCooldownKey(userId: string): string {
+  return `verify:cooldown:${userId}`;
+}
+
 export const verificationService = {
   async issueVerificationCode(
     userId: string
-  ): Promise<{ code: string } | { error: 'VERIFICATION_SERVICE_UNAVAILABLE' | 'MAX_ATTEMPTS_EXCEEDED' }> {
+  ): Promise<IssueVerificationResult> {
     try {
       await connectRedis();
 
@@ -42,6 +52,21 @@ export const verificationService = {
         return { error: 'MAX_ATTEMPTS_EXCEEDED' };
       }
 
+      // Check and acquire resend cooldown key via SET NX EX 60
+      const cooldownKey = getCooldownKey(userId);
+      const cooldownAcquired = await redisClient.set(cooldownKey, '1', {
+        EX: COOLDOWN_SECONDS,
+        NX: true,
+      });
+
+      if (!cooldownAcquired) {
+        const ttl = await redisClient.ttl(cooldownKey);
+        return {
+          error: 'RESEND_COOLDOWN',
+          retryAfterSeconds: Math.max(1, ttl),
+        };
+      }
+
       const key = getRedisKey(userId);
       let existingAttempts = 0;
       const rawData = await redisClient.get(key);
@@ -49,7 +74,7 @@ export const verificationService = {
         try {
           const parsed = JSON.parse(rawData) as VerificationData;
           if (parsed.attempts >= MAX_ATTEMPTS) {
-            await redisClient.set(lockoutKey, '1', { EX: TTL_SECONDS });
+            await redisClient.set(lockoutKey, '1', { EX: VERIFICATION_CODE_TTL_SECONDS });
             await redisClient.del(key);
             return { error: 'MAX_ATTEMPTS_EXCEEDED' };
           }
@@ -65,12 +90,23 @@ export const verificationService = {
       const data: VerificationData = { code, attempts: existingAttempts };
 
       await redisClient.set(key, JSON.stringify(data), {
-        EX: TTL_SECONDS,
+        EX: VERIFICATION_CODE_TTL_SECONDS,
       });
 
       return { code };
     } catch {
       return { error: 'VERIFICATION_SERVICE_UNAVAILABLE' };
+    }
+  },
+
+  async revokeVerificationCode(userId: string): Promise<boolean> {
+    try {
+      await connectRedis();
+      const key = getRedisKey(userId);
+      await redisClient.del(key);
+      return true;
+    } catch {
+      return false;
     }
   },
 
@@ -110,7 +146,7 @@ export const verificationService = {
       if (data.attempts >= MAX_ATTEMPTS) {
         // Forcibly invalidate and set lockout
         await redisClient.del(key);
-        await redisClient.set(lockoutKey, '1', { EX: TTL_SECONDS });
+        await redisClient.set(lockoutKey, '1', { EX: VERIFICATION_CODE_TTL_SECONDS });
         return { success: false, reason: 'MAX_ATTEMPTS_EXCEEDED' };
       } else {
         // We must update the value in Redis, preserving the remaining TTL.

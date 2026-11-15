@@ -172,4 +172,66 @@ describe('Config Loader', () => {
       }
     });
   });
+
+  describe('Email Config', () => {
+    it('exposes email config with apiKey, from, and dryRun', () => {
+      expect(config.email).toBeDefined();
+      expect(typeof config.email.apiKey).toBe('string');
+      expect(typeof config.email.from).toBe('string');
+      expect(typeof config.email.dryRun).toBe('boolean');
+    });
+
+    it('envSchema defaults EMAIL_DRY_RUN to true when NODE_ENV is test', () => {
+      const parsed = envSchema.safeParse({
+        NODE_ENV: 'test',
+        POSTGRES_USER: 'test_user',
+        POSTGRES_PASSWORD: 'test_password',
+        POSTGRES_DB: 'test_db',
+        POSTGRES_PORT: 5432,
+        REDIS_PORT: 6379,
+        GEMINI_API_KEY: 'test-key',
+      });
+
+      expect(parsed.success).toBe(true);
+      if (parsed.success) {
+        expect(parsed.data.EMAIL_DRY_RUN).toBe(true);
+        expect(parsed.data.EMAIL_FROM).toBe('OrchestrAI Support <onboarding@resend.dev>');
+      }
+    });
+
+    it('envSchema defaults EMAIL_DRY_RUN to false when NODE_ENV is production or development', () => {
+      const parsedProd = envSchema.safeParse({
+        NODE_ENV: 'production',
+        POSTGRES_USER: 'test_user',
+        POSTGRES_PASSWORD: 'test_password',
+        POSTGRES_DB: 'test_db',
+        POSTGRES_PORT: 5432,
+        REDIS_PORT: 6379,
+        GEMINI_API_KEY: 'test-key',
+      });
+
+      expect(parsedProd.success).toBe(true);
+      if (parsedProd.success) {
+        expect(parsedProd.data.EMAIL_DRY_RUN).toBe(false);
+      }
+    });
+
+    it('envSchema accepts explicit EMAIL_DRY_RUN string', () => {
+      const parsed = envSchema.safeParse({
+        NODE_ENV: 'test',
+        POSTGRES_USER: 'test_user',
+        POSTGRES_PASSWORD: 'test_password',
+        POSTGRES_DB: 'test_db',
+        POSTGRES_PORT: 5432,
+        REDIS_PORT: 6379,
+        GEMINI_API_KEY: 'test-key',
+        EMAIL_DRY_RUN: 'false',
+      });
+
+      expect(parsed.success).toBe(true);
+      if (parsed.success) {
+        expect(parsed.data.EMAIL_DRY_RUN).toBe(false);
+      }
+    });
+  });
 });

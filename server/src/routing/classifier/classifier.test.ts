@@ -39,6 +39,8 @@ describe('isGreetingMessage', () => {
     expect(isGreetingMessage('Hello, I want a refund')).toBe(false);
     expect(isGreetingMessage('Hey, can you track my delivery?')).toBe(false);
     expect(isGreetingMessage('Hi I forgot my password')).toBe(false);
+    expect(isGreetingMessage('hello change my name to Irfan Raja Billo')).toBe(false);
+    expect(isGreetingMessage('hi update my shipping address')).toBe(false);
   });
 });
 
