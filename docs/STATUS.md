@@ -1,9 +1,9 @@
 # STATUS (update at the end of every step/phase)
 
-Last verified suite figure reported: 475/475 passing (59 files) at Phase 15. Baseline test count: 475.
+Last verified suite figure reported: 524/524 passing (63 files) at Phase 16. Baseline test count: 524.
 
 ## Phase state
-- Phases 1-15: COMPLETE and signed off.
+- Phases 1-16: COMPLETE and signed off.
   - Phase 6 (Access Control / Verification Gate): Steps 0-5 closed; Step 6a proof graph verified; Step 6b close-out and type unification completed.
   - Phase 7 (Agent Foundation): Steps 0-5 closed; LLM client, prompt loader, handoff contract, common node patterns, and subgraph harness verified (294 tests).
   - Phase 8 (Meta Orchestrator & Stateful Router Skeleton): Steps 0-5 closed; intent taxonomy, LLM classifier, deterministic guards, specialist stubs, parent graph with Command(goto) dispatch, and end-to-end integration tests verified (331 tests).
@@ -14,7 +14,8 @@ Last verified suite figure reported: 475/475 passing (59 files) at Phase 15. Bas
   - Phase 13 (Failure Handling & Loop Prevention): Steps 0-5 closed; tool retry policy (`maxRetries=1` for `TIMEOUT`, `NETWORK_ERROR`, `DATABASE_ERROR`), tool failure escalation in specialists, terminal `ESCALATED` state lock, loop detection escalation, and classifier fallback routing verified (428 tests).
   - Phase 14 (Observability & Tracing): Steps 0-5 closed; LangSmith optional config and env schema export, typed trace metadata & tag formatting, `createTraceConfig` factory for `RunnableConfig`, and parent graph trace propagation integration test suite verified (444 tests).
   - Phase 15 (Evaluation Framework): Steps 0-5 closed; 30-scenario canonical dataset schema & definitions, 8 deterministic binary evaluators, multi-turn thread evaluation runner, standalone CLI scorecard generator (`npm run eval`), and integration test suite verified (475 tests).
-- Phases 16-19: not started. Phase 16 (Backend API Layer) resolves API architecture (Next.js API routes/Server Actions) and builds start/send/history/trace endpoints.
+  - Phase 16 (Backend API Layer): Steps 0-5 closed; modular Express REST API, AppError hierarchy, Zod request validation, x-user-id auth with guest fallback, health check, conversation lifecycle, dual-mode message dispatch (JSON + SSE streaming), trace timeline endpoint, and server entrypoint verified (524 tests).
+- Phases 17-19: not started. Phase 17 (Next.js Frontend Foundation & Chat UI).
 
 ## Built so far
 Domain data model + repositories + seed; conversation/message services; ConversationState + PostgresSaver checkpointing; routing/agent/tool event logging;
@@ -32,7 +33,8 @@ Account Access specialist subgraph (`start_identity_verification`, `verify_ident
 All 6 domain specialists are real concrete subgraphs wired into parent graph; Pattern B (lateral re-route) and Pattern C (verification-for-resume) verified end-to-end;
 Robust failure handling: tool execution single-retry on transient timeouts/errors with failure escalation, circular routing loop escalation, max handoff cap (3) escalation, terminal ESCALATED state lock, classifier fallback;
 Observability & Tracing: optional LangSmith environment configuration, typed metadata sanitization (preventing PII/secrets leakage), run name standardization across trace levels, tag builder, and `createTraceConfig` factory producing `RunnableConfig` for LangGraph parent graph invocations;
-Evaluation Framework: 30 canonical evaluation scenarios covering all 6 domain specialists and 5 patterns, 8 deterministic binary evaluators (`ROUTING_CORRECT`, `HANDOFF_CORRECT`, `SPECIALIST_SCOPE_CORRECT`, `TOOL_SELECTION_CORRECT`, `STATE_PRESERVED`, `KNOWLEDGE_GROUNDED`, `WORKFLOW_COMPLETED`, `RESOLUTION_CORRECT`), multi-turn thread evaluation runner (`runScenario` and `runBenchmark`), standalone CLI runner with terminal and markdown scorecards (`npm run eval`), and locked `MIN_SIMILARITY = 0.60`.
+Evaluation Framework: 30 canonical evaluation scenarios covering all 6 domain specialists and 5 patterns, 8 deterministic binary evaluators (`ROUTING_CORRECT`, `HANDOFF_CORRECT`, `SPECIALIST_SCOPE_CORRECT`, `TOOL_SELECTION_CORRECT`, `STATE_PRESERVED`, `KNOWLEDGE_GROUNDED`, `WORKFLOW_COMPLETED`, `RESOLUTION_CORRECT`), multi-turn thread evaluation runner (`runScenario` and `runBenchmark`), standalone CLI runner with terminal and markdown scorecards (`npm run eval`), and locked `MIN_SIMILARITY = 0.60`;
+Backend API Layer: modular Express.js application in `src/api/` with custom `AppError` hierarchy, global error handling middleware, Zod request validation, RFC 4122 v4 UUID `x-user-id` authentication with guest fallback, health probe (`/health`), conversation lifecycle endpoints (`/api/conversations`), dual-mode message dispatch (`/api/conversations/:id/messages` supporting both JSON and real-time SSE streaming), trace timeline endpoint (`/api/conversations/:id/traces`), and server entrypoint with graceful shutdown (`npm run start`).
 
 ## Known issues (flagged, not fixed)
 1. `user` field reducer uses `update ?? state`, so an explicit `user: null` update is ignored.
@@ -42,8 +44,8 @@ Evaluation Framework: 30 canonical evaluation scenarios covering all 6 domain sp
 6. 6a graph's ALLOWED branch does not clear `activeWorkflow`, so `blockedBy` goes stale after a successful resume (resolved in Phase 8: router writes RE_ROUTE event; specialist clears activeWorkflow on COMPLETED).
 
 ## Immediate next actions
-1. Owner merges phase/15-evaluation-framework and tags phase-15-done (also pending phase/14-observability-tracing merge).
-2. Plan Phase 16 (Backend API Layer).
+1. Owner merges phase/16-backend-api-layer and tags phase-16-done (also pending phase/14 and phase/15 merges).
+2. Plan Phase 17 (Next.js Frontend Foundation & Chat UI).
 
 ## Changelog
 - 2026-11-05: Phase 6 Step 6a integration proof graph and test suite verified (239 tests).
@@ -57,3 +59,4 @@ Evaluation Framework: 30 canonical evaluation scenarios covering all 6 domain sp
 - 2026-11-06: Phase 13 Failure Handling & Loop Prevention completed: tool retry policy (maxRetries=1 for transient infrastructure errors), tool failure escalation in specialists, terminal ESCALATED state lock, loop detection escalation, and classifier fallback routing verified (428 tests).
 - 2026-11-06: Phase 14 Observability & Tracing completed: LangSmith optional config and env schema export, typed trace metadata & tag formatting, `createTraceConfig` factory for `RunnableConfig`, and parent graph trace propagation integration test suite verified (444 tests).
 - 2026-11-06: Phase 15 Evaluation Framework completed: 30 canonical scenarios dataset, 8 binary evaluators, multi-turn eval runner, CLI runner (`npm run eval`), and integration test suite verified (475 tests).
+- 2026-11-06: Phase 16 Backend API Layer completed: Express.js REST API, AppError hierarchy, Zod request validation, x-user-id auth, health check, conversation lifecycle, dual-mode message dispatch (JSON + SSE streaming), trace timeline endpoint, server entrypoint, and integration test suite verified (524 tests).

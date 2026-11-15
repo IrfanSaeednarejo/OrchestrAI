@@ -120,6 +120,22 @@ Small focused steps; explicit typed state; clear agent boundaries; no agent spag
   - Threshold verification: `MIN_SIMILARITY = 0.60` confirmed and locked in `server/src/tools/queries/knowledge.tools.ts` for policy retrieval gating.
   - Integration suite in `server/src/evaluation/evaluation.test.ts` validates dataset schema conformity, evaluator completeness, pattern executions, and benchmark reporting offline with zero external network dependencies.
 
+## Backend API Layer (Phase 16) — approved 2026-11-06
+- OD-7 (Backend API Architecture & Server Framework): Option A adopted — modular Express.js REST API in `server/src/api/` cleanly separating errors, middleware, schemas, controllers, and routes:
+  - App & Lifecycle: `createApp(configure?)` factory with optional router injection for isolated testing; standalone server entrypoint in `server/src/api/server.ts` with graceful SIGTERM/SIGINT shutdown and `"start": "tsx src/api/server.ts"`.
+  - Global Error Handling: `AppError` custom error class hierarchy extending native `Error` (`NotFoundError`, `ValidationError`, `BadRequestError`, `UnauthorizedError`, `ForbiddenError`, `ConflictError`). Async route handlers wrapped with `asyncHandler`. Centralized `errorHandler` middleware catches `AppError`, `ZodError`, and `SyntaxError` (malformed JSON), sanitizing error messages in production.
+  - Authentication & Caller Identity: `x-user-id` header validation middleware enforcing RFC 4122 v4 UUID format against the Postgres `users` table. Transparent guest fallback to a dedicated guest user record (`DEFAULT_GUEST_USER_ID = '00000000-0000-4000-a000-000000000001'`), ensuring foreign key integrity without colliding with nil UUID test assertions.
+  - Endpoints Implemented:
+    - `GET /health`: unauthenticated liveness and readiness probe executing live PostgreSQL (`SELECT 1`) and Redis (`ping`) checks.
+    - `POST /api/conversations`: initializes new conversation thread with optional guest fallback.
+    - `GET /api/conversations`: paginated list of conversations scoped to authenticated caller (`limit`, `offset`).
+    - `GET /api/conversations/:id`: conversation details with strict caller ownership enforcement (403 for unauthorized callers).
+    - `GET /api/conversations/:id/messages`: chronological message history for conversation owner.
+    - `POST /api/conversations/:id/messages`: dual-mode message dispatch endpoint. Persists user message with `role: 'user'` to PostgreSQL before graph invocation (hard rule). Standard JSON mode returns final assistant reply, workflowStatus, and routing state; SSE streaming mode (`Accept: text/event-stream`) streams real-time `start`, `node`, `message`, `routing`, and `done` events with client disconnect handling.
+    - `GET /api/conversations/:id/traces`: compiles chronological merged timeline of routing decisions, agent executions, and tool execution audit trails for the conversation.
+  - Request Validation: Zod schemas (`StartConversationSchema`, `PaginationQuerySchema`, `ConversationIdParamSchema`, `SendMessageSchema`) enforced via `validateRequest` middleware using `Object.assign` to safely update Express request getters.
+  - Full API integration and unit suites: 49 tests across `health.test.ts`, `conversations.test.ts`, `messages.test.ts`, and `api.integration.test.ts` validating complete lifecycle, cross-conversation isolation, streaming, error sanitization, and database persistence.
+
 ## Testing conventions
 - Real DB/Redis in integration tests with scoped cleanup (never an unscoped delete); distinct fixture prefixes to avoid cross-file races.
 - Raw verbatim command output in reports; always run typecheck after final edits.

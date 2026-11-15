@@ -20,7 +20,7 @@
 - [x] 15 Evaluation Framework — expand 14 -> 30-50 scenarios; binary evaluators (ROUTING_CORRECT, HANDOFF_CORRECT, SPECIALIST_SCOPE_CORRECT,
       TOOL_SELECTION_CORRECT, STATE_PRESERVED, KNOWLEDGE_GROUNDED, WORKFLOW_COMPLETED, RESOLUTION_CORRECT); multi-turn thread evaluation;
       recalibrate MIN_SIMILARITY. Needs: 14.
-- [ ] 16 Backend API Layer — resolve backend framework (leaning Next.js API routes/Server Actions); start/send/history/trace endpoints. Needs: 15.
+- [x] 16 Backend API Layer — resolve backend framework (Express.js REST API with CORS, Zod, custom AppError); start/send/history/trace endpoints (JSON + SSE streaming). Needs: 15.
 - [ ] 17 Frontend: Customer Chat (Next.js). Needs: 16.
 - [ ] 18 Frontend: Platform/Ops UI — conversation explorer, execution timeline, routing/handoff visualization, tool history, trace viewer, eval results. Needs: 16, 15.
 - [ ] 19 Testing, Hardening & Deployment — edge cases, README/architecture docs, local-run guide. Needs: 17, 18.
