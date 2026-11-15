@@ -200,5 +200,52 @@ describe('Parent Graph & Stateful Router', () => {
     expect(result.routing.previousAgent).toBe('returns');
     expect(result.routing.handoffCount).toBe(2); // 1 from handoff + 1 from re-route
   });
+
+  it('records FALLBACK decision when classifier fails and defaults to order_tracking', async () => {
+    // Classifier throws or produces invalid response
+    mockGenerateContent.mockRejectedValueOnce(new Error('LLM rate limit / network error'));
+
+    const checkpointer = new MemorySaver();
+    const graph = buildParentGraph(checkpointer, { specialists: SPECIALIST_STUBS });
+    const threadId = crypto.randomUUID();
+
+    const result = await graph.invoke(
+      {
+        messages: [new HumanMessage('Help with something unexpected')],
+      },
+      { configurable: { thread_id: threadId } }
+    );
+
+    expect(result.workflowStatus).toBe('COMPLETED');
+    expect(result.routing.currentAgent).toBe('order_tracking');
+    expect(result.routing.history.at(-1)?.reason).toContain('Classifier fallback');
+  });
+
+  it('terminal ESCALATED state lock: subsequent messages do NOT call LLM and stay ESCALATED', async () => {
+    const checkpointer = new MemorySaver();
+    const graph = buildParentGraph(checkpointer, { specialists: SPECIALIST_STUBS });
+    const threadId = crypto.randomUUID();
+
+    const result = await graph.invoke(
+      {
+        messages: [new HumanMessage('Hello, is anyone there?')],
+        workflowStatus: 'ESCALATED',
+        routing: {
+          currentAgent: 'escalation',
+          previousAgent: 'returns',
+          history: [],
+          handoffCount: 1,
+          visitedAgents: ['returns', 'escalation'],
+        },
+      },
+      { configurable: { thread_id: threadId } }
+    );
+
+    // LLM must not be called because conversation is locked in ESCALATED state
+    expect(mockGenerateContent).not.toHaveBeenCalled();
+    expect(result.workflowStatus).toBe('ESCALATED');
+    expect(result.routing.currentAgent).toBe('escalation');
+    expect(result.messages.at(-1)?.content).toMatch(/human specialist/i);
+  });
 });
 

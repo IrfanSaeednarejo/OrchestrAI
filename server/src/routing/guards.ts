@@ -1,9 +1,11 @@
 // src/routing/guards.ts
 // Phase 8: Deterministic router safety guards.
+// Phase 13: Added terminal ESCALATED state guard (OD-13).
 // Evaluated before calling the LLM classifier. Ensures hard boundaries:
-// 1. Handoff cap guard: auto-escalates when handoffCount >= MAX_HANDOFF_LIMIT (3).
-// 2. Loop detection guard: detects circular agent bounce and escalates.
-// 3. Resume guard: routes directly to returnTo when blocked verification is satisfied.
+// 1. Terminal state guard: preserves ESCALATED across subsequent turns.
+// 2. Handoff cap guard: auto-escalates when handoffCount >= MAX_HANDOFF_LIMIT (3).
+// 3. Loop detection guard: detects circular agent bounce and escalates.
+// 4. Resume guard: routes directly to returnTo when blocked verification is satisfied.
 
 import { type SpecialistId } from '../tools/permissions.js';
 import {
@@ -126,15 +128,24 @@ export function checkResumePreconditions(
 
 /**
  * Evaluates all deterministic guards in priority order:
- * 1. Handoff cap -> ESCALATE
- * 2. Resume preconditions -> RESUME
- * 3. Fallback -> PROCEED to intent classification
+ * 1. Terminal ESCALATED state guard -> ESCALATE (OD-13, Phase 13)
+ * 2. Handoff cap -> ESCALATE
+ * 3. Resume preconditions -> RESUME
+ * 4. Fallback -> PROCEED to intent classification
  */
 export function evaluatePreClassificationGuards(
   state: ConversationState,
   maxHandoffs: number = DEFAULT_MAX_HANDOFFS
 ): GuardOutcome {
-  // 1. Handoff threshold guard
+  // 1. Terminal state guard (OD-13): once ESCALATED, the bot yields to human agents.
+  if (state.workflowStatus === 'ESCALATED') {
+    return {
+      outcome: 'ESCALATE',
+      reason: 'Conversation is in terminal ESCALATED state. Human agent has taken over.',
+    };
+  }
+
+  // 2. Handoff threshold guard
   if (isHandoffCapExceeded(state.routing, maxHandoffs)) {
     return {
       outcome: 'ESCALATE',
@@ -142,7 +153,7 @@ export function evaluatePreClassificationGuards(
     };
   }
 
-  // 2. Active workflow resume guard
+  // 3. Active workflow resume guard
   const resumeTarget = checkResumePreconditions(state.activeWorkflow, state.identity);
   if (resumeTarget && isValidSpecialistId(resumeTarget.agent)) {
     return {

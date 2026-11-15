@@ -1,5 +1,6 @@
 // src/routing/guards.test.ts
 // Phase 8: Unit tests for deterministic router safety guards.
+// Phase 13: Added terminal ESCALATED state guard tests (OD-13).
 
 import { describe, it, expect } from 'vitest';
 import {
@@ -261,6 +262,51 @@ describe('Router Guards', () => {
 
     it('returns PROCEED when no guard triggers', () => {
       const state = makeState({
+        routing: makeRouting({ handoffCount: 0 }),
+        activeWorkflow: null,
+      });
+
+      const outcome = evaluatePreClassificationGuards(state);
+      expect(outcome.outcome).toBe('PROCEED');
+    });
+
+    // Phase 13 OD-13: Terminal ESCALATED state guard
+    it('escalates immediately when workflowStatus is ESCALATED (terminal state lock)', () => {
+      const state = makeState({
+        workflowStatus: 'ESCALATED',
+        routing: makeRouting({ handoffCount: 0 }), // handoffs low — guard fires before them
+      });
+
+      const outcome = evaluatePreClassificationGuards(state);
+      expect(outcome.outcome).toBe('ESCALATE');
+      if (outcome.outcome === 'ESCALATE') {
+        expect(outcome.reason).toMatch(/ESCALATED|human agent/i);
+      }
+    });
+
+    it('ESCALATED state takes priority over resume preconditions', () => {
+      const state = makeState({
+        workflowStatus: 'ESCALATED',
+        routing: makeRouting({ handoffCount: 0 }),
+        identity: { status: 'VERIFIED', verificationMethod: 'otp', verifiedAt: new Date().toISOString() },
+        activeWorkflow: {
+          workflowId: 'wf-esc',
+          originatingIntent: 'get_payment',
+          currentStep: 'get_payment',
+          blockedBy: null, // cleared by Account Access — would normally RESUME
+          returnTo: { domain: 'payment', agent: 'payment', workflowStep: 'get_payment' },
+          resumeContext: null,
+        },
+      });
+
+      // Even though resume conditions are met, ESCALATED is checked first
+      const outcome = evaluatePreClassificationGuards(state);
+      expect(outcome.outcome).toBe('ESCALATE');
+    });
+
+    it('does NOT escalate when workflowStatus is FAILED (non-terminal, recoverable)', () => {
+      const state = makeState({
+        workflowStatus: 'FAILED',
         routing: makeRouting({ handoffCount: 0 }),
         activeWorkflow: null,
       });

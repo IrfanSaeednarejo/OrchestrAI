@@ -156,6 +156,7 @@ export async function routerNode(
   let targetSpecialist: SpecialistId = 'order_tracking';
   let detectedIntent = 'GENERAL_INQUIRY';
   let routingReason = 'Initial default routing';
+  let isFallback = false;
 
   if (userText.trim().length > 0) {
     const classification = await classifyMessage(userText, {
@@ -168,6 +169,7 @@ export async function routerNode(
       detectedIntent = classification.data.intent;
       routingReason = classification.data.reasoning;
     } else {
+      isFallback = true;
       routingReason = `Classifier fallback: ${classification.error.message}`;
     }
   }
@@ -195,12 +197,18 @@ export async function routerNode(
   // 5. Normal route dispatch
   const isInitialRoute = state.routing.currentAgent === null;
   const isHandoff = !isInitialRoute && state.routing.currentAgent !== targetSpecialist;
+  const decisionType = isFallback
+    ? 'FALLBACK'
+    : isHandoff
+      ? 'HANDOFF'
+      : 'INITIAL_ROUTE';
+
   const routingEvent: RoutingEvent = {
     conversationId,
     sourceAgent: state.routing.currentAgent,
     destinationAgent: targetSpecialist,
     intent: detectedIntent,
-    decisionType: isHandoff ? 'HANDOFF' : 'INITIAL_ROUTE',
+    decisionType,
     reason: routingReason,
     newDomain: targetSpecialist,
   };
