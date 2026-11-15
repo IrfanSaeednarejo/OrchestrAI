@@ -71,6 +71,20 @@
       "when": 1794215116236,
       "tag": "0009_chemical_tana_nile",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1794565279419,
+      "tag": "0010_loose_reaper",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1794577028088,
+      "tag": "0011_chief_shen",
+      "breakpoints": true
     }
   ]
 }

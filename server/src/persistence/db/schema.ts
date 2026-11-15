@@ -11,6 +11,7 @@ import {
   uniqueIndex,
   jsonb,
   vector,
+  doublePrecision,
 } from 'drizzle-orm/pg-core';
 
 // ---------------------------------------------------------------------------
@@ -283,6 +284,7 @@ export const routingHistory = pgTable(
     intent: text('intent'),
     decisionType: routingDecisionTypeEnum('decision_type').notNull(),
     reason: text('reason').notNull(),
+    routingPath: text('routing_path'),
     timestamp: timestamp('timestamp').notNull().defaultNow(),
   },
   (table) => [
@@ -327,6 +329,48 @@ export const toolExecutions = pgTable(
   },
   (table) => [
     index('tool_executions_agent_execution_id_idx').on(table.agentExecutionId),
+  ],
+);
+
+export const retrievalExecutions = pgTable(
+  'retrieval_executions',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    conversationId: uuid('conversation_id').references(() => conversations.id, { onDelete: 'cascade' }),
+    agentExecutionId: uuid('agent_execution_id').references(() => agentExecutions.id, { onDelete: 'cascade' }),
+    domain: text('domain').notNull(),
+    topic: text('topic'),
+    embedMs: integer('embed_ms').notNull(),
+    searchMs: integer('search_ms').notNull(),
+    resultCount: integer('result_count').notNull(),
+    topSimilarity: doublePrecision('top_similarity'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (table) => [
+    index('retrieval_executions_conversation_id_idx').on(table.conversationId),
+    index('retrieval_executions_agent_execution_id_idx').on(table.agentExecutionId),
+  ],
+);
+
+export const llmCalls = pgTable(
+  'llm_calls',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    conversationId: uuid('conversation_id').references(() => conversations.id, { onDelete: 'cascade' }),
+    node: text('node').notNull(),
+    model: text('model').notNull(),
+    promptTokens: integer('prompt_tokens'),
+    outputTokens: integer('output_tokens'),
+    totalTokens: integer('total_tokens'),
+    durationMs: integer('duration_ms').notNull(),
+    attempts: integer('attempts').notNull(),
+    status: executionStatusEnum('status').notNull(),
+    errorKind: text('error_kind'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (table) => [
+    index('llm_calls_conversation_id_idx').on(table.conversationId),
+    index('llm_calls_node_idx').on(table.node),
   ],
 );
 
