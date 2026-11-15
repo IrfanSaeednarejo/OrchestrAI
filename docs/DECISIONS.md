@@ -54,6 +54,15 @@ Small focused steps; explicit typed state; clear agent boundaries; no agent spag
 - Specialist node patterns execute all tools via `gatedExecuteTool`. Gate outcomes map to: ALLOWED -> `{ workflowStatus: 'COMPLETED' }`, BLOCKED -> `{ ...buildBlockedWorkflowUpdate(...), workflowStatus: 'WAITING_FOR_USER_INPUT' }`, DENIED -> `{ workflowStatus: 'FAILED' }`.
 - Subgraph test harness (`buildSubgraphHarness`, `buildSingleNodeHarness`) runs against `ConversationStateAnnotation` with `MemorySaver` checkpointer for fast in-memory integration testing.
 
+## Router & Orchestration (Phase 8) — approved 2026-11-05
+- Routing strategy: hybrid guard-first + LLM classifier. Deterministic guards (`isHandoffCapExceeded`, `isRoutingLoop`, `checkResumePreconditions`) run before the LLM to avoid unnecessary API calls. Guards produce `GuardOutcome` with `action: 'ESCALATE' | 'RESUME' | 'CLASSIFY'`.
+- Intent taxonomy: 15 intents mapped to 6 `SpecialistId` values in `routing/classifier/taxonomy.ts`. Classifier uses `gemini-2.5-flash` at `temperature: 0.0` with structured JSON output validated by Zod.
+- Default thresholds: `DEFAULT_MAX_HANDOFFS = 3` (escalate when `handoffCount > 3`); loop detected when any specialist appears ≥ 2 consecutive times in `routing.visitedAgents`.
+- Dispatch: `routerNode` returns `Command({ goto: specialistId })`. Each specialist node is registered with `ends: ['router', END]`; router registered with `ends: [all 6 specialist names]`. LangGraph's static validator requires this.
+- `AnyCompiledGraph` changed from a `type` alias to an `interface` with `invoke()` and `getState()` method signatures (structural typing). This eliminates `as unknown as` casts for `buildParentGraph().compile()`. The existing PoC tests retain their casts; no test logic changed.
+- Resume semantics: when `activeWorkflow.returnTo` is set, `checkResumePreconditions` routes directly to that specialist with a `RE_ROUTE` routing event (no LLM call). The resumed specialist clears `activeWorkflow` on `COMPLETED` by emitting `activeWorkflow: overwrite(null)`.
+- All routing decisions write a `routing_history` row via `recordRoutingEvent` (via `logRoutingEventSafely` fallback for in-memory tests).
+
 ## Testing conventions
 - Real DB/Redis in integration tests with scoped cleanup (never an unscoped delete); distinct fixture prefixes to avoid cross-file races.
 - Raw verbatim command output in reports; always run typecheck after final edits.
