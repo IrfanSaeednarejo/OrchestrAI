@@ -210,6 +210,23 @@ Small focused steps; explicit typed state; clear agent boundaries; no agent spag
 - OD-23c (Order Tracking Continuation Guard):
   - Option A adopted: In `routerNode`, when `state.routing.currentAgent === 'order_tracking'` and `state.workflowStatus === 'WAITING_FOR_USER_INPUT'`, router bypasses LLM classification and dispatches directly back to `order_tracking`. Prevents misclassification and loop drops during multi-turn order ID collection.
 
+## Phase 24 (Stabilization) — approved 2026-11-09
+- OD-24a (Session-Identity Seeding & Propagation):
+  - Option A adopted: Pure helper `server/src/state/session-identity.ts` maps `req.authMethod === 'bearer'` to `status: 'LIGHTLY_VERIFIED'` with `verificationMethod: 'session'`. Guests and `x-user-id` callers map to `UNVERIFIED`. Existing `status: 'VERIFIED'` in checkpoints is preserved only if `verifiedAt` is within 15-minute TTL, else drops to `LIGHTLY_VERIFIED`. The helper never elevates to `VERIFIED`. Ensures logged-in Bearer customers are never blocked by LIGHT-gated tools (`get_order`, `get_shipment_status`).
+- OD-24b (Duplicate Charge Human Review Escalation & `review_requests` Table):
+  - Option A adopted: Added relational `review_requests` table to `server/src/persistence/db/schema.ts` (migration `0008_nappy_thunderbolt.sql`). When payment specialist detects duplicate charges, it asks customer for confirmation. Upon confirmation, a `review_requests` record with `status: 'pending'` is persisted to Postgres and the conversation transitions to `WAITING_FOR_USER_INPUT` awaiting staff review, eliminating ungrounded automated refunds.
+- OD-24c (Per-Turn Handoff Counter Semantics & Loop Exemption on Resume):
+  - Option A adopted: `routing.handoffCount` is turn-scoped (initialized to 0 per user turn via graph input `{ routing: { handoffCount: 0 } }` in `message.controller.ts`). Only the parent router mutates `handoffCount` when executing a `HANDOFF` or `RE_ROUTE`; specialists never emit handoff count updates. Resume transitions (`RE_ROUTE`) are exempt from loop detection.
+- Universal Blocked-Reply Helper & State Cleanup:
+  - `createBlockedResponse` helper in `state/blocked-workflow.ts` standardizes polite, explanatory customer replies across all specialist gate blockages. Specialists clear `activeWorkflow: null` upon successful completion.
+- Database Idempotency & Concurrency Hardening:
+  - Applied unique index on `returns(order_id)` and partial unique index on `refunds(payment_id) WHERE status != 'failed'` (migration `0009_chemical_tana_nile.sql`).
+  - Added transaction-level PostgreSQL advisory locking (`pg_try_advisory_xact_lock(hashtext(conversationId))`) in `message.controller.ts` to serialize turns per conversation and return 409 Conflict on concurrent POST requests.
+- LLM & Tool Execution Resilience:
+  - 10-second timeout with single exponential-backoff retry on transient errors in `llm/client.ts`.
+  - Mutation tools (`create_return`, `create_refund`, `update_profile`, `start_verification`, `verify_identity`) restricted to zero retries in `tools/execution.ts`; idempotent read tools retry on transient database errors.
+
+
 
 
 

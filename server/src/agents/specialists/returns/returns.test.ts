@@ -324,4 +324,100 @@ describe('returnsNode', () => {
     expect(state.workflowStatus).toBe('FAILED');
     expect(state.messages.at(-1)?.content).toMatch(/couldn't find/i);
   });
+
+  it('Step 5: intent check_status queries return status and does NOT initiate return creation', async () => {
+    // 1. LLM extraction with check_status intent
+    mockGenerateContent.mockResolvedValueOnce({
+      text: JSON.stringify({
+        orderId: FIXTURE_ORDER_ID,
+        reason: null,
+        intent: 'check_status',
+        confidence: 0.95,
+      }),
+    });
+
+    // 2. getReturnByOrder succeeds with an existing return
+    mockGated.mockResolvedValueOnce({
+      gate: { outcome: 'ALLOWED' as const },
+      success: true as const,
+      data: [
+        {
+          id: FIXTURE_RETURN_ID,
+          orderId: FIXTURE_ORDER_ID,
+          status: 'in_transit' as const,
+          reason: 'Defective item',
+          createdAt: new Date('2026-11-02'),
+        },
+      ],
+    });
+
+    const state = await harness.invoke({
+      messages: [new HumanMessage(`What is the status of the return for order ${FIXTURE_ORDER_ID}?`)],
+    });
+
+    expect(state.workflowStatus).toBe('COMPLETED');
+    expect(state.activeWorkflow).toBeNull();
+    expect(state.messages.at(-1)?.content).toContain(FIXTURE_RETURN_ID);
+    expect(state.messages.at(-1)?.content).toContain('in_transit');
+    // Ensure gatedExecuteTool was called once for getReturnByOrder and NOT for createReturn
+    expect(mockGated).toHaveBeenCalledTimes(1);
+  });
+
+  it('Step 5: intent check_eligibility only checks eligibility and does NOT create a return', async () => {
+    // 1. LLM extraction with check_eligibility intent
+    mockGenerateContent.mockResolvedValueOnce({
+      text: JSON.stringify({
+        orderId: FIXTURE_ORDER_ID,
+        reason: null,
+        intent: 'check_eligibility',
+        confidence: 0.95,
+      }),
+    });
+
+    // 2. checkReturnEligibility succeeds (eligible)
+    mockGated.mockResolvedValueOnce(makeEligibleResult());
+
+    const state = await harness.invoke({
+      messages: [new HumanMessage(`Can I return order ${FIXTURE_ORDER_ID}?`)],
+    });
+
+    expect(state.workflowStatus).toBe('COMPLETED');
+    expect(state.activeWorkflow).toBeNull();
+    expect(state.messages.at(-1)?.content).toMatch(/eligible for return/i);
+    // Only checkReturnEligibility was called, createReturn was NOT called
+    expect(mockGated).toHaveBeenCalledTimes(1);
+  });
+
+  it('Step 5: concurrency collision with RETURN_ALREADY_EXISTS returns COMPLETED gracefully', async () => {
+    // 1. LLM extraction with create_return intent
+    mockGenerateContent.mockResolvedValueOnce({
+      text: JSON.stringify({
+        orderId: FIXTURE_ORDER_ID,
+        reason: 'Duplicate order',
+        intent: 'create_return',
+        confidence: 0.95,
+      }),
+    });
+
+    // 2. checkReturnEligibility -> eligible
+    mockGated.mockResolvedValueOnce(makeEligibleResult());
+
+    // 3. createReturn -> fails with RETURN_ALREADY_EXISTS (unique constraint collision)
+    mockGated.mockResolvedValueOnce({
+      gate: { outcome: 'ALLOWED' as const },
+      success: false as const,
+      error: {
+        code: 'RETURN_ALREADY_EXISTS',
+        message: 'A return has already been submitted for this order.',
+      },
+    });
+
+    const state = await harness.invoke({
+      messages: [new HumanMessage(`Please create a return for order ${FIXTURE_ORDER_ID}`)],
+    });
+
+    expect(state.workflowStatus).toBe('COMPLETED');
+    expect(state.activeWorkflow).toBeNull();
+    expect(state.messages.at(-1)?.content).toMatch(/already been submitted/i);
+  });
 });

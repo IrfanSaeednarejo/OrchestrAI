@@ -39,6 +39,9 @@ function buildClassificationPrompt(
   const domainContext = context?.currentDomain
     ? `Current active domain: ${context.currentDomain}`
     : 'No active domain established yet.';
+  const previousAgentContext = context?.previousAgent
+    ? `Previous specialist agent: ${context.previousAgent}`
+    : 'No previous agent.';
 
   return `You are the Master Router for OrchestrAI, an autonomous e-commerce customer support platform.
 Your task is to analyze the user's message and classify it into the correct domain specialist and specific intent.
@@ -56,6 +59,7 @@ If the user message is simply a greeting or casual opening ("hello", "hi", "good
 
 Context:
 ${domainContext}
+${previousAgentContext}
 
 User Message:
 """${userMessage}"""

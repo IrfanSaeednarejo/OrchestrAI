@@ -16,7 +16,18 @@ export const DEFAULT_RETRYABLE_CODES = [
   'TIMEOUT',
   'NETWORK_ERROR',
   'DATABASE_ERROR',
+  'ECONNREFUSED',
+  'ETIMEDOUT',
+  '57P01',
 ] as const;
+
+export const NON_RETRYABLE_MUTATION_TOOLS: readonly string[] = [
+  'create_return',
+  'create_refund',
+  'update_profile',
+  'start_verification',
+  'verify_identity',
+];
 
 export function isRetryableError(
   code: string,
@@ -53,7 +64,8 @@ export async function executeTool<T>(
   context: ToolExecutionContext
 ): Promise<ToolResult<T>> {
   const startTime = Date.now();
-  const maxRetries = context.retryConfig?.maxRetries ?? 1;
+  const isMutation = NON_RETRYABLE_MUTATION_TOOLS.includes(metadata.name);
+  const maxRetries = isMutation ? 0 : (context.retryConfig?.maxRetries ?? 1);
   const retryableCodes = context.retryConfig?.retryableCodes ?? DEFAULT_RETRYABLE_CODES;
   const backoffMs = context.retryConfig?.backoffMs ?? 0;
 

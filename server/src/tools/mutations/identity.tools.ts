@@ -45,9 +45,13 @@ export async function startIdentityVerification(
 
   const result = await verificationService.issueVerificationCode(userId);
   if ('error' in result) {
+    const message =
+      result.error === 'MAX_ATTEMPTS_EXCEEDED'
+        ? 'Maximum verification attempts exceeded. Please wait 10 minutes before requesting a new code.'
+        : 'Service unavailable.';
     return {
       success: false,
-      error: { code: result.error, message: 'Service unavailable.' },
+      error: { code: result.error, message },
     };
   }
 

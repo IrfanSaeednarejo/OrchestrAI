@@ -366,5 +366,72 @@ describe('Parent Graph & Stateful Router', () => {
     expect(result.workflowStatus).toBe('COMPLETED');
   });
 
+  it('routes directly to account_access when activeWorkflow.currentStep is verify_identity without calling LLM', async () => {
+    const checkpointer = new MemorySaver();
+    const graph = buildParentGraph(checkpointer, { specialists: SPECIALIST_STUBS });
+    const threadId = crypto.randomUUID();
+
+    const result = await graph.invoke(
+      {
+        messages: [new HumanMessage('123456')],
+        activeWorkflow: {
+          workflowId: 'wf-ret-1',
+          originatingIntent: 'CREATE_RETURN',
+          currentStep: 'verify_identity',
+          blockedBy: 'VERIFICATION_FULL',
+          returnTo: { domain: 'returns', agent: 'returns', workflowStep: 'create_return' },
+          resumeContext: { orderId: 'ord-123' },
+        },
+        workflowStatus: 'WAITING_FOR_USER_INPUT',
+      },
+      { configurable: { thread_id: threadId } }
+    );
+
+    // Classifier LLM should not be called
+    expect(mockGenerateContent).not.toHaveBeenCalled();
+    // Routed to account_access
+    expect(result.routing.currentAgent).toBe('account_access');
+  });
+
+  it('resumes activeWorkflow without triggering loop detection even if previously visited', async () => {
+    const checkpointer = new MemorySaver();
+    const graph = buildParentGraph(checkpointer, { specialists: SPECIALIST_STUBS });
+    const threadId = crypto.randomUUID();
+
+    // Setup state where returns was already visited and in history, but now verification is satisfied
+    const result = await graph.invoke(
+      {
+        messages: [new HumanMessage('Continue with my return')],
+        identity: {
+          status: 'VERIFIED',
+          verificationMethod: 'otp',
+          verifiedAt: new Date().toISOString(),
+        },
+        routing: {
+          currentAgent: 'account_access',
+          previousAgent: 'returns',
+          history: [
+            { fromAgent: 'returns', toAgent: 'account_access', reason: 'Verify', timestamp: new Date().toISOString() },
+            { fromAgent: null, toAgent: 'returns', reason: 'Initial', timestamp: new Date().toISOString() },
+          ],
+          handoffCount: 2,
+          visitedAgents: ['returns', 'account_access'],
+        },
+        activeWorkflow: {
+          workflowId: 'wf-ret-1',
+          originatingIntent: 'CREATE_RETURN',
+          currentStep: 'create_return',
+          blockedBy: 'VERIFICATION_FULL',
+          returnTo: { domain: 'returns', agent: 'returns', workflowStep: 'create_return' },
+          resumeContext: { orderId: 'ord-123' },
+        },
+      },
+      { configurable: { thread_id: threadId } }
+    );
+
+    // Resumed to returns instead of being escalated as a loop
+    expect(result.workflowStatus).toBe('COMPLETED');
+    expect(result.routing.currentAgent).toBe('returns');
+  });
 });
 

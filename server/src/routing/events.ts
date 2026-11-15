@@ -6,6 +6,7 @@ import {
   type ToolExecution,
   createRoutingHistoryEntry,
   createAgentExecution,
+  updateAgentExecution,
   createToolExecution,
 } from '../persistence/repositories/orchestration.repository.js';
 import type { ConversationStateUpdate } from '../state/conversation-state.js';
@@ -155,6 +156,13 @@ export async function recordAgentExecution(
   event: AgentExecutionEvent
 ): Promise<AgentExecution> {
   return createAgentExecution(toAgentExecutionRecord(event));
+}
+
+export async function updateAgentExecutionRecord(
+  id: string,
+  update: Partial<NewAgentExecution>
+): Promise<AgentExecution | null> {
+  return updateAgentExecution(id, update);
 }
 
 // ---------------------------------------------------------------------------

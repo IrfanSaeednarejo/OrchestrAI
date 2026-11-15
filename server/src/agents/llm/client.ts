@@ -26,6 +26,10 @@ export interface LLMOptions {
   temperature?: number;
   /** Hard cap on output tokens. Optional. */
   maxOutputTokens?: number;
+  /** Timeout in milliseconds (default: 10_000ms). */
+  timeoutMs?: number;
+  /** Max retries for transient errors (default: 1). */
+  maxRetries?: number;
 }
 
 /** Discriminated union returned from `generateStructuredOutput`. */
@@ -39,6 +43,22 @@ export type LLMError =
   | { kind: 'INVALID_JSON'; message: string; raw: string }
   | { kind: 'SCHEMA_VALIDATION'; message: string; raw: string }
   | { kind: 'SDK_ERROR'; message: string };
+
+function isRetryableLLMError(err: unknown): boolean {
+  if (!err) return false;
+  const msg = (err instanceof Error ? err.message : String(err)).toLowerCase();
+  return (
+    msg.includes('timeout') ||
+    msg.includes('timed out') ||
+    msg.includes('etimedout') ||
+    msg.includes('429') ||
+    msg.includes('resource_exhausted') ||
+    msg.includes('fetch failed') ||
+    msg.includes('econnreset') ||
+    msg.includes('econnrefused') ||
+    msg.includes('network')
+  );
+}
 
 // ---------------------------------------------------------------------------
 // Core function
@@ -55,24 +75,55 @@ export async function generateStructuredOutput<T>(
   prompt: string,
   options: LLMOptions = {}
 ): Promise<LLMResult<T>> {
+  const timeoutMs = options.timeoutMs ?? 10_000;
+  const maxRetries = options.maxRetries ?? 1;
+
   let responseText: string | undefined;
+  let lastError: unknown;
+  let attempts = 0;
 
-  try {
-    const response = await ai.models.generateContent({
-      model: DEFAULT_MODEL,
-      contents: prompt,
-      config: {
-        responseMimeType: 'application/json',
-        temperature: options.temperature ?? 0.0,
-        ...(options.maxOutputTokens !== undefined
-          ? { maxOutputTokens: options.maxOutputTokens }
-          : {}),
-      },
-    });
+  while (attempts <= maxRetries) {
+    attempts++;
+    try {
+      const callPromise = ai.models.generateContent({
+        model: DEFAULT_MODEL,
+        contents: prompt,
+        config: {
+          responseMimeType: 'application/json',
+          temperature: options.temperature ?? 0.0,
+          ...(options.maxOutputTokens !== undefined
+            ? { maxOutputTokens: options.maxOutputTokens }
+            : {}),
+        },
+      });
 
-    responseText = response.text;
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
+      let timer: NodeJS.Timeout | undefined;
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        timer = setTimeout(() => {
+          reject(new Error(`LLM call timed out after ${timeoutMs}ms`));
+        }, timeoutMs);
+      });
+
+      try {
+        const response = await Promise.race([callPromise, timeoutPromise]);
+        responseText = response.text;
+        lastError = undefined;
+        break;
+      } finally {
+        if (timer) clearTimeout(timer);
+      }
+    } catch (err) {
+      lastError = err;
+      if (attempts <= maxRetries && isRetryableLLMError(err)) {
+        await new Promise((resolve) => setTimeout(resolve, 100 * Math.pow(2, attempts - 1)));
+        continue;
+      }
+      break;
+    }
+  }
+
+  if (lastError !== undefined) {
+    const message = lastError instanceof Error ? lastError.message : String(lastError);
     return { success: false, error: { kind: 'SDK_ERROR', message } };
   }
 

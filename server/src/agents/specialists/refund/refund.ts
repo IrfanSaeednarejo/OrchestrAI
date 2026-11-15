@@ -24,7 +24,7 @@ import {
 import { generateStructuredOutput } from '../../llm/client.js';
 import { loadPrompt } from '../../prompts/template-loader.js';
 import { gatedExecuteTool } from '../../../tools/gated-execution.js';
-import { buildBlockedWorkflowUpdate } from '../../../state/blocked-workflow.js';
+import { createBlockedResponse } from '../../../state/blocked-workflow.js';
 import { retrieveKnowledge } from '../../../knowledge/retrieval.js';
 import { recordAgentExecution } from '../../../routing/events.js';
 import {
@@ -239,15 +239,17 @@ export async function refundNode(
         agent: specialist,
         workflowStep: 'create_refund',
       };
-      const blockedUpdate = buildBlockedWorkflowUpdate({
-        decision: refundResult.gate,
-        returnTo,
-        workflowId: null,
-        originatingIntent: state.currentIntent,
-        currentStep: 'create_refund',
-        resumeContext,
-      });
-      return { ...blockedUpdate, workflowStatus: 'WAITING_FOR_USER_INPUT' };
+      return createBlockedResponse(
+        {
+          decision: refundResult.gate,
+          returnTo,
+          workflowId: null,
+          originatingIntent: state.currentIntent,
+          currentStep: 'create_refund',
+          resumeContext,
+        },
+        'To process your refund request, we need to verify your identity. Please request a verification code to receive a 6-digit code via email, or enter your code if you already have one.'
+      );
     }
 
     if (refundResult.gate.outcome === 'DENIED') {
@@ -318,15 +320,17 @@ export async function refundNode(
         agent: specialist,
         workflowStep: 'get_refund_status',
       };
-      const blockedUpdate = buildBlockedWorkflowUpdate({
-        decision: statusResult.gate,
-        returnTo,
-        workflowId: null,
-        originatingIntent: state.currentIntent,
-        currentStep: 'get_refund_status',
-        resumeContext: { refundId },
-      });
-      return { ...blockedUpdate, workflowStatus: 'WAITING_FOR_USER_INPUT' };
+      return createBlockedResponse(
+        {
+          decision: statusResult.gate,
+          returnTo,
+          workflowId: null,
+          originatingIntent: state.currentIntent,
+          currentStep: 'get_refund_status',
+          resumeContext: { refundId },
+        },
+        'To view refund details, please log in to your account or confirm your identity.'
+      );
     }
 
     if (statusResult.success) {
@@ -371,15 +375,17 @@ export async function refundNode(
       agent: specialist,
       workflowStep: 'get_return_by_order',
     };
-    const blockedUpdate = buildBlockedWorkflowUpdate({
-      decision: returnsResult.gate,
-      returnTo,
-      workflowId: null,
-      originatingIntent: state.currentIntent,
-      currentStep: 'get_return_by_order',
-      resumeContext: { orderId },
-    });
-    return { ...blockedUpdate, workflowStatus: 'WAITING_FOR_USER_INPUT' };
+    return createBlockedResponse(
+      {
+        decision: returnsResult.gate,
+        returnTo,
+        workflowId: null,
+        originatingIntent: state.currentIntent,
+        currentStep: 'get_return_by_order',
+        resumeContext: { orderId },
+      },
+      'To check returns and refund eligibility for your order, please log in to your account or confirm your identity.'
+    );
   }
 
   if (returnsResult.gate.outcome === 'DENIED') {
@@ -436,15 +442,17 @@ export async function refundNode(
         agent: specialist,
         workflowStep: 'get_payment',
       };
-      const blockedUpdate = buildBlockedWorkflowUpdate({
-        decision: paymentResult.gate,
-        returnTo,
-        workflowId: null,
-        originatingIntent: state.currentIntent,
-        currentStep: 'get_payment',
-        resumeContext: { orderId },
-      });
-      return { ...blockedUpdate, workflowStatus: 'WAITING_FOR_USER_INPUT' };
+      return createBlockedResponse(
+        {
+          decision: paymentResult.gate,
+          returnTo,
+          workflowId: null,
+          originatingIntent: state.currentIntent,
+          currentStep: 'get_payment',
+          resumeContext: { orderId },
+        },
+        'To verify payment details for your refund request, please log in to your account or confirm your identity.'
+      );
     }
 
     if (!paymentResult.success) {
@@ -478,15 +486,17 @@ export async function refundNode(
         agent: specialist,
         workflowStep: 'create_refund',
       };
-      const blockedUpdate = buildBlockedWorkflowUpdate({
-        decision: createResult.gate,
-        returnTo,
-        workflowId: null,
-        originatingIntent: state.currentIntent,
-        currentStep: 'create_refund',
-        resumeContext: { orderId },
-      });
-      return { ...blockedUpdate, workflowStatus: 'WAITING_FOR_USER_INPUT' };
+      return createBlockedResponse(
+        {
+          decision: createResult.gate,
+          returnTo,
+          workflowId: null,
+          originatingIntent: state.currentIntent,
+          currentStep: 'create_refund',
+          resumeContext: { orderId },
+        },
+        'To process your refund, we need to verify your identity. Please request a verification code to receive a 6-digit code via email, or enter your code if you already have one.'
+      );
     }
 
     if (createResult.success) {

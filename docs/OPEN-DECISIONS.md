@@ -50,6 +50,17 @@ Approved items move to DECISIONS.md. Items marked [CONFLICT] are inconsistencies
     OD-23b [RESOLVED 2026-11-08]: Interactive Options Transport & Rendering — Option A adopted: options transported in `AIMessage.additional_kwargs.options` -> forwarded in SSE routing event -> stored in `ChatState.serviceOptions` -> rendered as interactive `ServiceOptionBar` pills in chat.
     OD-23c [RESOLVED 2026-11-08]: Order Tracking Continuation Guard — Option A adopted: direct continuation guard in `routerNode` ensuring pending order ID collection turns re-route directly to `order_tracking` without spurious LLM re-classification. Recorded in DECISIONS.md under Phase 23.
 
+24. [RESOLVED 2026-11-09] Phase 24 Stabilization Decisions:
+    - OD-24a [RESOLVED 2026-11-09]: Identity Seeding Boundary vs. "Only Account Access Writes Identity" Invariant:
+      Option A adopted — Pure helper `server/src/state/session-identity.ts`. Maps `req.authMethod === 'bearer'` to `status: 'LIGHTLY_VERIFIED'` with `verificationMethod: 'session'`. Guests and `x-user-id` callers map to `UNVERIFIED`. If checkpoint already has `status: 'VERIFIED'`, preserves `VERIFIED` only if `verifiedAt` is within 15-minute TTL, else drops to `LIGHTLY_VERIFIED`. The helper NEVER creates or elevates to `VERIFIED`. `auth.middleware.ts` sets `req.authMethod`; controller passes identity into graph input. Recorded in DECISIONS.md under Phase 24.
+
+    - OD-24b [RESOLVED 2026-11-09]: Duplicate Charge Human Review Escalation & `review_requests` Table:
+      Option A adopted — Added `review_requests` table to `server/src/persistence/db/schema.ts` with columns (`id`, `conversationId`, `userId`, `orderId`, `paymentId`, `duplicatePaymentId`, `amount`, `status`, `reason`, `createdAt`, `updatedAt`). When duplicate charge is detected, agent asks user to confirm. Once confirmed, creates a `review_requests` record with `status: 'pending'`, escalating to human review queue instead of executing an immediate automated refund. Migration `0008_nappy_thunderbolt.sql` applied. Recorded in DECISIONS.md under Phase 24.
+
+    - OD-24c [RESOLVED 2026-11-09]: Per-Turn Handoff Counter Semantics in `ConversationState`:
+      Option A adopted — Made `handoffCount` turn-scoped (reset to 0 at the start of each user turn in `message.controller.ts` via graph input `{ routing: { handoffCount: 0 } }`). Single authoritative owner: only the parent router updates `handoffCount` when executing a `HANDOFF` or `RE_ROUTE`. Specialists never emit `handoffCount` deltas. Resume transitions (`RE_ROUTE`) are exempt from loop detection. Prevents false-positive escalations while maintaining loop safety per turn. Recorded in DECISIONS.md under Phase 24.
+
+
 
 
 

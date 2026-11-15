@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { getPaymentByOrderId, getRefundById } from '../../persistence/repositories/marketplace.repository.js';
+import { getPaymentByOrderId, getRefundById, getOrderById } from '../../persistence/repositories/marketplace.repository.js';
 import { ToolResult, ToolMetadata } from '../types.js';
 
 // ---------------------------------------------------------------------------
@@ -14,6 +14,7 @@ const uuidSchema = z.string().uuid();
 
 export const GetPaymentInputSchema = z.object({
   orderId: uuidSchema,
+  userId: z.string().optional(),
 });
 
 export const GetPaymentOutputSchema = z.object({
@@ -46,6 +47,16 @@ export async function getPayment(
         success: false,
         error: { code: 'NOT_FOUND', message: `No payment found for order ${parsed.data.orderId}.` },
       };
+    }
+
+    if (parsed.data.userId) {
+      const order = await getOrderById(payment.orderId);
+      if (order && order.userId !== parsed.data.userId) {
+        return {
+          success: false,
+          error: { code: 'NOT_FOUND', message: `No payment found for order ${parsed.data.orderId}.` },
+        };
+      }
     }
 
     return { success: true, data: payment };

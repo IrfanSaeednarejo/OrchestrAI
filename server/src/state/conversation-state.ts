@@ -88,11 +88,14 @@ export const ConversationStateAnnotation = Annotation.Root({
         newState.history = [...state.history, ...update.history];
       }
 
-      // handoffCount updates MUST be deltas (e.g. 1 for one handoff), NOT absolute values.
-      // The reducer adds the emitted value to the current count. Emitting an absolute count
-      // here will silently corrupt loop-detection logic.
+      // handoffCount updates are deltas (e.g. 1 for one handoff), except when explicitly set to 0
+      // (per-turn reset at the start of a user turn, OD-24c).
       if (update.handoffCount !== undefined) {
-        newState.handoffCount = state.handoffCount + update.handoffCount;
+        if (update.handoffCount === 0) {
+          newState.handoffCount = 0;
+        } else {
+          newState.handoffCount = state.handoffCount + update.handoffCount;
+        }
       }
 
       if (update.visitedAgents !== undefined) {

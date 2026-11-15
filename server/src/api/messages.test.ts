@@ -23,7 +23,7 @@ import { buildParentGraph } from '../graphs/parent/parent-graph.js';
 import { SPECIALIST_STUBS } from '../agents/specialists/stubs.js';
 import { createUser } from '../persistence/repositories/marketplace.repository.js';
 import { createConversation } from '../persistence/repositories/conversation.repository.js';
-import { db } from '../persistence/db/client.js';
+import { db, pgPool } from '../persistence/db/client.js';
 import {
   users,
   conversations,
@@ -606,6 +606,34 @@ describe('Phase 16 Step 3: Message Dispatch Endpoint', () => {
         await new Promise<void>((resolve, reject) => {
           server.close((err) => (err ? reject(err) : resolve()));
         });
+      }
+    });
+
+    it('Step 6: returns 409 Conflict when another message is currently being processed (advisory lock)', async () => {
+      const app = createTestApp();
+      const conv = await createConversation({ userId: ownerUserId });
+      cleanupConversationIds.push(conv.id);
+
+      // Acquire advisory lock manually on a separate DB client within an active transaction
+      const lockClient = await pgPool.connect();
+      try {
+        await lockClient.query('BEGIN');
+        const lockRes = await lockClient.query<{ acquired: boolean }>(
+          'SELECT pg_try_advisory_xact_lock(hashtext($1)) as acquired',
+          [conv.id]
+        );
+        expect(lockRes.rows[0]?.acquired).toBe(true);
+
+        const res = await request(app)
+          .post(`/api/conversations/${conv.id}/messages`)
+          .set('x-user-id', ownerUserId)
+          .send({ content: 'Hello concurrent message' });
+
+        expect(res.status).toBe(409);
+        expect(res.body.error.code).toBe('CONFLICT');
+        await lockClient.query('COMMIT');
+      } finally {
+        lockClient.release();
       }
     });
   });

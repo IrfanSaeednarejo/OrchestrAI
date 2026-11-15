@@ -1,9 +1,19 @@
 # STATUS (update at the end of every step/phase)
 
-Last verified suite figure reported: Server 586/586 passing (67 files), Client 144/144 passing (28 files). Total: 730 passing tests. Server baseline test count: 563. Client baseline test count: 98.
+Last verified suite figure reported: Server 615/615 passing (72 files, 1 skipped), Client 144/144 passing (28 files). Total: 759 passing tests. Server baseline test count: 615. Client baseline test count: 144.
 
 ## Phase state
 - Phases 1-23: COMPLETE and signed off.
+- Phase 24 (Stabilization): COMPLETE on branch `phase/23-stabilization`. All 7 steps verified and passing:
+  - Step 0: Plan & Baseline
+  - Step 1a: Session-Identity Seeding & Propagation (`session-identity.ts`, OD-24a)
+  - Step 1b: Universal Blocked-Reply Helper & ActiveWorkflow Cleanup (`createBlockedResponse`)
+  - Step 2: Security Hardening & Tenant Isolation (IDOR safety on order/payment/profile/returns/refunds)
+  - Step 3: Router Hardening & Turn-Scoped Handoffs (`handoffCount: 0` turn initialization, OD-24c)
+  - Step 4: Duplicate Charge Confirmation Flow & Staff Review Queue (`review_requests` table, OD-24b)
+  - Step 5: Intent Alignment, Readback & Policy Grounding (status vs create intent, DB idempotency indexes)
+  - Step 6: Resilience, Idempotent Retries & Advisory Locking (`pg_try_advisory_xact_lock`, LLM/tool retry policy)
+  - Step 7: Multi-Turn HTTP Integration Tests & Documentation (`stabilization.integration.test.ts`, `live-smoke.test.ts`)
 
   - Phase 6 (Access Control / Verification Gate): Steps 0-5 closed; Step 6a proof graph verified; Step 6b close-out and type unification completed.
   - Phase 7 (Agent Foundation): Steps 0-5 closed; LLM client, prompt loader, handoff contract, common node patterns, and subgraph harness verified (294 tests).
@@ -99,4 +109,5 @@ Phase 19 hardening: recursive tool output PII redaction, `user` reducer null-saf
 - 2026-11-08: Phase 22 Mandatory User Auth & Dedicated Storefront / Orders Pages completed: mandatory authentication guard hook (`useRequireAuth`), dedicated full-page `/login` and `/register` flows with query redirection, global navigation update (`TopNav` with user identity pill and direct store/orders links), removal of demo identity switcher from user-facing sidebar, dedicated full-page `/store` catalog with dynamic cart & checkout, dedicated `/orders` order history with color-coded status badges and 1-click "Ask Agent About This Order", root `/` chat routing guard and `orderId` input prompt pre-fill (584 server tests + 131 client tests = 715 tests).
 - 2026-11-08: Bug Fixes & UX Clarification: UUID fast-path regex extraction across specialists (Order Tracking, Returns, Payment), Pattern C profile verification routing and resume context fix, actionable guidance hint in client VerificationPrompt banner and input placeholder (584 server tests + 131 client tests = 715 tests).
 - 2026-11-08: Neon Postgres deployment: wired DATABASE_URL/UNPOOLED into config, drizzle, env; migrations, checkpointer setup, seed, and knowledge ingestion applied to Neon; root build scripts; vitest testTimeout raised to 30s; full end-to-end round-trip verified against Neon (commit 45393f0).
+- 2026-11-09: Phase 24 Stabilization completed: session-identity propagation (LIGHTLY_VERIFIED for Bearer tokens), universal blocked-reply helper, tenant isolation across all domain tools, turn-scoped handoffs, duplicate charge confirmation with review_requests table, intent alignment and database idempotency unique indexes, transaction-level advisory locking, LLM/tool retry resilience, and multi-turn HTTP integration tests (615 server tests + 144 client tests = 759 tests, 1 skipped).
 

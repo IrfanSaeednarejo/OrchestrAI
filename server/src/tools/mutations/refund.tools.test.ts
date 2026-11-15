@@ -31,6 +31,7 @@ describe('create_refund', () => {
 
   let approvedReturnId: string;
   let requestedReturnId: string;
+  let unapprovedPaymentId: string;
   let mismatchOrderReturnId: string;
 
   beforeAll(async () => {
@@ -64,6 +65,7 @@ describe('create_refund', () => {
     // For mismatch order case
     const oMismatch1 = await makeOrder();
     const oMismatch2 = await makeOrder();
+    const oUnapproved = await makeOrder();
 
     // 4. Create Payments
     const pValid = await createPayment({
@@ -132,10 +134,14 @@ describe('create_refund', () => {
       status: 'captured',
       method: 'credit_card',
     });
-    // Override the valid payment id for the mismatch order test? No, the mismatch order test uses validPaymentId and mismatchOrderReturnId.
-    // Let's create a new set for mismatch order test so it's isolated, or just point to oMismatch2.
-    // In the test we do: paymentId: validPaymentId, returnId: mismatchOrderReturnId.
-    // validPaymentId belongs to oValid. We will create mismatchOrderReturnId belonging to oMismatch2.
+
+    const pUnapproved = await createPayment({
+      orderId: oUnapproved,
+      amount: '100.00',
+      status: 'captured',
+      method: 'credit_card',
+    });
+    unapprovedPaymentId = pUnapproved.id;
 
     // 5. Create Returns
     const rApproved = await createReturn({
@@ -147,7 +153,7 @@ describe('create_refund', () => {
     approvedReturnId = rApproved.id;
 
     const rRequested = await createReturn({
-      orderId: oValid, // Also matches validPaymentId for the unapproved test
+      orderId: oUnapproved, // Matches unapprovedPaymentId for the unapproved test
       reason: 'Wrong item',
       status: 'requested',
     });
@@ -295,7 +301,7 @@ describe('create_refund', () => {
 
   it('RETURN_NOT_APPROVED when the return exists but isn\'t approved', async () => {
     const result = await createRefund({
-      paymentId: validPaymentId,
+      paymentId: unapprovedPaymentId,
       returnId: requestedReturnId,
       amount: '100.00',
     });

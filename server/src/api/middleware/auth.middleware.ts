@@ -15,6 +15,7 @@ import {
 } from '../../persistence/repositories/marketplace.repository.js';
 import { BadRequestError, NotFoundError, UnauthorizedError } from '../errors/app-error.js';
 import { verifyToken } from '../../services/token.service.js';
+import { config } from '../../shared/config.js';
 import '../types.js';
 
 const UUID_REGEX =
@@ -63,12 +64,17 @@ export async function authMiddleware(
         throw new UnauthorizedError('User account not found');
       }
       req.user = user;
+      req.authMethod = 'bearer';
       return next();
     }
 
     // ── Priority 2: x-user-id header (benchmark runners, Phase 16) ───────────
     const rawUserId = req.headers['x-user-id'];
     if (rawUserId !== undefined) {
+      if (config.env === 'production') {
+        throw new UnauthorizedError('x-user-id header authentication is disabled in production');
+      }
+
       const userId = Array.isArray(rawUserId) ? rawUserId[0] : rawUserId;
 
       if (!userId || !UUID_REGEX.test(userId)) {
@@ -81,15 +87,21 @@ export async function authMiddleware(
       }
 
       req.user = user;
+      req.authMethod = 'x-user-id';
       return next();
     }
 
     // ── Priority 3: Guest fallback (anonymous visitors) ───────────────────────
+    if (config.env === 'production') {
+      throw new UnauthorizedError('Authentication required');
+    }
+
     const guestUser = await getOrCreateGuestUser();
     req.user = {
       ...guestUser,
       isGuest: true,
     };
+    req.authMethod = 'guest';
     next();
   } catch (err) {
     next(err);

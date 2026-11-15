@@ -1,4 +1,5 @@
 // src/state/blocked-workflow.ts
+import { AIMessage } from '@langchain/core/messages';
 import { GateDecision } from '../tools/gate.js';
 import { ReturnTo, ConversationStateUpdate, WorkflowStatus } from './conversation-state.js';
 
@@ -33,5 +34,16 @@ export function buildBlockedWorkflowUpdate(input: BuildBlockedWorkflowInput): Co
       returnTo: input.returnTo,
       resumeContext: input.resumeContext ?? null,
     },
+  };
+}
+
+export function createBlockedResponse(
+  input: BuildBlockedWorkflowInput,
+  customerMessage: string,
+): ConversationStateUpdate {
+  return {
+    ...buildBlockedWorkflowUpdate(input),
+    workflowStatus: 'WAITING_FOR_USER_INPUT' satisfies WorkflowStatus,
+    messages: [new AIMessage(customerMessage)],
   };
 }
