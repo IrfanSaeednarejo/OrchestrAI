@@ -6,6 +6,7 @@ import { config } from '../../shared/config.js';
 import { getUserByEmail } from '../../persistence/repositories/marketplace.repository.js';
 import { DEFAULT_GUEST_USER_ID } from '../middleware/auth.middleware.js';
 import { verificationService } from '../../services/verification.service.js';
+import { peekProfileVerificationCode } from '../../services/profile-verification.service.js';
 import { NotFoundError, ValidationError } from '../errors/app-error.js';
 import { asyncHandler } from '../utils/async-handler.js';
 
@@ -93,5 +94,25 @@ demoRouter.get(
       userId: rawUserId,
       code,
     });
+  })
+);
+
+// Profile-verification peek (dev/test only): returns the raw code stored by
+// issueProfileVerificationCode — available only when ENABLE_DEMO_ENDPOINTS=true
+// and NODE_ENV !== production.
+demoRouter.get(
+  '/demo/profile-verify-peek/:userId',
+  requireDemoEnabled,
+  asyncHandler(async (req: Request, res: Response) => {
+    const rawUserId = typeof req.params['userId'] === 'string' ? req.params['userId'] : '';
+    if (!rawUserId || !UUID_REGEX.test(rawUserId)) {
+      throw new ValidationError('Valid userId UUID path parameter is required');
+    }
+
+    const code = await peekProfileVerificationCode(rawUserId);
+    if (!code) {
+      throw new NotFoundError(`No pending profile verification code for userId ${rawUserId}`);
+    }
+    res.status(200).json({ userId: rawUserId, code });
   })
 );

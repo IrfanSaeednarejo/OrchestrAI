@@ -1,21 +1,19 @@
 # STATUS (update at the end of every step/phase)
 
-Last verified suite figure reported: Server 647+ passing, Client 144/144 passing. Server baseline test count: 615. Client baseline test count: 144.
+Last verified suite figure reported: Server 725 passing (1 skipped), Client 150/150 passing (875 total passing). Server baseline test count: 647. Client baseline test count: 144.
 
 ## Phase state
 - Phases 1-23: COMPLETE and signed off.
 - Phase 24 (Stabilization): COMPLETE on branch `phase/23-stabilization`.
 - Phase 25 (Conversational Routing & Memory Overhaul): COMPLETE on branch `phase/24-conversational-routing`.
-- Phase 26 (Email Verification & Multi-Turn Profile Verification Flow): COMPLETE on branch `phase/25-email-verification`. All 9 steps verified and passing:
-  - Step 1: Resend dependency and typed email configuration with env validation (`sendEmail`, `RESEND_API_KEY`, `EMAIL_FROM`, `EMAIL_DRY_RUN`).
-  - Step 2: Resend email service, verification code template (`renderVerificationCodeEmail`), and smoke script (`email-smoke.ts`).
-  - Step 3: Verification service hardening: 60s per-user resend cooldown (`verify:cooldown:{userId}`), `VERIFICATION_CODE_TTL_SECONDS = 600`, and `revokeVerificationCode(userId)`.
-  - Step 4: Email delivery for `start_identity_verification` with masked email delivery and raw code redaction from tool outputs.
-  - Step 5: Compound profile requests greeting regex hardening in `isGreetingMessage` (`taxonomy.ts`).
-  - Step 6: Context-aware field prompt and transcript memory in `profileNode` (`ProfileIntentSchema.targetField`, targeted clarification).
-  - Step 7: Verification handoff & supervisor domain override for verification code requests during blocked workflows.
-  - Step 8: Surface masked recipient email (`maskedEmail`) and cooldown retry seconds in `account_accessNode` prompt.
-  - Step 9: Multi-turn end-to-end integration test (`Journey 3` in `conversational-routing.integration.test.ts`), multi-turn verification, and suite validation.
+- Phase 26 (Profile Update + Identity Verification Flow): COMPLETE on branch `phase/26-profile-update-flow`. All 6 steps + final integration verified and passing:
+  - Step 1: Profile verification service (`server/src/services/profile-verification.service.ts`) with Redis storage (`profile:verify:{userId}` 900s TTL, `profile:verify:cooldown:{userId}` 60s cooldown, 15s failure cooldown), SHA-256 code hashing, atomic Lua script for verification, `resend-resets-attempts = yes`, and `peekProfileVerificationCode` non-prod test hook.
+  - Step 2: REST endpoints (`/profile/update/request-code`, `/profile/update/verify`, `/profile/update/resend-code` dual-mounted at `/profile/update` and `/api/profile/update`) with authentication, Zod validation, conditional snapshot updates against users table for concurrency safety, and structured responses.
+  - Step 3: Shared normalization library (`server/src/shared/normalization.ts`) — `maskEmail()`, `conservativeTitleCaseName()`, and `normalizeName()`, preserving internal capitalization (McDonald, O'Brien) and edge cases.
+  - Step 4: Profile specialist redesign (`server/src/agents/specialists/profile/profile.ts`) — 4-step state machine (`collect_value` -> `confirm_change` -> `awaiting_code` -> applied update) owned entirely by profile specialist without lateral handoffs, structured user-facing messages, and no-change early completion.
+  - Step 5: Frontend `VerificationPrompt` component (`client/src/components/chat/verification-prompt.tsx`) with 7-state machine (`idle`, `requesting`, `awaiting_input`, `verifying`, `resending`, `success`, `locked_out`), timer-derived countdowns, friendly copy, and full keyboard/screen-reader accessibility.
+  - Step 6: Full acceptance test suite (`server/src/api/profile-verification-flow.integration.test.ts`) covering 23 end-to-end integration scenarios.
+  - Step Final: Integration test suites verified — Journey 3 rewritten for profile-owned flow in `conversational-routing.integration.test.ts`, Scenario 7 Redis key isolation in `parent-graph-account.integration.test.ts`; 725 server + 150 client tests passing (0 failures).
 
   - Phase 6 (Access Control / Verification Gate): Steps 0-5 closed; Step 6a proof graph verified; Step 6b close-out and type unification completed.
   - Phase 7 (Agent Foundation): Steps 0-5 closed; LLM client, prompt loader, handoff contract, common node patterns, and subgraph harness verified (294 tests).
@@ -112,4 +110,6 @@ Phase 19 hardening: recursive tool output PII redaction, `user` reducer null-saf
 - 2026-11-08: Bug Fixes & UX Clarification: UUID fast-path regex extraction across specialists (Order Tracking, Returns, Payment), Pattern C profile verification routing and resume context fix, actionable guidance hint in client VerificationPrompt banner and input placeholder (584 server tests + 131 client tests = 715 tests).
 - 2026-11-08: Neon Postgres deployment: wired DATABASE_URL/UNPOOLED into config, drizzle, env; migrations, checkpointer setup, seed, and knowledge ingestion applied to Neon; root build scripts; vitest testTimeout raised to 30s; full end-to-end round-trip verified against Neon (commit 45393f0).
 - 2026-11-09: Phase 24 Stabilization completed: session-identity propagation (LIGHTLY_VERIFIED for Bearer tokens), universal blocked-reply helper, tenant isolation across all domain tools, turn-scoped handoffs, duplicate charge confirmation with review_requests table, intent alignment and database idempotency unique indexes, transaction-level advisory locking, LLM/tool retry resilience, and multi-turn HTTP integration tests (615 server tests + 144 client tests = 759 tests, 1 skipped).
+- 2026-11-11: Phase 25 Conversational Routing & Memory Overhaul completed: dynamic router triage eliminating sticky continuation locks, grounded General Assistant specialist node, additive conversation entity memory (`lastKnownEntities`) and pending task tracking, bounded transcript context injection, friendly activity progress streaming, and multi-intent queueing (647 server tests + 144 client tests = 791 tests, 1 skipped).
+- 2026-11-13: Phase 26 Profile Update + Identity Verification Flow completed: profile-owned 4-step update state machine with zero lateral handoffs, Redis-backed atomic verification service (SHA-256 hashed codes, Lua script, 60s/15s cooldowns), dual-mounted REST endpoints (`/profile/update/request-code`, `/verify`, `/resend-code`) with conditional snapshot concurrency protection, client VerificationPrompt 7-state machine, and 23 acceptance integration tests (725 server tests + 150 client tests = 875 tests, 1 skipped).
 

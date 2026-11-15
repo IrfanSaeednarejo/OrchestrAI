@@ -268,6 +268,34 @@ Small focused steps; explicit typed state; clear agent boundaries; no agent spag
   - Router dispatches primary intent and saves secondary intent in `state.intentQueue`.
   - Added conditional edges from specialists returning to router when `intentQueue` has pending items, capping execution safely.
 
+## Phase 26 (Profile Update & Identity Verification Flow) — approved 2026-11-13
+- OD-26a (Profile-Owned Verification Flow Architecture):
+  - The profile update flow is owned entirely by the profile specialist across a 4-step state machine (`collect_value` -> `confirm_change` -> `awaiting_code` -> database update). No Pattern C handoff to Account Access is used for profile updates (Account Access handles view-profile verification and password resets).
+  - Normalization library in `server/src/shared/normalization.ts` handles `maskEmail()`, `conservativeTitleCaseName()`, and `normalizeName()`, preserving internal capitals (McDonald, O'Brien) and trimming whitespace.
+  - `rawInput` is stored only in the Redis payload (`profile:verify:{userId}`) for verification, never logged or returned in API responses, and discarded on completion or eviction.
+- OD-26b (Redis Key Architecture & Namespace Isolation):
+  - Separate Redis keys from Account Access: `profile:verify:{userId}` (hash containing codeHash, pendingUpdates, snapshot, attempts, expiresAtMs; TTL 900s) and `profile:verify:cooldown:{userId}` (60s resend cooldown).
+  - Verification codes are hashed using SHA-256 before storage; the raw 6-digit code is never persisted in production.
+  - In non-production environments (`NODE_ENV !== 'production'`), a temporary peek key `profile:verify:peek:{userId}` (120s TTL) is written to support deterministic integration and E2E test verification via `GET /api/demo/profile-verify-peek/:userId`.
+- OD-26c (Atomic Verification via Lua & Attempt Reset on Resend):
+  - Atomic verification executed via Redis Lua script: returns `OK`, `EXPIRED`, `TOO_MANY_ATTEMPTS`, or `INVALID`. The `INVALID` branch is the only path that writes (increments attempt counter).
+  - Attempt limit capped at 5; 6th attempt triggers `TOO_MANY_ATTEMPTS` lockout.
+  - Resend resets attempts to 0 (`resend-resets-attempts = yes`) and deletes the previous code.
+  - Successful verification immediately deletes the pending verification key and any active cooldown key.
+- OD-26d (Non-Throwing Email Service & Transient Failure Cooldown):
+  - `sendEmail` returns `Promise<EmailResult>` and never throws.
+  - When email delivery fails, the unusable code is deleted, but a shortened 15s failure cooldown key (`SET profile:verify:cooldown:{userId} 15`) is activated to prevent rapid spamming while allowing prompt user retry.
+  - Delivery statuses modeled as `'sent' | 'failed'` (no 'bounced' status).
+- OD-26e (Snapshot-Based Optimistic Concurrency Control):
+  - Concurrency safety implemented via snapshot conditional SQL update against the `users` table:
+    `UPDATE users SET ... WHERE id = :userId AND name = :nameSnapshot AND default_address = :addressSnapshot`
+  - If 0 rows are affected (due to concurrent edit), the verify endpoint and agent return `{ status: "conflict" }` without overwriting concurrent edits.
+- OD-26f (Client Verification Prompt 7-State Deterministic State Machine):
+  - Frontend component `VerificationPrompt` in `client/src/components/chat/verification-prompt.tsx` runs a strict 7-state machine: `idle`, `requesting`, `awaiting_input`, `verifying`, `resending`, `success`, `locked_out`.
+  - Timers are derived from server timestamps (`expiresAtMs`, `resendAtMs`).
+  - Copy is clean and customer-friendly without system-leak tokens (no raw snake_case or technical error strings).
+
+
 
 
 

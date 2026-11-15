@@ -249,7 +249,13 @@ describe('Phase 24 End-to-End Conversational Routing Integration Tests', { timeo
     expect(cpState.lastKnownEntities?.orderId).toBe(testOrder.id);
   });
 
-  it('Journey 3: Multi-turn profile update flow with verification handoff and resume', async () => {
+  it('Journey 3: Multi-turn profile update flow — new profile-owned verification flow', async () => {
+    // The new profile specialist owns the full update flow end-to-end:
+    //   Turn 1: router → profile (Branch E: first visit) → confirm_change message
+    //   Turn 2: "yes" → profile (Branch C: confirm_change) auto-sends code → CODE_SENT message
+    //   Turn 3: 6-digit code → profile (Branch B: awaiting_code) verifies + applies → COMPLETED
+    // No Account Access handoff for profile updates (OD-26 decision).
+
     const regRes = await request(app)
       .post('/api/auth/register')
       .send({
@@ -272,7 +278,8 @@ describe('Phase 24 End-to-End Conversational Routing Integration Tests', { timeo
     createdConversationIds.push(conversationId);
 
     // Turn 1: "hello change my name to Irfan Raja Billo"
-    // Must NOT be treated as pure greeting. Routes to profile specialist.
+    // LLM mocks: (1) router classifier → profile, (2) profile intent extraction → name + value
+    // Expected response: confirm_change message (not "verify your identity")
     mockGenerateContent.mockResolvedValueOnce({
       text: JSON.stringify({
         specialist: 'profile',
@@ -299,122 +306,69 @@ describe('Phase 24 End-to-End Conversational Routing Integration Tests', { timeo
     expect(turn1Res.status).toBe(200);
     expect(turn1Res.body.routing.currentAgent).toBe('profile');
     expect(turn1Res.body.routing.workflowStatus).toBe('WAITING_FOR_USER_INPUT');
-    expect(turn1Res.body.message.content).toMatch(/verify your identity/i);
+    // Profile now shows confirm_change first (not "verify your identity")
+    expect(turn1Res.body.message.content).toMatch(/just to confirm/i);
+    expect(turn1Res.body.message.content).toMatch(/Irfan Raja Billo/i);
 
-    // Turn 2: "so change the account name"
-    // Without a specific value given, asks specifically for the name
+    // Turn 2: "yes"
+    // Router classifier classifies "yes" in context as profile update confirmation.
+    // Profile specialist detects confirmation via fast-path heuristic (no LLM call).
+    // Auto-sends code via issueAndSendCode → returns CODE_SENT message with masked email.
     mockGenerateContent.mockResolvedValueOnce({
       text: JSON.stringify({
         specialist: 'profile',
         intent: 'UPDATE_PROFILE',
         confidence: 0.95,
-        reasoning: 'Clarifying change of account name.',
-      }),
-    });
-    mockGenerateContent.mockResolvedValueOnce({
-      text: JSON.stringify({
-        intent: 'update_profile',
-        targetField: 'name',
-        name: null,
-        defaultAddress: null,
-        confidence: 0.9,
+        reasoning: 'Customer confirms profile update.',
       }),
     });
 
     const turn2Res = await request(app)
       .post(`/api/conversations/${conversationId}/messages`)
       .set('Authorization', `Bearer ${token}`)
-      .send({ content: 'so change the account name' });
+      .send({ content: 'yes' });
 
     expect(turn2Res.status).toBe(200);
     expect(turn2Res.body.routing.currentAgent).toBe('profile');
     expect(turn2Res.body.routing.workflowStatus).toBe('WAITING_FOR_USER_INPUT');
-    expect(turn2Res.body.message.content).toMatch(/What new name would you like to set/i);
+    expect(turn2Res.body.message.content).toMatch(/verification code has been sent/i);
+    expect(turn2Res.body.message.content).toContain('i***@orchestrai-test.com');
 
-    // Turn 3: "change my Name to Irfan Saeed"
-    // Captures new value, blocks on verification
+    // Retrieve the raw code via demo peek endpoint (dev/test only).
+    // The profile service writes profile:verify:peek:{userId} with a 2-min TTL
+    // in non-production environments.
+    const peekRes = await request(app)
+      .get(`/api/demo/profile-verify-peek/${userId}`)
+      .set('Authorization', `Bearer ${token}`);
+    expect(peekRes.status).toBe(200);
+    const code = peekRes.body.code as string;
+    expect(code).toMatch(/^\d{6}$/);
+
+    // Turn 3: User sends the 6-digit code.
+    // Router classifier classifies the 6-digit code as profile verification.
+    // Profile specialist (Branch B: awaiting_code) verifies the hash and applies the
+    // conditional DB update. No profile LLM calls needed.
     mockGenerateContent.mockResolvedValueOnce({
       text: JSON.stringify({
         specialist: 'profile',
         intent: 'UPDATE_PROFILE',
         confidence: 0.95,
-        reasoning: 'Customer providing new name.',
-      }),
-    });
-    mockGenerateContent.mockResolvedValueOnce({
-      text: JSON.stringify({
-        intent: 'update_profile',
-        targetField: 'name',
-        name: 'Irfan Saeed',
-        defaultAddress: null,
-        confidence: 0.95,
+        reasoning: 'Customer provides verification code for profile update.',
       }),
     });
 
     const turn3Res = await request(app)
       .post(`/api/conversations/${conversationId}/messages`)
       .set('Authorization', `Bearer ${token}`)
-      .send({ content: 'change my Name to Irfan Saeed' });
-
-    expect(turn3Res.status).toBe(200);
-    expect(turn3Res.body.routing.currentAgent).toBe('profile');
-    expect(turn3Res.body.routing.workflowStatus).toBe('WAITING_FOR_USER_INPUT');
-    expect(turn3Res.body.message.content).toMatch(/verify your identity/i);
-
-    // Turn 4: "Send me a verification code"
-    // Classifier is called with currentDomain='profile', but supervisor overrides domain bias and routes to account_access.
-    mockGenerateContent.mockResolvedValueOnce({
-      text: JSON.stringify({
-        specialist: 'profile',
-        intent: 'REQUEST_VERIFICATION_CODE',
-        confidence: 0.95,
-        reasoning: 'Customer asks for verification code.',
-      }),
-    });
-    mockGenerateContent.mockResolvedValueOnce({
-      text: JSON.stringify({
-        intent: 'start_verification',
-        code: null,
-        confidence: 0.95,
-      }),
-    });
-
-    const turn4Res = await request(app)
-      .post(`/api/conversations/${conversationId}/messages`)
-      .set('Authorization', `Bearer ${token}`)
-      .send({ content: 'Send me a verification code' });
-
-    expect(turn4Res.status).toBe(200);
-    expect(turn4Res.body.routing.currentAgent).toBe('account_access');
-    expect(turn4Res.body.routing.workflowStatus).toBe('WAITING_FOR_USER_INPUT');
-    expect(turn4Res.body.message.content).toMatch(/verification code has been sent/i);
-    expect(turn4Res.body.message.content).toContain('i***@orchestrai-test.com');
-
-    // Retrieve the issued code directly from Redis
-    const redisRecord = await redisClient.get(`verify:${userId}`);
-    expect(redisRecord).not.toBeNull();
-    const parsed = JSON.parse(redisRecord as string) as { code: string };
-    const code = parsed.code;
-    expect(code).toMatch(/^\d{6}$/);
-
-    // Turn 5: User sends the 6-digit code.
-    // Guard 3a routes directly to account_access -> fast path verifies code -> router resumes profile -> profile updates name!
-    mockGenerateContent.mockResolvedValueOnce({
-      text: JSON.stringify({ response: 'Your name has been updated to Irfan Saeed.' }),
-    });
-
-    const turn5Res = await request(app)
-      .post(`/api/conversations/${conversationId}/messages`)
-      .set('Authorization', `Bearer ${token}`)
       .send({ content: code });
 
-    expect(turn5Res.status).toBe(200);
-    expect(turn5Res.body.routing.workflowStatus).toBe('COMPLETED');
-    expect(turn5Res.body.message.content).toMatch(/Irfan Saeed/i);
+    expect(turn3Res.status).toBe(200);
+    expect(turn3Res.body.routing.workflowStatus).toBe('COMPLETED');
+    expect(turn3Res.body.message.content).toMatch(/Irfan Raja Billo/i);
+    expect(turn3Res.body.message.content).toMatch(/updated/i);
 
-    // Verify database reflects the updated name
+    // Verify the name is persisted in the database
     const [userInDb] = await db.select().from(users).where(inArray(users.id, [userId]));
-    expect(userInDb?.name).toBe('Irfan Saeed');
+    expect(userInDb?.name).toBe('Irfan Raja Billo');
   });
 });
-
