@@ -578,17 +578,19 @@ describe('Phase 16 Step 3: Message Dispatch Endpoint', () => {
         // Abort the SSE stream while graph execution proceeds
         controller.abort();
 
-        // Wait a short moment for the background stream drain and checkpointing to complete
-        await new Promise((resolve) => setTimeout(resolve, 300));
-
-        // Verify that the checkpoint contains the completed turn
+        // Wait for the background stream drain and checkpointing to complete
         const traceConfig = {
           configurable: {
             thread_id: conv.id,
           },
         };
-        const snapshot = await graph.getState(traceConfig);
-        const state = snapshot.values as ConversationState;
+        let state: ConversationState = null as unknown as ConversationState;
+        for (let i = 0; i < 20; i++) {
+          const snapshot = await graph.getState(traceConfig);
+          state = snapshot.values as ConversationState;
+          if (state?.workflowStatus === 'COMPLETED') break;
+          await new Promise((resolve) => setTimeout(resolve, 150));
+        }
 
         // Checkpoint state must reflect completed execution
         expect(state.workflowStatus).toBe('COMPLETED');

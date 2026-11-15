@@ -3,7 +3,9 @@
 // Handles greetings, capability questions ("what else can you do?"), chit-chat,
 // and general store triage, grounded in the platform capabilities registry.
 
+import crypto from 'node:crypto';
 import { AIMessage } from '@langchain/core/messages';
+import type { RunnableConfig } from '@langchain/core/runnables';
 import { z } from 'zod';
 import type {
   ConversationState,
@@ -11,6 +13,8 @@ import type {
 } from '../../../state/conversation-state.js';
 import { generateStructuredOutput } from '../../llm/client.js';
 import { formatCapabilitiesForPrompt } from './capabilities.js';
+import { recordAgentExecution, completeAgentExecutionSafely } from '../../../routing/events.js';
+import { getTurnContext } from '../../../shared/turn-context.js';
 
 export const SuggestionItemSchema = z.object({
   label: z.string().min(1),
@@ -68,44 +72,109 @@ Respond with a JSON object:
 }`;
 }
 
-export async function generalAssistantNode(
-  state: ConversationState
-): Promise<ConversationStateUpdate> {
-  const userText = extractLastUserMessageText(state);
-
-  const prompt = buildGeneralAssistantPrompt(userText);
-  const result = await generateStructuredOutput(GeneralResponseSchema, prompt, {
-    temperature: 0.2,
-  });
-
-  let responseText: string;
-  let suggestions: SuggestionItem[];
-
-  if (result.success) {
-    responseText = result.data.response;
-    suggestions = result.data.suggestions ?? [];
-  } else {
-    // Grounded fallback
-    responseText =
-      "I'm here to assist you with order tracking, returns, payments, refunds, profile updates, and account security. How can I help you today?";
-    suggestions = [
-      { label: 'Track an Order', message: 'I need to track my order' },
-      { label: 'Request a Return', message: 'I would like to request a return' },
-      { label: 'Request a Refund', message: 'I need help with a refund' },
-    ];
+async function createAgentExecutionSafely(
+  conversationId: string | undefined,
+  agent: 'general_assistant'
+): Promise<string> {
+  if (typeof conversationId === 'string' && conversationId.length > 0) {
+    try {
+      if (typeof recordAgentExecution === 'function') {
+        const record = await recordAgentExecution({
+          conversationId,
+          agent,
+          status: 'success',
+        });
+        return record.id;
+      }
+    } catch {
+      return crypto.randomUUID();
+    }
   }
+  return crypto.randomUUID();
+}
 
-  const aiMessage = new AIMessage({
-    content: responseText,
-    additional_kwargs: {
-      options: suggestions,
-      suggestions,
-    },
-  });
+async function finishAgentExecutionSafely(
+  id: string | undefined,
+  duration: number,
+  status: 'success' | 'failure' = 'success',
+  error?: string
+): Promise<void> {
+  if (typeof completeAgentExecutionSafely === 'function') {
+    try {
+      await completeAgentExecutionSafely(id, duration, status, error);
+    } catch {
+      // ignore
+    }
+  }
+}
 
-  return {
-    workflowStatus: 'WAITING_FOR_USER_INPUT',
-    activeWorkflow: null, // Abandon pending non-verification task on conversational switch
-    messages: [aiMessage],
-  };
+export async function generalAssistantNode(
+  state: ConversationState,
+  config?: RunnableConfig
+): Promise<ConversationStateUpdate> {
+  const specialist = 'general_assistant' as const;
+  const conversationId =
+    typeof config?.configurable?.['conversationId'] === 'string'
+      ? config.configurable['conversationId']
+      : typeof config?.configurable?.['thread_id'] === 'string'
+        ? config.configurable['thread_id']
+        : undefined;
+
+  const startTime = performance.now();
+  const agentExecutionId = await createAgentExecutionSafely(conversationId, specialist);
+  const turnCtx = getTurnContext();
+  if (turnCtx) turnCtx.node = specialist;
+
+  try {
+    const userText = extractLastUserMessageText(state);
+
+    const prompt = buildGeneralAssistantPrompt(userText);
+    const result = await generateStructuredOutput(GeneralResponseSchema, prompt, {
+      temperature: 0.2,
+      node: specialist,
+      conversationId,
+    });
+
+    let responseText: string;
+    let suggestions: SuggestionItem[];
+
+    if (result.success) {
+      responseText = result.data.response;
+      suggestions = result.data.suggestions ?? [];
+    } else {
+      // Grounded fallback
+      responseText =
+        "I'm here to assist you with order tracking, returns, payments, refunds, profile updates, and account security. How can I help you today?";
+      suggestions = [
+        { label: 'Track an Order', message: 'I need to track my order' },
+        { label: 'Request a Return', message: 'I would like to request a return' },
+        { label: 'Request a Refund', message: 'I need help with a refund' },
+      ];
+    }
+
+    const aiMessage = new AIMessage({
+      content: responseText,
+      additional_kwargs: {
+        options: suggestions,
+        suggestions,
+      },
+    });
+
+    const update: ConversationStateUpdate = {
+      workflowStatus: 'WAITING_FOR_USER_INPUT',
+      activeWorkflow: null, // Abandon pending non-verification task on conversational switch
+      messages: [aiMessage],
+    };
+
+    await finishAgentExecutionSafely(agentExecutionId, performance.now() - startTime, 'success');
+    return update;
+  } catch (err) {
+    await finishAgentExecutionSafely(
+      agentExecutionId,
+      performance.now() - startTime,
+      'failure',
+      err instanceof Error ? err.message : String(err)
+    );
+    throw err;
+  }
 }

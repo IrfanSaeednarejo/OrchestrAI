@@ -29,6 +29,7 @@ export type RoutingEvent = {
   intent: string | null;
   decisionType: RoutingDecisionType;
   reason: string;
+  routingPath?: string;
   newDomain?: string;             // Only present when this routing event changes the active domain
 };
 
@@ -44,6 +45,7 @@ export function toRoutingHistoryRecord(event: RoutingEvent): NewRoutingHistory {
     intent: event.intent,
     decisionType: event.decisionType,
     reason: event.reason,
+    routingPath: event.routingPath ?? null,
   };
 }
 
@@ -163,6 +165,26 @@ export async function updateAgentExecutionRecord(
   update: Partial<NewAgentExecution>
 ): Promise<AgentExecution | null> {
   return updateAgentExecution(id, update);
+}
+
+export async function completeAgentExecutionSafely(
+  id: string | undefined,
+  duration: number,
+  status: 'success' | 'failure' = 'success',
+  error?: string
+): Promise<void> {
+  if (!id) return;
+  try {
+    if (typeof updateAgentExecutionRecord === 'function') {
+      await updateAgentExecutionRecord(id, {
+        duration: Math.round(duration),
+        status,
+        error: error ?? null,
+      });
+    }
+  } catch {
+    // Instrumentation must never throw
+  }
 }
 
 // ---------------------------------------------------------------------------

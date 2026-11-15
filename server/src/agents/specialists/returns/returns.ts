@@ -24,7 +24,8 @@ import { loadPrompt } from '../../prompts/template-loader.js';
 import { gatedExecuteTool } from '../../../tools/gated-execution.js';
 import { createBlockedResponse } from '../../../state/blocked-workflow.js';
 import { retrieveKnowledge } from '../../../knowledge/retrieval.js';
-import { recordAgentExecution } from '../../../routing/events.js';
+import { recordAgentExecution, completeAgentExecutionSafely } from '../../../routing/events.js';
+import { getTurnContext } from '../../../shared/turn-context.js';
 import {
   checkReturnEligibility,
   checkReturnEligibilityMetadata,
@@ -115,6 +116,7 @@ Respond with JSON:
 
   const result = await generateStructuredOutput(ReturnExtractionSchema, prompt, {
     temperature: 0.0,
+    node: 'returns_extraction',
   });
 
   if (result.success) {
@@ -165,6 +167,7 @@ export async function generateDeclineResponse(params: {
   const ResponseSchema = z.object({ response: z.string().min(1) });
   const llmResult = await generateStructuredOutput(ResponseSchema, contextPrompt, {
     temperature: 0.2,
+    node: 'returns_decline_response',
   });
 
   if (llmResult.success) {
@@ -193,6 +196,7 @@ export async function generateReturnSuccessResponse(params: {
   const ResponseSchema = z.object({ response: z.string().min(1) });
   const llmResult = await generateStructuredOutput(ResponseSchema, contextPrompt, {
     temperature: 0.2,
+    node: 'returns_success_response',
   });
 
   if (llmResult.success) {
@@ -221,6 +225,21 @@ async function createAgentExecutionSafely(
   return crypto.randomUUID();
 }
 
+async function finishAgentExecutionSafely(
+  id: string | undefined,
+  duration: number,
+  status: 'success' | 'failure' = 'success',
+  error?: string
+): Promise<void> {
+  if (typeof completeAgentExecutionSafely === 'function') {
+    try {
+      await completeAgentExecutionSafely(id, duration, status, error);
+    } catch {
+      // ignore
+    }
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Main Returns Node
 // ---------------------------------------------------------------------------
@@ -237,9 +256,14 @@ export async function returnsNode(
         ? config.configurable['thread_id']
         : undefined;
 
+  const startTime = performance.now();
   const agentExecutionId = await createAgentExecutionSafely(conversationId, specialist);
+  const turnCtx = getTurnContext();
+  if (turnCtx) turnCtx.node = specialist;
 
-  // 1. Resolve orderId, reason & intent (check resumeContext first, then LLM extraction)
+  try {
+    const result = await (async (): Promise<ConversationStateUpdate> => {
+      // 1. Resolve orderId, reason & intent (check resumeContext first, then LLM extraction)
   let orderId: string | null = null;
   let reason: string | null = null;
   let intent: 'create_return' | 'check_eligibility' | 'check_status' = 'create_return';
@@ -430,6 +454,8 @@ export async function returnsNode(
       domains: ['orders'],
       topics: ['returns'],
       topK: 3,
+      conversationId,
+      agentExecutionId,
     });
 
     const knowledgeContext =
@@ -538,6 +564,8 @@ export async function returnsNode(
     domains: ['orders'],
     topics: ['returns'],
     topK: 3,
+    conversationId,
+    agentExecutionId,
   });
 
   const knowledgeContext =
@@ -561,6 +589,19 @@ export async function returnsNode(
     },
     messages: [new AIMessage(responseText)],
   };
+    })();
+
+    await finishAgentExecutionSafely(agentExecutionId, performance.now() - startTime, 'success');
+    return result;
+  } catch (err) {
+    await finishAgentExecutionSafely(
+      agentExecutionId,
+      performance.now() - startTime,
+      'failure',
+      err instanceof Error ? err.message : String(err)
+    );
+    throw err;
+  }
 }
 
 // ---------------------------------------------------------------------------

@@ -34,6 +34,7 @@ vi.mock('../../../tools/gated-execution.js', () => ({
 // Mock recordAgentExecution
 vi.mock('../../../routing/events.js', () => ({
   recordAgentExecution: vi.fn().mockResolvedValue({ id: 'mock-agent-exec-id' }),
+  completeAgentExecutionSafely: vi.fn().mockResolvedValue(undefined),
 }));
 
 // Mock retrieveKnowledge (not used by Profile, but guard against accidents)

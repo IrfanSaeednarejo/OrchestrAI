@@ -1,5 +1,6 @@
 import { ToolResult, ToolMetadata } from './types.js';
 import { recordToolExecution } from '../routing/events.js';
+import { incrementToolCallCount } from '../shared/turn-context.js';
 
 export type ToolRetryConfig = {
   maxRetries?: number;
@@ -63,6 +64,7 @@ export async function executeTool<T>(
   rawInput: unknown,
   context: ToolExecutionContext
 ): Promise<ToolResult<T>> {
+  incrementToolCallCount();
   const startTime = Date.now();
   const isMutation = NON_RETRYABLE_MUTATION_TOOLS.includes(metadata.name);
   const maxRetries = isMutation ? 0 : (context.retryConfig?.maxRetries ?? 1);

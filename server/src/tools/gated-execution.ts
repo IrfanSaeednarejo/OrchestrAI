@@ -5,6 +5,7 @@ import { executeTool, ToolExecutionContext } from './execution.js';
 import { ToolResult, ToolMetadata } from './types.js';
 import { IdentityState } from '../state/conversation-state.js';
 import { recordToolExecution } from '../routing/events.js';
+import { incrementToolCallCount, recordExecutedTool } from '../shared/turn-context.js';
 
 export type GatedToolResult<T> = ToolResult<T> & { gate: GateDecision };
 
@@ -15,6 +16,13 @@ export async function gatedExecuteTool<T>(
   context: ToolExecutionContext & { specialist: SpecialistId; identity: IdentityState | null }
 ): Promise<GatedToolResult<T>> {
   const decision = evaluateGate({ tool: metadata, specialist: context.specialist, identity: context.identity });
+
+  recordExecutedTool({
+    toolName: metadata.name,
+    args: rawInput && typeof rawInput === 'object' ? (rawInput as Record<string, unknown>) : undefined,
+    outcome: decision.outcome,
+    specialist: context.specialist,
+  });
 
   if (decision.outcome === 'ALLOWED') {
     const result = await executeTool(toolFn, metadata, rawInput, context);
@@ -42,12 +50,18 @@ export async function gatedExecuteTool<T>(
     }
   };
 
+  incrementToolCallCount();
+
   try {
     await recordToolExecution({
       agentExecutionId: context.agentExecutionId,
       tool: metadata.name,
       input: undefined,
-      output: undefined,
+      output: {
+        outcome: decision.outcome,
+        reason: errorCode,
+        message: errorMessage,
+      },
       duration: 0,
       status: 'failure',
       error: `${errorCode}: ${errorMessage}`,

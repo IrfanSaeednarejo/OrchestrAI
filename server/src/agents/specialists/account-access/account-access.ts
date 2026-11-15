@@ -27,7 +27,8 @@ import { generateStructuredOutput } from '../../llm/client.js';
 import { loadPrompt } from '../../prompts/template-loader.js';
 import { gatedExecuteTool } from '../../../tools/gated-execution.js';
 import { retrieveKnowledge } from '../../../knowledge/retrieval.js';
-import { recordAgentExecution } from '../../../routing/events.js';
+import { recordAgentExecution, completeAgentExecutionSafely } from '../../../routing/events.js';
+import { getTurnContext } from '../../../shared/turn-context.js';
 import {
   startIdentityVerification,
   startIdentityVerificationMetadata,
@@ -140,6 +141,7 @@ Respond with JSON:
 
   const result = await generateStructuredOutput(AccountAccessIntentSchema, prompt, {
     temperature: 0.0,
+    node: 'account_access_intent',
   });
 
   if (result.success) {
@@ -173,6 +175,7 @@ export async function generateSecurityInquiryResponse(params: {
   const ResponseSchema = z.object({ response: z.string().min(1) });
   const llmResult = await generateStructuredOutput(ResponseSchema, contextPrompt, {
     temperature: 0.2,
+    node: 'account_access_response',
   });
 
   if (llmResult.success) {
@@ -201,6 +204,21 @@ async function createAgentExecutionSafely(
   return crypto.randomUUID();
 }
 
+async function finishAgentExecutionSafely(
+  id: string | undefined,
+  duration: number,
+  status: 'success' | 'failure' = 'success',
+  error?: string
+): Promise<void> {
+  if (typeof completeAgentExecutionSafely === 'function') {
+    try {
+      await completeAgentExecutionSafely(id, duration, status, error);
+    } catch {
+      // ignore
+    }
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Main Account Access Node
 // ---------------------------------------------------------------------------
@@ -218,7 +236,12 @@ export async function accountAccessNode(
         : undefined;
 
   const agentExecutionId = await createAgentExecutionSafely(conversationId, specialist);
+  const startTime = performance.now();
+  const turnCtx = getTurnContext();
+  if (turnCtx) turnCtx.node = specialist;
 
+  try {
+    const result = await (async (): Promise<ConversationStateUpdate | Command> => {
   // 1. Require a user in state
   if (!state.user?.id) {
     return {
@@ -437,6 +460,8 @@ export async function accountAccessNode(
     domains: ['account'],
     topics: ['account_security'],
     topK: 3,
+    conversationId,
+    agentExecutionId,
   });
 
   const knowledgeContext =
@@ -453,6 +478,19 @@ export async function accountAccessNode(
     workflowStatus: 'COMPLETED',
     messages: [new AIMessage(responseText)],
   };
+    })();
+
+    await finishAgentExecutionSafely(agentExecutionId, performance.now() - startTime, 'success');
+    return result;
+  } catch (err) {
+    await finishAgentExecutionSafely(
+      agentExecutionId,
+      performance.now() - startTime,
+      'failure',
+      err instanceof Error ? err.message : String(err)
+    );
+    throw err;
+  }
 }
 
 // ---------------------------------------------------------------------------
