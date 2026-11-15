@@ -1,0 +1,570 @@
+{
+  "dataSource": "Local Docker Postgres (pgvector 0.8.6, PostgreSQL 16.15) + Live Gemini gemini-embedding-2 API",
+  "timestamp": "2026-11-14T16:19:34.145Z",
+  "summary": {
+    "n": 60,
+    "embed_ms": {
+      "p50": 499,
+      "p95": 650,
+      "mean": 523.6,
+      "min": 396,
+      "max": 972
+    },
+    "search_ms": {
+      "p50": 51,
+      "p95": 56,
+      "mean": 51.4,
+      "min": 31,
+      "max": 62
+    }
+  },
+  "dbVerification": {
+    "n": 60,
+    "embed_p50": 499,
+    "embed_p95": 649.9,
+    "search_p50": 51,
+    "search_p95": 56.05
+  },
+  "queries": [
+    {
+      "query": "How do I return an item I bought last week?",
+      "domain": "orders",
+      "topic": "returns",
+      "embedMs": 915,
+      "searchMs": 31,
+      "hits": 1,
+      "topSimilarity": 0.6961251391917018
+    },
+    {
+      "query": "What is the return window for clothing items?",
+      "domain": "orders",
+      "topic": "returns",
+      "embedMs": 522,
+      "searchMs": 51,
+      "hits": 1,
+      "topSimilarity": 0.7320919079561661
+    },
+    {
+      "query": "Can I exchange an item for a different size?",
+      "domain": "orders",
+      "topic": "returns",
+      "embedMs": 501,
+      "searchMs": 54,
+      "hits": 1,
+      "topSimilarity": 0.635273061795447
+    },
+    {
+      "query": "Where do I drop off my return package?",
+      "domain": "orders",
+      "topic": "returns",
+      "embedMs": 504,
+      "searchMs": 52,
+      "hits": 1,
+      "topSimilarity": 0.6704673164247602
+    },
+    {
+      "query": "Do I have to pay for return shipping label?",
+      "domain": "orders",
+      "topic": "returns",
+      "embedMs": 456,
+      "searchMs": 56,
+      "hits": 1,
+      "topSimilarity": 0.6917716425997923
+    },
+    {
+      "query": "Are opened beauty products eligible for return?",
+      "domain": "orders",
+      "topic": "returns",
+      "embedMs": 499,
+      "searchMs": 52,
+      "hits": 1,
+      "topSimilarity": 0.6743625776879366
+    },
+    {
+      "query": "Can I return an item without original box?",
+      "domain": "orders",
+      "topic": "returns",
+      "embedMs": 509,
+      "searchMs": 51,
+      "hits": 1,
+      "topSimilarity": 0.6635657559994187
+    },
+    {
+      "query": "How long do I have to send back a return?",
+      "domain": "orders",
+      "topic": "returns",
+      "embedMs": 479,
+      "searchMs": 48,
+      "hits": 1,
+      "topSimilarity": 0.7260674352324318
+    },
+    {
+      "query": "Is international return shipping free?",
+      "domain": "orders",
+      "topic": "returns",
+      "embedMs": 603,
+      "searchMs": 52,
+      "hits": 1,
+      "topSimilarity": 0.6724884910875627
+    },
+    {
+      "query": "Can gift items be returned for store credit?",
+      "domain": "orders",
+      "topic": "returns",
+      "embedMs": 534,
+      "searchMs": 49,
+      "hits": 1,
+      "topSimilarity": 0.6620678918118911
+    },
+    {
+      "query": "How long does standard delivery usually take?",
+      "domain": "orders",
+      "topic": "shipping",
+      "embedMs": 598,
+      "searchMs": 53,
+      "hits": 1,
+      "topSimilarity": 0.6916661490999207
+    },
+    {
+      "query": "Do you offer expedited next-day shipping?",
+      "domain": "orders",
+      "topic": "shipping",
+      "embedMs": 517,
+      "searchMs": 51,
+      "hits": 1,
+      "topSimilarity": 0.6427185790054212
+    },
+    {
+      "query": "My package tracking has not updated in 4 days.",
+      "domain": "orders",
+      "topic": "shipping",
+      "embedMs": 563,
+      "searchMs": 61,
+      "hits": 1,
+      "topSimilarity": 0.660878656224893
+    },
+    {
+      "query": "What courier delivers packages to apartment buildings?",
+      "domain": "orders",
+      "topic": "shipping",
+      "embedMs": 579,
+      "searchMs": 53,
+      "hits": 1,
+      "topSimilarity": 0.5928368436404768
+    },
+    {
+      "query": "Can I change my delivery address after shipment?",
+      "domain": "orders",
+      "topic": "shipping",
+      "embedMs": 512,
+      "searchMs": 54,
+      "hits": 1,
+      "topSimilarity": 0.6406204225483739
+    },
+    {
+      "query": "Do you ship to military APO and FPO addresses?",
+      "domain": "orders",
+      "topic": "shipping",
+      "embedMs": 435,
+      "searchMs": 47,
+      "hits": 1,
+      "topSimilarity": 0.605371702678154
+    },
+    {
+      "query": "What happens if a package is marked delivered but not received?",
+      "domain": "orders",
+      "topic": "shipping",
+      "embedMs": 498,
+      "searchMs": 53,
+      "hits": 1,
+      "topSimilarity": 0.6894934546154025
+    },
+    {
+      "query": "Is signature required for high value electronics shipments?",
+      "domain": "orders",
+      "topic": "shipping",
+      "embedMs": 430,
+      "searchMs": 54,
+      "hits": 1,
+      "topSimilarity": 0.6268153724056489
+    },
+    {
+      "query": "Why is my shipment delayed due to customs inspection?",
+      "domain": "orders",
+      "topic": "shipping",
+      "embedMs": 474,
+      "searchMs": 53,
+      "hits": 1,
+      "topSimilarity": 0.6172824192921184
+    },
+    {
+      "query": "Can I redirect a parcel to a pickup locker?",
+      "domain": "orders",
+      "topic": "shipping",
+      "embedMs": 593,
+      "searchMs": 53,
+      "hits": 1,
+      "topSimilarity": 0.5876129300210351
+    },
+    {
+      "query": "What payment methods do you accept at checkout?",
+      "domain": "payments",
+      "topic": "payments",
+      "embedMs": 570,
+      "searchMs": 54,
+      "hits": 1,
+      "topSimilarity": 0.6646773818713576
+    },
+    {
+      "query": "Can I pay using PayPal or Apple Pay?",
+      "domain": "payments",
+      "topic": "payments",
+      "embedMs": 467,
+      "searchMs": 53,
+      "hits": 1,
+      "topSimilarity": 0.608958557825573
+    },
+    {
+      "query": "Why was my credit card transaction declined?",
+      "domain": "payments",
+      "topic": "payments",
+      "embedMs": 537,
+      "searchMs": 46,
+      "hits": 1,
+      "topSimilarity": 0.5906161869900672
+    },
+    {
+      "query": "Can I split a payment across two separate cards?",
+      "domain": "payments",
+      "topic": "payments",
+      "embedMs": 559,
+      "searchMs": 51,
+      "hits": 1,
+      "topSimilarity": 0.6494397791577872
+    },
+    {
+      "query": "Is my credit card information stored securely?",
+      "domain": "payments",
+      "topic": "payments",
+      "embedMs": 565,
+      "searchMs": 50,
+      "hits": 1,
+      "topSimilarity": 0.6283899392618428
+    },
+    {
+      "query": "I see a duplicate pending authorization charge on my bank statement.",
+      "domain": "payments",
+      "topic": "payments",
+      "embedMs": 399,
+      "searchMs": 48,
+      "hits": 1,
+      "topSimilarity": 0.7788648009302944
+    },
+    {
+      "query": "Can I pay for my purchase using gift cards?",
+      "domain": "payments",
+      "topic": "payments",
+      "embedMs": 476,
+      "searchMs": 50,
+      "hits": 1,
+      "topSimilarity": 0.5976161011638959
+    },
+    {
+      "query": "Do you offer installment payment plans like Klarna?",
+      "domain": "payments",
+      "topic": "payments",
+      "embedMs": 495,
+      "searchMs": 52,
+      "hits": 1,
+      "topSimilarity": 0.6163899849683978
+    },
+    {
+      "query": "What billing address should I use for foreign cards?",
+      "domain": "payments",
+      "topic": "payments",
+      "embedMs": 485,
+      "searchMs": 52,
+      "hits": 1,
+      "topSimilarity": 0.5835975209243093
+    },
+    {
+      "query": "When is my credit card actually charged for preorders?",
+      "domain": "payments",
+      "topic": "payments",
+      "embedMs": 501,
+      "searchMs": 49,
+      "hits": 1,
+      "topSimilarity": 0.6893839384595335
+    },
+    {
+      "query": "How long does a refund take to appear on my card?",
+      "domain": "payments",
+      "topic": "refunds",
+      "embedMs": 432,
+      "searchMs": 51,
+      "hits": 1,
+      "topSimilarity": 0.702434370870564
+    },
+    {
+      "query": "My order was canceled, when will I get my money back?",
+      "domain": "payments",
+      "topic": "refunds",
+      "embedMs": 459,
+      "searchMs": 49,
+      "hits": 1,
+      "topSimilarity": 0.6971136168229558
+    },
+    {
+      "query": "Can refunds be sent to a different bank account?",
+      "domain": "payments",
+      "topic": "refunds",
+      "embedMs": 473,
+      "searchMs": 51,
+      "hits": 1,
+      "topSimilarity": 0.6862348470131068
+    },
+    {
+      "query": "Are shipping costs refunded when returning damaged goods?",
+      "domain": "payments",
+      "topic": "refunds",
+      "embedMs": 495,
+      "searchMs": 50,
+      "hits": 1,
+      "topSimilarity": 0.6643601072288412
+    },
+    {
+      "query": "I received only a partial refund, why was tax deducted?",
+      "domain": "payments",
+      "topic": "refunds",
+      "embedMs": 421,
+      "searchMs": 51,
+      "hits": 1,
+      "topSimilarity": 0.6745411538548133
+    },
+    {
+      "query": "Will my reward points be refunded if I cancel an order?",
+      "domain": "payments",
+      "topic": "refunds",
+      "embedMs": 533,
+      "searchMs": 51,
+      "hits": 1,
+      "topSimilarity": 0.6580026650397002
+    },
+    {
+      "query": "How do I check the status of my issued refund?",
+      "domain": "payments",
+      "topic": "refunds",
+      "embedMs": 667,
+      "searchMs": 51,
+      "hits": 1,
+      "topSimilarity": 0.6900617539515803
+    },
+    {
+      "query": "Why has my refund not posted after 10 business days?",
+      "domain": "payments",
+      "topic": "refunds",
+      "embedMs": 972,
+      "searchMs": 51,
+      "hits": 1,
+      "topSimilarity": 0.6636557394717295
+    },
+    {
+      "query": "Can a refund be credited as instant store credit?",
+      "domain": "payments",
+      "topic": "refunds",
+      "embedMs": 649,
+      "searchMs": 53,
+      "hits": 1,
+      "topSimilarity": 0.6942660975620376
+    },
+    {
+      "query": "What happens if the original card used is closed or expired?",
+      "domain": "payments",
+      "topic": "refunds",
+      "embedMs": 493,
+      "searchMs": 55,
+      "hits": 1,
+      "topSimilarity": 0.66794617871646
+    },
+    {
+      "query": "How do I reset my account password?",
+      "domain": "account",
+      "topic": "account_security",
+      "embedMs": 475,
+      "searchMs": 50,
+      "hits": 1,
+      "topSimilarity": 0.6834199835908998
+    },
+    {
+      "query": "I did not receive the verification code on my email.",
+      "domain": "account",
+      "topic": "account_security",
+      "embedMs": 576,
+      "searchMs": 51,
+      "hits": 1,
+      "topSimilarity": 0.7105594779395015
+    },
+    {
+      "query": "How do I enable two-factor authentication on my profile?",
+      "domain": "account",
+      "topic": "account_security",
+      "embedMs": 521,
+      "searchMs": 50,
+      "hits": 1,
+      "topSimilarity": 0.6988874789074038
+    },
+    {
+      "query": "My account was locked after too many failed attempts.",
+      "domain": "account",
+      "topic": "account_security",
+      "embedMs": 607,
+      "searchMs": 57,
+      "hits": 1,
+      "topSimilarity": 0.6746901302421606
+    },
+    {
+      "query": "I noticed an unauthorized login attempt from another state.",
+      "domain": "account",
+      "topic": "account_security",
+      "embedMs": 477,
+      "searchMs": 53,
+      "hits": 1,
+      "topSimilarity": 0.630563079735595
+    },
+    {
+      "query": "How do I change the email address linked to my account?",
+      "domain": "account",
+      "topic": "account_security",
+      "embedMs": 400,
+      "searchMs": 48,
+      "hits": 1,
+      "topSimilarity": 0.6496240420448971
+    },
+    {
+      "query": "How can I update my account recovery phone number?",
+      "domain": "account",
+      "topic": "account_security",
+      "embedMs": 491,
+      "searchMs": 52,
+      "hits": 1,
+      "topSimilarity": 0.6242792830301657
+    },
+    {
+      "query": "Can I delete my account and all personal information?",
+      "domain": "account",
+      "topic": "account_security",
+      "embedMs": 474,
+      "searchMs": 53,
+      "hits": 1,
+      "topSimilarity": 0.6453566166546906
+    },
+    {
+      "query": "Why am I asked for an OTP code every time I sign in?",
+      "domain": "account",
+      "topic": "account_security",
+      "embedMs": 507,
+      "searchMs": 49,
+      "hits": 1,
+      "topSimilarity": 0.7253509596200001
+    },
+    {
+      "query": "How do I log out of all active browser sessions?",
+      "domain": "account",
+      "topic": "account_security",
+      "embedMs": 396,
+      "searchMs": 52,
+      "hits": 1,
+      "topSimilarity": 0.607932012513417
+    },
+    {
+      "query": "How long does a verification code stay valid before expiring?",
+      "domain": "account",
+      "topic": "account_security",
+      "embedMs": 473,
+      "searchMs": 53,
+      "hits": 1,
+      "topSimilarity": 0.6983810123886798
+    },
+    {
+      "query": "Can I use an authenticator app instead of email codes?",
+      "domain": "account",
+      "topic": "account_security",
+      "embedMs": 477,
+      "searchMs": 50,
+      "hits": 1,
+      "topSimilarity": 0.6581239277493843
+    },
+    {
+      "query": "Someone changed my account password without my permission.",
+      "domain": "account",
+      "topic": "account_security",
+      "embedMs": 458,
+      "searchMs": 52,
+      "hits": 1,
+      "topSimilarity": 0.6780210349585293
+    },
+    {
+      "query": "How do I review recent security events on my account?",
+      "domain": "account",
+      "topic": "account_security",
+      "embedMs": 470,
+      "searchMs": 62,
+      "hits": 1,
+      "topSimilarity": 0.6772499910742126
+    },
+    {
+      "query": "What should I do if my account email is compromised?",
+      "domain": "account",
+      "topic": "account_security",
+      "embedMs": 635,
+      "searchMs": 49,
+      "hits": 1,
+      "topSimilarity": 0.6775546073914345
+    },
+    {
+      "query": "Can customer support manually reset my account MFA?",
+      "domain": "account",
+      "topic": "account_security",
+      "embedMs": 406,
+      "searchMs": 49,
+      "hits": 1,
+      "topSimilarity": 0.6668644944592117
+    },
+    {
+      "query": "How do I verify my identity to approve a sensitive change?",
+      "domain": "account",
+      "topic": "account_security",
+      "embedMs": 499,
+      "searchMs": 50,
+      "hits": 1,
+      "topSimilarity": 0.7561860128779718
+    },
+    {
+      "query": "Is biometric login supported on mobile devices?",
+      "domain": "account",
+      "topic": "account_security",
+      "embedMs": 615,
+      "searchMs": 52,
+      "hits": 1,
+      "topSimilarity": 0.5731707138986034
+    },
+    {
+      "query": "Why did I get a security alert about a new device login?",
+      "domain": "account",
+      "topic": "account_security",
+      "embedMs": 468,
+      "searchMs": 54,
+      "hits": 1,
+      "topSimilarity": 0.6302068894732955
+    },
+    {
+      "query": "How do I revoke API keys or third party app permissions?",
+      "domain": "account",
+      "topic": "account_security",
+      "embedMs": 619,
+      "searchMs": 50,
+      "hits": 1,
+      "topSimilarity": 0.6229225543645488
+    }
+  ]
+}

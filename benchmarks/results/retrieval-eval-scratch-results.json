@@ -1,0 +1,192 @@
+{
+  "label": "synthetic corpus and queries authored by the same tool; shows the pipeline retrieves correctly, not real-world accuracy.",
+  "commitHash": "339e28c1f59d7286f69ec39389369552018c18ea",
+  "timestamp": "2026-11-14T16:21:48.597Z",
+  "scratchDatabase": "orchestrai_bench",
+  "embeddingModel": "gemini-embedding-2 (768 dimensions)",
+  "chunksCount": 45,
+  "ingestDurationMs": 24395,
+  "queriesCount": 30,
+  "results": [
+    {
+      "mode": "1. Scoped (Domain + Topic)",
+      "overall": {
+        "hit1": 96.7,
+        "hit3": 100,
+        "mrr": 0.983,
+        "total": 30
+      },
+      "byDomain": {
+        "orders": {
+          "hit1": 100,
+          "hit3": 100,
+          "mrr": 1,
+          "total": 12
+        },
+        "payments": {
+          "hit1": 100,
+          "hit3": 100,
+          "mrr": 1,
+          "total": 12
+        },
+        "account": {
+          "hit1": 83.3,
+          "hit3": 100,
+          "mrr": 0.917,
+          "total": 6
+        }
+      },
+      "failingQueries": [
+        {
+          "queryId": "q-28",
+          "query": "Why do I need to verify an OTP code before changing my primary account email or phone number?",
+          "expectedChunkId": "acc-04",
+          "expectedDomain": "account",
+          "topHits": [
+            {
+              "id": "acc-07",
+              "domain": "account",
+              "topic": "security",
+              "title": "Updating Primary Account Email and Phone Number Verification Safeguards",
+              "similarity": 0.7891515461062159
+            },
+            {
+              "id": "acc-04",
+              "domain": "account",
+              "topic": "security",
+              "title": "Identity Verification Requirements for Sensitive Account Changes",
+              "similarity": 0.7860637606648749
+            },
+            {
+              "id": "acc-01",
+              "domain": "account",
+              "topic": "security",
+              "title": "Multi-Factor Authentication and OTP SMS/Email Delivery Standards",
+              "similarity": 0.7667834431246303
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "2. Scoped (Domain Only)",
+      "overall": {
+        "hit1": 96.7,
+        "hit3": 100,
+        "mrr": 0.983,
+        "total": 30
+      },
+      "byDomain": {
+        "orders": {
+          "hit1": 100,
+          "hit3": 100,
+          "mrr": 1,
+          "total": 12
+        },
+        "payments": {
+          "hit1": 100,
+          "hit3": 100,
+          "mrr": 1,
+          "total": 12
+        },
+        "account": {
+          "hit1": 83.3,
+          "hit3": 100,
+          "mrr": 0.917,
+          "total": 6
+        }
+      },
+      "failingQueries": [
+        {
+          "queryId": "q-28",
+          "query": "Why do I need to verify an OTP code before changing my primary account email or phone number?",
+          "expectedChunkId": "acc-04",
+          "expectedDomain": "account",
+          "topHits": [
+            {
+              "id": "acc-07",
+              "domain": "account",
+              "topic": "security",
+              "title": "Updating Primary Account Email and Phone Number Verification Safeguards",
+              "similarity": 0.7891515461062159
+            },
+            {
+              "id": "acc-04",
+              "domain": "account",
+              "topic": "security",
+              "title": "Identity Verification Requirements for Sensitive Account Changes",
+              "similarity": 0.7860637606648749
+            },
+            {
+              "id": "acc-01",
+              "domain": "account",
+              "topic": "security",
+              "title": "Multi-Factor Authentication and OTP SMS/Email Delivery Standards",
+              "similarity": 0.7667834431246303
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "3. Unscoped (Global Corpus)",
+      "overall": {
+        "hit1": 96.7,
+        "hit3": 100,
+        "mrr": 0.983,
+        "total": 30
+      },
+      "byDomain": {
+        "orders": {
+          "hit1": 100,
+          "hit3": 100,
+          "mrr": 1,
+          "total": 12
+        },
+        "payments": {
+          "hit1": 100,
+          "hit3": 100,
+          "mrr": 1,
+          "total": 12
+        },
+        "account": {
+          "hit1": 83.3,
+          "hit3": 100,
+          "mrr": 0.917,
+          "total": 6
+        }
+      },
+      "failingQueries": [
+        {
+          "queryId": "q-28",
+          "query": "Why do I need to verify an OTP code before changing my primary account email or phone number?",
+          "expectedChunkId": "acc-04",
+          "expectedDomain": "account",
+          "topHits": [
+            {
+              "id": "acc-07",
+              "domain": "account",
+              "topic": "security",
+              "title": "Updating Primary Account Email and Phone Number Verification Safeguards",
+              "similarity": 0.7891515461062159
+            },
+            {
+              "id": "acc-04",
+              "domain": "account",
+              "topic": "security",
+              "title": "Identity Verification Requirements for Sensitive Account Changes",
+              "similarity": 0.7860637606648749
+            },
+            {
+              "id": "acc-01",
+              "domain": "account",
+              "topic": "security",
+              "title": "Multi-Factor Authentication and OTP SMS/Email Delivery Standards",
+              "similarity": 0.7667834431246303
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,272 @@
+{
+  "metadata": {
+    "generatedAt": "2026-11-14T07:52:34.129Z",
+    "scenarioCount": 30,
+    "runs": 3,
+    "dataSource": "live model (gemini-3.5-flash-lite) vs mocked model"
+  },
+  "overallPassRate": {
+    "run1": 0,
+    "run2": 0,
+    "run3": 0,
+    "mean": 0,
+    "mocked": 0.06666666666666667
+  },
+  "evaluatorStats": {
+    "ROUTING_CORRECT": {
+      "run1": 71.1,
+      "run2": 73.7,
+      "run3": 78.9,
+      "mean": 74.6,
+      "variance": 0.001077,
+      "stdDev": 3.3,
+      "mocked": 92.1
+    },
+    "HANDOFF_CORRECT": {
+      "run1": 94.7,
+      "run2": 97.4,
+      "run3": 94.7,
+      "mean": 95.6,
+      "variance": 0.000154,
+      "stdDev": 1.2,
+      "mocked": 97.4
+    },
+    "SPECIALIST_SCOPE_CORRECT": {
+      "run1": 100,
+      "run2": 100,
+      "run3": 100,
+      "mean": 100,
+      "variance": 0,
+      "stdDev": 0,
+      "mocked": 100
+    },
+    "TOOL_SELECTION_CORRECT": {
+      "run1": 47.4,
+      "run2": 47.4,
+      "run3": 47.4,
+      "mean": 47.4,
+      "variance": 0,
+      "stdDev": 0,
+      "mocked": 47.4
+    },
+    "STATE_PRESERVED": {
+      "run1": 100,
+      "run2": 100,
+      "run3": 100,
+      "mean": 100,
+      "variance": 0,
+      "stdDev": 0,
+      "mocked": 100
+    },
+    "KNOWLEDGE_GROUNDED": {
+      "run1": 57.9,
+      "run2": 50,
+      "run3": 57.9,
+      "mean": 55.3,
+      "variance": 0.001385,
+      "stdDev": 3.7,
+      "mocked": 39.5
+    },
+    "WORKFLOW_COMPLETED": {
+      "run1": 10.5,
+      "run2": 13.2,
+      "run3": 10.5,
+      "mean": 11.4,
+      "variance": 0.000154,
+      "stdDev": 1.2,
+      "mocked": 68.4
+    },
+    "RESOLUTION_CORRECT": {
+      "run1": 86.8,
+      "run2": 84.2,
+      "run3": 84.2,
+      "mean": 85.1,
+      "variance": 0.000154,
+      "stdDev": 1.2,
+      "mocked": 68.4
+    }
+  },
+  "failingScenariosCount": 30,
+  "failingScenarios": {
+    "SCENARIO-01": {
+      "name": "Simple order status, single order, LIGHT",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    },
+    "SCENARIO-02": {
+      "name": "Ambiguous order reference -> clarification -> resolved",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    },
+    "SCENARIO-03": {
+      "name": "Duplicate charge confirmed -> Payment -> Refund lateral handoff",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    },
+    "SCENARIO-04": {
+      "name": "Refund inquiry with no linked return -> Refund -> Returns lateral handoff",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    },
+    "SCENARIO-05": {
+      "name": "Payment inquiry while unverified -> Account Access FULL -> resume Payment",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    },
+    "SCENARIO-06": {
+      "name": "Return creation with only LIGHT -> Account Access FULL -> resume Returns",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    },
+    "SCENARIO-07": {
+      "name": "Login issue mid-Returns flow -> Account Access -> resume Returns",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    },
+    "SCENARIO-08": {
+      "name": "Return approved, refund not yet created -> structured check -> create_refund",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    },
+    "SCENARIO-09": {
+      "name": "Ineligible return -> RAG policy explanation -> hard decline",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    },
+    "SCENARIO-10": {
+      "name": "Routing loop A->Parent->B->Parent->A -> loop detection -> escalate",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    },
+    "SCENARIO-11": {
+      "name": "Tool transient failure timeout -> retry once -> escalate",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    },
+    "SCENARIO-12": {
+      "name": "Max handoff count exceeded (>= 3) -> escalate",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    },
+    "SCENARIO-13": {
+      "name": "Identity mutation attempted outside Account Access -> rejected by boundary",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    },
+    "SCENARIO-14": {
+      "name": "Password reset does NOT change identity.status -> separate re-verification",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    },
+    "SCENARIO-15": {
+      "name": "Delivered order shipping tracking inquiry",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    },
+    "SCENARIO-16": {
+      "name": "Return status check for active return",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    },
+    "SCENARIO-17": {
+      "name": "Return eligibility pre-check within 30-day window",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    },
+    "SCENARIO-18": {
+      "name": "Multi-turn order clarification and subsequent shipment check",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    },
+    "SCENARIO-19": {
+      "name": "Payment status check on captured charge",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    },
+    "SCENARIO-20": {
+      "name": "Duplicate charge inquiry with no duplicate confirmed",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    },
+    "SCENARIO-21": {
+      "name": "Refund status inquiry for completed refund",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    },
+    "SCENARIO-22": {
+      "name": "Direct refund creation for approved return without duplicate charges",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    },
+    "SCENARIO-23": {
+      "name": "View customer profile while VERIFIED",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    },
+    "SCENARIO-24": {
+      "name": "Update customer address while VERIFIED",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    },
+    "SCENARIO-25": {
+      "name": "Profile update blocked for UNVERIFIED customer -> routed to Account Access",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    },
+    "SCENARIO-26": {
+      "name": "Invalid OTP code submitted during verification flow",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    },
+    "SCENARIO-27": {
+      "name": "Password reset request with valid email format",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    },
+    "SCENARIO-28": {
+      "name": "Order Tracking lateral handoff to Returns upon customer return request",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    },
+    "SCENARIO-29": {
+      "name": "Terminal ESCALATED state lock multi-turn enforcement",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    },
+    "SCENARIO-30": {
+      "name": "Classifier fallback default to order_tracking on ambiguous gibberish",
+      "run1Passed": false,
+      "run2Passed": false,
+      "run3Passed": false
+    }
+  }
+}

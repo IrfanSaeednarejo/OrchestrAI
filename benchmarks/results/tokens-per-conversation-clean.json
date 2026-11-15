@@ -1,0 +1,14 @@
+{
+  "dataSource": "Neon production DB llm_calls table (excluding conversation_id IS NULL)",
+  "timestamp": "2026-11-14T15:54:16.896Z",
+  "stats": {
+    "n": 213,
+    "mean_tokens": "1059.87",
+    "p50_tokens": 882,
+    "p95_tokens": 1707.4,
+    "min_tokens": "639",
+    "max_tokens": "2799",
+    "mean_prompt": "900.34",
+    "mean_output": "159.53"
+  }
+}

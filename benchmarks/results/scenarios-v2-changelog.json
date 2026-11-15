@@ -1,0 +1,325 @@
+{
+  "v1ExpectedToolTurns": 20,
+  "v2ExpectedToolTurns": 24,
+  "totalTurns": 38,
+  "changelog": [
+    {
+      "scenarioId": "SCENARIO-01",
+      "turnIndex": 1,
+      "change": "Replace ord-101 with valid UUID 00000000-0000-0000-0000-000000000101",
+      "rationale": "Entity extractors require standard 36-char UUID format to parse order/return/payment/refund IDs."
+    },
+    {
+      "scenarioId": "SCENARIO-02",
+      "turnIndex": 2,
+      "change": "Replace ord-102 with valid UUID 00000000-0000-0000-0000-000000000102",
+      "rationale": "Entity extractors require standard 36-char UUID format to parse order/return/payment/refund IDs."
+    },
+    {
+      "scenarioId": "SCENARIO-03",
+      "turnIndex": 1,
+      "change": "Replace ord-103 with valid UUID 00000000-0000-0000-0000-000000000103",
+      "rationale": "Entity extractors require standard 36-char UUID format to parse order/return/payment/refund IDs."
+    },
+    {
+      "scenarioId": "SCENARIO-04",
+      "turnIndex": 1,
+      "change": "Replace ord-104 with valid UUID 00000000-0000-0000-0000-000000000104",
+      "rationale": "Entity extractors require standard 36-char UUID format to parse order/return/payment/refund IDs."
+    },
+    {
+      "scenarioId": "SCENARIO-05",
+      "turnIndex": 1,
+      "change": "Replace ord-105 with valid UUID 00000000-0000-0000-0000-000000000105",
+      "rationale": "Entity extractors require standard 36-char UUID format to parse order/return/payment/refund IDs."
+    },
+    {
+      "scenarioId": "SCENARIO-06",
+      "turnIndex": 1,
+      "change": "Replace ord-106 with valid UUID 00000000-0000-0000-0000-000000000106",
+      "rationale": "Entity extractors require standard 36-char UUID format to parse order/return/payment/refund IDs."
+    },
+    {
+      "scenarioId": "SCENARIO-07",
+      "turnIndex": 1,
+      "change": "Replace ord-107 with valid UUID 00000000-0000-0000-0000-000000000107",
+      "rationale": "Entity extractors require standard 36-char UUID format to parse order/return/payment/refund IDs."
+    },
+    {
+      "scenarioId": "SCENARIO-08",
+      "turnIndex": 1,
+      "change": "Replace ord-108 with valid UUID 00000000-0000-0000-0000-000000000108",
+      "rationale": "Entity extractors require standard 36-char UUID format to parse order/return/payment/refund IDs."
+    },
+    {
+      "scenarioId": "SCENARIO-09",
+      "turnIndex": 1,
+      "change": "Replace ord-109 with valid UUID 00000000-0000-0000-0000-000000000109",
+      "rationale": "Entity extractors require standard 36-char UUID format to parse order/return/payment/refund IDs."
+    },
+    {
+      "scenarioId": "SCENARIO-15",
+      "turnIndex": 1,
+      "change": "Replace ord-115 with valid UUID 00000000-0000-0000-0000-000000000115",
+      "rationale": "Entity extractors require standard 36-char UUID format to parse order/return/payment/refund IDs."
+    },
+    {
+      "scenarioId": "SCENARIO-16",
+      "turnIndex": 1,
+      "change": "Replace ret-116 with valid UUID 00000000-0000-0000-0000-000000000216",
+      "rationale": "Entity extractors require standard 36-char UUID format to parse order/return/payment/refund IDs."
+    },
+    {
+      "scenarioId": "SCENARIO-17",
+      "turnIndex": 1,
+      "change": "Replace ord-117 with valid UUID 00000000-0000-0000-0000-000000000117",
+      "rationale": "Entity extractors require standard 36-char UUID format to parse order/return/payment/refund IDs."
+    },
+    {
+      "scenarioId": "SCENARIO-18",
+      "turnIndex": 2,
+      "change": "Replace ord-118 with valid UUID 00000000-0000-0000-0000-000000000118",
+      "rationale": "Entity extractors require standard 36-char UUID format to parse order/return/payment/refund IDs."
+    },
+    {
+      "scenarioId": "SCENARIO-19",
+      "turnIndex": 1,
+      "change": "Replace ord-119 with valid UUID 00000000-0000-0000-0000-000000000119",
+      "rationale": "Entity extractors require standard 36-char UUID format to parse order/return/payment/refund IDs."
+    },
+    {
+      "scenarioId": "SCENARIO-20",
+      "turnIndex": 1,
+      "change": "Replace ord-120 with valid UUID 00000000-0000-0000-0000-000000000120",
+      "rationale": "Entity extractors require standard 36-char UUID format to parse order/return/payment/refund IDs."
+    },
+    {
+      "scenarioId": "SCENARIO-21",
+      "turnIndex": 1,
+      "change": "Replace ref-121 with valid UUID 00000000-0000-0000-0000-000000000321",
+      "rationale": "Entity extractors require standard 36-char UUID format to parse order/return/payment/refund IDs."
+    },
+    {
+      "scenarioId": "SCENARIO-22",
+      "turnIndex": 1,
+      "change": "Replace ord-122 with valid UUID 00000000-0000-0000-0000-000000000122",
+      "rationale": "Entity extractors require standard 36-char UUID format to parse order/return/payment/refund IDs."
+    },
+    {
+      "scenarioId": "SCENARIO-22",
+      "turnIndex": 1,
+      "change": "Replace ret-122 with valid UUID 00000000-0000-0000-0000-000000000222",
+      "rationale": "Entity extractors require standard 36-char UUID format to parse order/return/payment/refund IDs."
+    },
+    {
+      "scenarioId": "SCENARIO-28",
+      "turnIndex": 1,
+      "change": "Replace ord-128 with valid UUID 00000000-0000-0000-0000-000000000128",
+      "rationale": "Entity extractors require standard 36-char UUID format to parse order/return/payment/refund IDs."
+    },
+    {
+      "scenarioId": "SCENARIO-01",
+      "turnIndex": 1,
+      "change": "expectedWorkflowStatus: WAITING_FOR_USER_INPUT",
+      "rationale": "Conversational specialist provides tracking status and asks if customer needs further assistance."
+    },
+    {
+      "scenarioId": "SCENARIO-02",
+      "turnIndex": 2,
+      "change": "expectedWorkflowStatus: WAITING_FOR_USER_INPUT",
+      "rationale": "Order tracking specialist answers and prompts for any remaining questions."
+    },
+    {
+      "scenarioId": "SCENARIO-03",
+      "turnIndex": 1,
+      "change": "expectedTools: [detect_duplicate_charge]",
+      "rationale": "Payment specialist allowlist does not contain create_refund; refund creation occurs via lateral handoff to refund specialist."
+    },
+    {
+      "scenarioId": "SCENARIO-03",
+      "turnIndex": 1,
+      "change": "expectedWorkflowStatus: WAITING_FOR_USER_INPUT",
+      "rationale": "Specialist completes duplicate check and lateral handoff, awaiting customer response."
+    },
+    {
+      "scenarioId": "SCENARIO-04",
+      "turnIndex": 1,
+      "change": "expectedTools: [get_return_by_order]",
+      "rationale": "Refund specialist checks return status before determining lateral handoff to returns specialist."
+    },
+    {
+      "scenarioId": "SCENARIO-04",
+      "turnIndex": 1,
+      "change": "expectedWorkflowStatus: WAITING_FOR_USER_INPUT",
+      "rationale": "Specialist initiates returns handoff and prompts user to initiate return."
+    },
+    {
+      "scenarioId": "SCENARIO-05",
+      "turnIndex": 2,
+      "change": "expectedTools: [verify_identity]",
+      "rationale": "Account access specialist executes verify_identity upon OTP receipt; payment receipt resumes after full verification."
+    },
+    {
+      "scenarioId": "SCENARIO-05",
+      "turnIndex": 2,
+      "change": "expectedWorkflowStatus: WAITING_FOR_USER_INPUT",
+      "rationale": "Verification unblocks session, specialist confirms verification and resumes payment inquiry."
+    },
+    {
+      "scenarioId": "SCENARIO-06",
+      "turnIndex": 2,
+      "change": "expectedTools: [verify_identity]",
+      "rationale": "Account access specialist executes verify_identity to elevate identity status; returns specialist resumes after elevation."
+    },
+    {
+      "scenarioId": "SCENARIO-06",
+      "turnIndex": 2,
+      "change": "expectedWorkflowStatus: WAITING_FOR_USER_INPUT",
+      "rationale": "Identity verified, session prompts user to continue return flow."
+    },
+    {
+      "scenarioId": "SCENARIO-07",
+      "turnIndex": 2,
+      "change": "expectedTools: [verify_identity]",
+      "rationale": "Submitting verification code triggers verify_identity tool."
+    },
+    {
+      "scenarioId": "SCENARIO-07",
+      "turnIndex": 2,
+      "change": "expectedWorkflowStatus: WAITING_FOR_USER_INPUT",
+      "rationale": "Account access unblocks session and prepares resumption of return workflow."
+    },
+    {
+      "scenarioId": "SCENARIO-08",
+      "turnIndex": 1,
+      "change": "expectedWorkflowStatus: WAITING_FOR_USER_INPUT",
+      "rationale": "Refund issued, specialist provides timeline and prompts user for further inquiries."
+    },
+    {
+      "scenarioId": "SCENARIO-09",
+      "turnIndex": 1,
+      "change": "expectedTools: [check_return_eligibility, search_knowledge]",
+      "rationale": "Specialist verifies 30-day window via check_return_eligibility and retrieves return policy via search_knowledge."
+    },
+    {
+      "scenarioId": "SCENARIO-09",
+      "turnIndex": 1,
+      "change": "expectedWorkflowStatus: WAITING_FOR_USER_INPUT",
+      "rationale": "Specialist delivers grounded decline and asks if assistance is needed on other orders."
+    },
+    {
+      "scenarioId": "SCENARIO-14",
+      "turnIndex": 1,
+      "change": "expectedWorkflowStatus: WAITING_FOR_USER_INPUT",
+      "rationale": "Password reset email sent; specialist provides confirmation and awaits further requests."
+    },
+    {
+      "scenarioId": "SCENARIO-15",
+      "turnIndex": 1,
+      "change": "expectedWorkflowStatus: WAITING_FOR_USER_INPUT",
+      "rationale": "Order delivery details presented; specialist asks if customer needs additional tracking help."
+    },
+    {
+      "scenarioId": "SCENARIO-16",
+      "turnIndex": 1,
+      "change": "expectedWorkflowStatus: WAITING_FOR_USER_INPUT",
+      "rationale": "Return status presented; specialist awaits user follow-up."
+    },
+    {
+      "scenarioId": "SCENARIO-17",
+      "turnIndex": 1,
+      "change": "expectedWorkflowStatus: WAITING_FOR_USER_INPUT",
+      "rationale": "Return eligibility confirmed; specialist asks customer if they want to proceed with creating return."
+    },
+    {
+      "scenarioId": "SCENARIO-18",
+      "turnIndex": 2,
+      "change": "expectedWorkflowStatus: WAITING_FOR_USER_INPUT",
+      "rationale": "Shipment info delivered; specialist prompts for additional questions."
+    },
+    {
+      "scenarioId": "SCENARIO-19",
+      "turnIndex": 1,
+      "change": "expectedWorkflowStatus: WAITING_FOR_USER_INPUT",
+      "rationale": "Payment receipt details presented; specialist prompts for additional questions."
+    },
+    {
+      "scenarioId": "SCENARIO-20",
+      "turnIndex": 1,
+      "change": "expectedWorkflowStatus: WAITING_FOR_USER_INPUT",
+      "rationale": "Duplicate check confirms single charge; specialist explains findings and awaits reply."
+    },
+    {
+      "scenarioId": "SCENARIO-21",
+      "turnIndex": 1,
+      "change": "expectedWorkflowStatus: WAITING_FOR_USER_INPUT",
+      "rationale": "Refund status delivered; specialist prompts if further billing help is needed."
+    },
+    {
+      "scenarioId": "SCENARIO-22",
+      "turnIndex": 1,
+      "change": "expectedWorkflowStatus: WAITING_FOR_USER_INPUT",
+      "rationale": "Refund processed; specialist confirms banking turnaround time and awaits reply."
+    },
+    {
+      "scenarioId": "SCENARIO-23",
+      "turnIndex": 1,
+      "change": "expectedWorkflowStatus: WAITING_FOR_USER_INPUT",
+      "rationale": "Profile information displayed; specialist prompts if updates are desired."
+    },
+    {
+      "scenarioId": "SCENARIO-24",
+      "turnIndex": 1,
+      "change": "expectedWorkflowStatus: WAITING_FOR_USER_INPUT",
+      "rationale": "Address updated; specialist prompts if other profile fields need modification."
+    },
+    {
+      "scenarioId": "SCENARIO-25",
+      "turnIndex": 2,
+      "change": "expectedTools: [verify_identity]",
+      "rationale": "Account access specialist validates OTP via verify_identity; profile update resumes upon verified status."
+    },
+    {
+      "scenarioId": "SCENARIO-25",
+      "turnIndex": 2,
+      "change": "expectedWorkflowStatus: WAITING_FOR_USER_INPUT",
+      "rationale": "Verification completed, specialist prompts customer to confirm new profile name."
+    },
+    {
+      "scenarioId": "SCENARIO-26",
+      "turnIndex": 1,
+      "change": "expectedTools: [verify_identity]",
+      "rationale": "Account access specialist executes verify_identity which validates code against Redis and reports invalid."
+    },
+    {
+      "scenarioId": "SCENARIO-27",
+      "turnIndex": 1,
+      "change": "expectedWorkflowStatus: WAITING_FOR_USER_INPUT",
+      "rationale": "Password reset initiated; specialist confirms dispatch and awaits follow-up."
+    },
+    {
+      "scenarioId": "SCENARIO-28",
+      "turnIndex": 1,
+      "change": "expectedTools: [get_order]",
+      "rationale": "Turn 1 queries order tracking details using get_order before customer requests return in turn 2."
+    },
+    {
+      "scenarioId": "SCENARIO-28",
+      "turnIndex": 1,
+      "change": "expectedWorkflowStatus: WAITING_FOR_USER_INPUT",
+      "rationale": "Order tracking confirms delivery and prompts customer."
+    },
+    {
+      "scenarioId": "SCENARIO-28",
+      "turnIndex": 2,
+      "change": "expectedWorkflowStatus: WAITING_FOR_USER_INPUT",
+      "rationale": "Returns specialist initiates return intake and awaits customer reason/item details."
+    },
+    {
+      "scenarioId": "SCENARIO-30",
+      "turnIndex": 1,
+      "change": "expectedWorkflowStatus: WAITING_FOR_USER_INPUT",
+      "rationale": "Gibberish fallback routes to default specialist order_tracking, which asks for clarification."
+    }
+  ]
+}

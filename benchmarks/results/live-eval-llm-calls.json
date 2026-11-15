@@ -1,0 +1,124 @@
+{
+  "timestamp": "2026-11-14T17:45:29.314Z",
+  "breakdown": [
+    {
+      "status": "failure",
+      "error_kind": "EMPTY_RESPONSE",
+      "count": 3,
+      "total_retries": 0
+    },
+    {
+      "status": "failure",
+      "error_kind": "SDK_ERROR",
+      "count": 185,
+      "total_retries": 174
+    },
+    {
+      "status": "failure",
+      "error_kind": "INVALID_JSON",
+      "count": 2,
+      "total_retries": 0
+    },
+    {
+      "status": "success",
+      "error_kind": null,
+      "count": 748,
+      "total_retries": 12
+    },
+    {
+      "status": "failure",
+      "error_kind": "SCHEMA_VALIDATION",
+      "count": 26,
+      "total_retries": 0
+    }
+  ],
+  "summary": {
+    "total_calls": 964,
+    "successful_calls": 748,
+    "failed_calls": 216,
+    "total_retries": 186,
+    "rate_limit_errors": 0
+  },
+  "sampleFailures": [
+    {
+      "id": "ab582178-8c57-4ae7-abf2-71effd055826",
+      "node": "general_assistant",
+      "error_kind": "SDK_ERROR",
+      "duration_ms": 679,
+      "attempts": 2,
+      "created_at": "2026-11-14 07:50:23.880404"
+    },
+    {
+      "id": "1449bbba-ee87-468a-903a-bd5364e440f2",
+      "node": "unknown",
+      "error_kind": "SDK_ERROR",
+      "duration_ms": 853,
+      "attempts": 2,
+      "created_at": "2026-11-14 07:50:25.667017"
+    },
+    {
+      "id": "7dd650a8-8e9d-44bd-9fda-840f3fdac0bc",
+      "node": "general_assistant",
+      "error_kind": "SDK_ERROR",
+      "duration_ms": 884,
+      "attempts": 2,
+      "created_at": "2026-11-14 07:50:27.23101"
+    },
+    {
+      "id": "ab737650-d89a-482d-967d-1573b14d452d",
+      "node": "unknown",
+      "error_kind": "SDK_ERROR",
+      "duration_ms": 634,
+      "attempts": 2,
+      "created_at": "2026-11-14 07:50:28.800011"
+    },
+    {
+      "id": "6e930c21-cd12-40ff-b446-492c38f4e61f",
+      "node": "general_assistant",
+      "error_kind": "SDK_ERROR",
+      "duration_ms": 849,
+      "attempts": 2,
+      "created_at": "2026-11-14 07:50:30.329797"
+    },
+    {
+      "id": "54a51d6d-5cef-4f82-a1eb-d94751c14aeb",
+      "node": "unknown",
+      "error_kind": "SDK_ERROR",
+      "duration_ms": 672,
+      "attempts": 2,
+      "created_at": "2026-11-14 07:50:34.300234"
+    },
+    {
+      "id": "14eaae0b-b460-47ee-8efc-b3ee3dc065a2",
+      "node": "general_assistant",
+      "error_kind": "SDK_ERROR",
+      "duration_ms": 747,
+      "attempts": 2,
+      "created_at": "2026-11-14 07:50:35.748244"
+    },
+    {
+      "id": "18166c3a-491c-4654-a70f-39867e6c9757",
+      "node": "returns",
+      "error_kind": "SDK_ERROR",
+      "duration_ms": 842,
+      "attempts": 2,
+      "created_at": "2026-11-14 07:50:39.019031"
+    },
+    {
+      "id": "3b4b128f-a78f-4e91-ba78-4f41d2f3cdec",
+      "node": "returns",
+      "error_kind": "SDK_ERROR",
+      "duration_ms": 858,
+      "attempts": 2,
+      "created_at": "2026-11-14 07:50:43.169093"
+    },
+    {
+      "id": "6f78e03e-59a3-4aea-aade-c1c64281c491",
+      "node": "order_tracking",
+      "error_kind": "SDK_ERROR",
+      "duration_ms": 731,
+      "attempts": 2,
+      "created_at": "2026-11-14 07:50:44.91185"
+    }
+  ]
+}

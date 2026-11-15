@@ -1,0 +1,5499 @@
+{
+  "evalRunId": "live-v1-run3",
+  "datasetVersion": "v1",
+  "timestamp": "2026-11-14T14:51:10.500Z",
+  "checkpointerType": "PostgresSaver",
+  "totalScenarios": 30,
+  "passedScenarios": 0,
+  "passRate": 0,
+  "byEvaluator": {
+    "ROUTING_CORRECT": {
+      "passed": 35,
+      "total": 38,
+      "rate": 0.9210526315789473
+    },
+    "HANDOFF_CORRECT": {
+      "passed": 36,
+      "total": 38,
+      "rate": 0.9473684210526315
+    },
+    "SPECIALIST_SCOPE_CORRECT": {
+      "passed": 38,
+      "total": 38,
+      "rate": 1
+    },
+    "TOOL_SELECTION_CORRECT": {
+      "passed": 18,
+      "total": 38,
+      "rate": 0.47368421052631576
+    },
+    "STATE_PRESERVED": {
+      "passed": 38,
+      "total": 38,
+      "rate": 1
+    },
+    "KNOWLEDGE_GROUNDED": {
+      "passed": 21,
+      "total": 38,
+      "rate": 0.5526315789473685
+    },
+    "WORKFLOW_COMPLETED": {
+      "passed": 4,
+      "total": 38,
+      "rate": 0.10526315789473684
+    },
+    "RESOLUTION_CORRECT": {
+      "passed": 34,
+      "total": 38,
+      "rate": 0.8947368421052632
+    }
+  },
+  "byDomain": {
+    "orders": {
+      "passed": 0,
+      "total": 7,
+      "rate": 0
+    },
+    "cross-domain": {
+      "passed": 0,
+      "total": 12,
+      "rate": 0
+    },
+    "payments": {
+      "passed": 0,
+      "total": 5,
+      "rate": 0
+    },
+    "account": {
+      "passed": 0,
+      "total": 6,
+      "rate": 0
+    }
+  },
+  "timingSummary": {
+    "overall": {
+      "count": 38,
+      "turnMsP50": 8262,
+      "turnMsP95": 12441,
+      "turnMsMean": 8910.8,
+      "dbMsP50": 14606,
+      "dbMsP95": 25208,
+      "dbMsMean": 16415.3,
+      "meanQueries": 53.7,
+      "meanLlmMs": 2070.2,
+      "meanOtherMs": 0
+    },
+    "turn1": {
+      "count": 30,
+      "turnMsP50": 8897,
+      "turnMsP95": 12597,
+      "turnMsMean": 9224.5,
+      "dbMsP50": 15561,
+      "dbMsP95": 26303,
+      "dbMsMean": 17193,
+      "meanQueries": 55.6,
+      "meanLlmMs": 2102.6,
+      "meanOtherMs": 0
+    },
+    "laterTurns": {
+      "count": 8,
+      "turnMsP50": 7507,
+      "turnMsP95": 9078,
+      "turnMsMean": 7734.4,
+      "dbMsP50": 13062,
+      "dbMsP95": 15842,
+      "dbMsMean": 13498.8,
+      "meanQueries": 46.4,
+      "meanLlmMs": 1948.6,
+      "meanOtherMs": 0
+    },
+    "topQuerySources": [
+      {
+        "source": "src/index.ts:600",
+        "count": 603,
+        "totalMs": 178902
+      },
+      {
+        "source": "src/index.ts:651",
+        "count": 437,
+        "totalMs": 127520
+      },
+      {
+        "source": "src/node-postgres/session.ts:161",
+        "count": 135,
+        "totalMs": 58442
+      },
+      {
+        "source": "src/index.ts:613",
+        "count": 166,
+        "totalMs": 48759
+      },
+      {
+        "source": "src/index.ts:598",
+        "count": 166,
+        "totalMs": 48139
+      },
+      {
+        "source": "src/index.ts:605",
+        "count": 166,
+        "totalMs": 47583
+      },
+      {
+        "source": "src/index.ts:653",
+        "count": 128,
+        "totalMs": 37818
+      },
+      {
+        "source": "src/index.ts:649",
+        "count": 128,
+        "totalMs": 36570
+      },
+      {
+        "source": "src/node-postgres/session.ts:149",
+        "count": 72,
+        "totalMs": 26959
+      },
+      {
+        "source": "src/index.ts:381",
+        "count": 38,
+        "totalMs": 13093
+      }
+    ]
+  },
+  "scenarioResults": [
+    {
+      "scenario": {
+        "id": "SCENARIO-01",
+        "name": "Simple order status, single order, LIGHT",
+        "description": "User inquires about tracking status of a known order with LIGHT verification.",
+        "domain": "orders",
+        "pattern": "PATTERN_A",
+        "initialIdentity": {
+          "status": "LIGHTLY_VERIFIED",
+          "verificationMethod": "order_number"
+        },
+        "turns": [
+          {
+            "userMessage": "What is the tracking status of my order ord-101?",
+            "expectedTargetSpecialist": "order_tracking",
+            "expectedIntent": "ORDER_STATUS",
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedTools": [
+              {
+                "tool": "get_order",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedResponseKeywords": [
+              "shipped",
+              "transit",
+              "tracking"
+            ]
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "What is the tracking status of my order ord-101?",
+            "expectedTargetSpecialist": "order_tracking",
+            "expectedIntent": "ORDER_STATUS",
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedTools": [
+              {
+                "tool": "get_order",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedResponseKeywords": [
+              "shipped",
+              "transit",
+              "tracking"
+            ]
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Routed correctly to expected specialist \"order_tracking\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected tool \"get_order\" was not invoked. Executed: []."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Assistant response did not contain any expected keywords: [shipped, transit, tracking]."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"COMPLETED\", but received \"WAITING_FOR_USER_INPUT\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 9858,
+            "dbMs": 19713,
+            "dbQueryCount": 50,
+            "llmMs": 2814,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 232
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 1623
+              },
+              "src/index.ts:600": {
+                "count": 15,
+                "totalMs": 5476
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 1005
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 1216
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 960
+              },
+              "src/index.ts:651": {
+                "count": 11,
+                "totalMs": 3761
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 2,
+                "totalMs": 3778
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 928
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 733
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 5,
+      "totalEvaluators": 8
+    },
+    {
+      "scenario": {
+        "id": "SCENARIO-02",
+        "name": "Ambiguous order reference -> clarification -> resolved",
+        "description": "User asks where their package is without providing order ID; specialist asks for clarification.",
+        "domain": "orders",
+        "pattern": "PATTERN_A",
+        "initialIdentity": {
+          "status": "LIGHTLY_VERIFIED",
+          "verificationMethod": "order_number"
+        },
+        "turns": [
+          {
+            "userMessage": "Where is my package?",
+            "expectedTargetSpecialist": "order_tracking",
+            "expectedWorkflowStatus": "WAITING_FOR_USER_INPUT",
+            "expectedResponseKeywords": [
+              "order number",
+              "order id"
+            ]
+          },
+          {
+            "userMessage": "My order number is ord-102",
+            "expectedTargetSpecialist": "order_tracking",
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedTools": [
+              {
+                "tool": "get_order",
+                "gateOutcome": "ALLOWED"
+              }
+            ]
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "Where is my package?",
+            "expectedTargetSpecialist": "order_tracking",
+            "expectedWorkflowStatus": "WAITING_FOR_USER_INPUT",
+            "expectedResponseKeywords": [
+              "order number",
+              "order id"
+            ]
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Routed correctly to expected specialist \"order_tracking\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools specifically expected for this turn."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Response content aligns with grounded knowledge and keyword expectations."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Workflow status matched expected \"WAITING_FOR_USER_INPUT\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": true,
+          "timing": {
+            "turnMs": 6935,
+            "dbMs": 12490,
+            "dbQueryCount": 50,
+            "llmMs": 1579,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 223
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 1032
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 770
+              },
+              "src/index.ts:600": {
+                "count": 15,
+                "totalMs": 3708
+              },
+              "src/index.ts:651": {
+                "count": 11,
+                "totalMs": 2677
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 966
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 978
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 2,
+                "totalMs": 597
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 797
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 743
+              }
+            }
+          }
+        },
+        {
+          "turnIndex": 1,
+          "turn": {
+            "userMessage": "My order number is ord-102",
+            "expectedTargetSpecialist": "order_tracking",
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedTools": [
+              {
+                "tool": "get_order",
+                "gateOutcome": "ALLOWED"
+              }
+            ]
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Routed correctly to expected specialist \"order_tracking\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected tool \"get_order\" was not invoked. Executed: []."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Response content aligns with grounded knowledge and keyword expectations."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"COMPLETED\", but received \"WAITING_FOR_USER_INPUT\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 7310,
+            "dbMs": 12894,
+            "dbQueryCount": 48,
+            "llmMs": 2469,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 301
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 976
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 752
+              },
+              "src/index.ts:600": {
+                "count": 14,
+                "totalMs": 3510
+              },
+              "src/index.ts:651": {
+                "count": 10,
+                "totalMs": 2888
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 1165
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 1322
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 690
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 2,
+                "totalMs": 533
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 757
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 14,
+      "totalEvaluators": 16
+    },
+    {
+      "scenario": {
+        "id": "SCENARIO-03",
+        "name": "Duplicate charge confirmed -> Payment -> Refund lateral handoff",
+        "description": "User inquires about duplicate charge; Payment specialist confirms and hands off laterally to Refund.",
+        "domain": "cross-domain",
+        "pattern": "PATTERN_B",
+        "initialIdentity": {
+          "status": "VERIFIED",
+          "verificationMethod": "otp"
+        },
+        "turns": [
+          {
+            "userMessage": "I was charged twice for order ord-103.",
+            "expectedTargetSpecialist": "payment",
+            "expectedHandoff": {
+              "sourceAgent": "payment",
+              "targetAgent": "refund"
+            },
+            "expectedTools": [
+              {
+                "tool": "detect_duplicate_charge",
+                "gateOutcome": "ALLOWED"
+              },
+              {
+                "tool": "create_refund",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED"
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "I was charged twice for order ord-103.",
+            "expectedTargetSpecialist": "payment",
+            "expectedHandoff": {
+              "sourceAgent": "payment",
+              "targetAgent": "refund"
+            },
+            "expectedTools": [
+              {
+                "tool": "detect_duplicate_charge",
+                "gateOutcome": "ALLOWED"
+              },
+              {
+                "tool": "create_refund",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED"
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Routed correctly to expected specialist \"payment\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected handoff from \"payment\" to \"refund\", but no matching routing decision was logged."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected tool \"detect_duplicate_charge\" was not invoked. Executed: []."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Response content aligns with grounded knowledge and keyword expectations."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"COMPLETED\", but received \"WAITING_FOR_USER_INPUT\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 6636,
+            "dbMs": 11523,
+            "dbQueryCount": 48,
+            "llmMs": 1714,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 242
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 703
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 1093
+              },
+              "src/index.ts:651": {
+                "count": 10,
+                "totalMs": 2362
+              },
+              "src/index.ts:600": {
+                "count": 14,
+                "totalMs": 3374
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 961
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 938
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 679
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 2,
+                "totalMs": 451
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 720
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 5,
+      "totalEvaluators": 8
+    },
+    {
+      "scenario": {
+        "id": "SCENARIO-04",
+        "name": "Refund inquiry with no linked return -> Refund -> Returns lateral handoff",
+        "description": "User asks for refund on order ord-104 without an existing return; Refund hands off to Returns.",
+        "domain": "cross-domain",
+        "pattern": "PATTERN_B",
+        "initialIdentity": {
+          "status": "VERIFIED",
+          "verificationMethod": "otp"
+        },
+        "turns": [
+          {
+            "userMessage": "I want a refund for order ord-104.",
+            "expectedTargetSpecialist": "refund",
+            "expectedHandoff": {
+              "sourceAgent": "refund",
+              "targetAgent": "returns"
+            },
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedResponseKeywords": [
+              "return"
+            ]
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "I want a refund for order ord-104.",
+            "expectedTargetSpecialist": "refund",
+            "expectedHandoff": {
+              "sourceAgent": "refund",
+              "targetAgent": "returns"
+            },
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedResponseKeywords": [
+              "return"
+            ]
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Routed correctly to expected specialist \"refund\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected handoff from \"refund\" to \"returns\", but no matching routing decision was logged."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools specifically expected for this turn."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Assistant response did not contain any expected keywords: [return]."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"COMPLETED\", but received \"WAITING_FOR_USER_INPUT\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 7797,
+            "dbMs": 13084,
+            "dbQueryCount": 48,
+            "llmMs": 1958,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 446
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 1196
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 781
+              },
+              "src/index.ts:651": {
+                "count": 10,
+                "totalMs": 2521
+              },
+              "src/index.ts:600": {
+                "count": 14,
+                "totalMs": 3903
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 1017
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 1209
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 734
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 2,
+                "totalMs": 455
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 822
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 5,
+      "totalEvaluators": 8
+    },
+    {
+      "scenario": {
+        "id": "SCENARIO-05",
+        "name": "Payment inquiry while unverified -> Account Access FULL -> resume Payment",
+        "description": "Unverified user asks for payment details; blocked by gate, routed to Account Access, then resumes Payment.",
+        "domain": "cross-domain",
+        "pattern": "PATTERN_C",
+        "initialIdentity": {
+          "status": "UNVERIFIED"
+        },
+        "turns": [
+          {
+            "userMessage": "Can you show me the receipt and payment details for order ord-105?",
+            "expectedTargetSpecialist": "payment",
+            "expectedWorkflowStatus": "WAITING_FOR_USER_INPUT",
+            "expectedResponseKeywords": [
+              "verify",
+              "code"
+            ]
+          },
+          {
+            "userMessage": "My verification code is 123456",
+            "expectedTargetSpecialist": "account_access",
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedTools": [
+              {
+                "tool": "get_payment",
+                "gateOutcome": "ALLOWED"
+              }
+            ]
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "Can you show me the receipt and payment details for order ord-105?",
+            "expectedTargetSpecialist": "payment",
+            "expectedWorkflowStatus": "WAITING_FOR_USER_INPUT",
+            "expectedResponseKeywords": [
+              "verify",
+              "code"
+            ]
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Routed correctly to expected specialist \"payment\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools specifically expected for this turn."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Assistant response did not contain any expected keywords: [verify, code]."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Workflow status matched expected \"WAITING_FOR_USER_INPUT\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 12772,
+            "dbMs": 24797,
+            "dbQueryCount": 82,
+            "llmMs": 3043,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 338
+              },
+              "src/index.ts:649": {
+                "count": 5,
+                "totalMs": 1308
+              },
+              "src/index.ts:598": {
+                "count": 6,
+                "totalMs": 2009
+              },
+              "src/index.ts:651": {
+                "count": 19,
+                "totalMs": 5457
+              },
+              "src/index.ts:600": {
+                "count": 25,
+                "totalMs": 6825
+              },
+              "src/index.ts:605": {
+                "count": 6,
+                "totalMs": 1978
+              },
+              "src/index.ts:613": {
+                "count": 6,
+                "totalMs": 1588
+              },
+              "src/index.ts:653": {
+                "count": 5,
+                "totalMs": 1284
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 3,
+                "totalMs": 910
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 6,
+                "totalMs": 3099
+              }
+            }
+          }
+        },
+        {
+          "turnIndex": 1,
+          "turn": {
+            "userMessage": "My verification code is 123456",
+            "expectedTargetSpecialist": "account_access",
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedTools": [
+              {
+                "tool": "get_payment",
+                "gateOutcome": "ALLOWED"
+              }
+            ]
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Routed correctly to expected specialist \"account_access\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected tool \"get_payment\" was not invoked. Executed: []."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Response content aligns with grounded knowledge and keyword expectations."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"COMPLETED\", but received \"FAILED\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 9143,
+            "dbMs": 15591,
+            "dbQueryCount": 45,
+            "llmMs": 2013,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 406
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 1495
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 1829
+              },
+              "src/index.ts:651": {
+                "count": 9,
+                "totalMs": 2643
+              },
+              "src/index.ts:600": {
+                "count": 13,
+                "totalMs": 4074
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 1290
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 1340
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 1517
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 1,
+                "totalMs": 229
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 768
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 13,
+      "totalEvaluators": 16
+    },
+    {
+      "scenario": {
+        "id": "SCENARIO-06",
+        "name": "Return creation with only LIGHT -> Account Access FULL -> resume Returns",
+        "description": "LIGHTLY_VERIFIED user tries to create return (FULL gate required); unblocks via OTP and resumes Returns.",
+        "domain": "cross-domain",
+        "pattern": "PATTERN_C",
+        "initialIdentity": {
+          "status": "LIGHTLY_VERIFIED",
+          "verificationMethod": "order_number"
+        },
+        "turns": [
+          {
+            "userMessage": "I would like to create a return for order ord-106.",
+            "expectedTargetSpecialist": "returns",
+            "expectedWorkflowStatus": "WAITING_FOR_USER_INPUT",
+            "expectedResponseKeywords": [
+              "verification",
+              "code"
+            ]
+          },
+          {
+            "userMessage": "Here is my verification code: 654321",
+            "expectedTargetSpecialist": "account_access",
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedTools": [
+              {
+                "tool": "create_return",
+                "gateOutcome": "ALLOWED"
+              }
+            ]
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "I would like to create a return for order ord-106.",
+            "expectedTargetSpecialist": "returns",
+            "expectedWorkflowStatus": "WAITING_FOR_USER_INPUT",
+            "expectedResponseKeywords": [
+              "verification",
+              "code"
+            ]
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Routed correctly to expected specialist \"returns\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools specifically expected for this turn."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Assistant response did not contain any expected keywords: [verification, code]."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Workflow status matched expected \"WAITING_FOR_USER_INPUT\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 9090,
+            "dbMs": 16514,
+            "dbQueryCount": 48,
+            "llmMs": 2230,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 276
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 1150
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 1255
+              },
+              "src/index.ts:651": {
+                "count": 10,
+                "totalMs": 3685
+              },
+              "src/index.ts:600": {
+                "count": 14,
+                "totalMs": 4857
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 1082
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 1598
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 2,
+                "totalMs": 588
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 1087
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 936
+              }
+            }
+          }
+        },
+        {
+          "turnIndex": 1,
+          "turn": {
+            "userMessage": "Here is my verification code: 654321",
+            "expectedTargetSpecialist": "account_access",
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedTools": [
+              {
+                "tool": "create_return",
+                "gateOutcome": "ALLOWED"
+              }
+            ]
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected specialist \"account_access\", but currentAgent is \"returns\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected tool \"create_return\" was not invoked. Executed: []."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Response content aligns with grounded knowledge and keyword expectations."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"COMPLETED\", but received \"WAITING_FOR_USER_INPUT\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 7349,
+            "dbMs": 12505,
+            "dbQueryCount": 46,
+            "llmMs": 2403,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 247
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 720
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 1042
+              },
+              "src/index.ts:651": {
+                "count": 9,
+                "totalMs": 2499
+              },
+              "src/index.ts:600": {
+                "count": 13,
+                "totalMs": 3503
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 1525
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 792
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 1009
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 2,
+                "totalMs": 485
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 684
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 12,
+      "totalEvaluators": 16
+    },
+    {
+      "scenario": {
+        "id": "SCENARIO-07",
+        "name": "Login issue mid-Returns flow -> Account Access -> resume Returns",
+        "description": "User experiences login/credential issue during return workflow; routes to Account Access and resumes.",
+        "domain": "cross-domain",
+        "pattern": "PATTERN_C",
+        "initialIdentity": {
+          "status": "LIGHTLY_VERIFIED",
+          "verificationMethod": "order_number"
+        },
+        "turns": [
+          {
+            "userMessage": "I need to return ord-107 but I forgot how to log in or verify.",
+            "expectedTargetSpecialist": "account_access",
+            "expectedWorkflowStatus": "WAITING_FOR_USER_INPUT"
+          },
+          {
+            "userMessage": "My code is 998877",
+            "expectedTargetSpecialist": "account_access",
+            "expectedWorkflowStatus": "COMPLETED"
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "I need to return ord-107 but I forgot how to log in or verify.",
+            "expectedTargetSpecialist": "account_access",
+            "expectedWorkflowStatus": "WAITING_FOR_USER_INPUT"
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Routed correctly to expected specialist \"account_access\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools specifically expected for this turn."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Response content aligns with grounded knowledge and keyword expectations."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"WAITING_FOR_USER_INPUT\", but received \"FAILED\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Workflow is WAITING_FOR_USER_INPUT but assistant did not prompt the user for input."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 11137,
+            "dbMs": 22546,
+            "dbQueryCount": 79,
+            "llmMs": 1735,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 261
+              },
+              "src/index.ts:598": {
+                "count": 6,
+                "totalMs": 1462
+              },
+              "src/index.ts:649": {
+                "count": 5,
+                "totalMs": 1203
+              },
+              "src/index.ts:600": {
+                "count": 24,
+                "totalMs": 6412
+              },
+              "src/index.ts:651": {
+                "count": 18,
+                "totalMs": 5066
+              },
+              "src/index.ts:605": {
+                "count": 6,
+                "totalMs": 1446
+              },
+              "src/index.ts:613": {
+                "count": 6,
+                "totalMs": 1522
+              },
+              "src/index.ts:653": {
+                "count": 5,
+                "totalMs": 1380
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 2,
+                "totalMs": 483
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 6,
+                "totalMs": 3309
+              }
+            }
+          }
+        },
+        {
+          "turnIndex": 1,
+          "turn": {
+            "userMessage": "My code is 998877",
+            "expectedTargetSpecialist": "account_access",
+            "expectedWorkflowStatus": "COMPLETED"
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Routed correctly to expected specialist \"account_access\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools specifically expected for this turn."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Response content aligns with grounded knowledge and keyword expectations."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"COMPLETED\", but received \"FAILED\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 7156,
+            "dbMs": 12677,
+            "dbQueryCount": 45,
+            "llmMs": 1219,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 241
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 1097
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 825
+              },
+              "src/index.ts:600": {
+                "count": 13,
+                "totalMs": 3828
+              },
+              "src/index.ts:651": {
+                "count": 9,
+                "totalMs": 2664
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 914
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 1050
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 775
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 1,
+                "totalMs": 408
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 876
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 13,
+      "totalEvaluators": 16
+    },
+    {
+      "scenario": {
+        "id": "SCENARIO-08",
+        "name": "Return approved, refund not yet created -> structured check -> create_refund",
+        "description": "Customer checks approved return; specialist performs structured payment lookup and issues refund.",
+        "domain": "payments",
+        "pattern": "PATTERN_A",
+        "initialIdentity": {
+          "status": "VERIFIED",
+          "verificationMethod": "otp"
+        },
+        "turns": [
+          {
+            "userMessage": "My return for order ord-108 was approved. When do I get my refund?",
+            "expectedTargetSpecialist": "refund",
+            "expectedTools": [
+              {
+                "tool": "get_return_by_order",
+                "gateOutcome": "ALLOWED"
+              },
+              {
+                "tool": "create_refund",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedResponseKeywords": [
+              "refund",
+              "processed"
+            ]
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "My return for order ord-108 was approved. When do I get my refund?",
+            "expectedTargetSpecialist": "refund",
+            "expectedTools": [
+              {
+                "tool": "get_return_by_order",
+                "gateOutcome": "ALLOWED"
+              },
+              {
+                "tool": "create_refund",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedResponseKeywords": [
+              "refund",
+              "processed"
+            ]
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Routed correctly to expected specialist \"refund\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected tool \"get_return_by_order\" was not invoked. Executed: []."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Assistant response did not contain any expected keywords: [refund, processed]."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"COMPLETED\", but received \"WAITING_FOR_USER_INPUT\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 11309,
+            "dbMs": 22378,
+            "dbQueryCount": 80,
+            "llmMs": 3678,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 349
+              },
+              "src/index.ts:598": {
+                "count": 6,
+                "totalMs": 1637
+              },
+              "src/index.ts:649": {
+                "count": 5,
+                "totalMs": 1257
+              },
+              "src/index.ts:600": {
+                "count": 24,
+                "totalMs": 6296
+              },
+              "src/index.ts:651": {
+                "count": 18,
+                "totalMs": 4667
+              },
+              "src/index.ts:605": {
+                "count": 6,
+                "totalMs": 1494
+              },
+              "src/index.ts:613": {
+                "count": 6,
+                "totalMs": 1497
+              },
+              "src/index.ts:653": {
+                "count": 5,
+                "totalMs": 1230
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 3,
+                "totalMs": 758
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 6,
+                "totalMs": 3193
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 5,
+      "totalEvaluators": 8
+    },
+    {
+      "scenario": {
+        "id": "SCENARIO-09",
+        "name": "Ineligible return -> RAG policy explanation -> hard decline",
+        "description": "User requests return for order delivered 45 days ago; specialist retrieves policy and declines.",
+        "domain": "orders",
+        "pattern": "PATTERN_A",
+        "initialIdentity": {
+          "status": "LIGHTLY_VERIFIED",
+          "verificationMethod": "order_number"
+        },
+        "turns": [
+          {
+            "userMessage": "I want to return order ord-109 delivered 45 days ago.",
+            "expectedTargetSpecialist": "returns",
+            "expectedTools": [
+              {
+                "tool": "check_return_eligibility",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedResponseKeywords": [
+              "30 days",
+              "policy",
+              "cannot",
+              "ineligible"
+            ]
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "I want to return order ord-109 delivered 45 days ago.",
+            "expectedTargetSpecialist": "returns",
+            "expectedTools": [
+              {
+                "tool": "check_return_eligibility",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedResponseKeywords": [
+              "30 days",
+              "policy",
+              "cannot",
+              "ineligible"
+            ]
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Routed correctly to expected specialist \"returns\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected tool \"check_return_eligibility\" was not invoked. Executed: []."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Assistant response did not contain any expected keywords: [30 days, policy, cannot, ineligible]."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"COMPLETED\", but received \"WAITING_FOR_USER_INPUT\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 10467,
+            "dbMs": 20268,
+            "dbQueryCount": 80,
+            "llmMs": 2628,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 292
+              },
+              "src/index.ts:598": {
+                "count": 6,
+                "totalMs": 1474
+              },
+              "src/index.ts:649": {
+                "count": 5,
+                "totalMs": 1155
+              },
+              "src/index.ts:600": {
+                "count": 24,
+                "totalMs": 5716
+              },
+              "src/index.ts:651": {
+                "count": 18,
+                "totalMs": 4134
+              },
+              "src/index.ts:605": {
+                "count": 6,
+                "totalMs": 1571
+              },
+              "src/index.ts:613": {
+                "count": 6,
+                "totalMs": 1384
+              },
+              "src/index.ts:653": {
+                "count": 5,
+                "totalMs": 1125
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 3,
+                "totalMs": 680
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 6,
+                "totalMs": 2738
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 5,
+      "totalEvaluators": 8
+    },
+    {
+      "scenario": {
+        "id": "SCENARIO-10",
+        "name": "Routing loop A->Parent->B->Parent->A -> loop detection -> escalate",
+        "description": "Circular ping-pong between specialists triggers loop detection guard and human escalation.",
+        "domain": "cross-domain",
+        "pattern": "SAFETY_ESCALATION",
+        "turns": [
+          {
+            "userMessage": "Send me back and forth repeatedly.",
+            "expectedWorkflowStatus": "ESCALATED",
+            "expectedResponseKeywords": [
+              "human",
+              "support",
+              "specialist"
+            ]
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "Send me back and forth repeatedly.",
+            "expectedWorkflowStatus": "ESCALATED",
+            "expectedResponseKeywords": [
+              "human",
+              "support",
+              "specialist"
+            ]
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No specific target specialist expected for this turn."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools specifically expected for this turn."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Response content aligns with grounded knowledge and keyword expectations."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"ESCALATED\", but received \"WAITING_FOR_USER_INPUT\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 7330,
+            "dbMs": 12972,
+            "dbQueryCount": 48,
+            "llmMs": 3148,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 250
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 998
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 682
+              },
+              "src/index.ts:600": {
+                "count": 14,
+                "totalMs": 3961
+              },
+              "src/index.ts:651": {
+                "count": 10,
+                "totalMs": 2541
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 988
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 1111
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 1130
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 2,
+                "totalMs": 602
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 709
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 7,
+      "totalEvaluators": 8
+    },
+    {
+      "scenario": {
+        "id": "SCENARIO-11",
+        "name": "Tool transient failure timeout -> retry once -> escalate",
+        "description": "Transient infrastructure timeout retries once, then gracefully escalates to human support.",
+        "domain": "cross-domain",
+        "pattern": "SAFETY_ESCALATION",
+        "turns": [
+          {
+            "userMessage": "Trigger tool timeout test.",
+            "expectedWorkflowStatus": "ESCALATED",
+            "expectedResponseKeywords": [
+              "support",
+              "assist"
+            ]
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "Trigger tool timeout test.",
+            "expectedWorkflowStatus": "ESCALATED",
+            "expectedResponseKeywords": [
+              "support",
+              "assist"
+            ]
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No specific target specialist expected for this turn."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools specifically expected for this turn."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Response content aligns with grounded knowledge and keyword expectations."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"ESCALATED\", but received \"WAITING_FOR_USER_INPUT\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 6680,
+            "dbMs": 11919,
+            "dbQueryCount": 48,
+            "llmMs": 2061,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 227
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 819
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 913
+              },
+              "src/index.ts:651": {
+                "count": 10,
+                "totalMs": 2483
+              },
+              "src/index.ts:600": {
+                "count": 14,
+                "totalMs": 3611
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 930
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 719
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 968
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 2,
+                "totalMs": 453
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 795
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 7,
+      "totalEvaluators": 8
+    },
+    {
+      "scenario": {
+        "id": "SCENARIO-12",
+        "name": "Max handoff count exceeded (>= 3) -> escalate",
+        "description": "Conversation exceeding default maximum handoffs triggers handoff cap guard and escalates.",
+        "domain": "cross-domain",
+        "pattern": "SAFETY_ESCALATION",
+        "turns": [
+          {
+            "userMessage": "Complex issue spanning 4 domains exceeding max handoffs.",
+            "expectedWorkflowStatus": "ESCALATED",
+            "expectedResponseKeywords": [
+              "human",
+              "representative"
+            ]
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "Complex issue spanning 4 domains exceeding max handoffs.",
+            "expectedWorkflowStatus": "ESCALATED",
+            "expectedResponseKeywords": [
+              "human",
+              "representative"
+            ]
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No specific target specialist expected for this turn."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools specifically expected for this turn."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Assistant response did not contain any expected keywords: [human, representative]."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"ESCALATED\", but received \"WAITING_FOR_USER_INPUT\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Workflow is ESCALATED but assistant message does not inform customer of human support handoff."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 7116,
+            "dbMs": 12648,
+            "dbQueryCount": 48,
+            "llmMs": 1992,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 256
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 791
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 955
+              },
+              "src/index.ts:651": {
+                "count": 10,
+                "totalMs": 2451
+              },
+              "src/index.ts:600": {
+                "count": 14,
+                "totalMs": 3910
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 983
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 880
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 990
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 2,
+                "totalMs": 512
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 921
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 5,
+      "totalEvaluators": 8
+    },
+    {
+      "scenario": {
+        "id": "SCENARIO-13",
+        "name": "Identity mutation attempted outside Account Access -> rejected by boundary",
+        "description": "Boundary enforcement guarantees only Account Access can mutate identity state.",
+        "domain": "account",
+        "pattern": "SECURITY_BOUNDARY",
+        "turns": [
+          {
+            "userMessage": "Profile specialist attempting identity update.",
+            "expectedWorkflowStatus": "COMPLETED"
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "Profile specialist attempting identity update.",
+            "expectedWorkflowStatus": "COMPLETED"
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No specific target specialist expected for this turn."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools specifically expected for this turn."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Response content aligns with grounded knowledge and keyword expectations."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"COMPLETED\", but received \"FAILED\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 7595,
+            "dbMs": 12465,
+            "dbQueryCount": 45,
+            "llmMs": 1223,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 279
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 972
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 777
+              },
+              "src/index.ts:600": {
+                "count": 13,
+                "totalMs": 3932
+              },
+              "src/index.ts:651": {
+                "count": 9,
+                "totalMs": 2455
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 1349
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 1039
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 678
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 1,
+                "totalMs": 223
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 761
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 7,
+      "totalEvaluators": 8
+    },
+    {
+      "scenario": {
+        "id": "SCENARIO-14",
+        "name": "Password reset does NOT change identity.status -> separate re-verification",
+        "description": "Customer initiates password reset; stateless acknowledgement with zero identity mutation.",
+        "domain": "account",
+        "pattern": "SECURITY_BOUNDARY",
+        "initialIdentity": {
+          "status": "UNVERIFIED"
+        },
+        "turns": [
+          {
+            "userMessage": "I forgot my password, please send a reset link to my email.",
+            "expectedTargetSpecialist": "account_access",
+            "expectedTools": [
+              {
+                "tool": "initiate_password_reset",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedResponseKeywords": [
+              "reset",
+              "link",
+              "email"
+            ]
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "I forgot my password, please send a reset link to my email.",
+            "expectedTargetSpecialist": "account_access",
+            "expectedTools": [
+              {
+                "tool": "initiate_password_reset",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedResponseKeywords": [
+              "reset",
+              "link",
+              "email"
+            ]
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Routed correctly to expected specialist \"account_access\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected tool \"initiate_password_reset\" was not invoked. Executed: []."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Assistant response did not contain any expected keywords: [reset, link, email]."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"COMPLETED\", but received \"FAILED\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 9769,
+            "dbMs": 16242,
+            "dbQueryCount": 47,
+            "llmMs": 1574,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 1599
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 1366
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 1562
+              },
+              "src/index.ts:651": {
+                "count": 10,
+                "totalMs": 2825
+              },
+              "src/index.ts:600": {
+                "count": 14,
+                "totalMs": 4380
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 1123
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 1080
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 1,
+                "totalMs": 228
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 717
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 1362
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 5,
+      "totalEvaluators": 8
+    },
+    {
+      "scenario": {
+        "id": "SCENARIO-15",
+        "name": "Delivered order shipping tracking inquiry",
+        "description": "Customer inquires about carrier and delivery date for an already delivered order.",
+        "domain": "orders",
+        "pattern": "PATTERN_A",
+        "initialIdentity": {
+          "status": "LIGHTLY_VERIFIED",
+          "verificationMethod": "order_number"
+        },
+        "turns": [
+          {
+            "userMessage": "Can you show me the delivery details for order ord-115?",
+            "expectedTargetSpecialist": "order_tracking",
+            "expectedTools": [
+              {
+                "tool": "get_order",
+                "gateOutcome": "ALLOWED"
+              },
+              {
+                "tool": "get_shipment_status",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedResponseKeywords": [
+              "delivered",
+              "carrier"
+            ]
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "Can you show me the delivery details for order ord-115?",
+            "expectedTargetSpecialist": "order_tracking",
+            "expectedTools": [
+              {
+                "tool": "get_order",
+                "gateOutcome": "ALLOWED"
+              },
+              {
+                "tool": "get_shipment_status",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedResponseKeywords": [
+              "delivered",
+              "carrier"
+            ]
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Routed correctly to expected specialist \"order_tracking\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected tool \"get_order\" was not invoked. Executed: []."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Assistant response did not contain any expected keywords: [delivered, carrier]."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"COMPLETED\", but received \"WAITING_FOR_USER_INPUT\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 8703,
+            "dbMs": 14873,
+            "dbQueryCount": 50,
+            "llmMs": 1644,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 262
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 1066
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 758
+              },
+              "src/index.ts:600": {
+                "count": 15,
+                "totalMs": 5204
+              },
+              "src/index.ts:651": {
+                "count": 11,
+                "totalMs": 3217
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 1179
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 969
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 849
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 2,
+                "totalMs": 591
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 779
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 5,
+      "totalEvaluators": 8
+    },
+    {
+      "scenario": {
+        "id": "SCENARIO-16",
+        "name": "Return status check for active return",
+        "description": "Customer checks progress of an already submitted return request with get_return_status.",
+        "domain": "orders",
+        "pattern": "PATTERN_A",
+        "initialIdentity": {
+          "status": "LIGHTLY_VERIFIED",
+          "verificationMethod": "order_number"
+        },
+        "turns": [
+          {
+            "userMessage": "What is the status of my return ret-116?",
+            "expectedTargetSpecialist": "returns",
+            "expectedTools": [
+              {
+                "tool": "get_return_status",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedResponseKeywords": [
+              "return",
+              "status"
+            ]
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "What is the status of my return ret-116?",
+            "expectedTargetSpecialist": "returns",
+            "expectedTools": [
+              {
+                "tool": "get_return_status",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedResponseKeywords": [
+              "return",
+              "status"
+            ]
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Routed correctly to expected specialist \"returns\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected tool \"get_return_status\" was not invoked. Executed: []."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Response content aligns with grounded knowledge and keyword expectations."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"COMPLETED\", but received \"WAITING_FOR_USER_INPUT\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 8086,
+            "dbMs": 14338,
+            "dbQueryCount": 48,
+            "llmMs": 2408,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 296
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 1072
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 852
+              },
+              "src/index.ts:600": {
+                "count": 14,
+                "totalMs": 4617
+              },
+              "src/index.ts:651": {
+                "count": 10,
+                "totalMs": 2424
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 1146
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 935
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 952
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 2,
+                "totalMs": 482
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 1562
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 6,
+      "totalEvaluators": 8
+    },
+    {
+      "scenario": {
+        "id": "SCENARIO-17",
+        "name": "Return eligibility pre-check within 30-day window",
+        "description": "Customer asks if order delivered 10 days ago is eligible for return before initiating.",
+        "domain": "orders",
+        "pattern": "PATTERN_A",
+        "initialIdentity": {
+          "status": "LIGHTLY_VERIFIED",
+          "verificationMethod": "order_number"
+        },
+        "turns": [
+          {
+            "userMessage": "Is order ord-117 eligible for return?",
+            "expectedTargetSpecialist": "returns",
+            "expectedTools": [
+              {
+                "tool": "check_return_eligibility",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedResponseKeywords": [
+              "eligible"
+            ]
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "Is order ord-117 eligible for return?",
+            "expectedTargetSpecialist": "returns",
+            "expectedTools": [
+              {
+                "tool": "check_return_eligibility",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedResponseKeywords": [
+              "eligible"
+            ]
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Routed correctly to expected specialist \"returns\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected tool \"check_return_eligibility\" was not invoked. Executed: []."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Assistant response did not contain any expected keywords: [eligible]."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"COMPLETED\", but received \"WAITING_FOR_USER_INPUT\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 11796,
+            "dbMs": 23687,
+            "dbQueryCount": 82,
+            "llmMs": 2696,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 467
+              },
+              "src/index.ts:598": {
+                "count": 6,
+                "totalMs": 1749
+              },
+              "src/index.ts:649": {
+                "count": 5,
+                "totalMs": 1144
+              },
+              "src/index.ts:600": {
+                "count": 25,
+                "totalMs": 6542
+              },
+              "src/index.ts:651": {
+                "count": 19,
+                "totalMs": 5030
+              },
+              "src/index.ts:605": {
+                "count": 6,
+                "totalMs": 1593
+              },
+              "src/index.ts:613": {
+                "count": 6,
+                "totalMs": 1416
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 3,
+                "totalMs": 677
+              },
+              "src/index.ts:653": {
+                "count": 5,
+                "totalMs": 1554
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 6,
+                "totalMs": 3515
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 5,
+      "totalEvaluators": 8
+    },
+    {
+      "scenario": {
+        "id": "SCENARIO-18",
+        "name": "Multi-turn order clarification and subsequent shipment check",
+        "description": "Customer requests tracking, clarifies order number across turns, then gets shipment confirmation.",
+        "domain": "orders",
+        "pattern": "PATTERN_A",
+        "initialIdentity": {
+          "status": "LIGHTLY_VERIFIED",
+          "verificationMethod": "order_number"
+        },
+        "turns": [
+          {
+            "userMessage": "Track my package please",
+            "expectedTargetSpecialist": "order_tracking",
+            "expectedWorkflowStatus": "WAITING_FOR_USER_INPUT"
+          },
+          {
+            "userMessage": "The order number is ord-118",
+            "expectedTargetSpecialist": "order_tracking",
+            "expectedTools": [
+              {
+                "tool": "get_order",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED"
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "Track my package please",
+            "expectedTargetSpecialist": "order_tracking",
+            "expectedWorkflowStatus": "WAITING_FOR_USER_INPUT"
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Routed correctly to expected specialist \"order_tracking\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools specifically expected for this turn."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Response content aligns with grounded knowledge and keyword expectations."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Workflow status matched expected \"WAITING_FOR_USER_INPUT\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": true,
+          "timing": {
+            "turnMs": 7851,
+            "dbMs": 13930,
+            "dbQueryCount": 50,
+            "llmMs": 2225,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 242
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 1120
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 799
+              },
+              "src/index.ts:600": {
+                "count": 15,
+                "totalMs": 4497
+              },
+              "src/index.ts:651": {
+                "count": 11,
+                "totalMs": 3032
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 973
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 993
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 829
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 2,
+                "totalMs": 727
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 718
+              }
+            }
+          }
+        },
+        {
+          "turnIndex": 1,
+          "turn": {
+            "userMessage": "The order number is ord-118",
+            "expectedTargetSpecialist": "order_tracking",
+            "expectedTools": [
+              {
+                "tool": "get_order",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED"
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Routed correctly to expected specialist \"order_tracking\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected tool \"get_order\" was not invoked. Executed: []."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Response content aligns with grounded knowledge and keyword expectations."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"COMPLETED\", but received \"WAITING_FOR_USER_INPUT\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 7664,
+            "dbMs": 13229,
+            "dbQueryCount": 48,
+            "llmMs": 1572,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 290
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 1230
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 759
+              },
+              "src/index.ts:600": {
+                "count": 14,
+                "totalMs": 3856
+              },
+              "src/index.ts:651": {
+                "count": 10,
+                "totalMs": 2784
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 1196
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 1069
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 843
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 2,
+                "totalMs": 489
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 712
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 14,
+      "totalEvaluators": 16
+    },
+    {
+      "scenario": {
+        "id": "SCENARIO-19",
+        "name": "Payment status check on captured charge",
+        "description": "VERIFIED customer views captured payment record and payment method via get_payment.",
+        "domain": "payments",
+        "pattern": "PATTERN_A",
+        "initialIdentity": {
+          "status": "VERIFIED",
+          "verificationMethod": "otp"
+        },
+        "turns": [
+          {
+            "userMessage": "Can you show me the payment receipt for order ord-119?",
+            "expectedTargetSpecialist": "payment",
+            "expectedTools": [
+              {
+                "tool": "get_payment",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedResponseKeywords": [
+              "captured",
+              "payment"
+            ]
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "Can you show me the payment receipt for order ord-119?",
+            "expectedTargetSpecialist": "payment",
+            "expectedTools": [
+              {
+                "tool": "get_payment",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedResponseKeywords": [
+              "captured",
+              "payment"
+            ]
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Routed correctly to expected specialist \"payment\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected tool \"get_payment\" was not invoked. Executed: []."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Response content aligns with grounded knowledge and keyword expectations."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"COMPLETED\", but received \"WAITING_FOR_USER_INPUT\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 8437,
+            "dbMs": 14879,
+            "dbQueryCount": 48,
+            "llmMs": 2067,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 361
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 1273
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 839
+              },
+              "src/index.ts:600": {
+                "count": 14,
+                "totalMs": 4441
+              },
+              "src/index.ts:651": {
+                "count": 10,
+                "totalMs": 3071
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 1079
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 1262
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 2,
+                "totalMs": 617
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 1028
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 907
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 6,
+      "totalEvaluators": 8
+    },
+    {
+      "scenario": {
+        "id": "SCENARIO-20",
+        "name": "Duplicate charge inquiry with no duplicate confirmed",
+        "description": "Customer suspects duplicate charge; detect_duplicate_charge confirms only one charge exists.",
+        "domain": "payments",
+        "pattern": "PATTERN_A",
+        "initialIdentity": {
+          "status": "VERIFIED",
+          "verificationMethod": "otp"
+        },
+        "turns": [
+          {
+            "userMessage": "I think I was charged twice for ord-120.",
+            "expectedTargetSpecialist": "payment",
+            "expectedTools": [
+              {
+                "tool": "detect_duplicate_charge",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedResponseKeywords": [
+              "single",
+              "one charge",
+              "no duplicate"
+            ]
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "I think I was charged twice for ord-120.",
+            "expectedTargetSpecialist": "payment",
+            "expectedTools": [
+              {
+                "tool": "detect_duplicate_charge",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedResponseKeywords": [
+              "single",
+              "one charge",
+              "no duplicate"
+            ]
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Routed correctly to expected specialist \"payment\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected tool \"detect_duplicate_charge\" was not invoked. Executed: []."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Assistant response did not contain any expected keywords: [single, one charge, no duplicate]."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"COMPLETED\", but received \"WAITING_FOR_USER_INPUT\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 12383,
+            "dbMs": 24196,
+            "dbQueryCount": 82,
+            "llmMs": 3045,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 287
+              },
+              "src/index.ts:598": {
+                "count": 6,
+                "totalMs": 1609
+              },
+              "src/index.ts:649": {
+                "count": 5,
+                "totalMs": 1369
+              },
+              "src/index.ts:600": {
+                "count": 25,
+                "totalMs": 6729
+              },
+              "src/index.ts:651": {
+                "count": 19,
+                "totalMs": 5280
+              },
+              "src/index.ts:605": {
+                "count": 6,
+                "totalMs": 1660
+              },
+              "src/index.ts:613": {
+                "count": 6,
+                "totalMs": 2063
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 3,
+                "totalMs": 1078
+              },
+              "src/index.ts:653": {
+                "count": 5,
+                "totalMs": 1244
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 6,
+                "totalMs": 2877
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 5,
+      "totalEvaluators": 8
+    },
+    {
+      "scenario": {
+        "id": "SCENARIO-21",
+        "name": "Refund status inquiry for completed refund",
+        "description": "Customer inquires about refund status ref-121 using get_refund_status.",
+        "domain": "payments",
+        "pattern": "PATTERN_A",
+        "initialIdentity": {
+          "status": "VERIFIED",
+          "verificationMethod": "otp"
+        },
+        "turns": [
+          {
+            "userMessage": "Has my refund ref-121 been sent to my bank?",
+            "expectedTargetSpecialist": "refund",
+            "expectedTools": [
+              {
+                "tool": "get_refund_status",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedResponseKeywords": [
+              "refund",
+              "completed"
+            ]
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "Has my refund ref-121 been sent to my bank?",
+            "expectedTargetSpecialist": "refund",
+            "expectedTools": [
+              {
+                "tool": "get_refund_status",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedResponseKeywords": [
+              "refund",
+              "completed"
+            ]
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Routed correctly to expected specialist \"refund\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected tool \"get_refund_status\" was not invoked. Executed: []."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Response content aligns with grounded knowledge and keyword expectations."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"COMPLETED\", but received \"WAITING_FOR_USER_INPUT\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 6778,
+            "dbMs": 12222,
+            "dbQueryCount": 48,
+            "llmMs": 1908,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 259
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 947
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 735
+              },
+              "src/index.ts:600": {
+                "count": 14,
+                "totalMs": 3436
+              },
+              "src/index.ts:651": {
+                "count": 10,
+                "totalMs": 2787
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 1130
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 974
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 746
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 2,
+                "totalMs": 497
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 713
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 6,
+      "totalEvaluators": 8
+    },
+    {
+      "scenario": {
+        "id": "SCENARIO-22",
+        "name": "Direct refund creation for approved return without duplicate charges",
+        "description": "VERIFIED customer with approved return requests refund; create_refund executes successfully.",
+        "domain": "payments",
+        "pattern": "PATTERN_A",
+        "initialIdentity": {
+          "status": "VERIFIED",
+          "verificationMethod": "otp"
+        },
+        "turns": [
+          {
+            "userMessage": "Please issue my refund for order ord-122 with return ret-122.",
+            "expectedTargetSpecialist": "refund",
+            "expectedTools": [
+              {
+                "tool": "create_refund",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedResponseKeywords": [
+              "refund",
+              "issued"
+            ]
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "Please issue my refund for order ord-122 with return ret-122.",
+            "expectedTargetSpecialist": "refund",
+            "expectedTools": [
+              {
+                "tool": "create_refund",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedResponseKeywords": [
+              "refund",
+              "issued"
+            ]
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Routed correctly to expected specialist \"refund\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected tool \"create_refund\" was not invoked. Executed: []."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Assistant response did not contain any expected keywords: [refund, issued]."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"COMPLETED\", but received \"WAITING_FOR_USER_INPUT\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 13760,
+            "dbMs": 27934,
+            "dbQueryCount": 80,
+            "llmMs": 2540,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 234
+              },
+              "src/index.ts:598": {
+                "count": 6,
+                "totalMs": 1617
+              },
+              "src/index.ts:649": {
+                "count": 5,
+                "totalMs": 1331
+              },
+              "src/index.ts:600": {
+                "count": 24,
+                "totalMs": 7377
+              },
+              "src/index.ts:651": {
+                "count": 18,
+                "totalMs": 5659
+              },
+              "src/index.ts:605": {
+                "count": 6,
+                "totalMs": 2521
+              },
+              "src/index.ts:613": {
+                "count": 6,
+                "totalMs": 1974
+              },
+              "src/index.ts:653": {
+                "count": 5,
+                "totalMs": 1608
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 3,
+                "totalMs": 974
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 6,
+                "totalMs": 4638
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 5,
+      "totalEvaluators": 8
+    },
+    {
+      "scenario": {
+        "id": "SCENARIO-23",
+        "name": "View customer profile while VERIFIED",
+        "description": "VERIFIED customer views their account profile name and default address using get_profile.",
+        "domain": "account",
+        "pattern": "PATTERN_A",
+        "initialIdentity": {
+          "status": "VERIFIED",
+          "verificationMethod": "otp"
+        },
+        "turns": [
+          {
+            "userMessage": "Show me my account profile and address.",
+            "expectedTargetSpecialist": "profile",
+            "expectedTools": [
+              {
+                "tool": "get_profile",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedResponseKeywords": [
+              "profile",
+              "address"
+            ]
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "Show me my account profile and address.",
+            "expectedTargetSpecialist": "profile",
+            "expectedTools": [
+              {
+                "tool": "get_profile",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedResponseKeywords": [
+              "profile",
+              "address"
+            ]
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Routed correctly to expected specialist \"profile\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected tool \"get_profile\" was not invoked. Executed: []."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Response content aligns with grounded knowledge and keyword expectations."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"COMPLETED\", but received \"FAILED\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 11446,
+            "dbMs": 16998,
+            "dbQueryCount": 47,
+            "llmMs": 1141,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 279
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 1047
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 735
+              },
+              "src/index.ts:600": {
+                "count": 14,
+                "totalMs": 8222
+              },
+              "src/index.ts:651": {
+                "count": 10,
+                "totalMs": 2632
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 942
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 937
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 1133
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 1,
+                "totalMs": 293
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 778
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 6,
+      "totalEvaluators": 8
+    },
+    {
+      "scenario": {
+        "id": "SCENARIO-24",
+        "name": "Update customer address while VERIFIED",
+        "description": "VERIFIED customer updates default delivery address using update_profile.",
+        "domain": "account",
+        "pattern": "PATTERN_A",
+        "initialIdentity": {
+          "status": "VERIFIED",
+          "verificationMethod": "otp"
+        },
+        "turns": [
+          {
+            "userMessage": "Please change my default address to 789 New Boulevard.",
+            "expectedTargetSpecialist": "profile",
+            "expectedTools": [
+              {
+                "tool": "update_profile",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedResponseKeywords": [
+              "updated",
+              "address"
+            ]
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "Please change my default address to 789 New Boulevard.",
+            "expectedTargetSpecialist": "profile",
+            "expectedTools": [
+              {
+                "tool": "update_profile",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedResponseKeywords": [
+              "updated",
+              "address"
+            ]
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Routed correctly to expected specialist \"profile\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected tool \"update_profile\" was not invoked. Executed: []."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Assistant response did not contain any expected keywords: [updated, address]."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"COMPLETED\", but received \"FAILED\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 10651,
+            "dbMs": 20645,
+            "dbQueryCount": 47,
+            "llmMs": 1341,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 246
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 920
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 1182
+              },
+              "src/index.ts:651": {
+                "count": 10,
+                "totalMs": 3326
+              },
+              "src/index.ts:600": {
+                "count": 14,
+                "totalMs": 4832
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 1274
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 2218
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 1616
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 1,
+                "totalMs": 3668
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 1363
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 5,
+      "totalEvaluators": 8
+    },
+    {
+      "scenario": {
+        "id": "SCENARIO-25",
+        "name": "Profile update blocked for UNVERIFIED customer -> routed to Account Access",
+        "description": "Unverified user attempts profile update; gate blocks, routes to Account Access, then completes update.",
+        "domain": "cross-domain",
+        "pattern": "PATTERN_C",
+        "initialIdentity": {
+          "status": "UNVERIFIED"
+        },
+        "turns": [
+          {
+            "userMessage": "Update my profile name to Jane Doe.",
+            "expectedTargetSpecialist": "profile",
+            "expectedWorkflowStatus": "WAITING_FOR_USER_INPUT",
+            "expectedResponseKeywords": [
+              "verify",
+              "identity"
+            ]
+          },
+          {
+            "userMessage": "Verification code is 554433",
+            "expectedTargetSpecialist": "account_access",
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedTools": [
+              {
+                "tool": "update_profile",
+                "gateOutcome": "ALLOWED"
+              }
+            ]
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "Update my profile name to Jane Doe.",
+            "expectedTargetSpecialist": "profile",
+            "expectedWorkflowStatus": "WAITING_FOR_USER_INPUT",
+            "expectedResponseKeywords": [
+              "verify",
+              "identity"
+            ]
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Routed correctly to expected specialist \"profile\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools specifically expected for this turn."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Assistant response did not contain any expected keywords: [verify, identity]."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"WAITING_FOR_USER_INPUT\", but received \"FAILED\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 6718,
+            "dbMs": 11895,
+            "dbQueryCount": 47,
+            "llmMs": 1188,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 295
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 1015
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 792
+              },
+              "src/index.ts:600": {
+                "count": 14,
+                "totalMs": 3483
+              },
+              "src/index.ts:651": {
+                "count": 10,
+                "totalMs": 2552
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 915
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 992
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 704
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 1,
+                "totalMs": 272
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 876
+              }
+            }
+          }
+        },
+        {
+          "turnIndex": 1,
+          "turn": {
+            "userMessage": "Verification code is 554433",
+            "expectedTargetSpecialist": "account_access",
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedTools": [
+              {
+                "tool": "update_profile",
+                "gateOutcome": "ALLOWED"
+              }
+            ]
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected specialist \"account_access\", but currentAgent is \"profile\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected tool \"update_profile\" was not invoked. Executed: []."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Response content aligns with grounded knowledge and keyword expectations."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"COMPLETED\", but received \"FAILED\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 8958,
+            "dbMs": 15977,
+            "dbQueryCount": 45,
+            "llmMs": 1799,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 235
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 972
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 1229
+              },
+              "src/index.ts:651": {
+                "count": 9,
+                "totalMs": 3360
+              },
+              "src/index.ts:600": {
+                "count": 13,
+                "totalMs": 4156
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 1330
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 1349
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 1985
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 1,
+                "totalMs": 264
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 1096
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 11,
+      "totalEvaluators": 16
+    },
+    {
+      "scenario": {
+        "id": "SCENARIO-26",
+        "name": "Invalid OTP code submitted during verification flow",
+        "description": "Customer enters invalid verification code; service increments attempts and prompts for retry.",
+        "domain": "account",
+        "pattern": "SAFETY_ESCALATION",
+        "initialIdentity": {
+          "status": "UNVERIFIED"
+        },
+        "turns": [
+          {
+            "userMessage": "My code is 000000",
+            "expectedTargetSpecialist": "account_access",
+            "expectedWorkflowStatus": "WAITING_FOR_USER_INPUT",
+            "expectedResponseKeywords": [
+              "invalid",
+              "code",
+              "try again"
+            ]
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "My code is 000000",
+            "expectedTargetSpecialist": "account_access",
+            "expectedWorkflowStatus": "WAITING_FOR_USER_INPUT",
+            "expectedResponseKeywords": [
+              "invalid",
+              "code",
+              "try again"
+            ]
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Routed correctly to expected specialist \"account_access\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools specifically expected for this turn."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Assistant response did not contain any expected keywords: [invalid, code, try again]."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"WAITING_FOR_USER_INPUT\", but received \"FAILED\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Workflow is WAITING_FOR_USER_INPUT but assistant did not prompt the user for input."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 9615,
+            "dbMs": 20545,
+            "dbQueryCount": 47,
+            "llmMs": 1033,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 322
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 1078
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 1033
+              },
+              "src/index.ts:600": {
+                "count": 14,
+                "totalMs": 4041
+              },
+              "src/index.ts:651": {
+                "count": 10,
+                "totalMs": 4649
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 1847
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 2306
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 1,
+                "totalMs": 434
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 4011
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 824
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 5,
+      "totalEvaluators": 8
+    },
+    {
+      "scenario": {
+        "id": "SCENARIO-27",
+        "name": "Password reset request with valid email format",
+        "description": "Customer requests password reset; initiates reset safely without leaking existence or modifying status.",
+        "domain": "account",
+        "pattern": "SECURITY_BOUNDARY",
+        "turns": [
+          {
+            "userMessage": "I need to reset the password for customer@example.com.",
+            "expectedTargetSpecialist": "account_access",
+            "expectedTools": [
+              {
+                "tool": "initiate_password_reset",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedResponseKeywords": [
+              "reset",
+              "email"
+            ]
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "I need to reset the password for customer@example.com.",
+            "expectedTargetSpecialist": "account_access",
+            "expectedTools": [
+              {
+                "tool": "initiate_password_reset",
+                "gateOutcome": "ALLOWED"
+              }
+            ],
+            "expectedWorkflowStatus": "COMPLETED",
+            "expectedResponseKeywords": [
+              "reset",
+              "email"
+            ]
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Routed correctly to expected specialist \"account_access\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected tool \"initiate_password_reset\" was not invoked. Executed: []."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Assistant response did not contain any expected keywords: [reset, email]."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"COMPLETED\", but received \"FAILED\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 7667,
+            "dbMs": 12586,
+            "dbQueryCount": 45,
+            "llmMs": 1090,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 228
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 1185
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 753
+              },
+              "src/index.ts:600": {
+                "count": 13,
+                "totalMs": 4089
+              },
+              "src/index.ts:651": {
+                "count": 9,
+                "totalMs": 2251
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 1217
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 927
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 843
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 1,
+                "totalMs": 303
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 791
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 5,
+      "totalEvaluators": 8
+    },
+    {
+      "scenario": {
+        "id": "SCENARIO-28",
+        "name": "Order Tracking lateral handoff to Returns upon customer return request",
+        "description": "Customer asking for order status changes mind and asks for return; Order Tracking hands off to Returns.",
+        "domain": "cross-domain",
+        "pattern": "PATTERN_B",
+        "initialIdentity": {
+          "status": "LIGHTLY_VERIFIED",
+          "verificationMethod": "order_number"
+        },
+        "turns": [
+          {
+            "userMessage": "Where is my order ord-128?",
+            "expectedTargetSpecialist": "order_tracking",
+            "expectedWorkflowStatus": "COMPLETED"
+          },
+          {
+            "userMessage": "I received it, but I would like to return it now.",
+            "expectedTargetSpecialist": "returns",
+            "expectedWorkflowStatus": "COMPLETED"
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "Where is my order ord-128?",
+            "expectedTargetSpecialist": "order_tracking",
+            "expectedWorkflowStatus": "COMPLETED"
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Routed correctly to expected specialist \"order_tracking\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools specifically expected for this turn."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Response content aligns with grounded knowledge and keyword expectations."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"COMPLETED\", but received \"WAITING_FOR_USER_INPUT\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 11824,
+            "dbMs": 27535,
+            "dbQueryCount": 50,
+            "llmMs": 2380,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 876
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 2509
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 1969
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 2,
+                "totalMs": 716
+              },
+              "src/index.ts:600": {
+                "count": 15,
+                "totalMs": 5952
+              },
+              "src/index.ts:651": {
+                "count": 11,
+                "totalMs": 5878
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 5676
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 1081
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 1385
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 1494
+              }
+            }
+          }
+        },
+        {
+          "turnIndex": 1,
+          "turn": {
+            "userMessage": "I received it, but I would like to return it now.",
+            "expectedTargetSpecialist": "returns",
+            "expectedWorkflowStatus": "COMPLETED"
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Routed correctly to expected specialist \"returns\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools specifically expected for this turn."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Response content aligns with grounded knowledge and keyword expectations."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"COMPLETED\", but received \"WAITING_FOR_USER_INPUT\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 6543,
+            "dbMs": 11848,
+            "dbQueryCount": 46,
+            "llmMs": 1652,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 230
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 733
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 1022
+              },
+              "src/index.ts:651": {
+                "count": 9,
+                "totalMs": 2373
+              },
+              "src/index.ts:600": {
+                "count": 13,
+                "totalMs": 3193
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 979
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 764
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 1097
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 2,
+                "totalMs": 703
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 754
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 14,
+      "totalEvaluators": 16
+    },
+    {
+      "scenario": {
+        "id": "SCENARIO-29",
+        "name": "Terminal ESCALATED state lock multi-turn enforcement",
+        "description": "Once conversation is marked ESCALATED, subsequent customer turns stay locked in ESCALATED state.",
+        "domain": "cross-domain",
+        "pattern": "SAFETY_ESCALATION",
+        "turns": [
+          {
+            "userMessage": "Trigger escalation.",
+            "expectedWorkflowStatus": "ESCALATED"
+          },
+          {
+            "userMessage": "Are you still there?",
+            "expectedWorkflowStatus": "ESCALATED",
+            "expectedResponseKeywords": [
+              "representative",
+              "human"
+            ]
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "Trigger escalation.",
+            "expectedWorkflowStatus": "ESCALATED"
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No specific target specialist expected for this turn."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools specifically expected for this turn."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Response content aligns with grounded knowledge and keyword expectations."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"ESCALATED\", but received \"WAITING_FOR_USER_INPUT\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 6913,
+            "dbMs": 12029,
+            "dbQueryCount": 48,
+            "llmMs": 1996,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 235
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 772
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 1035
+              },
+              "src/index.ts:651": {
+                "count": 10,
+                "totalMs": 2370
+              },
+              "src/index.ts:600": {
+                "count": 14,
+                "totalMs": 3523
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 1068
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 737
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 1031
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 2,
+                "totalMs": 478
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 780
+              }
+            }
+          }
+        },
+        {
+          "turnIndex": 1,
+          "turn": {
+            "userMessage": "Are you still there?",
+            "expectedWorkflowStatus": "ESCALATED",
+            "expectedResponseKeywords": [
+              "representative",
+              "human"
+            ]
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No specific target specialist expected for this turn."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools specifically expected for this turn."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Assistant response did not contain any expected keywords: [representative, human]."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"ESCALATED\", but received \"WAITING_FOR_USER_INPUT\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Workflow is ESCALATED but assistant message does not inform customer of human support handoff."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 7752,
+            "dbMs": 13269,
+            "dbQueryCount": 48,
+            "llmMs": 2462,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 719
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 824
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 1031
+              },
+              "src/index.ts:651": {
+                "count": 10,
+                "totalMs": 2561
+              },
+              "src/index.ts:600": {
+                "count": 14,
+                "totalMs": 3667
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 1238
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 848
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 1075
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 2,
+                "totalMs": 456
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 851
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 12,
+      "totalEvaluators": 16
+    },
+    {
+      "scenario": {
+        "id": "SCENARIO-30",
+        "name": "Classifier fallback default to order_tracking on ambiguous gibberish",
+        "description": "Customer sends unclassifiable input; router falls back safely to order_tracking without crashing.",
+        "domain": "cross-domain",
+        "pattern": "SAFETY_ESCALATION",
+        "turns": [
+          {
+            "userMessage": "asdfghjkl qwertyuiop ???",
+            "expectedTargetSpecialist": "order_tracking",
+            "expectedWorkflowStatus": "COMPLETED"
+          }
+        ]
+      },
+      "turnResults": [
+        {
+          "turnIndex": 0,
+          "turn": {
+            "userMessage": "asdfghjkl qwertyuiop ???",
+            "expectedTargetSpecialist": "order_tracking",
+            "expectedWorkflowStatus": "COMPLETED"
+          },
+          "evaluatorResults": [
+            {
+              "evaluator": "ROUTING_CORRECT",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected specialist \"order_tracking\", but currentAgent is \"general_assistant\"."
+            },
+            {
+              "evaluator": "HANDOFF_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No lateral handoff expected for this turn."
+            },
+            {
+              "evaluator": "SPECIALIST_SCOPE_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools executed; specialist scope respected."
+            },
+            {
+              "evaluator": "TOOL_SELECTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "No tools specifically expected for this turn."
+            },
+            {
+              "evaluator": "STATE_PRESERVED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Conversation state, user identity, and routing history preserved without regression."
+            },
+            {
+              "evaluator": "KNOWLEDGE_GROUNDED",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Response content aligns with grounded knowledge and keyword expectations."
+            },
+            {
+              "evaluator": "WORKFLOW_COMPLETED",
+              "passed": false,
+              "score": 0,
+              "reasoning": "Expected workflowStatus \"COMPLETED\", but received \"WAITING_FOR_USER_INPUT\"."
+            },
+            {
+              "evaluator": "RESOLUTION_CORRECT",
+              "passed": true,
+              "score": 1,
+              "reasoning": "Customer interaction successfully resolved according to scenario policy."
+            }
+          ],
+          "passed": false,
+          "timing": {
+            "turnMs": 9617,
+            "dbMs": 17940,
+            "dbQueryCount": 48,
+            "llmMs": 2998,
+            "otherMs": 0,
+            "querySources": {
+              "src/index.ts:381": {
+                "count": 1,
+                "totalMs": 265
+              },
+              "src/index.ts:649": {
+                "count": 3,
+                "totalMs": 967
+              },
+              "src/index.ts:598": {
+                "count": 4,
+                "totalMs": 998
+              },
+              "src/index.ts:651": {
+                "count": 10,
+                "totalMs": 4505
+              },
+              "src/index.ts:600": {
+                "count": 14,
+                "totalMs": 5769
+              },
+              "src/index.ts:605": {
+                "count": 4,
+                "totalMs": 1428
+              },
+              "src/index.ts:653": {
+                "count": 3,
+                "totalMs": 888
+              },
+              "src/index.ts:613": {
+                "count": 4,
+                "totalMs": 1135
+              },
+              "src/node-postgres/session.ts:149": {
+                "count": 2,
+                "totalMs": 867
+              },
+              "src/node-postgres/session.ts:161": {
+                "count": 3,
+                "totalMs": 1119
+              }
+            }
+          }
+        }
+      ],
+      "scenarioPassed": false,
+      "passingEvaluators": 6,
+      "totalEvaluators": 8
+    }
+  ]
+}

@@ -1,0 +1,202 @@
+{
+  "metadata": {
+    "generatedAt": "2026-11-14T08:14:34.199Z",
+    "scenario": "Resume-after-interruption OTP verification",
+    "totalRuns": 20,
+    "database": "PostgreSQL + PostgresSaver checkpointer (Neon SSL)",
+    "dataSource": "live model (gemini-3.5-flash-lite) + real checkpointer + real Redis"
+  },
+  "successCount": 20,
+  "totalCount": 20,
+  "successRate": 1,
+  "restoreTimeMs": {
+    "p50": 235.33,
+    "p95": 308.82,
+    "min": 219.78,
+    "max": 343.04,
+    "mean": 250.93
+  },
+  "failureCauses": {},
+  "runs": [
+    {
+      "iteration": 1,
+      "threadId": "d81c848f-a2d0-4dfa-8cce-96d8984db2dc",
+      "success": true,
+      "restoreTimeMs": 253.13,
+      "initialStatus": "WAITING_FOR_USER_INPUT",
+      "finalStatus": "COMPLETED",
+      "finalIdentityStatus": "VERIFIED"
+    },
+    {
+      "iteration": 2,
+      "threadId": "e9370f05-1f8b-449b-8c9c-2f4ef5e3c99a",
+      "success": true,
+      "restoreTimeMs": 237.21,
+      "initialStatus": "WAITING_FOR_USER_INPUT",
+      "finalStatus": "COMPLETED",
+      "finalIdentityStatus": "VERIFIED"
+    },
+    {
+      "iteration": 3,
+      "threadId": "ef8982d4-a973-48d1-8f64-3eb387d294ef",
+      "success": true,
+      "restoreTimeMs": 219.78,
+      "initialStatus": "WAITING_FOR_USER_INPUT",
+      "finalStatus": "COMPLETED",
+      "finalIdentityStatus": "VERIFIED"
+    },
+    {
+      "iteration": 4,
+      "threadId": "bf7385cd-cf34-4606-9b2a-bf80fc7b1b7d",
+      "success": true,
+      "restoreTimeMs": 234.73,
+      "initialStatus": "WAITING_FOR_USER_INPUT",
+      "finalStatus": "COMPLETED",
+      "finalIdentityStatus": "VERIFIED"
+    },
+    {
+      "iteration": 5,
+      "threadId": "0d256dc1-458a-4640-8388-ec0e811d81f1",
+      "success": true,
+      "restoreTimeMs": 261.54,
+      "initialStatus": "WAITING_FOR_USER_INPUT",
+      "finalStatus": "COMPLETED",
+      "finalIdentityStatus": "VERIFIED"
+    },
+    {
+      "iteration": 6,
+      "threadId": "057c3c0a-4b5b-46c0-b697-67a11d84aecf",
+      "success": true,
+      "restoreTimeMs": 220.3,
+      "initialStatus": "WAITING_FOR_USER_INPUT",
+      "finalStatus": "COMPLETED",
+      "finalIdentityStatus": "VERIFIED"
+    },
+    {
+      "iteration": 7,
+      "threadId": "fbe6e077-4e0a-4a69-bad0-a3d9f64237ac",
+      "success": true,
+      "restoreTimeMs": 231.44,
+      "initialStatus": "WAITING_FOR_USER_INPUT",
+      "finalStatus": "COMPLETED",
+      "finalIdentityStatus": "VERIFIED"
+    },
+    {
+      "iteration": 8,
+      "threadId": "f3fd0f3a-a596-45bb-b54b-dbaf78870188",
+      "success": true,
+      "restoreTimeMs": 299.25,
+      "initialStatus": "WAITING_FOR_USER_INPUT",
+      "finalStatus": "COMPLETED",
+      "finalIdentityStatus": "VERIFIED"
+    },
+    {
+      "iteration": 9,
+      "threadId": "1463b3fc-b180-4f87-af4a-473efc5a540b",
+      "success": true,
+      "restoreTimeMs": 227.31,
+      "initialStatus": "WAITING_FOR_USER_INPUT",
+      "finalStatus": "COMPLETED",
+      "finalIdentityStatus": "VERIFIED"
+    },
+    {
+      "iteration": 10,
+      "threadId": "42863eb7-34a9-4445-af8f-73f9bb0c9cca",
+      "success": true,
+      "restoreTimeMs": 307.02,
+      "initialStatus": "WAITING_FOR_USER_INPUT",
+      "finalStatus": "COMPLETED",
+      "finalIdentityStatus": "VERIFIED"
+    },
+    {
+      "iteration": 11,
+      "threadId": "d3beaced-85bf-461f-920c-78df5d6e490c",
+      "success": true,
+      "restoreTimeMs": 235.94,
+      "initialStatus": "WAITING_FOR_USER_INPUT",
+      "finalStatus": "COMPLETED",
+      "finalIdentityStatus": "VERIFIED"
+    },
+    {
+      "iteration": 12,
+      "threadId": "218f694b-180d-4caa-b2cd-ecd10833584a",
+      "success": true,
+      "restoreTimeMs": 226.25,
+      "initialStatus": "WAITING_FOR_USER_INPUT",
+      "finalStatus": "COMPLETED",
+      "finalIdentityStatus": "VERIFIED"
+    },
+    {
+      "iteration": 13,
+      "threadId": "d17a3efa-39d2-49c3-ade2-3e8d4454c5cc",
+      "success": true,
+      "restoreTimeMs": 303.47,
+      "initialStatus": "WAITING_FOR_USER_INPUT",
+      "finalStatus": "COMPLETED",
+      "finalIdentityStatus": "VERIFIED"
+    },
+    {
+      "iteration": 14,
+      "threadId": "d6e131a8-f8e4-49e3-85fe-7f0fc3f5bcdf",
+      "success": true,
+      "restoreTimeMs": 237.11,
+      "initialStatus": "WAITING_FOR_USER_INPUT",
+      "finalStatus": "COMPLETED",
+      "finalIdentityStatus": "VERIFIED"
+    },
+    {
+      "iteration": 15,
+      "threadId": "f699d31d-22ba-4aab-ae9a-a4c1e8b1d0fd",
+      "success": true,
+      "restoreTimeMs": 343.04,
+      "initialStatus": "WAITING_FOR_USER_INPUT",
+      "finalStatus": "COMPLETED",
+      "finalIdentityStatus": "VERIFIED"
+    },
+    {
+      "iteration": 16,
+      "threadId": "3f93ca52-a6f4-4730-b1fa-a8dfa9ae3d25",
+      "success": true,
+      "restoreTimeMs": 225.75,
+      "initialStatus": "WAITING_FOR_USER_INPUT",
+      "finalStatus": "COMPLETED",
+      "finalIdentityStatus": "VERIFIED"
+    },
+    {
+      "iteration": 17,
+      "threadId": "40b29802-30e4-4c39-97b6-a48d66d1bbc1",
+      "success": true,
+      "restoreTimeMs": 223.18,
+      "initialStatus": "WAITING_FOR_USER_INPUT",
+      "finalStatus": "COMPLETED",
+      "finalIdentityStatus": "VERIFIED"
+    },
+    {
+      "iteration": 18,
+      "threadId": "3806ebd6-d62c-41e5-bf05-0b96295c87b2",
+      "success": true,
+      "restoreTimeMs": 226.01,
+      "initialStatus": "WAITING_FOR_USER_INPUT",
+      "finalStatus": "COMPLETED",
+      "finalIdentityStatus": "VERIFIED"
+    },
+    {
+      "iteration": 19,
+      "threadId": "975e6005-6f48-4c99-a941-37df48ac63f6",
+      "success": true,
+      "restoreTimeMs": 231.7,
+      "initialStatus": "WAITING_FOR_USER_INPUT",
+      "finalStatus": "COMPLETED",
+      "finalIdentityStatus": "VERIFIED"
+    },
+    {
+      "iteration": 20,
+      "threadId": "0f870c4f-f224-4cdd-a93a-dd9c6084d16e",
+      "success": true,
+      "restoreTimeMs": 274.49,
+      "initialStatus": "WAITING_FOR_USER_INPUT",
+      "finalStatus": "COMPLETED",
+      "finalIdentityStatus": "VERIFIED"
+    }
+  ]
+}

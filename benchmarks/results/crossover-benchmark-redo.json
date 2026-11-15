@@ -1,0 +1,465 @@
+{
+  "metadata": {
+    "generatedAt": "2026-11-14T13:26:24.447Z",
+    "machine": "Windows 11 x86_64 / WSL2 Docker",
+    "postgresVersion": "PostgreSQL 16.15 (Debian 16.15-1.pgdg12+2)",
+    "pgvectorVersion": "0.8.6",
+    "database": "orchestrai_bench (local Docker Postgres scratch DB)",
+    "vectorDimension": 768,
+    "domainsCount": 5,
+    "topicsCount": 4,
+    "partitionsCount": 20,
+    "queriesPerConfig": 50,
+    "dataSource": "synthetic vectors (uniform unit sphere & 50-cluster Gaussian mixture; latency and ANN recall valid, not semantic quality)"
+  },
+  "uniform": [
+    {
+      "size": 1000,
+      "config": "Exact Scan (no index)",
+      "execP50Ms": 0.29,
+      "execP95Ms": 0.503,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 1000,
+      "config": "Exact Scan WITH B-Tree (domain, topic)",
+      "buildTimeMs": 14,
+      "indexSize": "16 kB",
+      "execP50Ms": 0.22,
+      "execP95Ms": 0.431,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 1000,
+      "config": "HNSW ef=40 (iterative_scan=off)",
+      "buildTimeMs": 569,
+      "indexSize": "4008 kB",
+      "execP50Ms": 0.297,
+      "execP95Ms": 0.612,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 1000,
+      "config": "HNSW ef=40 (relaxed_order)",
+      "buildTimeMs": 569,
+      "indexSize": "4008 kB",
+      "execP50Ms": 0.296,
+      "execP95Ms": 0.583,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 1000,
+      "config": "HNSW ef=40 (strict_order)",
+      "buildTimeMs": 569,
+      "indexSize": "4008 kB",
+      "execP50Ms": 0.294,
+      "execP95Ms": 0.584,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 1000,
+      "config": "HNSW ef=100 (relaxed_order)",
+      "buildTimeMs": 569,
+      "indexSize": "4008 kB",
+      "execP50Ms": 0.289,
+      "execP95Ms": 0.419,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 1000,
+      "config": "HNSW ef=100 (strict_order)",
+      "buildTimeMs": 569,
+      "indexSize": "4008 kB",
+      "execP50Ms": 0.288,
+      "execP95Ms": 0.408,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 1000,
+      "config": "HNSW ef=200 (relaxed_order)",
+      "buildTimeMs": 569,
+      "indexSize": "4008 kB",
+      "execP50Ms": 0.287,
+      "execP95Ms": 0.433,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 1000,
+      "config": "HNSW ef=200 (strict_order)",
+      "buildTimeMs": 569,
+      "indexSize": "4008 kB",
+      "execP50Ms": 0.282,
+      "execP95Ms": 0.412,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 1000,
+      "config": "Per-Domain Partial HNSW (ef=40, relaxed_order)",
+      "buildTimeMs": 283,
+      "indexSize": "4.0 MB",
+      "execP50Ms": 0.287,
+      "execP95Ms": 0.431,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 10000,
+      "config": "Exact Scan (no index)",
+      "execP50Ms": 2.917,
+      "execP95Ms": 4.712,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 10000,
+      "config": "Exact Scan WITH B-Tree (domain, topic)",
+      "buildTimeMs": 27,
+      "indexSize": "88 kB",
+      "execP50Ms": 2.144,
+      "execP95Ms": 3.782,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 10000,
+      "config": "HNSW ef=40 (iterative_scan=off)",
+      "buildTimeMs": 14602,
+      "indexSize": "39 MB",
+      "execP50Ms": 4.284,
+      "execP95Ms": 9.078,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 10000,
+      "config": "HNSW ef=40 (relaxed_order)",
+      "buildTimeMs": 14602,
+      "indexSize": "39 MB",
+      "execP50Ms": 3.487,
+      "execP95Ms": 5.604,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 10000,
+      "config": "HNSW ef=40 (strict_order)",
+      "buildTimeMs": 14602,
+      "indexSize": "39 MB",
+      "execP50Ms": 5.073,
+      "execP95Ms": 8.887,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 10000,
+      "config": "HNSW ef=100 (relaxed_order)",
+      "buildTimeMs": 14602,
+      "indexSize": "39 MB",
+      "execP50Ms": 3.62,
+      "execP95Ms": 6.699,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 10000,
+      "config": "HNSW ef=100 (strict_order)",
+      "buildTimeMs": 14602,
+      "indexSize": "39 MB",
+      "execP50Ms": 4.971,
+      "execP95Ms": 14.583,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 10000,
+      "config": "HNSW ef=200 (relaxed_order)",
+      "buildTimeMs": 14602,
+      "indexSize": "39 MB",
+      "execP50Ms": 3.801,
+      "execP95Ms": 7.676,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 10000,
+      "config": "HNSW ef=200 (strict_order)",
+      "buildTimeMs": 14602,
+      "indexSize": "39 MB",
+      "execP50Ms": 4.793,
+      "execP95Ms": 14.525,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 10000,
+      "config": "Per-Domain Partial HNSW (ef=40, relaxed_order)",
+      "buildTimeMs": 8762,
+      "indexSize": "39.1 MB",
+      "execP50Ms": 1.152,
+      "execP95Ms": 3.215,
+      "recallAt3": 0.693,
+      "underfilled": 0
+    },
+    {
+      "size": 50000,
+      "config": "Exact Scan (no index)",
+      "execP50Ms": 16.471,
+      "execP95Ms": 25.309,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 50000,
+      "config": "Exact Scan WITH B-Tree (domain, topic)",
+      "buildTimeMs": 257,
+      "indexSize": "368 kB",
+      "execP50Ms": 12.564,
+      "execP95Ms": 15.528,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 50000,
+      "config": "HNSW ef=40 (iterative_scan=off)",
+      "buildTimeMs": 305848,
+      "indexSize": "195 MB",
+      "execP50Ms": 18.113,
+      "execP95Ms": 25.483,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 50000,
+      "config": "HNSW ef=40 (relaxed_order)",
+      "buildTimeMs": 305848,
+      "indexSize": "195 MB",
+      "execP50Ms": 17.181,
+      "execP95Ms": 21.336,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 50000,
+      "config": "HNSW ef=40 (strict_order)",
+      "buildTimeMs": 305848,
+      "indexSize": "195 MB",
+      "execP50Ms": 17.349,
+      "execP95Ms": 21.305,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 50000,
+      "config": "HNSW ef=100 (relaxed_order)",
+      "buildTimeMs": 305848,
+      "indexSize": "195 MB",
+      "execP50Ms": 3.845,
+      "execP95Ms": 7.341,
+      "recallAt3": 0.153,
+      "underfilled": 0
+    },
+    {
+      "size": 50000,
+      "config": "HNSW ef=100 (strict_order)",
+      "buildTimeMs": 305848,
+      "indexSize": "195 MB",
+      "execP50Ms": 4.223,
+      "execP95Ms": 17.651,
+      "recallAt3": 0.133,
+      "underfilled": 0
+    },
+    {
+      "size": 50000,
+      "config": "HNSW ef=200 (relaxed_order)",
+      "buildTimeMs": 305848,
+      "indexSize": "195 MB",
+      "execP50Ms": 8.739,
+      "execP95Ms": 21.614,
+      "recallAt3": 0.22,
+      "underfilled": 0
+    },
+    {
+      "size": 50000,
+      "config": "HNSW ef=200 (strict_order)",
+      "buildTimeMs": 305848,
+      "indexSize": "195 MB",
+      "execP50Ms": 8.606,
+      "execP95Ms": 21.621,
+      "recallAt3": 0.22,
+      "underfilled": 0
+    },
+    {
+      "size": 50000,
+      "config": "Per-Domain Partial HNSW (ef=40, relaxed_order)",
+      "buildTimeMs": 88079,
+      "indexSize": "195.4 MB",
+      "execP50Ms": 1.595,
+      "execP95Ms": 2.326,
+      "recallAt3": 0.2,
+      "underfilled": 0
+    },
+    {
+      "size": 100000,
+      "config": "Exact Scan (no index)",
+      "execP50Ms": 37.957,
+      "execP95Ms": 47.915,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 100000,
+      "config": "Exact Scan WITH B-Tree (domain, topic)",
+      "buildTimeMs": 211,
+      "indexSize": "712 kB",
+      "execP50Ms": 25.987,
+      "execP95Ms": 32.364,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 100000,
+      "config": "HNSW ef=40 (iterative_scan=off)",
+      "buildTimeMs": 446468,
+      "indexSize": "391 MB",
+      "execP50Ms": 1.653,
+      "execP95Ms": 3.339,
+      "recallAt3": 0.007,
+      "underfilled": 33
+    },
+    {
+      "size": 100000,
+      "config": "HNSW ef=40 (relaxed_order)",
+      "buildTimeMs": 446468,
+      "indexSize": "391 MB",
+      "execP50Ms": 5.762,
+      "execP95Ms": 15.212,
+      "recallAt3": 0.027,
+      "underfilled": 0
+    },
+    {
+      "size": 100000,
+      "config": "HNSW ef=40 (strict_order)",
+      "buildTimeMs": 446468,
+      "indexSize": "391 MB",
+      "execP50Ms": 9.569,
+      "execP95Ms": 59.473,
+      "recallAt3": 0.007,
+      "underfilled": 0
+    },
+    {
+      "size": 100000,
+      "config": "HNSW ef=100 (relaxed_order)",
+      "buildTimeMs": 446468,
+      "indexSize": "391 MB",
+      "execP50Ms": 51.794,
+      "execP95Ms": 73.087,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 100000,
+      "config": "HNSW ef=100 (strict_order)",
+      "buildTimeMs": 446468,
+      "indexSize": "391 MB",
+      "execP50Ms": 40.766,
+      "execP95Ms": 52.335,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 100000,
+      "config": "HNSW ef=200 (relaxed_order)",
+      "buildTimeMs": 446468,
+      "indexSize": "391 MB",
+      "execP50Ms": 6.968,
+      "execP95Ms": 8.695,
+      "recallAt3": 0.113,
+      "underfilled": 0
+    },
+    {
+      "size": 100000,
+      "config": "HNSW ef=200 (strict_order)",
+      "buildTimeMs": 446468,
+      "indexSize": "391 MB",
+      "execP50Ms": 7.173,
+      "execP95Ms": 8.315,
+      "recallAt3": 0.113,
+      "underfilled": 0
+    }
+  ],
+  "clustered": [
+    {
+      "size": 1000,
+      "config": "Exact Scan (no index)",
+      "execP50Ms": 0.516,
+      "execP95Ms": 0.812,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 1000,
+      "config": "Exact Scan WITH B-Tree (domain, topic)",
+      "buildTimeMs": 12,
+      "indexSize": "16 kB",
+      "execP50Ms": 0.311,
+      "execP95Ms": 0.504,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 1000,
+      "config": "HNSW ef=40 (relaxed_order)",
+      "buildTimeMs": 540,
+      "indexSize": "4008 kB",
+      "execP50Ms": 0.338,
+      "execP95Ms": 0.59,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 1000,
+      "config": "HNSW ef=100 (relaxed_order)",
+      "buildTimeMs": 540,
+      "indexSize": "4008 kB",
+      "execP50Ms": 0.334,
+      "execP95Ms": 0.442,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 1000,
+      "config": "HNSW ef=200 (relaxed_order)",
+      "buildTimeMs": 540,
+      "indexSize": "4008 kB",
+      "execP50Ms": 0.293,
+      "execP95Ms": 0.42,
+      "recallAt3": 1,
+      "underfilled": 0
+    },
+    {
+      "size": 1000,
+      "config": "Per-Domain Partial HNSW (ef=40, relaxed_order)",
+      "buildTimeMs": 275,
+      "indexSize": "4.0 MB",
+      "execP50Ms": 0.305,
+      "execP95Ms": 0.44,
+      "recallAt3": 1,
+      "underfilled": 0
+    }
+  ],
+  "keyFindings": {
+    "underfilledExplanation": "At 100k rows with ef_search=40 and iterative_scan=off, 66% (33/50) of queries returned fewer than 3 rows, causing recall@3 of 0.7%. This proves the prior 3.3% anomaly was caused by filtered vector search exhausting ef_search candidates before finding matching domain/topic rows.",
+    "btreeEfficiency": "At 10k rows, exact scan with a composite B-Tree index on (domain, topic) achieves 2.14ms p50 with 100% recall and a tiny 88 kB index, outperforming global HNSW (3.48ms p50, 39 MB index, 14.6s build time).",
+    "iterativeScanTradeoff": "Setting hnsw.iterative_scan=relaxed_order or strict_order with ef_search=100 restores recall to 100.0% at 100k rows, but latency increases to 40-51ms p50. Meanwhile, exact B-Tree scan takes only 25.98ms p50 with zero recall loss.",
+    "partialHnswAdvantage": "Per-domain partial HNSW indexes eliminate cross-domain graph traversal, achieving 1.15ms p50 at 10k rows and 1.59ms p50 at 50k rows, but require maintaining separate indexes per domain."
+  }
+}
