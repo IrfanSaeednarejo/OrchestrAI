@@ -154,3 +154,11 @@ Small focused steps; explicit typed state; clear agent boundaries; no agent spag
   - Stack: Next.js 14.2.35 App Router, React 18.3.1, Tailwind CSS 3.4.15, Lucide React 0.460.0, React Markdown 9.0.1, Remark GFM 4.0.0, Vitest 2.1.5.
   - Markdown Security: Raw HTML prohibited (no `rehype-raw`), links sanitized (no `javascript:` URLs, forced `rel="noopener noreferrer"`), remote images rendered as safe links (never autoloaded), user messages rendered as plain text.
   - Audit Exceptions List: Upstream Next 14.x advisories related to Image Optimization and Server Actions are accepted exceptions because OrchestrAI client uses neither feature (operates purely as an App Router client fetching from Express). Build-time devDependency advisories for `vitest`/`tinypool` and `eslint` are accepted for local tooling.
+
+## Platform/Ops UI & Observability Dashboard (Phase 18) — approved 2026-11-06
+- OD-18 (Ops Architecture & Access Control):
+  - Architecture: Dedicated Next.js App Router sub-tree under `/ops` (`/ops` overview & conversation explorer, `/ops/traces/[id]` trace & timeline inspector, `/ops/evals` benchmark scorecard).
+  - Backend Ops API: Dev-gated endpoints (`/api/ops/conversations`, `/api/ops/conversations/:id/traces`, `/api/ops/eval-results`) mounted behind `requireDemoEnabled` middleware.
+  - Access Gating: Controlled via `ENABLE_DEMO_ENDPOINTS` on server (hard-off in production) and `NEXT_PUBLIC_ENABLE_OPS_UI` on client.
+  - Trace Visualization: Chronological timeline with color-coded nodes for Routing decisions (purple), Agent executions (blue), and Tool calls (emerald) with collapsible execution cards and visual multi-agent handoff breadcrumbs.
+
