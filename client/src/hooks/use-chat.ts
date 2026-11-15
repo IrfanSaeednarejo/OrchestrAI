@@ -195,7 +195,19 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
     }
 
     case 'RESET_STATE': {
-      return initialChatState;
+      return {
+        conversationId: null,
+        messages: [],
+        isStreaming: false,
+        streamingText: '',
+        currentNode: null,
+        currentAgent: null,
+        handoffCount: 0,
+        workflowStatus: 'ACTIVE',
+        blockedBy: null,
+        currentStep: null,
+        error: null,
+      };
     }
 
     default:
@@ -217,6 +229,7 @@ export function useChat(userId: string, initialConversationId: string | null = n
           payload: { conversationId: convId, messages: msgs },
         });
       } catch (err) {
+        dispatch({ type: 'RESET_STATE' });
         dispatch({
           type: 'STREAM_ERROR',
           payload: {
@@ -228,6 +241,10 @@ export function useChat(userId: string, initialConversationId: string | null = n
     },
     [userId]
   );
+
+  const resetChat = useCallback(() => {
+    dispatch({ type: 'RESET_STATE' });
+  }, []);
 
   useEffect(() => {
     if (initialConversationId) {
@@ -336,6 +353,7 @@ export function useChat(userId: string, initialConversationId: string | null = n
     state,
     sendMessage,
     loadConversation,
+    resetChat,
     abortStream,
     isSendingRef,
   };

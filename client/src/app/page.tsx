@@ -26,13 +26,14 @@ function CustomerChatContent() {
     state: chatState,
     sendMessage,
     loadConversation,
+    resetChat,
   } = useChat(currentUser.id, selectedConvId);
 
-  // Load conversations whenever the active user changes
-  const loadUserConversations = useCallback(async () => {
+  // Load conversations for a specific user ID
+  const loadUserConversations = useCallback(async (userId: string) => {
     setIsLoadingConvs(true);
     try {
-      const res = await fetchConversations(currentUser.id);
+      const res = await fetchConversations(userId);
       setConversations(res.conversations);
       setSelectedConvId((prev) => {
         if (prev && !res.conversations.some((c) => c.id === prev)) {
@@ -46,19 +47,22 @@ function CustomerChatContent() {
     } finally {
       setIsLoadingConvs(false);
     }
-  }, [currentUser.id]);
+  }, []);
 
+  // When active user changes: immediately reset active chat state, clear selection, and fetch new user's chats
   useEffect(() => {
-    loadUserConversations();
-  }, [loadUserConversations]);
+    setSelectedConvId(null);
+    resetChat();
+    void loadUserConversations(currentUser.id);
+  }, [currentUser.id, loadUserConversations, resetChat]);
 
   // Keep sidebar updated if a new conversation is created via chat
   useEffect(() => {
     if (chatState.conversationId && chatState.conversationId !== selectedConvId) {
       setSelectedConvId(chatState.conversationId);
-      loadUserConversations();
+      void loadUserConversations(currentUser.id);
     }
-  }, [chatState.conversationId, selectedConvId, loadUserConversations]);
+  }, [chatState.conversationId, selectedConvId, currentUser.id, loadUserConversations]);
 
   const handleSelectConversation = (convId: string) => {
     setSelectedConvId(convId);
@@ -67,12 +71,13 @@ function CustomerChatContent() {
 
   const handleNewChat = () => {
     setSelectedConvId(null);
+    resetChat();
   };
 
   const handleSend = async (text: string) => {
     await sendMessage(text);
     // Reload sidebar list after turn completes
-    loadUserConversations();
+    void loadUserConversations(currentUser.id);
   };
 
   return (

@@ -247,5 +247,46 @@ describe('Parent Graph & Stateful Router', () => {
     expect(result.routing.currentAgent).toBe('escalation');
     expect(result.messages.at(-1)?.content).toMatch(/human specialist/i);
   });
+
+  it('greets customer directly from router on "hello there" and routes to specialist on subsequent turn', async () => {
+    const checkpointer = new MemorySaver();
+    const graph = buildParentGraph(checkpointer, { specialists: SPECIALIST_STUBS });
+    const threadId = crypto.randomUUID();
+
+    // Turn 1: Greeting
+    const turn1 = await graph.invoke(
+      {
+        messages: [new HumanMessage('hello there')],
+      },
+      { configurable: { thread_id: threadId } }
+    );
+
+    expect(turn1.workflowStatus).toBe('WAITING_FOR_USER_INPUT');
+    expect(turn1.routing.currentAgent).toBe('router');
+    expect(turn1.currentIntent).toBe('GREETING');
+    expect(turn1.messages.at(-1)?.content).toMatch(/OrchestrAI's autonomous customer support assistant/i);
+
+    // Turn 2: Customer provides order request
+    mockGenerateContent.mockResolvedValueOnce({
+      text: JSON.stringify({
+        specialist: 'order_tracking',
+        intent: 'ORDER_STATUS',
+        confidence: 0.95,
+        reasoning: 'Customer provided order status inquiry.',
+      }),
+    });
+
+    const turn2 = await graph.invoke(
+      {
+        messages: [new HumanMessage('Where is my package #ord-123?')],
+      },
+      { configurable: { thread_id: threadId } }
+    );
+
+    expect(turn2.workflowStatus).toBe('COMPLETED');
+    expect(turn2.routing.currentAgent).toBe('order_tracking');
+    expect(turn2.routing.handoffCount).toBe(0); // initial route from router supervisor, not lateral handoff
+  });
 });
+
 

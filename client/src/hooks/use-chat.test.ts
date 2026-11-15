@@ -198,12 +198,26 @@ describe('useChat hook', () => {
   });
 
   it('does not send message when workflowStatus is ESCALATED', async () => {
-    const { result } = renderHook(() => useChat('user-1'));
+    vi.mocked(apiClient.fetchMessages).mockResolvedValue([
+      {
+        id: 'esc-1',
+        conversationId: 'c-esc',
+        role: 'assistant',
+        content: 'Transferring to a human specialist.',
+        timestamp: '2026-01-01T00:00:00Z',
+        metadata: {
+          workflowStatus: 'ESCALATED',
+        },
+      },
+    ]);
 
-    // Simulate escalated state by setting conversation with escalated metadata
-    act(() => {
-      result.current.state.workflowStatus = 'ESCALATED';
+    const { result } = renderHook(() => useChat('user-1', 'c-esc'));
+
+    await act(async () => {
+      // await loadConversation
     });
+
+    expect(result.current.state.workflowStatus).toBe('ESCALATED');
 
     await act(async () => {
       await result.current.sendMessage('Should not be sent');
@@ -212,5 +226,53 @@ describe('useChat hook', () => {
     expect(apiClient.streamMessage).not.toHaveBeenCalled();
     expect(apiClient.createConversation).not.toHaveBeenCalled();
   });
+
+  it('resets conversation state to initialChatState when resetChat is called', async () => {
+    vi.mocked(apiClient.fetchMessages).mockResolvedValue([
+      {
+        id: 'm1',
+        conversationId: 'c1',
+        role: 'assistant',
+        content: 'Prior message',
+        timestamp: '2026-01-01T00:00:00Z',
+      },
+    ]);
+
+    const { result } = renderHook(() => useChat('user-1', 'c1'));
+
+    await act(async () => {
+      // await loadConversation
+    });
+
+    expect(result.current.state.conversationId).toBe('c1');
+    expect(result.current.state.messages.length).toBe(1);
+
+    act(() => {
+      result.current.resetChat();
+    });
+
+    expect(result.current.state.conversationId).toBeNull();
+    expect(result.current.state.messages).toEqual([]);
+    expect(result.current.state.currentAgent).toBeNull();
+    expect(result.current.state.workflowStatus).toBe('ACTIVE');
+  });
+
+  it('wipes previous state and sets error when loadConversation fails (e.g. 403 Forbidden)', async () => {
+    vi.mocked(apiClient.fetchMessages).mockRejectedValueOnce(
+      new Error('Forbidden: ownership mismatch')
+    );
+
+    const { result } = renderHook(() => useChat('user-1', 'forbidden-conv'));
+
+    await act(async () => {
+      // await loadConversation
+    });
+
+    expect(result.current.state.conversationId).toBeNull();
+    expect(result.current.state.messages).toEqual([]);
+    expect(result.current.state.error).toBe('Forbidden: ownership mismatch');
+    expect(result.current.state.workflowStatus).toBe('FAILED');
+  });
 });
+
 
