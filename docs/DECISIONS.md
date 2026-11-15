@@ -139,3 +139,18 @@ Small focused steps; explicit typed state; clear agent boundaries; no agent spag
 ## Testing conventions
 - Real DB/Redis in integration tests with scoped cleanup (never an unscoped delete); distinct fixture prefixes to avoid cross-file races.
 - Raw verbatim command output in reports; always run typecheck after final edits.
+
+
+## Frontend Foundation & Customer Chat UI (Phase 17) — approved 2026-11-06
+- Phase 16 Amendments (Security, Authorization & Telemetry):
+  - Shared Ownership Authorization: `assertConversationOwnership` in `server/src/api/utils/auth-helpers.ts` strictly validates that authenticated callers match conversation owners, and guest users strictly access conversations owned by `DEFAULT_GUEST_USER_ID`. No fail-open authorization.
+  - Guest Session Pool: All header-less callers share one guest conversation pool (accepted demo limitation).
+  - Turn-Scoped Extraction: `HumanMessage` given explicit UUID `id`. Only `ai` messages produced *after* this pivot ID are extracted. If none produced, skip persistence and return 502 (JSON) / `event: error` (SSE).
+  - SSE Abort Resilience: Disconnections tracked via `res.on('close')`. The stream iterator drains to completion without `break`, ensuring checkpoints are preserved and assistant messages are saved once.
+  - CORS Locking: Origin locked to `CLIENT_ORIGIN` (`http://localhost:3000` by default) without `credentials: true`.
+  - Dev-Gated Demo Endpoints: `GET /api/demo-users` (dynamic user resolution by email) and `GET /api/dev/verification-code` (reads Redis OTP via `verificationService.peekVerificationCode`, 600s TTL per `verification.service.ts`) mounted outside `authMiddleware`, gated by `ENABLE_DEMO_ENDPOINTS` (hard-off in production).
+  - OD-17 (OTP Verification Storage & Masking): Option A adopted — OTP codes stored verbatim in DB (`content: "123456"`). In chat feed, user message is rendered cosmetically as `••••••` if and only if it is exactly 6 digits AND immediately preceded by an assistant message with non-null `blockedBy`.
+- Client Workspace & Dependency Pinning:
+  - Stack: Next.js 14.2.35 App Router, React 18.3.1, Tailwind CSS 3.4.15, Lucide React 0.460.0, React Markdown 9.0.1, Remark GFM 4.0.0, Vitest 2.1.5.
+  - Markdown Security: Raw HTML prohibited (no `rehype-raw`), links sanitized (no `javascript:` URLs, forced `rel="noopener noreferrer"`), remote images rendered as safe links (never autoloaded), user messages rendered as plain text.
+  - Audit Exceptions List: Upstream Next 14.x advisories related to Image Optimization and Server Actions are accepted exceptions because OrchestrAI client uses neither feature (operates purely as an App Router client fetching from Express). Build-time devDependency advisories for `vitest`/`tinypool` and `eslint` are accepted for local tooling.

@@ -83,4 +83,23 @@ export const verificationService = {
       return { success: false, reason: 'VERIFICATION_SERVICE_UNAVAILABLE' };
     }
   },
+
+  /**
+   * Phase 17 Step 1c: Non-destructive OTP inspection for dev/demo purposes.
+   * Returns only the verification code string, or null if expired/absent.
+   */
+  async peekVerificationCode(userId: string): Promise<string | null> {
+    try {
+      await connectRedis();
+      const key = getRedisKey(userId);
+      const rawData = await redisClient.get(key);
+      if (!rawData) {
+        return null;
+      }
+      const data = JSON.parse(rawData) as VerificationData;
+      return typeof data.code === 'string' ? data.code : null;
+    } catch {
+      return null;
+    }
+  },
 };

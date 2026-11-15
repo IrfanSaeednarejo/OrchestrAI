@@ -1,8 +1,11 @@
 // src/api/controllers/message.controller.ts
 // Phase 16: Controller handling dual-mode message dispatch (JSON and SSE streaming).
+// Phase 17 Step 1b: Turn-scoped extraction, abort resilience, blockedBy/currentStep telemetry,
+//                   explicit streamMode: 'updates', 502/error-event on empty assistant reply.
 
+import { randomUUID } from 'crypto';
 import type { Request, Response } from 'express';
-import { HumanMessage, type BaseMessage } from '@langchain/core/messages';
+import { HumanMessage, AIMessage, type BaseMessage } from '@langchain/core/messages';
 import {
   getConversationById,
   createMessage,
@@ -11,8 +14,12 @@ import { checkpointer } from '../../persistence/checkpointer/client.js';
 import { buildParentGraph } from '../../graphs/parent/parent-graph.js';
 import { createTraceConfig } from '../../observability/tracer.js';
 import type { ConversationState } from '../../state/conversation-state.js';
-import { NotFoundError, ForbiddenError, UnauthorizedError } from '../errors/app-error.js';
-import { DEFAULT_GUEST_USER_ID } from '../middleware/auth.middleware.js';
+import { NotFoundError, UnauthorizedError } from '../errors/app-error.js';
+import { assertConversationOwnership } from '../utils/auth-helpers.js';
+
+// ---------------------------------------------------------------------------
+// Graph singleton
+// ---------------------------------------------------------------------------
 
 let defaultGraph: ReturnType<typeof buildParentGraph> | null = null;
 
@@ -26,15 +33,52 @@ export function getParentGraph(
   return defaultGraph;
 }
 
-function extractLastAssistantMessage(messages: BaseMessage[]): string {
-  for (let i = messages.length - 1; i >= 0; i--) {
+// ---------------------------------------------------------------------------
+// Turn-scoped assistant message extraction (Phase 17 Step 1b)
+// ---------------------------------------------------------------------------
+
+/**
+ * Returns the last non-empty 'ai' message produced AFTER the human message
+ * identified by `humanMessageId`. Prevents cross-turn bleed and duplicate
+ * assistant rows in the DB.
+ *
+ * Returns null when no qualifying message exists (caller must 502 / emit error).
+ */
+function extractTurnAssistantText(
+  messages: BaseMessage[] | undefined,
+  humanMessageId: string
+): string | null {
+  if (!Array.isArray(messages)) {
+    return null;
+  }
+
+  // Find the index of THIS turn's human message by its explicit id
+  const pivotIndex = messages.findIndex(
+    (m) => m.getType() === 'human' && m.id === humanMessageId
+  );
+
+  if (pivotIndex === -1) {
+    // Human message not found in state (edge case: shouldn't happen)
+    return null;
+  }
+
+  // Collect only 'ai' messages that appear after the pivot
+  let lastAiContent: string | null = null;
+  for (let i = pivotIndex + 1; i < messages.length; i++) {
     const msg = messages[i];
-    if (msg && typeof msg.content === 'string' && msg.getType() !== 'human') {
-      return msg.content;
+    if (!msg) continue;
+    const isAi = msg instanceof AIMessage || msg.getType() === 'ai';
+    if (isAi && typeof msg.content === 'string' && msg.content.trim() !== '') {
+      lastAiContent = msg.content;
     }
   }
-  return '';
+
+  return lastAiContent;
 }
+
+// ---------------------------------------------------------------------------
+// Handler
+// ---------------------------------------------------------------------------
 
 export async function sendMessageHandler(
   req: Request,
@@ -51,22 +95,18 @@ export async function sendMessageHandler(
     throw new NotFoundError(`Conversation with id "${conversationId}" not found`);
   }
 
+  assertConversationOwnership(conversation, req.user);
+
   const callerId = req.user?.id;
   if (!callerId) {
     throw new UnauthorizedError('User identity could not be resolved');
   }
 
-  // Security check: ensure caller owns conversation (unless guest session)
-  if (
-    callerId !== DEFAULT_GUEST_USER_ID &&
-    conversation.userId !== callerId
-  ) {
-    throw new ForbiddenError('You do not have permission to message in this conversation');
-  }
-
   const { content } = req.body as { content: string };
 
-  // 1. HARD RULE: Persist human message to Postgres BEFORE invoking the graph
+  // 1. HARD RULE: Persist human message to Postgres BEFORE invoking the graph.
+  //    Give it an explicit id so we can identify THIS turn's boundary in state.
+  const humanMessageId = randomUUID();
   await createMessage({
     conversationId,
     role: 'user',
@@ -83,57 +123,81 @@ export async function sendMessageHandler(
     environment: process.env.NODE_ENV || 'development',
   });
 
+  const humanMessage = new HumanMessage({ content, id: humanMessageId });
+
   const isSSE = req.headers.accept?.includes('text/event-stream');
 
   if (isSSE) {
-    // -----------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     // SSE Streaming Mode
-    // -----------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
     res.flushHeaders();
 
+    // Track disconnection but do NOT break the loop — drain to completion so
+    // the checkpointer records the full completed turn (Amendment A5).
     let clientDisconnected = false;
-    req.on('close', () => {
+    res.on('close', () => {
       clientDisconnected = true;
     });
 
-    res.write(
-      `event: start\ndata: ${JSON.stringify({
-        conversationId,
-        timestamp: new Date().toISOString(),
-      })}\n\n`
-    );
+    if (!clientDisconnected) {
+      res.write(
+        `event: start\ndata: ${JSON.stringify({
+          conversationId,
+          timestamp: new Date().toISOString(),
+        })}\n\n`
+      );
+    }
 
     try {
       const stream = await graph.stream(
         {
-          messages: [new HumanMessage(content)],
+          messages: [humanMessage],
           user: { id: callerId },
         },
-        traceConfig
+        { ...traceConfig, streamMode: 'updates' }
       );
 
+      // Drain the full stream — skip writes when disconnected, never break early.
       for await (const chunk of stream) {
-        if (clientDisconnected) break;
-        const nodeNames = Object.keys(chunk);
-        for (const node of nodeNames) {
-          res.write(
-            `event: node\ndata: ${JSON.stringify({
-              node,
-              timestamp: new Date().toISOString(),
-            })}\n\n`
-          );
+        if (!clientDisconnected) {
+          const nodeNames = Object.keys(chunk);
+          for (const node of nodeNames) {
+            res.write(
+              `event: node\ndata: ${JSON.stringify({
+                node,
+                timestamp: new Date().toISOString(),
+              })}\n\n`
+            );
+          }
         }
       }
 
-      // Retrieve full checkpointed state
+      // Retrieve full checkpointed state after drain completes
       const snapshot = await graph.getState(traceConfig);
       const finalState = snapshot.values as ConversationState;
-      const assistantText = extractLastAssistantMessage(finalState.messages);
 
-      // Persist assistant message to database
+      const assistantText = extractTurnAssistantText(finalState.messages, humanMessageId);
+      const blockedBy = finalState.activeWorkflow?.blockedBy ?? null;
+      const currentStep = finalState.activeWorkflow?.currentStep ?? null;
+
+      if (assistantText === null) {
+        // Agent produced no reply for this turn — emit terminal error event
+        if (!clientDisconnected) {
+          res.write(
+            `event: error\ndata: ${JSON.stringify({
+              message: 'Agent produced no response for this turn',
+            })}\n\n`
+          );
+          res.end();
+        }
+        return;
+      }
+
+      // Persist assistant message ONCE, unconditionally (even if client disconnected)
       await createMessage({
         conversationId,
         role: 'assistant',
@@ -142,6 +206,8 @@ export async function sendMessageHandler(
           specialist: finalState.routing.currentAgent,
           workflowStatus: finalState.workflowStatus,
           handoffCount: finalState.routing.handoffCount,
+          blockedBy,
+          currentStep,
         },
       });
 
@@ -158,6 +224,8 @@ export async function sendMessageHandler(
             currentAgent: finalState.routing.currentAgent,
             handoffCount: finalState.routing.handoffCount,
             workflowStatus: finalState.workflowStatus,
+            blockedBy,
+            currentStep,
           })}\n\n`
         );
 
@@ -175,18 +243,31 @@ export async function sendMessageHandler(
       }
     }
   } else {
-    // -----------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     // Standard JSON Mode
-    // -----------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     const finalState = (await graph.invoke(
       {
-        messages: [new HumanMessage(content)],
+        messages: [humanMessage],
         user: { id: callerId },
       },
       traceConfig
     )) as ConversationState;
 
-    const assistantText = extractLastAssistantMessage(finalState.messages);
+    const assistantText = extractTurnAssistantText(finalState?.messages, humanMessageId);
+    const blockedBy = finalState.activeWorkflow?.blockedBy ?? null;
+    const currentStep = finalState.activeWorkflow?.currentStep ?? null;
+
+    if (assistantText === null) {
+      // Agent produced no reply — 502 Bad Gateway, no DB persist
+      res.status(502).json({
+        error: {
+          code: 'BAD_GATEWAY',
+          message: 'Agent produced no response for this turn',
+        },
+      });
+      return;
+    }
 
     // Persist assistant message to database
     await createMessage({
@@ -197,6 +278,8 @@ export async function sendMessageHandler(
         specialist: finalState.routing.currentAgent,
         workflowStatus: finalState.workflowStatus,
         handoffCount: finalState.routing.handoffCount,
+        blockedBy,
+        currentStep,
       },
     });
 
@@ -210,8 +293,9 @@ export async function sendMessageHandler(
       routing: {
         currentAgent: finalState.routing.currentAgent,
         handoffCount: finalState.routing.handoffCount,
+        blockedBy,
+        currentStep,
       },
     });
   }
 }
-

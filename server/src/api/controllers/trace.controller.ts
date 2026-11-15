@@ -12,8 +12,8 @@ import {
   type AgentExecution,
   type ToolExecution,
 } from '../../persistence/repositories/orchestration.repository.js';
-import { NotFoundError, ForbiddenError, UnauthorizedError } from '../errors/app-error.js';
-import { DEFAULT_GUEST_USER_ID } from '../middleware/auth.middleware.js';
+import { NotFoundError } from '../errors/app-error.js';
+import { assertConversationOwnership } from '../utils/auth-helpers.js';
 
 // ---------------------------------------------------------------------------
 // Timeline event shapes
@@ -66,15 +66,7 @@ export async function getTraceHandler(req: Request, res: Response): Promise<void
     throw new NotFoundError(`Conversation with id "${conversationId}" not found`);
   }
 
-  const callerId = req.user?.id;
-  if (!callerId) {
-    throw new UnauthorizedError('User identity could not be resolved');
-  }
-
-  // Security: enforce ownership (guests own their own conversations)
-  if (callerId !== DEFAULT_GUEST_USER_ID && conversation.userId !== callerId) {
-    throw new ForbiddenError('You do not have permission to view traces for this conversation');
-  }
+  assertConversationOwnership(conversation, req.user);
 
   // Fetch routing history and agent executions in parallel
   const [routingRows, agentRows] = await Promise.all([

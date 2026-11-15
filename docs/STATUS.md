@@ -1,9 +1,9 @@
 # STATUS (update at the end of every step/phase)
 
-Last verified suite figure reported: 524/524 passing (63 files) at Phase 16. Baseline test count: 524.
+Last verified suite figure reported: Server 548/548 passing (64 files), Client 66/66 passing (11 files). Total: 614 passing tests. Server baseline test count: 524.
 
 ## Phase state
-- Phases 1-16: COMPLETE and signed off.
+- Phases 1-17: COMPLETE and signed off.
   - Phase 6 (Access Control / Verification Gate): Steps 0-5 closed; Step 6a proof graph verified; Step 6b close-out and type unification completed.
   - Phase 7 (Agent Foundation): Steps 0-5 closed; LLM client, prompt loader, handoff contract, common node patterns, and subgraph harness verified (294 tests).
   - Phase 8 (Meta Orchestrator & Stateful Router Skeleton): Steps 0-5 closed; intent taxonomy, LLM classifier, deterministic guards, specialist stubs, parent graph with Command(goto) dispatch, and end-to-end integration tests verified (331 tests).
@@ -15,7 +15,8 @@ Last verified suite figure reported: 524/524 passing (63 files) at Phase 16. Bas
   - Phase 14 (Observability & Tracing): Steps 0-5 closed; LangSmith optional config and env schema export, typed trace metadata & tag formatting, `createTraceConfig` factory for `RunnableConfig`, and parent graph trace propagation integration test suite verified (444 tests).
   - Phase 15 (Evaluation Framework): Steps 0-5 closed; 30-scenario canonical dataset schema & definitions, 8 deterministic binary evaluators, multi-turn thread evaluation runner, standalone CLI scorecard generator (`npm run eval`), and integration test suite verified (475 tests).
   - Phase 16 (Backend API Layer): Steps 0-5 closed; modular Express REST API, AppError hierarchy, Zod request validation, x-user-id auth with guest fallback, health check, conversation lifecycle, dual-mode message dispatch (JSON + SSE streaming), trace timeline endpoint, and server entrypoint verified (524 tests).
-- Phases 17-19: not started. Phase 17 (Next.js Frontend Foundation & Chat UI).
+  - Phase 17 (Frontend: Customer Chat): Steps 1-7 closed; scoped Phase 16 amendments (shared ownership helper, 403 matrix, CORS lock, message extraction, stream iterator drain, dev routes), Next.js 14 App Router customer chat in `client/`, safe markdown rendering, demo identity switcher, specialist and handoff badges, neutral verification prompt with dev OTP peek, cosmetic OTP masking (`••••••`), pure chat reducer with synchronous ref double-send guard, cross-workspace verification script (`scripts/verify.ps1`), and manual verification runbook (548 server tests + 66 client tests = 614 tests).
+- Phases 18-19: not started. Phase 18 (Frontend: Platform/Ops UI).
 
 ## Built so far
 Domain data model + repositories + seed; conversation/message services; ConversationState + PostgresSaver checkpointing; routing/agent/tool event logging;
@@ -44,8 +45,8 @@ Backend API Layer: modular Express.js application in `src/api/` with custom `App
 6. 6a graph's ALLOWED branch does not clear `activeWorkflow`, so `blockedBy` goes stale after a successful resume (resolved in Phase 8: router writes RE_ROUTE event; specialist clears activeWorkflow on COMPLETED).
 
 ## Immediate next actions
-1. Owner merges phase/16-backend-api-layer and tags phase-16-done (also pending phase/14 and phase/15 merges).
-2. Plan Phase 17 (Next.js Frontend Foundation & Chat UI).
+1. Owner merges phase/17-frontend-customer-chat and tags phase-17-done.
+2. Plan Phase 18 (Frontend: Platform/Ops UI).
 
 ## Changelog
 - 2026-11-05: Phase 6 Step 6a integration proof graph and test suite verified (239 tests).
@@ -60,3 +61,4 @@ Backend API Layer: modular Express.js application in `src/api/` with custom `App
 - 2026-11-06: Phase 14 Observability & Tracing completed: LangSmith optional config and env schema export, typed trace metadata & tag formatting, `createTraceConfig` factory for `RunnableConfig`, and parent graph trace propagation integration test suite verified (444 tests).
 - 2026-11-06: Phase 15 Evaluation Framework completed: 30 canonical scenarios dataset, 8 binary evaluators, multi-turn eval runner, CLI runner (`npm run eval`), and integration test suite verified (475 tests).
 - 2026-11-06: Phase 16 Backend API Layer completed: Express.js REST API, AppError hierarchy, Zod request validation, x-user-id auth, health check, conversation lifecycle, dual-mode message dispatch (JSON + SSE streaming), trace timeline endpoint, server entrypoint, and integration test suite verified (524 tests).
+- 2026-11-06: Phase 17 Frontend: Customer Chat completed: scoped Phase 16 amendments (shared ownership helper, 403 matrix, CORS lock, message extraction, stream iterator drain, dev routes), Next.js 14 App Router customer chat in `client/`, safe markdown rendering, demo identity switcher, specialist and handoff badges, neutral verification prompt with dev OTP peek, cosmetic OTP masking (`••••••`), pure chat reducer with synchronous ref double-send guard, cross-workspace verification script (`scripts/verify.ps1`), and manual verification runbook (548 server tests + 66 client tests = 614 tests).

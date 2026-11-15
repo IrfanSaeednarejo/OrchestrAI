@@ -10,8 +10,8 @@ import {
   getConversationsByUserId,
   getMessagesByConversationId,
 } from '../../persistence/repositories/conversation.repository.js';
-import { NotFoundError, ForbiddenError, UnauthorizedError } from '../errors/app-error.js';
-import { DEFAULT_GUEST_USER_ID } from '../middleware/auth.middleware.js';
+import { NotFoundError, UnauthorizedError } from '../errors/app-error.js';
+import { assertConversationOwnership } from '../utils/auth-helpers.js';
 
 export async function createConversationHandler(
   req: Request,
@@ -68,15 +68,7 @@ export async function getConversationHandler(
     throw new NotFoundError(`Conversation with id "${conversationId}" not found`);
   }
 
-  const callerId = req.user?.id;
-  // Security check: ensure caller owns conversation (unless guest session)
-  if (
-    callerId &&
-    callerId !== DEFAULT_GUEST_USER_ID &&
-    conversation.userId !== callerId
-  ) {
-    throw new ForbiddenError('You do not have permission to view this conversation');
-  }
+  assertConversationOwnership(conversation, req.user);
 
   res.status(200).json({
     conversation,
@@ -98,14 +90,7 @@ export async function getConversationMessagesHandler(
     throw new NotFoundError(`Conversation with id "${conversationId}" not found`);
   }
 
-  const callerId = req.user?.id;
-  if (
-    callerId &&
-    callerId !== DEFAULT_GUEST_USER_ID &&
-    conversation.userId !== callerId
-  ) {
-    throw new ForbiddenError('You do not have permission to view messages for this conversation');
-  }
+  assertConversationOwnership(conversation, req.user);
 
   const messages = await getMessagesByConversationId(conversationId);
 
