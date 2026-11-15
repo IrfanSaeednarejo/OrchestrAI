@@ -86,6 +86,15 @@ Small focused steps; explicit typed state; clear agent boundaries; no agent spag
 - Router multi-turn continuation: in `routerNode`, when dispatching to the same specialist that handled the prior turn (`state.routing.currentAgent === targetSpecialist`), `decisionType` is logged as `'INITIAL_ROUTE'` (continuation), not a lateral `'HANDOFF'`. This prevents multi-turn conversational interactions from spuriously exhausting the handoff threshold.
 - Parent graph wiring: `buildParentGraph` wires real `profileSpecialistNode` and `accountAccessSpecialistNode` as defaults while preserving configurable stub overrides for isolated routing tests. All 6 domain specialists are now concrete subgraphs.
 
+## Cross-Domain Integration Validation & Patterns A/B/C (Phase 12) — approved 2026-11-06
+- OD-1 formal resolution: Pattern A is defined as direct specialist resolution without lateral handoff or verification blocking. The complete 14-scenario evaluation matrix from REFERENCE.md is validated against the integrated parent graph with all 6 concrete specialists and zero stubs:
+  - Pattern A (Direct Specialist Resolution): Scenarios 1 (order tracking), 2 (order tracking clarification), 8 (refund status check), 9 (returns policy decline), 14 (stateless password reset).
+  - Pattern B (Lateral Handoff & Parent Re-Route): Scenarios 3 (duplicate charge in Payment -> lateral handoff -> Refund), 4 (refund inquiry in Refund without return -> lateral handoff -> Returns).
+  - Pattern C (Verification Block & Multi-Turn Resume): Scenarios 5 (unverified user in Payment -> Account Access FULL -> resume Payment), 6 (LIGHT user in Returns -> Account Access FULL -> resume Returns), 7 (login issue mid-Returns flow -> Account Access -> resume Returns).
+  - Safety & Escalation: Scenarios 10 (routing loop detected -> immediate human escalation), 11 (missing order ID graceful failure -> human escalation recommendation), 12 (cross-domain cancellation/address update edge case -> human escalation).
+  - Security Boundary: Scenario 13 (unverified attempt to mutate profile / payment data blocked by pure gate).
+- Integration test suite structure: `server/src/graphs/parent/parent-graph-cross-domain.integration.test.ts` executes all 14 scenarios end-to-end against real PostgreSQL, pgvector, Redis, and PostgresSaver checkpointer, validating routing history rows, checkpointed state transitions, and tool execution audit trails.
+
 ## Testing conventions
 - Real DB/Redis in integration tests with scoped cleanup (never an unscoped delete); distinct fixture prefixes to avoid cross-file races.
 - Raw verbatim command output in reports; always run typecheck after final edits.

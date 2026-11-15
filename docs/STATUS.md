@@ -1,16 +1,17 @@
 # STATUS (update at the end of every step/phase)
 
-Last verified suite figure reported: 400/400 passing (52 files) at Phase 11. Baseline test count: 400.
+Last verified suite figure reported: 414/414 passing (53 files) at Phase 12. Baseline test count: 414.
 
 ## Phase state
-- Phases 1-11: COMPLETE and signed off.
+- Phases 1-12: COMPLETE and signed off.
   - Phase 6 (Access Control / Verification Gate): Steps 0-5 closed; Step 6a proof graph verified; Step 6b close-out and type unification completed.
   - Phase 7 (Agent Foundation): Steps 0-5 closed; LLM client, prompt loader, handoff contract, common node patterns, and subgraph harness verified (294 tests).
   - Phase 8 (Meta Orchestrator & Stateful Router Skeleton): Steps 0-5 closed; intent taxonomy, LLM classifier, deterministic guards, specialist stubs, parent graph with Command(goto) dispatch, and end-to-end integration tests verified (331 tests).
   - Phase 9 (Orders Specialists): Steps 0-4 closed; Order Tracking and Returns specialist subgraphs, prompt templates, RAG integration, Scenario 1 & 9 integration tests verified (350 tests).
   - Phase 10 (Payments Specialists): Steps 0-5 closed; Payment and Refund specialist subgraphs, Pattern B lateral re-route, OD-8 allowlist update, Scenarios 3, 4 & 8 integration tests verified (370 tests).
   - Phase 11 (Account Specialists): Steps 0-5 closed; Profile and Account Access real subgraphs, two-mode Account Access (stateless password reset; OTP verification for resume via `buildIdentityUpdate`), Scenarios 5, 6, 7, 13 & 14 parent integration tests verified (400 tests).
-- Phases 12-19: not started. Phase 12 (Cross-Domain Integration Validation) runs all 14 scenarios live across all 6 real domain specialists.
+  - Phase 12 (Cross-Domain Integration Validation): Steps 1-5 closed; all 14 evaluation scenarios from REFERENCE.md verified live across all 6 concrete domain specialists with zero stubs against real Postgres, pgvector, Redis, and PostgresSaver checkpointer (414 tests).
+- Phases 13-19: not started. Phase 13 (Failure Handling & Loop Prevention) hardens loop fallback, tool failure retries, and ESCALATED terminal state.
 
 ## Built so far
 Domain data model + repositories + seed; conversation/message services; ConversationState + PostgresSaver checkpointing; routing/agent/tool event logging;
@@ -35,7 +36,8 @@ All 6 domain specialists are real concrete subgraphs wired into parent graph; Pa
 6. 6a graph's ALLOWED branch does not clear `activeWorkflow`, so `blockedBy` goes stale after a successful resume (resolved in Phase 8: router writes RE_ROUTE event; specialist clears activeWorkflow on COMPLETED).
 
 ## Immediate next actions
-1. Plan Phase 12 (Cross-Domain Integration Validation: all 14 scenarios verified live on real specialists).
+1. Owner merges phase/12-cross-domain-validation and tags phase-12-done.
+2. Plan Phase 13 (Failure Handling & Loop Prevention).
 
 ## Changelog
 - 2026-11-05: Phase 6 Step 6a integration proof graph and test suite verified (239 tests).
@@ -45,3 +47,4 @@ All 6 domain specialists are real concrete subgraphs wired into parent graph; Pa
 - 2026-11-05: Phase 9 Orders Specialists completed: Order Tracking and Returns real subgraphs, RAG scoping, parent graph integration (350 tests).
 - 2026-11-05: Phase 10 Payments Specialists completed: Payment and Refund real subgraphs, Pattern B lateral re-route, Scenarios 3, 4 & 8 parent integration tests (370 tests).
 - 2026-11-06: Phase 11 Account Specialists completed: Profile and Account Access real subgraphs, two-mode operation, Pattern C verification resume, Scenarios 5, 6, 7, 13 & 14 parent integration tests (400 tests).
+- 2026-11-06: Phase 12 Cross-Domain Integration Validation completed: all 14 evaluation scenarios verified live across all 6 real domain specialists; OD-1 resolved (414 tests).
