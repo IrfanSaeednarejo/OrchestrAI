@@ -1,12 +1,9 @@
 // src/evaluation/runner/eval-runner.ts
-// Phase 15: Multi-turn evaluation runner.
-// Accepts an EvaluationScenario and drives each turn through the parent graph
-// sequentially, preserving thread state across turns using MemorySaver.
-// After each turn it feeds an EvaluatorContext to ALL_BINARY_EVALUATORS and
-// aggregates results into a structured BenchmarkReport.
+// Multi-turn evaluation runner with latency and DB query instrumentation.
 
 import crypto from 'node:crypto';
 import { MemorySaver } from '@langchain/langgraph';
+import { PostgresSaver } from '@langchain/langgraph-checkpoint-postgres';
 import { HumanMessage } from '@langchain/core/messages';
 import type { RunnableConfig } from '@langchain/core/runnables';
 import { buildParentGraph } from '../../graphs/parent/parent-graph.js';
@@ -19,36 +16,73 @@ import type {
   RoutingDecisionRecord,
 } from '../evaluators/types.js';
 import type { EvaluationScenario, ScenarioTurn } from '../dataset/types.js';
+import {
+  runWithTurnContext,
+  installPgQueryTracking,
+  type TurnContext,
+  type QuerySourceStat,
+} from '../../shared/turn-context.js';
+import { db, pgPool } from '../../persistence/db/client.js';
+import { conversations, users } from '../../persistence/db/schema.js';
 
 // ---------------------------------------------------------------------------
 // Result types
 // ---------------------------------------------------------------------------
 
+export interface TurnTiming {
+  turnMs: number;
+  dbMs: number;
+  dbQueryCount: number;
+  llmMs: number;
+  otherMs: number;
+  querySources: Record<string, { count: number; totalMs: number }>;
+}
+
 export interface TurnResult {
-  /** Zero-based index of the turn within the scenario */
   turnIndex: number;
   turn: ScenarioTurn;
-  /** All 8 binary evaluator results for this turn */
   evaluatorResults: EvaluatorResult[];
-  /** true iff every evaluator passed for this turn */
   passed: boolean;
+  timing: TurnTiming;
 }
 
 export interface ScenarioBenchmarkResult {
   scenario: EvaluationScenario;
   turnResults: TurnResult[];
-  /** true iff every turn passed */
   scenarioPassed: boolean;
   passingEvaluators: number;
   totalEvaluators: number;
 }
 
+export interface TimingStats {
+  count: number;
+  turnMsP50: number;
+  turnMsP95: number;
+  turnMsMean: number;
+  dbMsP50: number;
+  dbMsP95: number;
+  dbMsMean: number;
+  meanQueries: number;
+  meanLlmMs: number;
+  meanOtherMs: number;
+}
+
 export interface BenchmarkReport {
+  evalRunId?: string;
+  datasetVersion?: string;
+  timestamp: string;
+  checkpointerType: string;
   totalScenarios: number;
   passedScenarios: number;
   passRate: number;
   byEvaluator: Record<string, { passed: number; total: number; rate: number }>;
   byDomain: Record<string, { passed: number; total: number; rate: number }>;
+  timingSummary?: {
+    overall: TimingStats;
+    turn1: TimingStats;
+    laterTurns: TimingStats;
+    topQuerySources: Array<{ source: string; count: number; totalMs: number }>;
+  };
   scenarioResults: ScenarioBenchmarkResult[];
 }
 
@@ -57,21 +91,51 @@ export interface BenchmarkReport {
 // ---------------------------------------------------------------------------
 
 export interface RunScenarioOptions {
-  /**
-   * Optional pre-built graph to reuse across runs (e.g. for integration tests).
-   * When omitted a fresh graph with MemorySaver is built per scenario.
-   */
   graph?: ReturnType<typeof buildParentGraph>;
-  /**
-   * Extra configurable values forwarded to the graph on every turn.
-   * Integration tests use { useStubs: true } or { stubBehaviors: {...} }.
-   */
   configurable?: Record<string, unknown>;
-  /**
-   * Optional pre-recorded or intercepted tool execution records to evaluate
-   * against expectedTools for tool-selection evaluation.
-   */
   executedTools?: ExecutedToolRecord[];
+  evalRunId?: string;
+  datasetVersion?: string;
+  usePostgresCheckpointer?: boolean;
+  pacingMs?: number;
+}
+
+function percentile(arr: number[], p: number): number {
+  if (arr.length === 0) return 0;
+  const sorted = [...arr].sort((a, b) => a - b);
+  const idx = (sorted.length - 1) * p;
+  const lower = Math.floor(idx);
+  const upper = Math.ceil(idx);
+  const weight = idx - lower;
+  const lowerVal = sorted[lower] ?? 0;
+  const upperVal = sorted[upper] ?? 0;
+  return Math.round(lowerVal * (1 - weight) + upperVal * weight);
+}
+
+function mean(arr: number[]): number {
+  if (arr.length === 0) return 0;
+  return Math.round((arr.reduce((s, x) => s + x, 0) / arr.length) * 10) / 10;
+}
+
+function computeStats(timings: TurnTiming[]): TimingStats {
+  const turnMsList = timings.map((t) => t.turnMs);
+  const dbMsList = timings.map((t) => t.dbMs);
+  const queriesList = timings.map((t) => t.dbQueryCount);
+  const llmMsList = timings.map((t) => t.llmMs);
+  const otherMsList = timings.map((t) => t.otherMs);
+
+  return {
+    count: timings.length,
+    turnMsP50: percentile(turnMsList, 0.5),
+    turnMsP95: percentile(turnMsList, 0.95),
+    turnMsMean: mean(turnMsList),
+    dbMsP50: percentile(dbMsList, 0.5),
+    dbMsP95: percentile(dbMsList, 0.95),
+    dbMsMean: mean(dbMsList),
+    meanQueries: mean(queriesList),
+    meanLlmMs: mean(llmMsList),
+    meanOtherMs: mean(otherMsList),
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -82,11 +146,30 @@ export async function runScenario(
   scenario: EvaluationScenario,
   options: RunScenarioOptions = {}
 ): Promise<ScenarioBenchmarkResult> {
-  const checkpointer = new MemorySaver();
+  installPgQueryTracking();
+
+  const checkpointer = options.usePostgresCheckpointer
+    ? new PostgresSaver(pgPool)
+    : new MemorySaver();
   const graph = options.graph ?? buildParentGraph(checkpointer);
   const threadId = crypto.randomUUID();
 
-  // Build initial state overrides from scenario.initialIdentity
+  try {
+    const [u] = await db.select({ id: users.id }).from(users).limit(1);
+    if (u) {
+      await db
+        .insert(conversations)
+        .values({
+          id: threadId,
+          userId: u.id,
+          status: 'active',
+        })
+        .onConflictDoNothing();
+    }
+  } catch {
+    // Non-blocking in isolated unit tests
+  }
+
   const initialStateOverrides: Partial<ConversationState> = {};
   if (scenario.initialIdentity) {
     initialStateOverrides.identity = {
@@ -95,6 +178,8 @@ export async function runScenario(
       verifiedAt: scenario.initialIdentity.verifiedAt ?? null,
     };
   }
+  // Harness fix: Inject default user identity so account/profile scenarios have a valid state.user
+  initialStateOverrides.user = { id: '00000000-0000-4000-8000-000000000001' };
 
   const turnResults: TurnResult[] = [];
   let previousState: ConversationState | undefined;
@@ -103,9 +188,10 @@ export async function runScenario(
     const turn = scenario.turns[i];
     if (!turn) continue;
 
-    // Build the per-turn invoke input.
-    // On the first turn we apply scenario-level state overrides; subsequent turns
-    // only send the new HumanMessage — the graph's checkpointer carries the rest.
+    if (options.pacingMs && options.pacingMs > 0) {
+      await new Promise((resolve) => setTimeout(resolve, options.pacingMs));
+    }
+
     const invokeInput =
       i === 0
         ? {
@@ -123,11 +209,45 @@ export async function runScenario(
       },
     };
 
-    const finalState = (await graph.invoke(invokeInput, config)) as ConversationState;
+    const turnTools: ExecutedToolRecord[] = [];
+    const querySources = new Map<string, QuerySourceStat>();
+    const turnCtx: TurnContext = {
+      conversationId: threadId,
+      evalRunId: options.evalRunId,
+      datasetVersion: options.datasetVersion,
+      llmCallCount: 0,
+      toolCallCount: 0,
+      executedTools: turnTools,
+      dbQueryCount: 0,
+      dbDurationMs: 0,
+      llmDurationMs: 0,
+      querySources,
+    };
 
-    // Build EvaluatorContext — routing decisions and tool executions are
-    // derived from finalState.routing.history when real DB is not available,
-    // which is the case for the MemorySaver-based unit tests.
+    const turnStart = performance.now();
+    const finalState = (await runWithTurnContext(
+      turnCtx,
+      () => graph.invoke(invokeInput, config)
+    )) as ConversationState;
+    const turnMs = Math.round(performance.now() - turnStart);
+    const dbMs = Math.round(turnCtx.dbDurationMs ?? 0);
+    const llmMs = Math.round(turnCtx.llmDurationMs ?? 0);
+    const otherMs = Math.max(0, turnMs - dbMs - llmMs);
+
+    const querySourcesObj: Record<string, { count: number; totalMs: number }> = {};
+    for (const [k, v] of querySources.entries()) {
+      querySourcesObj[k] = { count: v.count, totalMs: Math.round(v.totalMs) };
+    }
+
+    const timing: TurnTiming = {
+      turnMs,
+      dbMs,
+      dbQueryCount: turnCtx.dbQueryCount ?? 0,
+      llmMs,
+      otherMs,
+      querySources: querySourcesObj,
+    };
+
     const routingDecisions: RoutingDecisionRecord[] = finalState.routing.history.map((h) => {
       const isHandoff = Boolean(h.fromAgent && h.fromAgent !== h.toAgent);
       return {
@@ -138,8 +258,7 @@ export async function runScenario(
       };
     });
 
-    // Tools executed: supplied via options when running in test / harness environments.
-    const executedTools: ExecutedToolRecord[] = options.executedTools ?? [];
+    const executedTools: ExecutedToolRecord[] = options.executedTools ?? turnTools;
 
     const context: EvaluatorContext = {
       scenario,
@@ -153,8 +272,7 @@ export async function runScenario(
     const evaluatorResults = ALL_BINARY_EVALUATORS.map((fn) => fn(context));
     const passed = evaluatorResults.every((r) => r.passed);
 
-    turnResults.push({ turnIndex: i, turn, evaluatorResults, passed });
-
+    turnResults.push({ turnIndex: i, turn, evaluatorResults, passed, timing });
     previousState = finalState;
   }
 
@@ -222,6 +340,51 @@ export async function runBenchmark(
     }
   }
 
-  return { totalScenarios, passedScenarios, passRate, byEvaluator, byDomain, scenarioResults };
-}
+  // Timing aggregation
+  const allTimings: TurnTiming[] = [];
+  const turn1Timings: TurnTiming[] = [];
+  const laterTimings: TurnTiming[] = [];
+  const aggregatedQuerySources: Record<string, { count: number; totalMs: number }> = {};
 
+  for (const sr of scenarioResults) {
+    for (const tr of sr.turnResults) {
+      allTimings.push(tr.timing);
+      if (tr.turnIndex === 0) {
+        turn1Timings.push(tr.timing);
+      } else {
+        laterTimings.push(tr.timing);
+      }
+      for (const [src, data] of Object.entries(tr.timing.querySources)) {
+        const current = aggregatedQuerySources[src] ?? { count: 0, totalMs: 0 };
+        current.count += data.count;
+        current.totalMs += data.totalMs;
+        aggregatedQuerySources[src] = current;
+      }
+    }
+  }
+
+  const topSources = Object.entries(aggregatedQuerySources)
+    .map(([source, data]) => ({ source, ...data }))
+    .sort((a, b) => b.totalMs - a.totalMs);
+
+  const timingSummary = {
+    overall: computeStats(allTimings),
+    turn1: computeStats(turn1Timings),
+    laterTurns: computeStats(laterTimings),
+    topQuerySources: topSources,
+  };
+
+  return {
+    evalRunId: options.evalRunId,
+    datasetVersion: options.datasetVersion,
+    timestamp: new Date().toISOString(),
+    checkpointerType: options.usePostgresCheckpointer ? 'PostgresSaver' : 'MemorySaver',
+    totalScenarios,
+    passedScenarios,
+    passRate,
+    byEvaluator,
+    byDomain,
+    timingSummary,
+    scenarioResults,
+  };
+}
