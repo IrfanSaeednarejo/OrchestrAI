@@ -1,0 +1,119 @@
+{
+  "metadata": {
+    "generatedAt": "2026-11-14T08:24:40.969Z",
+    "machine": "Windows 11 x86_64 / WSL2 Docker",
+    "postgresVersion": "PostgreSQL 16.15 (Debian 16.15-1.pgdg12+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit",
+    "pgvectorVersion": "0.8.6",
+    "database": "orchestrai_bench (local Docker scratch database)",
+    "vectorDimension": 768,
+    "domains": [
+      "orders",
+      "payments",
+      "account",
+      "refunds",
+      "shipping"
+    ],
+    "partitionsCount": 20,
+    "queryCount": 200,
+    "dataSource": "synthetic vectors (random unit vectors; latency and ANN recall valid, not semantic quality)"
+  },
+  "exactScans": {
+    "1000": {
+      "size": 1000,
+      "index": "none (exact scan)",
+      "serverExecutionMs": {
+        "p50": 0.308,
+        "p95": 0.537,
+        "mean": 0.337
+      },
+      "clientRoundTripMs": {
+        "p50": 3.409,
+        "p95": 4.801,
+        "mean": 3.65
+      },
+      "rowsScanned": {
+        "p50": 1006,
+        "p95": 1006,
+        "mean": 1006
+      }
+    },
+    "10000": {
+      "size": 10000,
+      "index": "none (exact scan)",
+      "serverExecutionMs": {
+        "p50": 3.247,
+        "p95": 8.83,
+        "mean": 4.337
+      },
+      "clientRoundTripMs": {
+        "p50": 10.165,
+        "p95": 18.648,
+        "mean": 11.61
+      },
+      "rowsScanned": {
+        "p50": 10006,
+        "p95": 10006,
+        "mean": 10006
+      }
+    },
+    "50000": {
+      "size": 50000,
+      "index": "none (exact scan)",
+      "serverExecutionMs": {
+        "p50": 17.694,
+        "p95": 27.832,
+        "mean": 19.128
+      },
+      "clientRoundTripMs": {
+        "p50": 44.556,
+        "p95": 70.656,
+        "mean": 48.705
+      },
+      "rowsScanned": {
+        "p50": 50006,
+        "p95": 50006,
+        "mean": 50006
+      }
+    },
+    "100000": {
+      "size": 100000,
+      "index": "none (exact scan)",
+      "serverExecutionMs": {
+        "p50": 37.065,
+        "p95": 47.803,
+        "mean": 38.812
+      },
+      "clientRoundTripMs": {
+        "p50": 93.446,
+        "p95": 122.796,
+        "mean": 98.342
+      },
+      "rowsScanned": {
+        "p50": 100006,
+        "p95": 100006,
+        "mean": 100006
+      }
+    }
+  },
+  "hnswIndex": {
+    "size": 100000,
+    "index": "hnsw (vector_cosine_ops)",
+    "indexBuildTimeSec": 426.6,
+    "recallAt3": 0.0333,
+    "serverExecutionMs": {
+      "p50": 1.836,
+      "p95": 3.455,
+      "mean": 2.13
+    },
+    "clientRoundTripMs": {
+      "p50": 11.511,
+      "p95": 17.386,
+      "mean": 12.277
+    },
+    "rowsScanned": {
+      "p50": 41,
+      "p95": 42,
+      "mean": 38
+    }
+  }
+}

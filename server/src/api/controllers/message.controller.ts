@@ -20,6 +20,7 @@ import { pgPool } from '../../persistence/db/client.js';
 import { NotFoundError, UnauthorizedError, ConflictError } from '../errors/app-error.js';
 import { assertConversationOwnership } from '../utils/auth-helpers.js';
 import type { ServiceOption } from '../../graphs/parent/parent-graph.js';
+import { runWithTurnContext } from '../../shared/turn-context.js';
 
 // ---------------------------------------------------------------------------
 // Graph singleton
@@ -229,36 +230,43 @@ export async function sendMessageHandler(
       }
 
       try {
-        const stream = await graph.stream(
-          {
-            messages: [humanMessage],
-            user: { id: callerId },
-            identity: resolvedIdentity,
-            routing: { handoffCount: 0 },
-          },
-          { ...traceConfig, streamMode: 'updates' }
-        );
+        const turnCtx = { conversationId, llmCallCount: 0, toolCallCount: 0 };
+        const turnStart = performance.now();
 
-        // Drain the full stream — skip writes when disconnected, never break early.
-        for await (const chunk of stream) {
-          if (!clientDisconnected) {
-            const nodeNames = Object.keys(chunk);
-            for (const node of nodeNames) {
-              res.write(
-                `event: node\ndata: ${JSON.stringify({
-                  node,
-                  timestamp: new Date().toISOString(),
-                })}\n\n`
-              );
-              res.write(
-                `event: activity\ndata: ${JSON.stringify({
-                  activity: getFriendlyActivity(node),
-                  timestamp: new Date().toISOString(),
-                })}\n\n`
-              );
+        await runWithTurnContext(turnCtx, async () => {
+          const stream = await graph.stream(
+            {
+              messages: [humanMessage],
+              user: { id: callerId },
+              identity: resolvedIdentity,
+              routing: { handoffCount: 0 },
+            },
+            { ...traceConfig, streamMode: 'updates' }
+          );
+
+          // Drain the full stream — skip writes when disconnected, never break early.
+          for await (const chunk of stream) {
+            if (!clientDisconnected) {
+              const nodeNames = Object.keys(chunk);
+              for (const node of nodeNames) {
+                res.write(
+                  `event: node\ndata: ${JSON.stringify({
+                    node,
+                    timestamp: new Date().toISOString(),
+                  })}\n\n`
+                );
+                res.write(
+                  `event: activity\ndata: ${JSON.stringify({
+                    activity: getFriendlyActivity(node),
+                    timestamp: new Date().toISOString(),
+                  })}\n\n`
+                );
+              }
             }
           }
-        }
+        });
+
+        const turnMs = Math.round(performance.now() - turnStart);
 
         // Retrieve full checkpointed state after drain completes
         const snapshot = await graph.getState(traceConfig);
@@ -293,6 +301,9 @@ export async function sendMessageHandler(
             handoffCount: finalState.routing.handoffCount,
             blockedBy,
             currentStep,
+            turnMs,
+            llmCallCount: turnCtx.llmCallCount,
+            toolCallCount: turnCtx.toolCallCount,
             ...(serviceOptions ? { options: serviceOptions } : {}),
           },
         });
@@ -348,15 +359,22 @@ export async function sendMessageHandler(
       // -------------------------------------------------------------------------
       // Standard JSON Mode
       // -------------------------------------------------------------------------
-      const finalState = (await graph.invoke(
-        {
-          messages: [humanMessage],
-          user: { id: callerId },
-          identity: resolvedIdentity,
-          routing: { handoffCount: 0 },
-        },
-        traceConfig
+      const turnCtx = { conversationId, llmCallCount: 0, toolCallCount: 0 };
+      const turnStart = performance.now();
+
+      const finalState = (await runWithTurnContext(turnCtx, () =>
+        graph.invoke(
+          {
+            messages: [humanMessage],
+            user: { id: callerId },
+            identity: resolvedIdentity,
+            routing: { handoffCount: 0 },
+          },
+          traceConfig
+        )
       )) as ConversationState;
+
+      const turnMs = Math.round(performance.now() - turnStart);
 
       const assistantText = extractTurnAssistantText(finalState?.messages, humanMessageId);
       const blockedBy = finalState.activeWorkflow?.blockedBy ?? null;
@@ -387,6 +405,9 @@ export async function sendMessageHandler(
           handoffCount: finalState.routing.handoffCount,
           blockedBy,
           currentStep,
+          turnMs,
+          llmCallCount: turnCtx.llmCallCount,
+          toolCallCount: turnCtx.toolCallCount,
           ...(serviceOptions ? { options: serviceOptions } : {}),
         },
       });

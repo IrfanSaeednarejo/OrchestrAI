@@ -1,0 +1,352 @@
+[
+  {
+    "turnNumber": 1,
+    "scenarioId": "SCENARIO-01",
+    "userMessage": "Where is my order 00000000-0000-0000-0000-000000000101? It was supposed to arrive yesterday.",
+    "turnMs": 2602.33,
+    "inAppDbQueryCount": 48,
+    "serverStatementCount": 48,
+    "countDifference": 0,
+    "summedQueryDurationMs": 366.99,
+    "criticalPathDbWaitMs": 238.65,
+    "overlappingQueryCount": 33,
+    "criticalPathSavingsMs": 128.34,
+    "serverTopStatements": [
+      {
+        "query": "INSERT INTO \"public\".checkpoint_blobs (thread_id, checkpoint_ns, channel, version, type, blob) VALUE",
+        "calls": 14
+      },
+      {
+        "query": "INSERT INTO \"public\".checkpoint_writes (thread_id, checkpoint_ns, checkpoint_id, task_id, idx, chann",
+        "calls": 10
+      },
+      {
+        "query": "BEGIN",
+        "calls": 7
+      },
+      {
+        "query": "COMMIT",
+        "calls": 7
+      },
+      {
+        "query": "INSERT INTO \"public\".checkpoints (thread_id, checkpoint_ns, checkpoint_id, parent_checkpoint_id, che",
+        "calls": 4
+      }
+    ]
+  },
+  {
+    "turnNumber": 2,
+    "scenarioId": "SCENARIO-02",
+    "userMessage": "Hi, I have an issue.",
+    "turnMs": 893.46,
+    "inAppDbQueryCount": 31,
+    "serverStatementCount": 31,
+    "countDifference": 0,
+    "summedQueryDurationMs": 174.8,
+    "criticalPathDbWaitMs": 118.71,
+    "overlappingQueryCount": 20,
+    "criticalPathSavingsMs": 56.09,
+    "serverTopStatements": [
+      {
+        "query": "INSERT INTO \"public\".checkpoint_blobs (thread_id, checkpoint_ns, channel, version, type, blob) VALUE",
+        "calls": 9
+      },
+      {
+        "query": "INSERT INTO \"public\".checkpoint_writes (thread_id, checkpoint_ns, checkpoint_id, task_id, idx, chann",
+        "calls": 6
+      },
+      {
+        "query": "BEGIN",
+        "calls": 5
+      },
+      {
+        "query": "COMMIT",
+        "calls": 5
+      },
+      {
+        "query": "INSERT INTO \"public\".checkpoints (thread_id, checkpoint_ns, checkpoint_id, parent_checkpoint_id, che",
+        "calls": 3
+      }
+    ]
+  },
+  {
+    "turnNumber": 3,
+    "scenarioId": "SCENARIO-03",
+    "userMessage": "I noticed I was charged twice for order 00000000-0000-0000-0000-000000000103. Can you refund the second charge?",
+    "turnMs": 1985.88,
+    "inAppDbQueryCount": 48,
+    "serverStatementCount": 48,
+    "countDifference": 0,
+    "summedQueryDurationMs": 210.28,
+    "criticalPathDbWaitMs": 150.19,
+    "overlappingQueryCount": 32,
+    "criticalPathSavingsMs": 60.09,
+    "serverTopStatements": [
+      {
+        "query": "INSERT INTO \"public\".checkpoint_blobs (thread_id, checkpoint_ns, channel, version, type, blob) VALUE",
+        "calls": 14
+      },
+      {
+        "query": "INSERT INTO \"public\".checkpoint_writes (thread_id, checkpoint_ns, checkpoint_id, task_id, idx, chann",
+        "calls": 10
+      },
+      {
+        "query": "BEGIN",
+        "calls": 7
+      },
+      {
+        "query": "COMMIT",
+        "calls": 7
+      },
+      {
+        "query": "INSERT INTO \"public\".checkpoints (thread_id, checkpoint_ns, checkpoint_id, parent_checkpoint_id, che",
+        "calls": 4
+      }
+    ]
+  },
+  {
+    "turnNumber": 4,
+    "scenarioId": "SCENARIO-04",
+    "userMessage": "I need to return an item from order 00000000-0000-0000-0000-000000000104. How do I get my refund?",
+    "turnMs": 2061.51,
+    "inAppDbQueryCount": 48,
+    "serverStatementCount": 48,
+    "countDifference": 0,
+    "summedQueryDurationMs": 230.4,
+    "criticalPathDbWaitMs": 151.1,
+    "overlappingQueryCount": 35,
+    "criticalPathSavingsMs": 79.3,
+    "serverTopStatements": [
+      {
+        "query": "INSERT INTO \"public\".checkpoint_blobs (thread_id, checkpoint_ns, channel, version, type, blob) VALUE",
+        "calls": 14
+      },
+      {
+        "query": "INSERT INTO \"public\".checkpoint_writes (thread_id, checkpoint_ns, checkpoint_id, task_id, idx, chann",
+        "calls": 10
+      },
+      {
+        "query": "BEGIN",
+        "calls": 7
+      },
+      {
+        "query": "COMMIT",
+        "calls": 7
+      },
+      {
+        "query": "INSERT INTO \"public\".checkpoints (thread_id, checkpoint_ns, checkpoint_id, parent_checkpoint_id, che",
+        "calls": 4
+      }
+    ]
+  },
+  {
+    "turnNumber": 5,
+    "scenarioId": "SCENARIO-05",
+    "userMessage": "Can you send me the receipt for order 00000000-0000-0000-0000-000000000105?",
+    "turnMs": 1958.93,
+    "inAppDbQueryCount": 48,
+    "serverStatementCount": 48,
+    "countDifference": 0,
+    "summedQueryDurationMs": 220.74,
+    "criticalPathDbWaitMs": 156.51,
+    "overlappingQueryCount": 32,
+    "criticalPathSavingsMs": 64.23,
+    "serverTopStatements": [
+      {
+        "query": "INSERT INTO \"public\".checkpoint_blobs (thread_id, checkpoint_ns, channel, version, type, blob) VALUE",
+        "calls": 14
+      },
+      {
+        "query": "INSERT INTO \"public\".checkpoint_writes (thread_id, checkpoint_ns, checkpoint_id, task_id, idx, chann",
+        "calls": 10
+      },
+      {
+        "query": "BEGIN",
+        "calls": 7
+      },
+      {
+        "query": "COMMIT",
+        "calls": 7
+      },
+      {
+        "query": "INSERT INTO \"public\".checkpoints (thread_id, checkpoint_ns, checkpoint_id, parent_checkpoint_id, che",
+        "calls": 4
+      }
+    ]
+  },
+  {
+    "turnNumber": 6,
+    "scenarioId": "SCENARIO-06",
+    "userMessage": "I want to return an item from order 00000000-0000-0000-0000-000000000106.",
+    "turnMs": 1984.61,
+    "inAppDbQueryCount": 48,
+    "serverStatementCount": 48,
+    "countDifference": 0,
+    "summedQueryDurationMs": 262.75,
+    "criticalPathDbWaitMs": 187.69,
+    "overlappingQueryCount": 32,
+    "criticalPathSavingsMs": 75.06,
+    "serverTopStatements": [
+      {
+        "query": "INSERT INTO \"public\".checkpoint_blobs (thread_id, checkpoint_ns, channel, version, type, blob) VALUE",
+        "calls": 14
+      },
+      {
+        "query": "INSERT INTO \"public\".checkpoint_writes (thread_id, checkpoint_ns, checkpoint_id, task_id, idx, chann",
+        "calls": 10
+      },
+      {
+        "query": "BEGIN",
+        "calls": 7
+      },
+      {
+        "query": "COMMIT",
+        "calls": 7
+      },
+      {
+        "query": "INSERT INTO \"public\".checkpoints (thread_id, checkpoint_ns, checkpoint_id, parent_checkpoint_id, che",
+        "calls": 4
+      }
+    ]
+  },
+  {
+    "turnNumber": 7,
+    "scenarioId": "SCENARIO-07",
+    "userMessage": "I need to return order 00000000-0000-0000-0000-000000000107.",
+    "turnMs": 1938.62,
+    "inAppDbQueryCount": 48,
+    "serverStatementCount": 48,
+    "countDifference": 0,
+    "summedQueryDurationMs": 233.02,
+    "criticalPathDbWaitMs": 171.15,
+    "overlappingQueryCount": 34,
+    "criticalPathSavingsMs": 61.87,
+    "serverTopStatements": [
+      {
+        "query": "INSERT INTO \"public\".checkpoint_blobs (thread_id, checkpoint_ns, channel, version, type, blob) VALUE",
+        "calls": 14
+      },
+      {
+        "query": "INSERT INTO \"public\".checkpoint_writes (thread_id, checkpoint_ns, checkpoint_id, task_id, idx, chann",
+        "calls": 10
+      },
+      {
+        "query": "BEGIN",
+        "calls": 7
+      },
+      {
+        "query": "COMMIT",
+        "calls": 7
+      },
+      {
+        "query": "INSERT INTO \"public\".checkpoints (thread_id, checkpoint_ns, checkpoint_id, parent_checkpoint_id, che",
+        "calls": 4
+      }
+    ]
+  },
+  {
+    "turnNumber": 8,
+    "scenarioId": "SCENARIO-08",
+    "userMessage": "I returned order 00000000-0000-0000-0000-000000000108 three days ago. Where is my refund?",
+    "turnMs": 1714.42,
+    "inAppDbQueryCount": 48,
+    "serverStatementCount": 48,
+    "countDifference": 0,
+    "summedQueryDurationMs": 251.5,
+    "criticalPathDbWaitMs": 178.72,
+    "overlappingQueryCount": 32,
+    "criticalPathSavingsMs": 72.78,
+    "serverTopStatements": [
+      {
+        "query": "INSERT INTO \"public\".checkpoint_blobs (thread_id, checkpoint_ns, channel, version, type, blob) VALUE",
+        "calls": 14
+      },
+      {
+        "query": "INSERT INTO \"public\".checkpoint_writes (thread_id, checkpoint_ns, checkpoint_id, task_id, idx, chann",
+        "calls": 10
+      },
+      {
+        "query": "BEGIN",
+        "calls": 7
+      },
+      {
+        "query": "COMMIT",
+        "calls": 7
+      },
+      {
+        "query": "INSERT INTO \"public\".checkpoints (thread_id, checkpoint_ns, checkpoint_id, parent_checkpoint_id, che",
+        "calls": 4
+      }
+    ]
+  },
+  {
+    "turnNumber": 9,
+    "scenarioId": "SCENARIO-09",
+    "userMessage": "I want to return an item I bought 45 days ago, order 00000000-0000-0000-0000-000000000109.",
+    "turnMs": 1849.91,
+    "inAppDbQueryCount": 48,
+    "serverStatementCount": 48,
+    "countDifference": 0,
+    "summedQueryDurationMs": 238.28,
+    "criticalPathDbWaitMs": 162.3,
+    "overlappingQueryCount": 33,
+    "criticalPathSavingsMs": 75.98,
+    "serverTopStatements": [
+      {
+        "query": "INSERT INTO \"public\".checkpoint_blobs (thread_id, checkpoint_ns, channel, version, type, blob) VALUE",
+        "calls": 14
+      },
+      {
+        "query": "INSERT INTO \"public\".checkpoint_writes (thread_id, checkpoint_ns, checkpoint_id, task_id, idx, chann",
+        "calls": 10
+      },
+      {
+        "query": "BEGIN",
+        "calls": 7
+      },
+      {
+        "query": "COMMIT",
+        "calls": 7
+      },
+      {
+        "query": "INSERT INTO \"public\".checkpoints (thread_id, checkpoint_ns, checkpoint_id, parent_checkpoint_id, che",
+        "calls": 4
+      }
+    ]
+  },
+  {
+    "turnNumber": 10,
+    "scenarioId": "SCENARIO-10",
+    "userMessage": "Can you recommend a good laptop?",
+    "turnMs": 2018.61,
+    "inAppDbQueryCount": 48,
+    "serverStatementCount": 48,
+    "countDifference": 0,
+    "summedQueryDurationMs": 283.01,
+    "criticalPathDbWaitMs": 200.5,
+    "overlappingQueryCount": 32,
+    "criticalPathSavingsMs": 82.51,
+    "serverTopStatements": [
+      {
+        "query": "INSERT INTO \"public\".checkpoint_blobs (thread_id, checkpoint_ns, channel, version, type, blob) VALUE",
+        "calls": 14
+      },
+      {
+        "query": "INSERT INTO \"public\".checkpoint_writes (thread_id, checkpoint_ns, checkpoint_id, task_id, idx, chann",
+        "calls": 10
+      },
+      {
+        "query": "BEGIN",
+        "calls": 7
+      },
+      {
+        "query": "COMMIT",
+        "calls": 7
+      },
+      {
+        "query": "INSERT INTO \"public\".checkpoints (thread_id, checkpoint_ns, checkpoint_id, parent_checkpoint_id, che",
+        "calls": 4
+      }
+    ]
+  }
+]

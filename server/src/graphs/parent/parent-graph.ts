@@ -106,6 +106,7 @@ async function generateGreetingResponse(userText: string): Promise<{
 
   const result = await generateStructuredOutput(GreetingResponseSchema, prompt, {
     temperature: 0.2,
+    node: 'greeting',
   });
 
   if (result.success) {
@@ -167,6 +168,9 @@ export async function routerNode(
 
   // 1. Guard check: ESCALATE
   if (guardOutcome.outcome === 'ESCALATE') {
+    const routingPath = guardOutcome.reason.includes('terminal')
+      ? 'fast:terminal_escalated'
+      : 'fast:handoff_cap';
     const routingEvent: RoutingEvent = {
       conversationId,
       sourceAgent: state.routing.currentAgent,
@@ -174,6 +178,7 @@ export async function routerNode(
       intent: state.currentIntent,
       decisionType: 'ESCALATION',
       reason: guardOutcome.reason,
+      routingPath,
     };
 
     const routingUpdate = await logRoutingEventSafely(routingEvent);
@@ -198,6 +203,7 @@ export async function routerNode(
       decisionType: 'RE_ROUTE',
       reason: guardOutcome.reason,
       newDomain: guardOutcome.returnTo.domain,
+      routingPath: 'fast:resume',
     };
 
     const routingUpdate = await logRoutingEventSafely(routingEvent);
@@ -216,6 +222,7 @@ export async function routerNode(
   let detectedIntent = 'GENERAL_INQUIRY';
   let routingReason = 'Initial default routing';
   let isFallback = false;
+  let routingPath = 'llm';
   let queuedIntentsUpdate: import('../../state/conversation-state.js').QueuedIntent[] | null = null;
 
   const uuidOnlyMatch = userText.trim().match(
@@ -231,15 +238,18 @@ export async function routerNode(
       detectedIntent = nextIntent.intent;
       routingReason = `Executing queued secondary intent: ${nextIntent.reasoning}`;
       queuedIntentsUpdate = remainingQueue.length > 0 ? remainingQueue : null;
+      routingPath = 'fast:queued_intent';
     }
   } else if (isGreetingMessage(userText)) {
     detectedIntent = 'GREETING';
     targetSpecialist = 'general_assistant';
     routingReason = 'Customer greeting and general triage';
+    routingPath = 'fast:greeting';
   } else if (isCapabilityMessage(userText)) {
     detectedIntent = 'CAPABILITY_QUERY';
     targetSpecialist = 'general_assistant';
     routingReason = 'Customer inquiry about platform capabilities';
+    routingPath = 'fast:capability';
   } else if (
     // 3a. Narrowed verification guard: when active workflow is awaiting identity verification,
     // and the message contains a 6-digit OTP code, route directly to account_access.
@@ -251,6 +261,7 @@ export async function routerNode(
     targetSpecialist = 'account_access';
     detectedIntent = 'ACCOUNT_SECURITY';
     routingReason = 'Direct routing of 6-digit OTP to account_access for pending identity verification';
+    routingPath = 'fast:otp';
   } else if (
     uuidOnlyMatch &&
     state.routing.currentAgent &&
@@ -262,6 +273,7 @@ export async function routerNode(
     targetSpecialist = state.routing.currentAgent as SpecialistId;
     detectedIntent = state.currentIntent ?? 'ORDER_STATUS';
     routingReason = `Follow-up UUID reference provided for active specialist ${state.routing.currentAgent}`;
+    routingPath = 'fast:uuid';
   } else if (userText.trim().length > 0) {
     const transcript = formatConversationTranscript(state.messages, 6);
     const classification = await classifyMessage(userText, {
@@ -277,10 +289,12 @@ export async function routerNode(
         targetSpecialist = 'general_assistant';
         detectedIntent = 'CLARIFICATION_REQUIRED';
         routingReason = `Low classification confidence (${classification.data.confidence}); routing to general assistant for clarification`;
+        routingPath = 'llm:low_confidence';
       } else {
         targetSpecialist = classification.data.specialist;
         detectedIntent = classification.data.intent;
         routingReason = classification.data.reasoning;
+        routingPath = 'llm';
 
         // Domain override for verification requests during blocked workflow:
         // When activeWorkflow is blocked by verification and the customer requests a code,
@@ -309,6 +323,7 @@ export async function routerNode(
       targetSpecialist = 'general_assistant';
       detectedIntent = 'GENERAL_INQUIRY';
       routingReason = `Classifier fallback: ${classification.error.message}`;
+      routingPath = 'fallback';
     }
   }
 
@@ -321,6 +336,7 @@ export async function routerNode(
       intent: 'GREETING',
       decisionType: 'INITIAL_ROUTE',
       reason: routingReason,
+      routingPath: 'fast:greeting',
     };
 
     const routingUpdate = await logRoutingEventSafely(routingEvent);
@@ -352,6 +368,7 @@ export async function routerNode(
       intent: detectedIntent,
       decisionType: 'ESCALATION',
       reason: `Routing loop detected for specialist '${targetSpecialist}'. Escalating.`,
+      routingPath: 'escalation:loop',
     };
     const routingUpdate = await logRoutingEventSafely(loopEvent);
     return {
@@ -380,6 +397,7 @@ export async function routerNode(
     decisionType,
     reason: routingReason,
     newDomain: targetSpecialist,
+    routingPath,
   };
 
   const routingUpdate = await logRoutingEventSafely(routingEvent);
@@ -469,7 +487,7 @@ export const generalAssistantSpecialistNode: SpecialistNodeAction = async (state
   if (hasStubOverride('general_assistant', config)) {
     return SPECIALIST_STUBS.general_assistant(state, config);
   }
-  return generalAssistantNode(state);
+  return generalAssistantNode(state, config);
 };
 
 export interface ParentGraphOptions {

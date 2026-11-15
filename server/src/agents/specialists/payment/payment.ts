@@ -25,7 +25,8 @@ import { loadPrompt } from '../../prompts/template-loader.js';
 import { gatedExecuteTool } from '../../../tools/gated-execution.js';
 import { createBlockedResponse } from '../../../state/blocked-workflow.js';
 import { retrieveKnowledge } from '../../../knowledge/retrieval.js';
-import { recordAgentExecution } from '../../../routing/events.js';
+import { recordAgentExecution, completeAgentExecutionSafely } from '../../../routing/events.js';
+import { getTurnContext } from '../../../shared/turn-context.js';
 import {
   getPayment,
   getPaymentMetadata,
@@ -123,6 +124,7 @@ Respond with JSON:
 
   const result = await generateStructuredOutput(PaymentExtractionSchema, prompt, {
     temperature: 0.0,
+    node: 'payment_extraction',
   });
 
   if (result.success) {
@@ -205,6 +207,7 @@ export async function generatePaymentResponse(params: {
   const ResponseSchema = z.object({ response: z.string().min(1) });
   const llmResult = await generateStructuredOutput(ResponseSchema, contextPrompt, {
     temperature: 0.2,
+    node: 'payment_response',
   });
 
   if (llmResult.success) {
@@ -245,6 +248,21 @@ async function createAgentExecutionSafely(
   return crypto.randomUUID();
 }
 
+async function finishAgentExecutionSafely(
+  id: string | undefined,
+  duration: number,
+  status: 'success' | 'failure' = 'success',
+  error?: string
+): Promise<void> {
+  if (typeof completeAgentExecutionSafely === 'function') {
+    try {
+      await completeAgentExecutionSafely(id, duration, status, error);
+    } catch {
+      // ignore
+    }
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Main Payment Node
 // ---------------------------------------------------------------------------
@@ -261,9 +279,14 @@ export async function paymentNode(
         ? config.configurable['thread_id']
         : undefined;
 
+  const startTime = performance.now();
   const agentExecutionId = await createAgentExecutionSafely(conversationId, specialist);
+  const turnCtx = getTurnContext();
+  if (turnCtx) turnCtx.node = specialist;
 
-  // 1. Resolve orderId & intent (check resumeContext first, then extraction)
+  try {
+    const result = await (async (): Promise<ConversationStateUpdate | Command> => {
+      // 1. Resolve orderId & intent (check resumeContext first, then extraction)
   let orderId: string | null = null;
   let intent = state.currentIntent;
 
@@ -560,6 +583,8 @@ export async function paymentNode(
       domains: ['payments'],
       topics: ['payments'],
       topK: 3,
+      conversationId,
+      agentExecutionId,
     });
 
     const knowledgeContext =
@@ -593,6 +618,8 @@ export async function paymentNode(
     domains: ['payments'],
     topics: ['payments'],
     topK: 3,
+    conversationId,
+    agentExecutionId,
   });
 
   const knowledgeContext =
@@ -617,6 +644,19 @@ export async function paymentNode(
     },
     messages: [new AIMessage(response)],
   };
+    })();
+
+    await finishAgentExecutionSafely(agentExecutionId, performance.now() - startTime, 'success');
+    return result;
+  } catch (err) {
+    await finishAgentExecutionSafely(
+      agentExecutionId,
+      performance.now() - startTime,
+      'failure',
+      err instanceof Error ? err.message : String(err)
+    );
+    throw err;
+  }
 }
 
 // ---------------------------------------------------------------------------

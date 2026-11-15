@@ -37,6 +37,7 @@ vi.mock('../../../tools/gated-execution.js', () => ({
 // Mock recordAgentExecution
 vi.mock('../../../routing/events.js', () => ({
   recordAgentExecution: vi.fn().mockResolvedValue({ id: 'mock-agent-exec-id' }),
+  completeAgentExecutionSafely: vi.fn().mockResolvedValue(undefined),
 }));
 
 // Mock retrieveKnowledge
@@ -432,11 +433,13 @@ describe('Account Access specialist — accountAccessNode', () => {
 
     expect(update.workflowStatus).toBe('COMPLETED');
     expect(update.messages?.[0]?.content).toContain('10 minutes');
-    expect(mockRetrieveKnowledge).toHaveBeenCalledWith({
-      query: 'how long do verification codes last?',
-      domains: ['account'],
-      topics: ['account_security'],
-      topK: 3,
-    });
+    expect(mockRetrieveKnowledge).toHaveBeenCalledWith(
+      expect.objectContaining({
+        query: 'how long do verification codes last?',
+        domains: ['account'],
+        topics: ['account_security'],
+        topK: 3,
+      })
+    );
   });
 });

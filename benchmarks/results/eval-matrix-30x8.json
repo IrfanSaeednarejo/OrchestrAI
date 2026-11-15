@@ -1,0 +1,1220 @@
+{
+  "evaluators": [
+    "ROUTING_CORRECT",
+    "HANDOFF_CORRECT",
+    "SPECIALIST_SCOPE_CORRECT",
+    "TOOL_SELECTION_CORRECT",
+    "STATE_PRESERVED",
+    "KNOWLEDGE_GROUNDED",
+    "WORKFLOW_COMPLETED",
+    "RESOLUTION_CORRECT"
+  ],
+  "mocked": {
+    "SCENARIO-01": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": true,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-02": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": false
+    },
+    "SCENARIO-03": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": true,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-04": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": false,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": true,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-05": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": false
+    },
+    "SCENARIO-06": {
+      "ROUTING_CORRECT": false,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": false
+    },
+    "SCENARIO-07": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": false
+    },
+    "SCENARIO-08": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": true,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-09": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": true,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-10": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": false
+    },
+    "SCENARIO-11": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": false
+    },
+    "SCENARIO-12": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": false
+    },
+    "SCENARIO-13": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": true,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-14": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": true,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-15": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": true,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-16": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": true,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-17": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": true,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-18": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": false
+    },
+    "SCENARIO-19": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": true,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-20": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": true,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-21": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": true,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-22": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": true,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-23": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": true,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-24": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": true,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-25": {
+      "ROUTING_CORRECT": false,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": false
+    },
+    "SCENARIO-26": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": false
+    },
+    "SCENARIO-27": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": true,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-28": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": true,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-29": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": false
+    },
+    "SCENARIO-30": {
+      "ROUTING_CORRECT": false,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": true,
+      "RESOLUTION_CORRECT": true
+    }
+  },
+  "liveRun1": {
+    "SCENARIO-01": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-02": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-03": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": false,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-04": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": false,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-05": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-06": {
+      "ROUTING_CORRECT": false,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-07": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": false
+    },
+    "SCENARIO-08": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-09": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-10": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-11": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-12": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": false
+    },
+    "SCENARIO-13": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-14": {
+      "ROUTING_CORRECT": false,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-15": {
+      "ROUTING_CORRECT": false,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-16": {
+      "ROUTING_CORRECT": false,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-17": {
+      "ROUTING_CORRECT": false,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-18": {
+      "ROUTING_CORRECT": false,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-19": {
+      "ROUTING_CORRECT": false,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-20": {
+      "ROUTING_CORRECT": false,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-21": {
+      "ROUTING_CORRECT": false,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-22": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-23": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-24": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-25": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-26": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": false
+    },
+    "SCENARIO-27": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-28": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-29": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": false
+    },
+    "SCENARIO-30": {
+      "ROUTING_CORRECT": false,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    }
+  },
+  "liveRun2": {
+    "SCENARIO-01": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-02": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-03": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-04": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": false,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-05": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-06": {
+      "ROUTING_CORRECT": false,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-07": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": false
+    },
+    "SCENARIO-08": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-09": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-10": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": false
+    },
+    "SCENARIO-11": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": false
+    },
+    "SCENARIO-12": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": false
+    },
+    "SCENARIO-13": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-14": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-15": {
+      "ROUTING_CORRECT": false,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-16": {
+      "ROUTING_CORRECT": false,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-17": {
+      "ROUTING_CORRECT": false,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-18": {
+      "ROUTING_CORRECT": false,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-19": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-20": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-21": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-22": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-23": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-24": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-25": {
+      "ROUTING_CORRECT": false,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-26": {
+      "ROUTING_CORRECT": false,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": true,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-27": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-28": {
+      "ROUTING_CORRECT": false,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-29": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": false
+    },
+    "SCENARIO-30": {
+      "ROUTING_CORRECT": false,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    }
+  },
+  "liveRun3": {
+    "SCENARIO-01": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-02": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-03": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": false,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-04": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": false,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-05": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-06": {
+      "ROUTING_CORRECT": false,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-07": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": false
+    },
+    "SCENARIO-08": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-09": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-10": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-11": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": false
+    },
+    "SCENARIO-12": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": false
+    },
+    "SCENARIO-13": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-14": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-15": {
+      "ROUTING_CORRECT": false,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-16": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-17": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-18": {
+      "ROUTING_CORRECT": false,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-19": {
+      "ROUTING_CORRECT": false,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-20": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-21": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-22": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-23": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-24": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-25": {
+      "ROUTING_CORRECT": false,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-26": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": false
+    },
+    "SCENARIO-27": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": false,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-28": {
+      "ROUTING_CORRECT": false,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    },
+    "SCENARIO-29": {
+      "ROUTING_CORRECT": true,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": false,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": false
+    },
+    "SCENARIO-30": {
+      "ROUTING_CORRECT": false,
+      "HANDOFF_CORRECT": true,
+      "SPECIALIST_SCOPE_CORRECT": true,
+      "TOOL_SELECTION_CORRECT": true,
+      "STATE_PRESERVED": true,
+      "KNOWLEDGE_GROUNDED": true,
+      "WORKFLOW_COMPLETED": false,
+      "RESOLUTION_CORRECT": true
+    }
+  }
+}

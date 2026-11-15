@@ -1,0 +1,211 @@
+{
+  "timestamp": "2026-11-14T15:11:37.248Z",
+  "evaluatorSummary": {
+    "ROUTING_CORRECT": {
+      "mockedV1": 0.868421052631579,
+      "mockedV2": 0.8947368421052632,
+      "liveV1Runs": [
+        0.8947368421052632,
+        0.9210526315789473,
+        0.9210526315789473
+      ],
+      "liveV1Mean": 0.912280701754386,
+      "liveV2Runs": [
+        0.8421052631578947,
+        0.47368421052631576,
+        0.15789473684210525
+      ],
+      "liveV2Mean": 0.49122807017543857,
+      "diff": -0.42105263157894746
+    },
+    "HANDOFF_CORRECT": {
+      "mockedV1": 0.9736842105263158,
+      "mockedV2": 0.9473684210526315,
+      "liveV1Runs": [
+        0.9473684210526315,
+        0.9473684210526315,
+        0.9473684210526315
+      ],
+      "liveV1Mean": 0.9473684210526315,
+      "liveV2Runs": [
+        0.9473684210526315,
+        0.9473684210526315,
+        0.9473684210526315
+      ],
+      "liveV2Mean": 0.9473684210526315,
+      "diff": 0
+    },
+    "SPECIALIST_SCOPE_CORRECT": {
+      "mockedV1": 1,
+      "mockedV2": 1,
+      "liveV1Runs": [
+        1,
+        1,
+        1
+      ],
+      "liveV1Mean": 1,
+      "liveV2Runs": [
+        1,
+        1,
+        1
+      ],
+      "liveV2Mean": 1,
+      "diff": 0
+    },
+    "TOOL_SELECTION_CORRECT": {
+      "mockedV1": 0.47368421052631576,
+      "mockedV2": 0.3684210526315789,
+      "liveV1Runs": [
+        0.47368421052631576,
+        0.47368421052631576,
+        0.47368421052631576
+      ],
+      "liveV1Mean": 0.47368421052631576,
+      "liveV2Runs": [
+        0.5263157894736842,
+        0.47368421052631576,
+        0.3684210526315789
+      ],
+      "liveV2Mean": 0.456140350877193,
+      "diff": -0.01754385964912275
+    },
+    "STATE_PRESERVED": {
+      "mockedV1": 1,
+      "mockedV2": 1,
+      "liveV1Runs": [
+        1,
+        1,
+        1
+      ],
+      "liveV1Mean": 1,
+      "liveV2Runs": [
+        1,
+        1,
+        1
+      ],
+      "liveV2Mean": 1,
+      "diff": 0
+    },
+    "KNOWLEDGE_GROUNDED": {
+      "mockedV1": 0.39473684210526316,
+      "mockedV2": 0.39473684210526316,
+      "liveV1Runs": [
+        0.5263157894736842,
+        0.5263157894736842,
+        0.5526315789473685
+      ],
+      "liveV1Mean": 0.5350877192982456,
+      "liveV2Runs": [
+        0.5526315789473685,
+        0.5789473684210527,
+        0.6052631578947368
+      ],
+      "liveV2Mean": 0.5789473684210527,
+      "diff": 0.04385964912280704
+    },
+    "WORKFLOW_COMPLETED": {
+      "mockedV1": 0.6842105263157895,
+      "mockedV2": 0.02631578947368421,
+      "liveV1Runs": [
+        0.10526315789473684,
+        0.10526315789473684,
+        0.10526315789473684
+      ],
+      "liveV1Mean": 0.10526315789473684,
+      "liveV2Runs": [
+        0.15789473684210525,
+        0.631578947368421,
+        0.8421052631578947
+      ],
+      "liveV2Mean": 0.543859649122807,
+      "diff": 0.4385964912280702
+    },
+    "RESOLUTION_CORRECT": {
+      "mockedV1": 0.6842105263157895,
+      "mockedV2": 0.02631578947368421,
+      "liveV1Runs": [
+        0.868421052631579,
+        0.8947368421052632,
+        0.8947368421052632
+      ],
+      "liveV1Mean": 0.8859649122807017,
+      "liveV2Runs": [
+        0.34210526315789475,
+        0.7105263157894737,
+        0.868421052631579
+      ],
+      "liveV2Mean": 0.6403508771929824,
+      "diff": -0.24561403508771928
+    }
+  },
+  "latencySummary": {
+    "neon": {
+      "turnsTotal": 114,
+      "overallTurnMsP50": 6884,
+      "overallTurnMsP95": 10468,
+      "meanQueries": 50.4,
+      "meanDbMs": 13409.6,
+      "meanLlmMs": 1673,
+      "meanOtherMs": 0,
+      "turn1P50": 7099,
+      "turn1P95": 11200,
+      "turn1MeanDbMs": 14294.8,
+      "turn1MeanQueries": 53.2,
+      "laterTurnsP50": 6137,
+      "laterTurnsP95": 7211,
+      "laterTurnsMeanDbMs": 10090.1,
+      "laterTurnsMeanQueries": 40,
+      "topQuerySources": [
+        {
+          "source": "src/index.ts:600",
+          "count": 563,
+          "totalMs": 145938
+        },
+        {
+          "source": "src/index.ts:651",
+          "count": 405,
+          "totalMs": 105575
+        },
+        {
+          "source": "src/node-postgres/session.ts:161",
+          "count": 137,
+          "totalMs": 44859
+        }
+      ]
+    },
+    "localDocker": {
+      "turnsTotal": 114,
+      "overallTurnMsP50": 1685,
+      "overallTurnMsP95": 1870,
+      "meanQueries": 49.2,
+      "meanDbMs": 183.8,
+      "meanLlmMs": 1586.4,
+      "meanOtherMs": 0,
+      "turn1P50": 1667,
+      "turn1P95": 2071,
+      "turn1MeanDbMs": 185.7,
+      "turn1MeanQueries": 49.5,
+      "laterTurnsP50": 1737,
+      "laterTurnsP95": 1790,
+      "laterTurnsMeanDbMs": 177,
+      "laterTurnsMeanQueries": 48,
+      "topQuerySources": [
+        {
+          "source": "src/node-postgres/session.ts:161",
+          "count": 114,
+          "totalMs": 2203
+        },
+        {
+          "source": "src/index.ts:600",
+          "count": 555,
+          "totalMs": 1295
+        },
+        {
+          "source": "src/index.ts:651",
+          "count": 403,
+          "totalMs": 963
+        }
+      ]
+    }
+  }
+}

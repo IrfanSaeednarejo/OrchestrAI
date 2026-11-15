@@ -129,6 +129,7 @@ export async function classifyMessage(
 
   return generateStructuredOutput(ClassificationResultSchema, prompt, {
     temperature: 0.0,
+    node: 'router_classifier',
   });
 }
 

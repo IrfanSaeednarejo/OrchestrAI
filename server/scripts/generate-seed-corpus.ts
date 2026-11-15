@@ -1,0 +1,640 @@
+// scripts/generate-seed-corpus.ts
+import fs from 'node:fs/promises';
+import path from 'node:path';
+
+interface PolicyChunk {
+  id: string;
+  domain: 'orders' | 'payments' | 'account';
+  topic: string;
+  title: string;
+  content: string;
+  metadata: {
+    isSynthetic: boolean;
+    category: string;
+    targetWordCount: number;
+    charCount: number;
+    author: string;
+    version: string;
+  };
+}
+
+interface RetrievalQuery {
+  id: string;
+  query: string;
+  expectedChunkId: string;
+  expectedDomain: 'orders' | 'payments' | 'account';
+  topic: string;
+}
+
+// 45 chunks crafted to be between 700 and 1000 characters
+const chunks: Omit<PolicyChunk, 'metadata'>[] = [
+  // ── Returns (9 chunks) ───────────────────────────────────────────────────
+  {
+    id: 'ret-01',
+    domain: 'orders',
+    topic: 'returns',
+    title: 'Standard 30-Day Return Window Policy',
+    content: `All retail customers are entitled to request an item return within 30 calendar days from the delivery confirmation date recorded by the tracking courier. The return window is strictly determined by the carrier delivery timestamp, not the order placement date or checkout time. To qualify for a return under our standard guidelines, the target order must be marked as successfully delivered in the system; items with transit, pending, or processing statuses are not eligible for return creation until the package arrives. Customers must retain all original packaging and accessories. Once initiated online through the customer account portal, our automated system generates a return authorization identifier (RMA) along with prepaid postage instructions. Return shipments must be scanned by the designated carrier within 14 calendar days of RMA issuance to prevent automatic cancellation.`,
+  },
+  {
+    id: 'ret-02',
+    domain: 'orders',
+    topic: 'returns',
+    title: 'Damaged or Defective Items Inspection Policy',
+    content: `If an order arrives with visible structural transit damage, manufacturing flaws, or functional defects, the customer must submit a defect claim within 7 calendar days of receipt. Defect claims must be accompanied by at least two clear digital photographs depicting the outer shipping container, the product barcode or serial number, and the specific defective section. Upon photographic inspection by our quality assurance specialists, a prepaid expedited return shipping label will be furnished immediately at zero cost to the buyer. If the item is confirmed to be defective or damaged prior to customer custody, customers may choose between an immediate identical replacement dispatched via express courier or a full original-payment refund without any restocking or shipping deductions. All returned damaged inventory is routed directly to warranty audit.`,
+  },
+  {
+    id: 'ret-03',
+    domain: 'orders',
+    topic: 'returns',
+    title: 'Return Shipping Label Creation and Carrier Drop-Off',
+    content: `Return shipping labels are generated automatically in PDF format within the customer portal upon authorization of any eligible merchandise return. Customers who lack access to physical home printing facilities may present the digital QR code embedded in their confirmation email at any authorized carrier drop-off location or retail partner store. The carrier representative will scan the digital code, generate the physical adhesive airway bill, and affix it securely to the return package. Customers must always obtain a physical drop-off receipt showing the tracking barcode and acceptance timestamp from the counter representative. We do not assume responsibility for packages left in unattended drop-boxes without an official counter scan. Return shipping tracking updates typically appear in our customer support interface within 4 to 6 business hours of receipt.`,
+  },
+  {
+    id: 'ret-04',
+    domain: 'orders',
+    topic: 'returns',
+    title: 'Non-Returnable and Final Sale Categories',
+    content: `Certain product classes are classified as final sale and cannot be returned, exchanged, or refunded under standard policies once shipped from our distribution center. Non-returnable merchandise includes custom-engraved or personalized goods, opened intimate apparel and swimwear lacking protective hygienic liners, perishable food items, digital downloadable license keys, and clearance items designated with a Final Sale banner at checkout. If a final sale item is received in a damaged or materially defective state, our standard defect exception applies, permitting an immediate replacement or store credit upon review. Gift cards and promotional voucher credits are completely non-refundable and cannot be redeemed for cash balances unless explicitly mandated by local statutory consumer protection laws. Unauthorized returns sent to the warehouse will be recycled.`,
+  },
+  {
+    id: 'ret-05',
+    domain: 'orders',
+    topic: 'returns',
+    title: 'Return Packaging, Original Tags, and Condition Requirements',
+    content: `To be accepted by our intake warehouse, all returned items must arrive in pristine, unworn, and unwashed condition with all original manufacturer tags, polybags, protective seals, and instruction manuals intact. Footwear and designer apparel must include the original branded shoebox or garment sleeve placed inside a protective brown exterior shipping box; affixing shipping labels directly onto the manufacturer shoebox invalidates return eligibility. When our processing team discovers indications of prolonged cosmetic wear, cologne scents, pet hair, laundered fabrics, or absent components, the return will be rejected. In instances of condition rejection, the item will be shipped back to the purchaser at their expense or held for 30 calendar days before standard disposal according to recycling rules.`,
+  },
+  {
+    id: 'ret-06',
+    domain: 'orders',
+    topic: 'returns',
+    title: 'In-Store vs Mail-In Returns Protocol',
+    content: `Online orders can be returned either by postal courier or by visiting any authorized brick-and-mortar retail partner location. In-store returns require the customer to present the original order confirmation email containing the digital barcode, a valid government-issued photographic identification card, and the physical merchandise. Retail staff will inspect items on the spot and process an immediate return receipt. Refunds issued in-store are transmitted back to the original online payment method and reflect within 3 to 5 business days; store staff cannot issue cash disbursements for online credit card transactions. When returning by mail, packages must use the provided system return label and allow standard ground transit times of 5 to 7 business days before receiving warehouse inspection.`,
+  },
+  {
+    id: 'ret-07',
+    domain: 'orders',
+    topic: 'returns',
+    title: 'International and Overseas Return Requirements',
+    content: `Customers requesting product returns from destinations outside the domestic mainland must handle customs declarations and international shipping protocols. All international returns must be marked as Returned Merchandise on the commercial customs declaration form to prevent erroneous assessment of import duties upon warehouse re-entry. Unless the return results directly from a fulfillment error or verified defective item, international return transit costs and insurance fees are the financial responsibility of the purchaser. International parcels should always use an international postal courier that provides door-to-door tracking and delivery signature confirmation. Allow up to 21 business days for international parcel transit and customs inspection before return intake confirmation is posted to your user profile.`,
+  },
+  {
+    id: 'ret-08',
+    domain: 'orders',
+    topic: 'returns',
+    title: 'Exchange Workflow and Replacement Order Initiation',
+    content: `When a customer wishes to exchange an apparel item or shoe for an alternative size or color variant, the exchange workflow can be completed directly through customer support. Provided the alternative variant is currently in stock at the primary fulfillment center, an exchange reservation will be held for up to 7 calendar days pending return dispatch. Once the return parcel is scanned as received by the shipping carrier, the replacement order is automatically released for warehouse picking and packing at zero additional freight charge. If the requested replacement size goes out of stock before return transit is initiated, the system will automatically convert the exchange request into a standard original-payment refund upon warehouse check-in, notifying the customer via email and account alert.`,
+  },
+  {
+    id: 'ret-09',
+    domain: 'orders',
+    topic: 'returns',
+    title: 'Rejected Return Handling and Appeal Process',
+    content: `If a returned parcel fails warehouse quality inspection due to undisclosed wear, missing accessories, or expiration of the 30-day window, the return will receive a formal Rejected status in the system. The customer will receive an electronic notification outlining the concrete findings of the inspection team, including high-resolution photographic evidence where applicable. Customers who believe an assessment error occurred may file an appeal through customer support within 14 calendar days of receiving the rejection notice. The appeals supervisor will review the intake inspection logs, packaging photos, and customer correspondence to render a final decision within 48 business hours. If the appeal is upheld, the refund is released immediately; if denied, the customer may request the item be returned.`,
+  },
+
+  // ── Refunds (9 chunks) ───────────────────────────────────────────────────
+  {
+    id: 'ref-01',
+    domain: 'payments',
+    topic: 'refunds',
+    title: 'Refund Processing Timelines by Original Payment Method',
+    content: `Once a returned item is received, inspected, and approved by our warehouse team, or once an order cancellation is confirmed, refunds are initiated immediately by the billing system. The duration required for refund funds to post depends on the customer payment institution. Standard credit card and debit card refunds post within 3 to 5 business days, though some card issuers may require up to 10 business days to clear account statements. Electronic PayPal balances and Apple Pay disbursements generally post within 24 to 48 hours of approval. For direct ACH automated bank transfers, processing takes approximately 5 to 7 banking days. Customers receive an electronic notification containing the exact refund settlement reference number immediately upon transaction dispatch.`,
+  },
+  {
+    id: 'ref-02',
+    domain: 'payments',
+    topic: 'refunds',
+    title: 'Duplicate Charge Detection and Automatic Reversal Policy',
+    content: `Our automated payment reconciliation system runs continuous fraud and billing checks to detect potential duplicate billing incidents on customer orders. A duplicate charge occurs when a single order checkout results in multiple settled financial transactions on the customer card statement. When our automated monitoring verifies that two identical authorization charges settled for one order without a corresponding duplicate order creation, the system flags the transaction and issues an immediate automatic reversal of the duplicate amount. If a customer notices duplicate pending authorizations before automated reconciliation clears, support specialists can verify payment IDs, void the surplus pending authorization, and release held cardholder funds within 24 business hours.`,
+  },
+  {
+    id: 'ref-03',
+    domain: 'payments',
+    topic: 'refunds',
+    title: 'Store Credit vs Original Payment Refund Selection',
+    content: `During the refund resolution flow, eligible customers may choose between receiving their reimbursement through the original payment method or accepting an instant digital store credit voucher. Customers selecting store credit receive an additional 5% promotional bonus applied directly to their customer account wallet balance, available for immediate redemption with no expiration date. Store credit allocations are credited within seconds of return authorization approval, bypassing multi-day bank clearance delays. Once a customer explicitly selects either store credit or an original payment disbursement and the transaction is finalized by the billing gateway, the disbursement mechanism cannot be reversed, exchanged, or converted into an alternate financial form.`,
+  },
+  {
+    id: 'ref-04',
+    domain: 'payments',
+    topic: 'refunds',
+    title: 'Restocking Fees and Return Shipping Deductions',
+    content: `While standard clothing, accessory, and book returns qualify for complimentary domestic return postage, certain oversized or heavy freight categories incur return service deductions. Commercial fitness equipment, large furniture assemblies, and major electronic appliances are subject to a flat 15% restocking assessment fee unless the return was necessitated by shipping damage or proven product malfunction. Additionally, if the customer opts to use our prepaid carrier collection service for non-defective discretionary returns, a standard return shipping fee of $7.50 is deducted from the gross refund total. In cases where the original purchase qualified for free outbound shipping promotions, the initial shipping subsidy is not clawed back or deducted from the refund.`,
+  },
+  {
+    id: 'ref-05',
+    domain: 'payments',
+    topic: 'refunds',
+    title: 'Cancelled Order Refund Automation and Pre-Shipment Voids',
+    content: `Customers who cancel an order prior to warehouse packaging and carrier handoff receive an immediate automatic financial void or refund. If the order is cancelled while the transaction remains in a pre-settlement authorization hold, our billing integration transmits an immediate authorization reversal (void), removing the pending hold from the card statement within 24 to 48 hours without generating a credit transaction. If the order had already settled overnight prior to the cancellation timestamp, an automated refund command is submitted to the card processor for the full captured order value including paid freight and sales taxes. Orders that have reached the shipped stage cannot be cancelled and must proceed through the standard return process.`,
+  },
+  {
+    id: 'ref-06',
+    domain: 'payments',
+    topic: 'refunds',
+    title: 'Missing Refund Investigation and Bank Trace Numbers (ARN)',
+    content: `If a refund confirmed by our customer support platform does not reflect on the customer financial account after 10 full business days, our finance operations team will initiate a trace investigation. Support will supply the customer with the official Acquirer Reference Number (ARN) or bank authorization code for the settlement batch. The customer can provide this unique 23-digit trace number directly to their card-issuing bank dispute department, allowing the institution to locate the funds within internal settlement buffers. In rare cases where a card account was closed or cancelled prior to refund arrival, banks will automatically redirect the credited funds to the customer primary checking account or issue a physical paper check by mail.`,
+  },
+  {
+    id: 'ref-07',
+    domain: 'payments',
+    topic: 'refunds',
+    title: 'Promotional Discount and Coupon Recalculation on Refund',
+    content: `When a customer returns one or more items purchased as part of a tiered promotional bundle, volume discount, or minimum spend coupon (such as $20 off orders over $100), refund totals are recalculated based on the remaining qualifying items kept by the buyer. If the post-return merchandise value falls beneath the promotion qualification threshold, the promotional discount is nullified and deducted from the gross refund amount. Single-use coupon codes applied to individual returned items are forfeited and cannot be restored or reapplied to future orders. Promotional gift-with-purchase items received as part of a promotional campaign must be returned along with the primary product to avoid deduction of their retail price.`,
+  },
+  {
+    id: 'ref-08',
+    domain: 'payments',
+    topic: 'refunds',
+    title: 'Gift Card and Split-Payment Refund Rules',
+    content: `When an order is purchased using multiple funding sources, such as a combination of a digital gift card and a personal credit card, refunds are apportioned strictly in reverse transaction sequence. The refund amount is first credited back to the digital gift card account up to the exact balance used during checkout; any remaining surplus refund balance is subsequently transmitted to the secondary credit card or PayPal account. If the original digital gift card has been deleted or lost, customer support can regenerate a replacement gift card code containing the restored credit balance upon identity verification. Under no circumstances can a gift card balance portion of a split payment be converted to cash or credited to a personal credit card.`,
+  },
+  {
+    id: 'ref-09',
+    domain: 'payments',
+    topic: 'refunds',
+    title: 'Refund Thresholds and Manual Finance Team Review Escapes',
+    content: `To ensure regulatory compliance and prevent automated transaction fraud, any individual refund request exceeding $1,500.00 USD, or accounts accumulating more than three refund events within a rolling 30-day period, triggers a secondary financial review lock. Once locked, the refund cannot be released by front-line support specialists and is routed to the senior finance operations team for validation. The review protocol confirms warehouse physical return scanning, verifies delivery tracking signatures, and checks payment integrity. Finance review decisions are finalized within 24 to 48 business hours. If approved, the refund command is dispatched with executive priority; if irregular activity is identified, the customer will be contacted.`,
+  },
+
+  // ── Payments (9 chunks) ───────────────────────────────────────────────────
+  {
+    id: 'pay-01',
+    domain: 'payments',
+    topic: 'billing',
+    title: 'Accepted Payment Methods and Multi-Currency Processing',
+    content: `Our global e-commerce checkout platform accepts major payment credentials including Visa, Mastercard, American Express, Discover, Diners Club, and JCB credit or debit cards. We also support digital mobile wallets such as Apple Pay, Google Pay, PayPal, and Venmo for seamless customer checkout on supported web browsers and devices. For international transactions, our gateway supports real-time multi-currency settlement in over 25 recognized currencies. The currency exchange rate is calculated at the exact moment of order placement based on interbank wholesale rates plus standard conversion spreads. All credit card transactions require a valid three-digit or four-digit Card Verification Value (CVV/CVC) code and full expiration date validation before authorization.`,
+  },
+  {
+    id: 'pay-02',
+    domain: 'payments',
+    topic: 'billing',
+    title: 'Authorization Holds, Pre-Authorizations, and Capture Timing',
+    content: `When an order is submitted online, our payment gateway places an immediate authorization hold on the customer credit or debit card for the full checkout amount. An authorization hold is not an actual completed charge; it verifies account validity and temporarily reserves funds until the fulfillment center ships the merchandise. The actual financial capture occurs automatically when warehouse tracking numbers are assigned and parcels leave our dispatch dock. If an order consists of multiple split shipments originating from distinct regional warehouses, separate partial captures will occur as each discrete package is dispatched. Under banking industry regulations, unsettled authorization holds expire and drop off statements within 7 business days.`,
+  },
+  {
+    id: 'pay-03',
+    domain: 'payments',
+    topic: 'billing',
+    title: 'Billing Address Verification (AVS) and Postal Mismatch Failures',
+    content: `To protect cardholders from unauthorized fraudulent transactions, our processing gateway strictly enforces the Address Verification System (AVS). During checkout, the numeric digits of the entered billing address and postal code are matched directly against the official records maintained by the card-issuing bank. If the bank returns an AVS mismatch code (such as an outdated billing street number or postal code after a residential relocation), the transaction will be declined immediately for security purposes. In the event of an AVS decline, the customer card may show a temporary pending authorization hold that will automatically release within 3 to 5 business days without settlement. Customers must update billing details to retry.`,
+  },
+  {
+    id: 'pay-04',
+    domain: 'payments',
+    topic: 'billing',
+    title: 'Recurring Subscriptions, Auto-Renewals, and Billing Schedules',
+    content: `Customers enrolled in subscription replenishment plans (such as monthly coffee, vitamins, or household goods) are billed on an automated recurring schedule. Subscription charges are billed to the saved default payment token exactly on the designated calendar replenishment day each month. An electronic reminder notification is dispatched to the customer email address 3 calendar days prior to recurring charge execution, detailing the items, unit pricing, and scheduled billing date. Customers maintain complete flexibility to pause, skip, or cancel recurring deliveries through the account dashboard up to 24 hours prior to the billing execution time. If a recurring charge fails due to expiration, two automated retries occur.`,
+  },
+  {
+    id: 'pay-05',
+    domain: 'payments',
+    topic: 'billing',
+    title: 'Payment Gateway Decline Codes and Bank Authorization Inquiries',
+    content: `When a credit card transaction is rejected by the processing network, our checkout interface displays a generic payment failure notice while recording a specific internal gateway error code. Common decline triggers include Insufficient Funds (code 51), Expired Card (code 54), Incorrect Security Code (code 63), and Generic Card Issuer Refusal (code 05). Because financial privacy laws prevent credit card networks from disclosing proprietary decline rationales to merchant systems, our support specialists cannot view specific credit limit details or security holds. In all cases of repeated issuer declines, customers are advised to contact their card-issuing bank customer service desk directly to authorize online purchases.`,
+  },
+  {
+    id: 'pay-06',
+    domain: 'payments',
+    topic: 'billing',
+    title: 'Installment Payment Plans (Buy Now Pay Later) Integration',
+    content: `Eligible domestic shoppers may select Buy Now, Pay Later (BNPL) installment financing at checkout through integrated partners such as Klarna, Afterpay, and Affirm. When choosing installment billing, the purchase total is partitioned into four equal bi-weekly payments, with the first installment collected immediately at checkout. The remaining three installments are automatically deducted from the customer designated payment method every two weeks. Approvals and credit evaluations are conducted entirely by the third-party BNPL financing provider. Returns and refunds for installment orders are credited back to the financing partner, who subsequently adjusts remaining scheduled payments and refunds prior settled installments.`,
+  },
+  {
+    id: 'pay-07',
+    domain: 'payments',
+    topic: 'billing',
+    title: 'Sales Tax, VAT Calculations, and Tax-Exempt Business Billing',
+    content: `State, county, and municipal sales taxes are calculated dynamically during checkout based on the destination shipping address, current state revenue statutes, and applicable product categories. For international orders, Value-Added Tax (VAT) or Goods and Services Tax (GST) is calculated and disclosed prior to final payment submission. Certified tax-exempt entities, including government agencies, 501(c)(3) non-profit institutions, and wholesale resale partners, must register their formal exemption documentation with our corporate accounts team prior to checkout. Once exemption status is validated, sales tax assessments will be removed from all future orders placed through that authorized account profile.`,
+  },
+  {
+    id: 'pay-08',
+    domain: 'payments',
+    topic: 'billing',
+    title: 'Chargeback Management, Dispute Evidence, and Account Freezes',
+    content: `When a cardholder files a formal dispute or chargeback claim directly with their issuing bank rather than contacting customer support, the bank temporarily debits the transaction funds from our merchant account. Upon receipt of a chargeback notification, our fraud mitigation specialists compile comprehensive dispute evidence, including IP logs, delivery tracking confirmation, recipient signature capture, and customer service communication records. While an active chargeback investigation is pending with the financial network, the associated customer account profile may be temporarily restricted from placing new orders. If the dispute is resolved in our favor, account access is restored immediately without prejudice.`,
+  },
+  {
+    id: 'pay-09',
+    domain: 'payments',
+    topic: 'billing',
+    title: 'Invoice Generation and Corporate Purchase Order Payments',
+    content: `Corporate enterprise accounts that maintain established business credit terms may execute bulk commercial purchases utilizing standard Purchase Orders (PO) with Net-30 payment terms. Business customers must submit an official corporate purchase order signed by an authorized procurement officer, citing the company legal name, tax identification number, and invoicing email address. Invoices are generated electronically upon order dispatch and transmitted to the accounts payable contact. Payments on corporate Net-30 accounts must be settled via corporate wire transfer or Automated Clearing House (ACH) within 30 calendar days of invoice date. Late payments incur a 1.5% monthly finance charge and interest assessment.`,
+  },
+
+  // ── Orders & Shipping (9 chunks) ─────────────────────────────────────────
+  {
+    id: 'ord-01',
+    domain: 'orders',
+    topic: 'shipping',
+    title: 'Order Status Progression: Placed, Processing, Shipped, Delivered',
+    content: `Every online customer transaction advances through four primary operational phases within our fulfillment logistics pipeline. Order Placed indicates that payment authorization succeeded and order details have been queued for processing. Processing denotes that inventory allocation is complete and warehouse fulfillment staff are picking, inspecting, and packaging the items. Order Shipped confirms that the package has been boxed, labeled with a unique carrier tracking number, and loaded onto an outbound freight transport vehicle. Order Delivered is registered when the shipping courier logs a final delivery scan at the recipient address. Customers receive automated SMS and email notifications at each milestone.`,
+  },
+  {
+    id: 'ord-02',
+    domain: 'orders',
+    topic: 'shipping',
+    title: 'Delivery Carrier Options: Standard, Expedited, and Overnight Express',
+    content: `We offer three domestic fulfillment service levels to accommodate customer delivery deadlines. Standard Ground Shipping delivers within 3 to 5 business days via regional parcel carriers and the postal service, with complimentary shipping available on qualifying basket totals over $50. Expedited Second-Day Air ensures delivery within 2 full business days when orders are placed prior to the daily 1:00 PM Eastern Standard Time warehouse cutoff. Overnight Express provides guaranteed next-business-day delivery by 10:30 AM or 3:00 PM depending on recipient municipal zip code. Overnight orders placed on Friday after the cutoff window will be prepared on Saturday and delivered the following business day.`,
+  },
+  {
+    id: 'ord-03',
+    domain: 'orders',
+    topic: 'shipping',
+    title: 'Shipping Delays, Severe Weather Exceptions, and Transit Guarantees',
+    content: `While our logistics partners consistently achieve on-time delivery rates exceeding 98%, extreme weather phenomena, carrier hub sorting congestion, and national holiday peaks can cause unexpected transit delays. When adverse weather causes carrier operations to declare a Force Majeure service exception, transit time guarantees are temporarily suspended across affected transportation lanes. Customers can track live weather exception alerts through carrier tracking links provided in their shipping notification emails. If an expedited or overnight delivery fails to arrive within the contractual service window due to non-weather carrier delays, customers are eligible for a full refund of shipping charges.`,
+  },
+  {
+    id: 'ord-04',
+    domain: 'orders',
+    topic: 'shipping',
+    title: 'Modifying Shipping Address Before Carrier Handoff',
+    content: `Customers who identify an error in their destination shipping address must contact customer support or access the self-service order portal within 45 minutes of order placement. During this initial processing buffer, customer support can alter street names, apartment or suite numbers, and zip codes directly in the fulfillment dispatch queue. Once an order status transitions to Picked or Shipped, warehouse packing is finalized and direct address modifications cannot be performed by support personnel. For orders already in transit, support can submit a carrier intercept request to reroute the package to a local carrier holding facility or pickup point for a standard carrier administration service fee.`,
+  },
+  {
+    id: 'ord-05',
+    domain: 'orders',
+    topic: 'shipping',
+    title: 'Lost in Transit, Stolen Packages, and Carrier Claims Filing',
+    content: `A package is officially declared Lost in Transit when tracking records show no movement scans for seven consecutive business days, or when an estimated delivery date has lapsed by more than 5 business days without delivery. In such circumstances, customer support initiates an expedited carrier trace investigation and files an official insurance claim on behalf of the customer. For packages marked as delivered by the courier that cannot be located by the recipient, customers are asked to verify building porches, leasing offices, and neighbor perimeters before filing a stolen package claim. Once verified, support will issue an expedited replacement order or a full original-payment refund within 48 business hours.`,
+  },
+  {
+    id: 'ord-06',
+    domain: 'orders',
+    topic: 'shipping',
+    title: 'Signature Required Delivery and High-Value Cargo Protocols',
+    content: `For high-value consumer merchandise orders exceeding $500.00 USD in retail value, an adult signature confirmation is mandatory at the point of delivery. Deliveries requiring signature confirmation cannot be released without an in-person physical signature from an adult resident aged 21 or older holding valid photographic identification. If no adult is present to accept the delivery, the courier will leave a delivery notice and make two subsequent delivery attempts on following business days. If all three delivery attempts fail, the package is held at the local carrier customer center for 5 business days before being returned to sender. Customers may also authorize redirection to a secure pickup locker.`,
+  },
+  {
+    id: 'ord-07',
+    domain: 'orders',
+    topic: 'shipping',
+    title: 'Split Shipments, Backordered Items, and Multi-Warehouse Fulfillment',
+    content: `To accelerate order fulfillment, multi-item customer orders may be divided into split shipments originating from different regional fulfillment centers. When an order is partitioned into split shipments, the customer receives distinct package tracking identifiers and individualized shipment notifications for each parcel at no additional delivery charge. If an ordered item is identified as temporarily backordered, all currently available in-stock items are dispatched immediately, while the backordered merchandise is held until fresh inventory arrives from manufacturing. Customers maintain the option to cancel backordered items at any point prior to shipment for an immediate original-payment refund to their account.`,
+  },
+  {
+    id: 'ord-08',
+    domain: 'orders',
+    topic: 'shipping',
+    title: 'Address Correction, Undeliverable Packages, and Return-to-Sender',
+    content: `When a shipment is marked Undeliverable as Addressed by the carrier due to missing apartment numbers, nonexistent street addresses, or multiple failed delivery attempts, it is routed back to our warehouse under Return-to-Sender (RTS) status. Upon physical receipt and check-in of an RTS package at our logistics facility, the order is cancelled and a full merchandise refund is credited to the customer original payment method. Outbound expedited shipping fees incurred on undeliverable shipments are non-refundable unless the delivery failure resulted directly from a verified carrier sorting error. Customers wishing to receive the items must place a new order online with verified delivery credentials.`,
+  },
+  {
+    id: 'ord-09',
+    domain: 'orders',
+    topic: 'shipping',
+    title: 'International Customs Duties, Import Clearance, and Border Tariffs',
+    content: `Orders dispatched to international destinations outside the domestic jurisdiction are subject to import taxes, customs tariffs, and local brokerage clearance fees imposed by the destination country border authorities. For countries operating under our Delivered Duties Paid (DDP) program, all applicable import duties and customs tariffs are calculated and collected directly at checkout, ensuring rapid clearance without additional fees upon arrival. For shipments sent under Delivered Duties Unpaid (DDU) terms, the recipient is legally responsible for settling all local customs taxes and carrier handling fees with the local courier prior to package release. Unclaimed international packages will be returned to sender.`,
+  },
+
+  // ── Account Access & Security (9 chunks) ─────────────────────────────────
+  {
+    id: 'acc-01',
+    domain: 'account',
+    topic: 'security',
+    title: 'Multi-Factor Authentication and OTP SMS/Email Delivery Standards',
+    content: `To safeguard sensitive customer personal data and prevent unauthorized account access, our platform utilizes Multi-Factor Authentication (MFA) via One-Time Passwords (OTP). OTP verification is triggered during logins from unrecognized devices, when modifying account security credentials, or prior to executing sensitive transactions. Verification codes consist of a randomly generated 6-digit numeric string dispatched via SMS text message or registered email. Each verification code remains active for exactly 10 minutes (600 seconds) before automatic expiration. To prevent spam and abuse, a 60-second cooldown is enforced between successive code requests, and accounts entering five consecutive incorrect codes face temporary lockouts.`,
+  },
+  {
+    id: 'acc-02',
+    domain: 'account',
+    topic: 'security',
+    title: 'Password Reset Security Rules and Temporary Reset Link Expiry',
+    content: `Customers who forget their login credentials or experience compromised access can trigger a secure password reset link through the sign-in screen. Password reset links are transmitted exclusively to the verified primary email address associated with the customer profile. Each reset link contains a cryptographically secure token valid for exactly 60 minutes from creation; clicking an expired link prompts the user to submit a fresh request. Password resets never automatically alter or elevate customer identity verification status. New passwords must contain at least 10 characters, including an uppercase letter, a lowercase letter, a number, and a special symbol, and cannot match the previous three passwords.`,
+  },
+  {
+    id: 'acc-03',
+    domain: 'account',
+    topic: 'security',
+    title: 'Account Lockout Policies After Consecutive Authentication Failures',
+    content: `To defend customer accounts against automated credential-stuffing attacks and brute-force password guessing, our security system enforces automated account lockouts. If an account incurs five consecutive failed authentication attempts (incorrect password or invalid OTP code), the account is placed in a locked state for an automated 15-minute cooling period. During an active lockout, all subsequent login attempts are rejected, even if the correct credentials are provided. After 15 minutes, the security counter resets automatically. For immediate account unlocking, customers must complete a secondary identity verification workflow or contact an authorized account access support specialist for manual clearance.`,
+  },
+  {
+    id: 'acc-04',
+    domain: 'account',
+    topic: 'security',
+    title: 'Identity Verification Requirements for Sensitive Account Changes',
+    content: `Certain sensitive account modifications require elevated identity verification before customer support or self-service tools can execute the requested change. Sensitive operations include modifying primary account email addresses, altering registered phone numbers, updating saved payout banking details, or initiating shipping address redirections for in-flight high-value orders. To complete elevated verification, customers must successfully authenticate using a 6-digit one-time code sent to their registered contact and confirm secondary security attributes such as recent order numbers or billing zip codes. Customer support agents are strictly prohibited from bypassing verification gates under any circumstances.`,
+  },
+  {
+    id: 'acc-05',
+    domain: 'account',
+    topic: 'security',
+    title: 'Compromised Account Recovery, Session Invalidation, and Password Invalidation',
+    content: `When a customer reports unauthorized account access, unrecognized orders, or fraudulent profile modifications, our incident response protocol executes an immediate account freeze. The security system terminates all active authenticated user sessions, web tokens, and mobile app logins across all devices, while invalidating the existing account password. The customer is guided through an identity recovery process requiring verification of government-issued credentials or multi-channel OTP confirmations. Once ownership is verified, the customer establishes new authentication credentials, and any unauthorized pending orders or fraudulent transactions are cancelled and reversed immediately to protect cardholder balances.`,
+  },
+  {
+    id: 'acc-06',
+    domain: 'account',
+    topic: 'security',
+    title: 'Trusted Devices, Authorized Browser Sessions, and Remembered Logins',
+    content: `When signing in from a personal workstation or mobile device, customers may select the Remember this device checkbox to register the hardware as a Trusted Device. Trusted Device status stores an encrypted, cryptographically signed hardware fingerprint token that reduces secondary MFA challenges for 30 calendar days while browsing from that specific browser. Security-critical operations, such as modifying passwords or viewing full payment card numbers, continue to mandate active re-authentication regardless of trusted status. Customers can inspect all currently active authorized sessions through the security dashboard and terminate individual or all device sessions with one click to prevent unauthorized persistent access.`,
+  },
+  {
+    id: 'acc-07',
+    domain: 'account',
+    topic: 'security',
+    title: 'Updating Primary Account Email and Phone Number Verification Safeguards',
+    content: `Customers wishing to update their primary login email address or contact telephone number must undergo dual-channel verification safeguards to prevent unauthorized account takeovers. When an email update request is initiated, our system dispatches a confirmation notice to the existing email address and a 6-digit verification code to the new destination email address. Both authentication steps must be validated within 15 minutes to finalize the modification. If an unauthorized email change attempt is detected, the customer can click the immediate security reversal link embedded in the alert sent to the old address, freezing the account instantly and triggering an urgent investigation by our fraud operations security team.`,
+  },
+  {
+    id: 'acc-08',
+    domain: 'account',
+    topic: 'security',
+    title: 'Privacy Rights, Account Deletion (GDPR/CCPA), and Personal Data Exports',
+    content: `In compliance with global data privacy frameworks including the General Data Protection Regulation (GDPR) and California Consumer Privacy Act (CCPA), registered customers hold statutory rights to export or delete their stored personal data. Data export requests can be triggered directly within the privacy center, generating an encrypted archive of order history, communication records, and saved addresses within 72 business hours. Account deletion requests permanently erase all personal identifiers, marketing records, and profile details from our active production databases. However, transactional financial records and tax invoices are retained in cold storage for the legally mandated audit period.`,
+  },
+  {
+    id: 'acc-09',
+    domain: 'account',
+    topic: 'security',
+    title: 'Authorized Delegates, Business Account Roles, and Permission Tiers',
+    content: `Commercial enterprise customers and family accounts may establish multiple user sub-profiles under a shared master organization account. The account administrator can assign granular role-based access control (RBAC) permissions across four distinct tiers: Owner, Procurement Manager, Billing Specialist, and Standard Buyer. Procurement Managers may initiate orders up to designated approval limits; Billing Specialists access payment receipts, tax documents, and invoices but cannot alter shipping addresses; and Buyers can only track delegated shipments. Modifying organizational roles or adding delegated users requires Owner verification via multi-factor authentication and executive management sign-off.`,
+  },
+];
+
+// 30 labeled evaluation queries
+const queries: RetrievalQuery[] = [
+  // ── Returns queries (6) ──────────────────────────────────────────────────
+  {
+    id: 'q-01',
+    query: 'How many days do I have to return an item after it gets delivered?',
+    expectedChunkId: 'ret-01',
+    expectedDomain: 'orders',
+    topic: 'returns',
+  },
+  {
+    id: 'q-02',
+    query: 'What should I do if my package arrived with broken or defective merchandise?',
+    expectedChunkId: 'ret-02',
+    expectedDomain: 'orders',
+    topic: 'returns',
+  },
+  {
+    id: 'q-03',
+    query: 'Can I drop off my return at a store with a QR code instead of printing a label?',
+    expectedChunkId: 'ret-03',
+    expectedDomain: 'orders',
+    topic: 'returns',
+  },
+  {
+    id: 'q-04',
+    query: 'Are personalized products and final sale clearance items eligible for return?',
+    expectedChunkId: 'ret-04',
+    expectedDomain: 'orders',
+    topic: 'returns',
+  },
+  {
+    id: 'q-05',
+    query: 'Can I return shoes if the original manufacturer shoebox is missing or damaged?',
+    expectedChunkId: 'ret-05',
+    expectedDomain: 'orders',
+    topic: 'returns',
+  },
+  {
+    id: 'q-06',
+    query: 'What happens if the warehouse rejects my returned package and how do I appeal?',
+    expectedChunkId: 'ret-09',
+    expectedDomain: 'orders',
+    topic: 'returns',
+  },
+
+  // ── Refunds queries (6) ──────────────────────────────────────────────────
+  {
+    id: 'q-07',
+    query: 'How many business days does it take for a credit card refund to appear in my account?',
+    expectedChunkId: 'ref-01',
+    expectedDomain: 'payments',
+    topic: 'refunds',
+  },
+  {
+    id: 'q-08',
+    query: 'I was charged twice on my statement for the same order, how does the reversal work?',
+    expectedChunkId: 'ref-02',
+    expectedDomain: 'payments',
+    topic: 'refunds',
+  },
+  {
+    id: 'q-09',
+    query: 'Can I choose instant store credit with a 5% bonus instead of waiting for a bank refund?',
+    expectedChunkId: 'ref-03',
+    expectedDomain: 'payments',
+    topic: 'refunds',
+  },
+  {
+    id: 'q-10',
+    query: 'Are there restocking fees or return postage deductions for heavy exercise equipment?',
+    expectedChunkId: 'ref-04',
+    expectedDomain: 'payments',
+    topic: 'refunds',
+  },
+  {
+    id: 'q-11',
+    query: 'What is an Acquirer Reference Number (ARN) and how do I track my missing refund with my bank?',
+    expectedChunkId: 'ref-06',
+    expectedDomain: 'payments',
+    topic: 'refunds',
+  },
+  {
+    id: 'q-12',
+    query: 'If I paid using a gift card and credit card together, where does my refund money go?',
+    expectedChunkId: 'ref-08',
+    expectedDomain: 'payments',
+    topic: 'refunds',
+  },
+
+  // ── Payments queries (6) ─────────────────────────────────────────────────
+  {
+    id: 'q-13',
+    query: 'What credit cards and digital mobile wallets are accepted at checkout?',
+    expectedChunkId: 'pay-01',
+    expectedDomain: 'payments',
+    topic: 'billing',
+  },
+  {
+    id: 'q-14',
+    query: 'Why is there a temporary pending authorization hold on my card before my order ships?',
+    expectedChunkId: 'pay-02',
+    expectedDomain: 'payments',
+    topic: 'billing',
+  },
+  {
+    id: 'q-15',
+    query: 'My payment was declined due to an Address Verification System (AVS) postal code mismatch',
+    expectedChunkId: 'pay-03',
+    expectedDomain: 'payments',
+    topic: 'billing',
+  },
+  {
+    id: 'q-16',
+    query: 'How can I pause or skip my monthly auto-renewal subscription delivery?',
+    expectedChunkId: 'pay-04',
+    expectedDomain: 'payments',
+    topic: 'billing',
+  },
+  {
+    id: 'q-17',
+    query: 'Can I pay for my purchase in four bi-weekly interest-free installments using Klarna or Afterpay?',
+    expectedChunkId: 'pay-06',
+    expectedDomain: 'payments',
+    topic: 'billing',
+  },
+  {
+    id: 'q-18',
+    query: 'How do corporate businesses submit Purchase Orders for Net-30 invoice billing?',
+    expectedChunkId: 'pay-09',
+    expectedDomain: 'payments',
+    topic: 'billing',
+  },
+
+  // ── Orders & Shipping queries (6) ────────────────────────────────────────
+  {
+    id: 'q-19',
+    query: 'What do the order milestones Placed, Processing, Shipped, and Delivered mean?',
+    expectedChunkId: 'ord-01',
+    expectedDomain: 'orders',
+    topic: 'shipping',
+  },
+  {
+    id: 'q-20',
+    query: 'What is the daily cutoff time for Next Day Overnight Express delivery?',
+    expectedChunkId: 'ord-02',
+    expectedDomain: 'orders',
+    topic: 'shipping',
+  },
+  {
+    id: 'q-21',
+    query: 'How long do I have to change or correct my shipping address after placing an order?',
+    expectedChunkId: 'ord-04',
+    expectedDomain: 'orders',
+    topic: 'shipping',
+  },
+  {
+    id: 'q-22',
+    query: 'What should I do if my package is marked delivered but I cannot find it?',
+    expectedChunkId: 'ord-05',
+    expectedDomain: 'orders',
+    topic: 'shipping',
+  },
+  {
+    id: 'q-23',
+    query: 'Does an adult signature requirement apply to orders over $500?',
+    expectedChunkId: 'ord-06',
+    expectedDomain: 'orders',
+    topic: 'shipping',
+  },
+  {
+    id: 'q-24',
+    query: 'Why did my items arrive in separate boxes with different tracking numbers?',
+    expectedChunkId: 'ord-07',
+    expectedDomain: 'orders',
+    topic: 'shipping',
+  },
+
+  // ── Account Access & Security queries (6) ────────────────────────────────
+  {
+    id: 'q-25',
+    query: 'How long is the 6-digit MFA verification code valid and is there a resend cooldown?',
+    expectedChunkId: 'acc-01',
+    expectedDomain: 'account',
+    topic: 'security',
+  },
+  {
+    id: 'q-26',
+    query: 'How long is a password reset link valid and what are the password complexity requirements?',
+    expectedChunkId: 'acc-02',
+    expectedDomain: 'account',
+    topic: 'security',
+  },
+  {
+    id: 'q-27',
+    query: 'My account is locked out after several failed password attempts, how long do I have to wait?',
+    expectedChunkId: 'acc-03',
+    expectedDomain: 'account',
+    topic: 'security',
+  },
+  {
+    id: 'q-28',
+    query: 'Why do I need to verify an OTP code before changing my primary account email or phone number?',
+    expectedChunkId: 'acc-04',
+    expectedDomain: 'account',
+    topic: 'security',
+  },
+  {
+    id: 'q-29',
+    query: 'I suspect my account was compromised, how can I terminate all active sessions and reset my password?',
+    expectedChunkId: 'acc-05',
+    expectedDomain: 'account',
+    topic: 'security',
+  },
+  {
+    id: 'q-30',
+    query: 'How do I permanently delete my account and personal data under GDPR or CCPA privacy regulations?',
+    expectedChunkId: 'acc-08',
+    expectedDomain: 'account',
+    topic: 'security',
+  },
+];
+
+async function main() {
+  console.log('Validating chunks and queries...');
+  console.log(`Total chunks: ${chunks.length}`);
+  console.log(`Total queries: ${queries.length}`);
+
+  // Validate chunk character lengths (700 - 1000)
+  const fullChunks: PolicyChunk[] = [];
+  for (const c of chunks) {
+    const len = c.content.length;
+    if (len < 700 || len > 1000) {
+      throw new Error(`Chunk ${c.id} length is ${len}, must be between 700 and 1000 chars!`);
+    }
+    fullChunks.push({
+      ...c,
+      metadata: {
+        isSynthetic: true,
+        category: c.topic,
+        targetWordCount: c.content.split(/\s+/).length,
+        charCount: len,
+        author: 'synthetic customer support benchmark corpus v1.0',
+        version: '1.0',
+      },
+    });
+  }
+
+  // Validate queries
+  const chunkIds = new Set(fullChunks.map((c) => c.id));
+  for (const q of queries) {
+    if (!chunkIds.has(q.expectedChunkId)) {
+      throw new Error(`Query ${q.id} references nonexistent chunk ${q.expectedChunkId}`);
+    }
+  }
+
+  console.log('All chunk length invariants (700-1000 chars) passed!');
+  console.log('All query target mappings valid!');
+
+  // Write to seed/knowledge-expanded.json and eval/retrieval-queries.json
+  const seedDir = path.resolve('../seed');
+  const evalDir = path.resolve('../eval');
+  await fs.mkdir(seedDir, { recursive: true });
+  await fs.mkdir(evalDir, { recursive: true });
+
+  const seedPath = path.join(seedDir, 'knowledge-expanded.json');
+  const evalPath = path.join(evalDir, 'retrieval-queries.json');
+
+  await fs.writeFile(seedPath, JSON.stringify(fullChunks, null, 2), 'utf-8');
+  await fs.writeFile(evalPath, JSON.stringify(queries, null, 2), 'utf-8');
+
+  // Also write to server/ directories for easy script access
+  const serverSeedDir = path.resolve('seed');
+  const serverEvalDir = path.resolve('eval');
+  await fs.mkdir(serverSeedDir, { recursive: true });
+  await fs.mkdir(serverEvalDir, { recursive: true });
+  await fs.writeFile(path.join(serverSeedDir, 'knowledge-expanded.json'), JSON.stringify(fullChunks, null, 2), 'utf-8');
+  await fs.writeFile(path.join(serverEvalDir, 'retrieval-queries.json'), JSON.stringify(queries, null, 2), 'utf-8');
+
+  console.log(`Saved 45 chunks to: ${seedPath}`);
+  console.log(`Saved 30 labeled queries to: ${evalPath}`);
+}
+
+main().catch(console.error);

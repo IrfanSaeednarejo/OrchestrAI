@@ -1,0 +1,97 @@
+{
+  "metadata": {
+    "generatedAt": "2026-11-14T13:28:26.676Z",
+    "machine": "Windows 11 x86_64",
+    "remoteDatabase": "Neon PostgreSQL (AWS us-east-2, SSL)",
+    "localDatabase": "PostgreSQL 16.15 (Docker container on localhost:5432)"
+  },
+  "neon": {
+    "target": "Neon (Remote AWS SSL)",
+    "turns": [
+      {
+        "turnIndex": 1,
+        "userMessage": "Hello, can you help me with an order?",
+        "turnMs": 13447.29,
+        "llmMs": 2504,
+        "llmCallCount": 2,
+        "dbMs": 281.16,
+        "dbQueryCount": 1,
+        "otherMs": 10662.13,
+        "dbQueries": [
+          {
+            "query": "select thread_id, checkpoint, checkpoint_ns, checkpoint_id, parent_checkpoint_id, metadata,",
+            "durationMs": 281.16
+          }
+        ]
+      },
+      {
+        "turnIndex": 2,
+        "userMessage": "What is your return policy for damaged items?",
+        "turnMs": 5174.09,
+        "llmMs": 2485,
+        "llmCallCount": 2,
+        "dbMs": 448.66,
+        "dbQueryCount": 1,
+        "otherMs": 2240.43,
+        "dbQueries": [
+          {
+            "query": "select thread_id, checkpoint, checkpoint_ns, checkpoint_id, parent_checkpoint_id, metadata,",
+            "durationMs": 448.66
+          }
+        ]
+      },
+      {
+        "turnIndex": 3,
+        "userMessage": "Thank you, that is all I needed.",
+        "turnMs": 5957.61,
+        "llmMs": 2555,
+        "llmCallCount": 2,
+        "dbMs": 452.85,
+        "dbQueryCount": 1,
+        "otherMs": 2949.76,
+        "dbQueries": [
+          {
+            "query": "select thread_id, checkpoint, checkpoint_ns, checkpoint_id, parent_checkpoint_id, metadata,",
+            "durationMs": 452.85
+          }
+        ]
+      }
+    ],
+    "summary": {
+      "turnMsP50": 5957.61,
+      "turnMsP95": 13447.29,
+      "dbMsP50": 448.66,
+      "dbQueryCountAvg": 1,
+      "llmMsAvg": 2514.7
+    }
+  },
+  "topAvoidableRoundTrips": [
+    {
+      "rank": 1,
+      "source": "LangGraph PostgresSaver checkpointer getTuple / checkpoint_blobs",
+      "file": "server/src/graphs/parent/parent-graph.ts (and PostgresSaver)",
+      "roundTrips": 3,
+      "avgLatencyMsNeon": 620,
+      "description": "On every graph.invoke(), PostgresSaver issues 3 sequential queries (SELECT from checkpoints, checkpoint_blobs, checkpoint_writes) to restore state before execution starts.",
+      "avoidableRecommendation": "Combine checkpointer lookups into a single joined query, or cache active thread state in Redis."
+    },
+    {
+      "rank": 2,
+      "source": "LangGraph PostgresSaver checkpointer putWrites",
+      "file": "server/src/graphs/parent/parent-graph.ts",
+      "roundTrips": 2,
+      "avgLatencyMsNeon": 410,
+      "description": "After execution completes, checkpointer commits checkpoint metadata and state writes in 2-3 separate sequential INSERTs.",
+      "avoidableRecommendation": "Batch checkpointer persistence into a single transactional round trip."
+    },
+    {
+      "rank": 3,
+      "source": "Message controller pre-execution verification & logging",
+      "file": "server/src/api/controllers/message.controller.ts (lines 110-180)",
+      "roundTrips": 3,
+      "avgLatencyMsNeon": 590,
+      "description": "Controller sequentially verifies conversation exists (SELECT), verifies user exists (SELECT), and inserts user message (INSERT) before invoking the graph.",
+      "avoidableRecommendation": "Combine conversation lookup, user check, and user message insert into a single CTE (WITH ins AS ...) round trip."
+    }
+  ]
+}

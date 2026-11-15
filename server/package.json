@@ -15,6 +15,7 @@
     "db:seed": "tsx src/persistence/seed.ts",
     "checkpointer:setup": "tsx src/persistence/checkpointer/setup.ts",
     "knowledge:ingest": "tsx src/knowledge/ingest.ts",
+    "report-metrics": "tsx scripts/report-metrics.ts",
     "eval": "tsx src/evaluation/cli/run-eval.ts",
     "email:smoke": "tsx src/services/email-smoke.ts",
     "test": "vitest run",

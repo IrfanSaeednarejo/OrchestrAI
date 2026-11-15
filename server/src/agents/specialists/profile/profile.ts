@@ -32,7 +32,8 @@ import { generateStructuredOutput } from '../../llm/client.js';
 import { loadPrompt } from '../../prompts/template-loader.js';
 import { gatedExecuteTool } from '../../../tools/gated-execution.js';
 import { createBlockedResponse } from '../../../state/blocked-workflow.js';
-import { recordAgentExecution } from '../../../routing/events.js';
+import { recordAgentExecution, completeAgentExecutionSafely } from '../../../routing/events.js';
+import { getTurnContext } from '../../../shared/turn-context.js';
 import { formatConversationTranscript } from '../../common/context.js';
 import { getProfile, getProfileMetadata } from '../../../tools/queries/profile.tools.js';
 import { normalizeName, maskEmail } from '../../../shared/normalization.js';
@@ -154,6 +155,7 @@ Respond with JSON:
 
   const result = await generateStructuredOutput(ProfileIntentSchema, prompt, {
     temperature: 0.0,
+    node: 'profile_intent',
   });
 
   if (result.success) {
@@ -187,7 +189,10 @@ Respond with JSON:
   "correction": "<corrected value or null if confirmed>"
 }`;
 
-  const result = await generateStructuredOutput(ConfirmSchema, prompt, { temperature: 0.0 });
+  const result = await generateStructuredOutput(ConfirmSchema, prompt, {
+    temperature: 0.0,
+    node: 'profile_confirm',
+  });
   if (result.success) return result.data;
   return { confirmed: false, correction: userText };
 }
@@ -208,6 +213,7 @@ export async function generateProfileViewResponse(params: {
   const ResponseSchema = z.object({ response: z.string().min(1) });
   const llmResult = await generateStructuredOutput(ResponseSchema, contextPrompt, {
     temperature: 0.2,
+    node: 'profile_response',
   });
 
   if (llmResult.success) {
@@ -234,6 +240,21 @@ async function createAgentExecutionSafely(
     }
   }
   return crypto.randomUUID();
+}
+
+async function finishAgentExecutionSafely(
+  id: string | undefined,
+  duration: number,
+  status: 'success' | 'failure' = 'success',
+  error?: string
+): Promise<void> {
+  if (typeof completeAgentExecutionSafely === 'function') {
+    try {
+      await completeAgentExecutionSafely(id, duration, status, error);
+    } catch {
+      // ignore
+    }
+  }
 }
 
 /** Issue + email a profile verification code. Returns a user-facing message. */
@@ -316,7 +337,12 @@ export async function profileNode(
         : undefined;
 
   const agentExecutionId = await createAgentExecutionSafely(conversationId, specialist);
+  const startTime = performance.now();
+  const turnCtx = getTurnContext();
+  if (turnCtx) turnCtx.node = specialist;
 
+  try {
+    const result = await (async (): Promise<ConversationStateUpdate> => {
   if (!state.user?.id) {
     return {
       workflowStatus: 'FAILED',
@@ -892,6 +918,19 @@ export async function profileNode(
     workflowStatus: 'WAITING_FOR_USER_INPUT',
     messages: [new AIMessage(MESSAGES.CONFIRM_CHANGE(displayValue, rawInput, displayField))],
   };
+    })();
+
+    await finishAgentExecutionSafely(agentExecutionId, performance.now() - startTime, 'success');
+    return result;
+  } catch (err) {
+    await finishAgentExecutionSafely(
+      agentExecutionId,
+      performance.now() - startTime,
+      'failure',
+      err instanceof Error ? err.message : String(err)
+    );
+    throw err;
+  }
 }
 
 // ---------------------------------------------------------------------------

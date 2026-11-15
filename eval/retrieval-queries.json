@@ -1,0 +1,212 @@
+[
+  {
+    "id": "q-01",
+    "query": "How many days do I have to return an item after it gets delivered?",
+    "expectedChunkId": "ret-01",
+    "expectedDomain": "orders",
+    "topic": "returns"
+  },
+  {
+    "id": "q-02",
+    "query": "What should I do if my package arrived with broken or defective merchandise?",
+    "expectedChunkId": "ret-02",
+    "expectedDomain": "orders",
+    "topic": "returns"
+  },
+  {
+    "id": "q-03",
+    "query": "Can I drop off my return at a store with a QR code instead of printing a label?",
+    "expectedChunkId": "ret-03",
+    "expectedDomain": "orders",
+    "topic": "returns"
+  },
+  {
+    "id": "q-04",
+    "query": "Are personalized products and final sale clearance items eligible for return?",
+    "expectedChunkId": "ret-04",
+    "expectedDomain": "orders",
+    "topic": "returns"
+  },
+  {
+    "id": "q-05",
+    "query": "Can I return shoes if the original manufacturer shoebox is missing or damaged?",
+    "expectedChunkId": "ret-05",
+    "expectedDomain": "orders",
+    "topic": "returns"
+  },
+  {
+    "id": "q-06",
+    "query": "What happens if the warehouse rejects my returned package and how do I appeal?",
+    "expectedChunkId": "ret-09",
+    "expectedDomain": "orders",
+    "topic": "returns"
+  },
+  {
+    "id": "q-07",
+    "query": "How many business days does it take for a credit card refund to appear in my account?",
+    "expectedChunkId": "ref-01",
+    "expectedDomain": "payments",
+    "topic": "refunds"
+  },
+  {
+    "id": "q-08",
+    "query": "I was charged twice on my statement for the same order, how does the reversal work?",
+    "expectedChunkId": "ref-02",
+    "expectedDomain": "payments",
+    "topic": "refunds"
+  },
+  {
+    "id": "q-09",
+    "query": "Can I choose instant store credit with a 5% bonus instead of waiting for a bank refund?",
+    "expectedChunkId": "ref-03",
+    "expectedDomain": "payments",
+    "topic": "refunds"
+  },
+  {
+    "id": "q-10",
+    "query": "Are there restocking fees or return postage deductions for heavy exercise equipment?",
+    "expectedChunkId": "ref-04",
+    "expectedDomain": "payments",
+    "topic": "refunds"
+  },
+  {
+    "id": "q-11",
+    "query": "What is an Acquirer Reference Number (ARN) and how do I track my missing refund with my bank?",
+    "expectedChunkId": "ref-06",
+    "expectedDomain": "payments",
+    "topic": "refunds"
+  },
+  {
+    "id": "q-12",
+    "query": "If I paid using a gift card and credit card together, where does my refund money go?",
+    "expectedChunkId": "ref-08",
+    "expectedDomain": "payments",
+    "topic": "refunds"
+  },
+  {
+    "id": "q-13",
+    "query": "What credit cards and digital mobile wallets are accepted at checkout?",
+    "expectedChunkId": "pay-01",
+    "expectedDomain": "payments",
+    "topic": "billing"
+  },
+  {
+    "id": "q-14",
+    "query": "Why is there a temporary pending authorization hold on my card before my order ships?",
+    "expectedChunkId": "pay-02",
+    "expectedDomain": "payments",
+    "topic": "billing"
+  },
+  {
+    "id": "q-15",
+    "query": "My payment was declined due to an Address Verification System (AVS) postal code mismatch",
+    "expectedChunkId": "pay-03",
+    "expectedDomain": "payments",
+    "topic": "billing"
+  },
+  {
+    "id": "q-16",
+    "query": "How can I pause or skip my monthly auto-renewal subscription delivery?",
+    "expectedChunkId": "pay-04",
+    "expectedDomain": "payments",
+    "topic": "billing"
+  },
+  {
+    "id": "q-17",
+    "query": "Can I pay for my purchase in four bi-weekly interest-free installments using Klarna or Afterpay?",
+    "expectedChunkId": "pay-06",
+    "expectedDomain": "payments",
+    "topic": "billing"
+  },
+  {
+    "id": "q-18",
+    "query": "How do corporate businesses submit Purchase Orders for Net-30 invoice billing?",
+    "expectedChunkId": "pay-09",
+    "expectedDomain": "payments",
+    "topic": "billing"
+  },
+  {
+    "id": "q-19",
+    "query": "What do the order milestones Placed, Processing, Shipped, and Delivered mean?",
+    "expectedChunkId": "ord-01",
+    "expectedDomain": "orders",
+    "topic": "shipping"
+  },
+  {
+    "id": "q-20",
+    "query": "What is the daily cutoff time for Next Day Overnight Express delivery?",
+    "expectedChunkId": "ord-02",
+    "expectedDomain": "orders",
+    "topic": "shipping"
+  },
+  {
+    "id": "q-21",
+    "query": "How long do I have to change or correct my shipping address after placing an order?",
+    "expectedChunkId": "ord-04",
+    "expectedDomain": "orders",
+    "topic": "shipping"
+  },
+  {
+    "id": "q-22",
+    "query": "What should I do if my package is marked delivered but I cannot find it?",
+    "expectedChunkId": "ord-05",
+    "expectedDomain": "orders",
+    "topic": "shipping"
+  },
+  {
+    "id": "q-23",
+    "query": "Does an adult signature requirement apply to orders over $500?",
+    "expectedChunkId": "ord-06",
+    "expectedDomain": "orders",
+    "topic": "shipping"
+  },
+  {
+    "id": "q-24",
+    "query": "Why did my items arrive in separate boxes with different tracking numbers?",
+    "expectedChunkId": "ord-07",
+    "expectedDomain": "orders",
+    "topic": "shipping"
+  },
+  {
+    "id": "q-25",
+    "query": "How long is the 6-digit MFA verification code valid and is there a resend cooldown?",
+    "expectedChunkId": "acc-01",
+    "expectedDomain": "account",
+    "topic": "security"
+  },
+  {
+    "id": "q-26",
+    "query": "How long is a password reset link valid and what are the password complexity requirements?",
+    "expectedChunkId": "acc-02",
+    "expectedDomain": "account",
+    "topic": "security"
+  },
+  {
+    "id": "q-27",
+    "query": "My account is locked out after several failed password attempts, how long do I have to wait?",
+    "expectedChunkId": "acc-03",
+    "expectedDomain": "account",
+    "topic": "security"
+  },
+  {
+    "id": "q-28",
+    "query": "Why do I need to verify an OTP code before changing my primary account email or phone number?",
+    "expectedChunkId": "acc-04",
+    "expectedDomain": "account",
+    "topic": "security"
+  },
+  {
+    "id": "q-29",
+    "query": "I suspect my account was compromised, how can I terminate all active sessions and reset my password?",
+    "expectedChunkId": "acc-05",
+    "expectedDomain": "account",
+    "topic": "security"
+  },
+  {
+    "id": "q-30",
+    "query": "How do I permanently delete my account and personal data under GDPR or CCPA privacy regulations?",
+    "expectedChunkId": "acc-08",
+    "expectedDomain": "account",
+    "topic": "security"
+  }
+]

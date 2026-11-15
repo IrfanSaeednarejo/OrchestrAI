@@ -1,0 +1,338 @@
+{
+  "summary": {
+    "total": 30,
+    "flagged": 0
+  },
+  "results": [
+    {
+      "id": "q-01",
+      "domain": "orders",
+      "topic": "returns",
+      "expectedChunkId": "ret-01",
+      "queryNgramsCount": 10,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "How many days do I have to return an item after it gets delivered?"
+    },
+    {
+      "id": "q-02",
+      "domain": "orders",
+      "topic": "returns",
+      "expectedChunkId": "ret-02",
+      "queryNgramsCount": 9,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "What should I do if my package arrived with broken or defective merchandise?"
+    },
+    {
+      "id": "q-03",
+      "domain": "orders",
+      "topic": "returns",
+      "expectedChunkId": "ret-03",
+      "queryNgramsCount": 14,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "Can I drop off my return at a store with a QR code instead of printing a label?"
+    },
+    {
+      "id": "q-04",
+      "domain": "orders",
+      "topic": "returns",
+      "expectedChunkId": "ret-04",
+      "queryNgramsCount": 7,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "Are personalized products and final sale clearance items eligible for return?"
+    },
+    {
+      "id": "q-05",
+      "domain": "orders",
+      "topic": "returns",
+      "expectedChunkId": "ret-05",
+      "queryNgramsCount": 9,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "Can I return shoes if the original manufacturer shoebox is missing or damaged?"
+    },
+    {
+      "id": "q-06",
+      "domain": "orders",
+      "topic": "returns",
+      "expectedChunkId": "ret-09",
+      "queryNgramsCount": 10,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "What happens if the warehouse rejects my returned package and how do I appeal?"
+    },
+    {
+      "id": "q-07",
+      "domain": "payments",
+      "topic": "refunds",
+      "expectedChunkId": "ref-01",
+      "queryNgramsCount": 13,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "How many business days does it take for a credit card refund to appear in my account?"
+    },
+    {
+      "id": "q-08",
+      "domain": "payments",
+      "topic": "refunds",
+      "expectedChunkId": "ref-02",
+      "queryNgramsCount": 12,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "I was charged twice on my statement for the same order, how does the reversal work?"
+    },
+    {
+      "id": "q-09",
+      "domain": "payments",
+      "topic": "refunds",
+      "expectedChunkId": "ref-03",
+      "queryNgramsCount": 13,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "Can I choose instant store credit with a 5% bonus instead of waiting for a bank refund?"
+    },
+    {
+      "id": "q-10",
+      "domain": "payments",
+      "topic": "refunds",
+      "expectedChunkId": "ref-04",
+      "queryNgramsCount": 8,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "Are there restocking fees or return postage deductions for heavy exercise equipment?"
+    },
+    {
+      "id": "q-11",
+      "domain": "payments",
+      "topic": "refunds",
+      "expectedChunkId": "ref-06",
+      "queryNgramsCount": 14,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "What is an Acquirer Reference Number (ARN) and how do I track my missing refund with my bank?"
+    },
+    {
+      "id": "q-12",
+      "domain": "payments",
+      "topic": "refunds",
+      "expectedChunkId": "ref-08",
+      "queryNgramsCount": 13,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "If I paid using a gift card and credit card together, where does my refund money go?"
+    },
+    {
+      "id": "q-13",
+      "domain": "payments",
+      "topic": "billing",
+      "expectedChunkId": "pay-01",
+      "queryNgramsCount": 7,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "What credit cards and digital mobile wallets are accepted at checkout?"
+    },
+    {
+      "id": "q-14",
+      "domain": "payments",
+      "topic": "billing",
+      "expectedChunkId": "pay-02",
+      "queryNgramsCount": 11,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "Why is there a temporary pending authorization hold on my card before my order ships?"
+    },
+    {
+      "id": "q-15",
+      "domain": "payments",
+      "topic": "billing",
+      "expectedChunkId": "pay-03",
+      "queryNgramsCount": 10,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "My payment was declined due to an Address Verification System (AVS) postal code mismatch"
+    },
+    {
+      "id": "q-16",
+      "domain": "payments",
+      "topic": "billing",
+      "expectedChunkId": "pay-04",
+      "queryNgramsCount": 8,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "How can I pause or skip my monthly auto-renewal subscription delivery?"
+    },
+    {
+      "id": "q-17",
+      "domain": "payments",
+      "topic": "billing",
+      "expectedChunkId": "pay-06",
+      "queryNgramsCount": 13,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "Can I pay for my purchase in four bi-weekly interest-free installments using Klarna or Afterpay?"
+    },
+    {
+      "id": "q-18",
+      "domain": "payments",
+      "topic": "billing",
+      "expectedChunkId": "pay-09",
+      "queryNgramsCount": 8,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "How do corporate businesses submit Purchase Orders for Net-30 invoice billing?"
+    },
+    {
+      "id": "q-19",
+      "domain": "orders",
+      "topic": "shipping",
+      "expectedChunkId": "ord-01",
+      "queryNgramsCount": 7,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "What do the order milestones Placed, Processing, Shipped, and Delivered mean?"
+    },
+    {
+      "id": "q-20",
+      "domain": "orders",
+      "topic": "shipping",
+      "expectedChunkId": "ord-02",
+      "queryNgramsCount": 8,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "What is the daily cutoff time for Next Day Overnight Express delivery?"
+    },
+    {
+      "id": "q-21",
+      "domain": "orders",
+      "topic": "shipping",
+      "expectedChunkId": "ord-04",
+      "queryNgramsCount": 12,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "How long do I have to change or correct my shipping address after placing an order?"
+    },
+    {
+      "id": "q-22",
+      "domain": "orders",
+      "topic": "shipping",
+      "expectedChunkId": "ord-05",
+      "queryNgramsCount": 11,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "What should I do if my package is marked delivered but I cannot find it?"
+    },
+    {
+      "id": "q-23",
+      "domain": "orders",
+      "topic": "shipping",
+      "expectedChunkId": "ord-06",
+      "queryNgramsCount": 6,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "Does an adult signature requirement apply to orders over $500?"
+    },
+    {
+      "id": "q-24",
+      "domain": "orders",
+      "topic": "shipping",
+      "expectedChunkId": "ord-07",
+      "queryNgramsCount": 8,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "Why did my items arrive in separate boxes with different tracking numbers?"
+    },
+    {
+      "id": "q-25",
+      "domain": "account",
+      "topic": "security",
+      "expectedChunkId": "acc-01",
+      "queryNgramsCount": 12,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "How long is the 6-digit MFA verification code valid and is there a resend cooldown?"
+    },
+    {
+      "id": "q-26",
+      "domain": "account",
+      "topic": "security",
+      "expectedChunkId": "acc-02",
+      "queryNgramsCount": 11,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "How long is a password reset link valid and what are the password complexity requirements?"
+    },
+    {
+      "id": "q-27",
+      "domain": "account",
+      "topic": "security",
+      "expectedChunkId": "acc-03",
+      "queryNgramsCount": 13,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "My account is locked out after several failed password attempts, how long do I have to wait?"
+    },
+    {
+      "id": "q-28",
+      "domain": "account",
+      "topic": "security",
+      "expectedChunkId": "acc-04",
+      "queryNgramsCount": 14,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "Why do I need to verify an OTP code before changing my primary account email or phone number?"
+    },
+    {
+      "id": "q-29",
+      "domain": "account",
+      "topic": "security",
+      "expectedChunkId": "acc-05",
+      "queryNgramsCount": 13,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "I suspect my account was compromised, how can I terminate all active sessions and reset my password?"
+    },
+    {
+      "id": "q-30",
+      "domain": "account",
+      "topic": "security",
+      "expectedChunkId": "acc-08",
+      "queryNgramsCount": 12,
+      "sharedCount": 0,
+      "overlapPct": 0,
+      "flagged": false,
+      "query": "How do I permanently delete my account and personal data under GDPR or CCPA privacy regulations?"
+    }
+  ]
+}

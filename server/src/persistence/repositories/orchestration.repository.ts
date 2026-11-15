@@ -5,6 +5,8 @@ import {
   routingHistory,
   agentExecutions,
   toolExecutions,
+  retrievalExecutions,
+  llmCalls,
   conversations,
   users,
 } from '../db/schema.js';
@@ -15,6 +17,42 @@ export type AgentExecution = InferSelectModel<typeof agentExecutions>;
 export type NewAgentExecution = InferInsertModel<typeof agentExecutions>;
 export type ToolExecution = InferSelectModel<typeof toolExecutions>;
 export type NewToolExecution = InferInsertModel<typeof toolExecutions>;
+export type RetrievalExecution = InferSelectModel<typeof retrievalExecutions>;
+export type NewRetrievalExecution = InferInsertModel<typeof retrievalExecutions>;
+export type LLMCall = InferSelectModel<typeof llmCalls>;
+export type NewLLMCall = InferInsertModel<typeof llmCalls>;
+
+export async function createRetrievalExecution(
+  input: NewRetrievalExecution
+): Promise<RetrievalExecution> {
+  const result = await db.insert(retrievalExecutions).values(input).returning();
+  if (!result[0]) throw new Error('Failed to create retrieval execution record');
+  return result[0];
+}
+
+export async function logRetrievalExecutionSafely(
+  input: NewRetrievalExecution
+): Promise<void> {
+  try {
+    await db.insert(retrievalExecutions).values(input);
+  } catch {
+    // Telemetry write must never throw
+  }
+}
+
+export async function createLLMCall(input: NewLLMCall): Promise<LLMCall> {
+  const result = await db.insert(llmCalls).values(input).returning();
+  if (!result[0]) throw new Error('Failed to create LLM call record');
+  return result[0];
+}
+
+export async function logLLMCallSafely(input: NewLLMCall): Promise<void> {
+  try {
+    await db.insert(llmCalls).values(input);
+  } catch {
+    // Telemetry write must never throw
+  }
+}
 
 export async function createRoutingHistoryEntry(
   input: NewRoutingHistory

@@ -7,6 +7,8 @@
 import { GoogleGenAI } from '@google/genai';
 import { z } from 'zod';
 import { config } from '../../shared/config.js';
+import { logLLMCallSafely } from '../../persistence/repositories/orchestration.repository.js';
+import { getTurnContext, incrementLLMCallCount, recordLlmCall } from '../../shared/turn-context.js';
 
 // ---------------------------------------------------------------------------
 // Module-level singleton — created once so tests can replace the whole module.
@@ -21,6 +23,12 @@ const ai = new GoogleGenAI({ apiKey: config.gemini.apiKey });
 /** Well-known model identifier used for all agent calls in this platform. */
 export const DEFAULT_MODEL = (process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite') as string;
 
+export interface LLMUsage {
+  promptTokens: number | null;
+  outputTokens: number | null;
+  totalTokens: number | null;
+}
+
 export interface LLMOptions {
   /** Sampling temperature (0.0 = fully deterministic). Defaults to 0.0. */
   temperature?: number;
@@ -30,12 +38,16 @@ export interface LLMOptions {
   timeoutMs?: number;
   /** Max retries for transient errors (default: 1). */
   maxRetries?: number;
+  /** Optional conversation ID for metrics logging. */
+  conversationId?: string;
+  /** Optional graph node name for metrics logging. */
+  node?: string;
 }
 
 /** Discriminated union returned from `generateStructuredOutput`. */
 export type LLMResult<T> =
-  | { success: true; data: T }
-  | { success: false; error: LLMError };
+  | { success: true; data: T; usage?: LLMUsage }
+  | { success: false; error: LLMError; usage?: LLMUsage };
 
 /** Typed errors emitted by this wrapper (never raw SDK errors). */
 export type LLMError =
@@ -75,10 +87,20 @@ export async function generateStructuredOutput<T>(
   prompt: string,
   options: LLMOptions = {}
 ): Promise<LLMResult<T>> {
+  const startTime = performance.now();
+  incrementLLMCallCount();
+
   const timeoutMs = options.timeoutMs ?? 10_000;
   const maxRetries = options.maxRetries ?? 1;
 
   let responseText: string | undefined;
+  let usageMetadata:
+    | {
+        promptTokenCount?: number;
+        candidatesTokenCount?: number;
+        totalTokenCount?: number;
+      }
+    | undefined;
   let lastError: unknown;
   let attempts = 0;
 
@@ -107,6 +129,7 @@ export async function generateStructuredOutput<T>(
       try {
         const response = await Promise.race([callPromise, timeoutPromise]);
         responseText = response.text;
+        usageMetadata = (response as { usageMetadata?: typeof usageMetadata }).usageMetadata;
         lastError = undefined;
         break;
       } finally {
@@ -122,15 +145,59 @@ export async function generateStructuredOutput<T>(
     }
   }
 
+  const promptTokens =
+    typeof usageMetadata?.promptTokenCount === 'number'
+      ? usageMetadata.promptTokenCount
+      : null;
+  const outputTokens =
+    typeof usageMetadata?.candidatesTokenCount === 'number'
+      ? usageMetadata.candidatesTokenCount
+      : null;
+  const totalTokens =
+    typeof usageMetadata?.totalTokenCount === 'number'
+      ? usageMetadata.totalTokenCount
+      : null;
+  const usage: LLMUsage = { promptTokens, outputTokens, totalTokens };
+
+  const durationMs = Math.round(performance.now() - startTime);
+  recordLlmCall(durationMs);
+  const nodeName = options.node ?? getTurnContext()?.node ?? 'unknown';
+  const convId = options.conversationId ?? getTurnContext()?.conversationId;
+
   if (lastError !== undefined) {
     const message = lastError instanceof Error ? lastError.message : String(lastError);
-    return { success: false, error: { kind: 'SDK_ERROR', message } };
+    await logLLMCallSafely({
+      conversationId: convId,
+      node: nodeName,
+      model: DEFAULT_MODEL,
+      promptTokens,
+      outputTokens,
+      totalTokens,
+      durationMs,
+      attempts,
+      status: 'failure',
+      errorKind: 'SDK_ERROR',
+    });
+    return { success: false, error: { kind: 'SDK_ERROR', message }, usage };
   }
 
   if (responseText === undefined || responseText === null || responseText.trim() === '') {
+    await logLLMCallSafely({
+      conversationId: convId,
+      node: nodeName,
+      model: DEFAULT_MODEL,
+      promptTokens,
+      outputTokens,
+      totalTokens,
+      durationMs,
+      attempts,
+      status: 'failure',
+      errorKind: 'EMPTY_RESPONSE',
+    });
     return {
       success: false,
       error: { kind: 'EMPTY_RESPONSE', message: 'Gemini returned an empty response.' },
+      usage,
     };
   }
 
@@ -138,14 +205,39 @@ export async function generateStructuredOutput<T>(
   try {
     parsed = JSON.parse(responseText);
   } catch {
+    await logLLMCallSafely({
+      conversationId: convId,
+      node: nodeName,
+      model: DEFAULT_MODEL,
+      promptTokens,
+      outputTokens,
+      totalTokens,
+      durationMs,
+      attempts,
+      status: 'failure',
+      errorKind: 'INVALID_JSON',
+    });
     return {
       success: false,
       error: { kind: 'INVALID_JSON', message: 'Response is not valid JSON.', raw: responseText },
+      usage,
     };
   }
 
   const validated = schema.safeParse(parsed);
   if (!validated.success) {
+    await logLLMCallSafely({
+      conversationId: convId,
+      node: nodeName,
+      model: DEFAULT_MODEL,
+      promptTokens,
+      outputTokens,
+      totalTokens,
+      durationMs,
+      attempts,
+      status: 'failure',
+      errorKind: 'SCHEMA_VALIDATION',
+    });
     return {
       success: false,
       error: {
@@ -153,8 +245,22 @@ export async function generateStructuredOutput<T>(
         message: validated.error.message,
         raw: responseText,
       },
+      usage,
     };
   }
 
-  return { success: true, data: validated.data };
+  await logLLMCallSafely({
+    conversationId: convId,
+    node: nodeName,
+    model: DEFAULT_MODEL,
+    promptTokens,
+    outputTokens,
+    totalTokens,
+    durationMs,
+    attempts,
+    status: 'success',
+    errorKind: null,
+  });
+
+  return { success: true, data: validated.data, usage };
 }
