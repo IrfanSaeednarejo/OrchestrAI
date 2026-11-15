@@ -52,7 +52,7 @@ export const ConversationStateAnnotation = Annotation.Root({
   }),
 
   user: Annotation<{ id: string } | null>({
-    reducer: (state, update) => update ?? state,
+    reducer: (state, update) => update !== undefined ? update : state,
     default: () => null,
   }),
 

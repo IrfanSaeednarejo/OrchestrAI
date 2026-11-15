@@ -21,7 +21,7 @@ export function createApp(
 
   // Global middleware
   app.use(cors({ origin: config.app.clientOrigin }));
-  app.use(express.json());
+  app.use(express.json({ limit: '100kb' }));
 
   // Mount health check route (unauthenticated)
   app.use('/health', healthRouter);

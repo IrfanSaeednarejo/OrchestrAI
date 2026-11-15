@@ -25,18 +25,25 @@ export function isRetryableError(
   return retryableCodes.includes(code);
 }
 
-// Shallow-only redaction helper. Does not recursively redact nested objects.
+// Recursive redaction helper for objects and arrays of objects.
 function redact(obj: unknown, fields: string[] | undefined): unknown {
-  if (!fields || fields.length === 0 || !obj || typeof obj !== 'object' || Array.isArray(obj)) {
+  if (!fields || fields.length === 0 || !obj || typeof obj !== 'object') {
     return obj;
   }
-  const shallowCopy = { ...obj } as Record<string, unknown>;
-  for (const field of fields) {
-    if (field in shallowCopy) {
-      shallowCopy[field] = '[REDACTED]';
+
+  if (Array.isArray(obj)) {
+    return obj.map((item) => redact(item, fields));
+  }
+
+  const copy = { ...(obj as Record<string, unknown>) };
+  for (const key of Object.keys(copy)) {
+    if (fields.includes(key)) {
+      copy[key] = '[REDACTED]';
+    } else if (copy[key] && typeof copy[key] === 'object') {
+      copy[key] = redact(copy[key], fields);
     }
   }
-  return shallowCopy;
+  return copy;
 }
 
 export async function executeTool<T>(
