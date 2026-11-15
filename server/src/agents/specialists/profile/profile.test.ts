@@ -70,6 +70,9 @@ function makeState(overrides: Partial<ConversationState> = {}): ConversationStat
     workflowStatus: 'ACTIVE',
     identity: { status: 'VERIFIED', verificationMethod: 'otp', verifiedAt: '2026-11-05T10:00:00.000Z' },
     activeWorkflow: null,
+    lastKnownEntities: null,
+    pendingTask: null,
+    intentQueue: null,
     ...overrides,
   };
 }

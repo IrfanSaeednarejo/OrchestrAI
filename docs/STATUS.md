@@ -4,16 +4,17 @@ Last verified suite figure reported: Server 615/615 passing (72 files, 1 skipped
 
 ## Phase state
 - Phases 1-23: COMPLETE and signed off.
-- Phase 24 (Stabilization): COMPLETE on branch `phase/23-stabilization`. All 7 steps verified and passing:
-  - Step 0: Plan & Baseline
-  - Step 1a: Session-Identity Seeding & Propagation (`session-identity.ts`, OD-24a)
-  - Step 1b: Universal Blocked-Reply Helper & ActiveWorkflow Cleanup (`createBlockedResponse`)
-  - Step 2: Security Hardening & Tenant Isolation (IDOR safety on order/payment/profile/returns/refunds)
-  - Step 3: Router Hardening & Turn-Scoped Handoffs (`handoffCount: 0` turn initialization, OD-24c)
-  - Step 4: Duplicate Charge Confirmation Flow & Staff Review Queue (`review_requests` table, OD-24b)
-  - Step 5: Intent Alignment, Readback & Policy Grounding (status vs create intent, DB idempotency indexes)
-  - Step 6: Resilience, Idempotent Retries & Advisory Locking (`pg_try_advisory_xact_lock`, LLM/tool retry policy)
-  - Step 7: Multi-Turn HTTP Integration Tests & Documentation (`stabilization.integration.test.ts`, `live-smoke.test.ts`)
+- Phase 24 (Stabilization): COMPLETE on branch `phase/23-stabilization`.
+- Phase 25 (Conversational Routing & Memory Overhaul): COMPLETE on branch `phase/24-conversational-routing`. All 9 steps verified and passing:
+  - Step 0: Regression Tests for Conversational Routing (`conversation-flow.test.ts`, Scenarios A–F)
+  - Step 1: Router Decision Model & General Assistant Node (`general_assistant` specialist node, capabilities registry, removal of sticky continuation guards 3b/3c)
+  - Step 2: Pending-Task State & Entity Memory (`lastKnownEntities` and `pendingTask` in `ConversationState`, specialist persistence)
+  - Step 3: History & Entity Context Injection (`formatConversationTranscript`, specialist and classifier prompt injection)
+  - Step 4: Dynamic Suggestions & Capabilities Injection (`GeneralResponseSchema`, suggestion chips)
+  - Step 5: Friendly Activity Events & UI Progress Decoupling (typed SSE `event: activity`, ChatFeed progress mapping)
+  - Step 6: Multi-Intent Classification & Queued Intent Routing (secondary intent detection, conditional return edges)
+  - Step 7: Specialist Permissions & Scope Alignment (`general_assistant` RAG and gate integration)
+  - Step 8: Multi-Turn End-to-End Integration Verification (`conversational-routing.integration.test.ts`, docs reconciliation)
 
   - Phase 6 (Access Control / Verification Gate): Steps 0-5 closed; Step 6a proof graph verified; Step 6b close-out and type unification completed.
   - Phase 7 (Agent Foundation): Steps 0-5 closed; LLM client, prompt loader, handoff contract, common node patterns, and subgraph harness verified (294 tests).

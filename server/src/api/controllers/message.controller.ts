@@ -111,9 +111,20 @@ function extractTurnServiceOptions(
   return lastOptions;
 }
 
-// ---------------------------------------------------------------------------
-// Handler
-// ---------------------------------------------------------------------------
+const FRIENDLY_NODE_ACTIVITIES: Record<string, string> = {
+  router: 'Routing your inquiry...',
+  general_assistant: 'Preparing assistance...',
+  order_tracking: 'Looking up order and shipment details...',
+  returns: 'Checking return policy and eligibility...',
+  payment: 'Reviewing payment and transaction records...',
+  refund: 'Checking refund status and guidelines...',
+  profile: 'Retrieving profile details...',
+  account_access: 'Managing account verification...',
+};
+
+function getFriendlyActivity(nodeName: string): string {
+  return FRIENDLY_NODE_ACTIVITIES[nodeName] ?? `Processing ${nodeName.replace(/_/g, ' ')}...`;
+}
 
 export async function sendMessageHandler(
   req: Request,
@@ -236,6 +247,12 @@ export async function sendMessageHandler(
               res.write(
                 `event: node\ndata: ${JSON.stringify({
                   node,
+                  timestamp: new Date().toISOString(),
+                })}\n\n`
+              );
+              res.write(
+                `event: activity\ndata: ${JSON.stringify({
+                  activity: getFriendlyActivity(node),
                   timestamp: new Date().toISOString(),
                 })}\n\n`
               );
@@ -384,6 +401,7 @@ export async function sendMessageHandler(
         routing: {
           currentAgent: finalState.routing.currentAgent,
           handoffCount: finalState.routing.handoffCount,
+          workflowStatus: finalState.workflowStatus,
           blockedBy,
           currentStep,
           ...(serviceOptions ? { options: serviceOptions } : {}),

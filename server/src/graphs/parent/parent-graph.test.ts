@@ -203,7 +203,7 @@ describe('Parent Graph & Stateful Router', () => {
     expect(result.routing.handoffCount).toBe(2); // 1 from handoff + 1 from re-route
   });
 
-  it('records FALLBACK decision when classifier fails and defaults to order_tracking', async () => {
+  it('records FALLBACK decision when classifier fails and defaults to general_assistant', async () => {
     // Classifier throws or produces invalid response
     mockGenerateContent.mockRejectedValueOnce(new Error('LLM rate limit / network error'));
 
@@ -219,7 +219,7 @@ describe('Parent Graph & Stateful Router', () => {
     );
 
     expect(result.workflowStatus).toBe('COMPLETED');
-    expect(result.routing.currentAgent).toBe('order_tracking');
+    expect(result.routing.currentAgent).toBe('general_assistant');
     expect(result.routing.history.at(-1)?.reason).toContain('Classifier fallback');
   });
 
@@ -335,17 +335,18 @@ describe('Parent Graph & Stateful Router', () => {
     expect(Array.isArray(greetingMsg.additional_kwargs?.['options'])).toBe(true);
   });
 
-  it('order tracking continuation guard: routes back to order_tracking without LLM when WAITING_FOR_USER_INPUT', async () => {
-    // The guard fires BEFORE the classifier — no LLM call should be made
+  it('order tracking continuation guard: routes bare UUID back to order_tracking without LLM when WAITING_FOR_USER_INPUT', async () => {
+    // The bare-UUID guard fires BEFORE the classifier — no LLM call should be made
     const checkpointer = new MemorySaver();
     const graph = buildParentGraph(checkpointer, { specialists: SPECIALIST_STUBS });
     const threadId = crypto.randomUUID();
 
     // Set up state that matches the guard condition:
-    // currentAgent = 'order_tracking', workflowStatus = 'WAITING_FOR_USER_INPUT'
+    // currentAgent = 'order_tracking', workflowStatus = 'WAITING_FOR_USER_INPUT', message is a bare UUID
+    const targetUuid = crypto.randomUUID();
     const result = await graph.invoke(
       {
-        messages: [new HumanMessage('my-order-ref-123')],
+        messages: [new HumanMessage(targetUuid)],
         routing: {
           currentAgent: 'order_tracking',
           previousAgent: null,

@@ -19,8 +19,9 @@ const SPECIALIST_KNOWLEDGE_SCOPE: Record<SpecialistId, KnowledgeScope> = {
   returns:        { domain: 'orders', topic: 'returns' },
   payment:        { domain: 'payments', topic: 'payments' },
   refund:         { domain: 'payments', topic: 'refunds' },
-  account_access: { domain: 'account', topic: 'account_security' },
-  profile:        null,
+  account_access:    { domain: 'account', topic: 'account_security' },
+  profile:           null,
+  general_assistant: null,
 };
 
 export { SPECIALIST_KNOWLEDGE_SCOPE };

@@ -279,6 +279,10 @@ export async function refundNode(
     return {
       workflowStatus: 'COMPLETED',
       activeWorkflow: null, // Clear activeWorkflow upon successful completion
+      pendingTask: null,
+      lastKnownEntities: {
+        paymentId: (resumeContext['paymentId'] as string) ?? null,
+      },
       messages: [new AIMessage(response)],
     };
   }
@@ -297,7 +301,7 @@ export async function refundNode(
 
   if (!orderId) {
     const extraction = await extractRefundIntent(userText);
-    orderId = extraction.orderId;
+    orderId = extraction.orderId || (state.lastKnownEntities?.orderId ?? null);
     refundId = extraction.refundId;
   }
 
@@ -558,6 +562,11 @@ export async function refundNode(
   return {
     workflowStatus: 'COMPLETED',
     activeWorkflow: null,
+    pendingTask: null,
+    lastKnownEntities: {
+      orderId,
+      returnId: activeReturn?.id ?? null,
+    },
     messages: [
       new AIMessage(
         `${statusMsg} ${knowledgeContext ? '\n\nPolicy info: ' + knowledgeContext : ''}`.trim()

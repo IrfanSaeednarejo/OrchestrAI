@@ -41,13 +41,14 @@ describe('specialist-scope', () => {
         'refund',
         'account_access',
         'profile',
+        'general_assistant',
       ];
 
-      // Verify all 6 exist with own-property entries in the record
+      // Verify all 7 exist with own-property entries in the record
       for (const name of allSpecialists) {
         expect(Object.prototype.hasOwnProperty.call(SPECIALIST_KNOWLEDGE_SCOPE, name)).toBe(true);
       }
-      expect(Object.keys(SPECIALIST_KNOWLEDGE_SCOPE)).toHaveLength(6);
+      expect(Object.keys(SPECIALIST_KNOWLEDGE_SCOPE)).toHaveLength(7);
     });
 
     it('SpecialistName type alias is strictly interchangeable with SpecialistId', () => {

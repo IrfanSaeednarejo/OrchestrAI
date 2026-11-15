@@ -229,11 +229,18 @@ export async function orderTrackingNode(
       ? state.activeWorkflow.resumeContext['orderId']
       : undefined;
 
-  const orderId = extraction.orderId || resumeOrderId;
+  const orderId =
+    extraction.orderId ||
+    resumeOrderId ||
+    (typeof state.lastKnownEntities?.orderId === 'string' ? state.lastKnownEntities.orderId : undefined);
 
   if (!orderId) {
     return {
       workflowStatus: 'WAITING_FOR_USER_INPUT',
+      pendingTask: {
+        specialist,
+        awaitingField: 'orderId',
+      },
       messages: [
         new AIMessage(
           "I'd be happy to help track your order. Could you please provide your order ID? " +
@@ -344,6 +351,10 @@ export async function orderTrackingNode(
   return {
     workflowStatus: 'COMPLETED',
     activeWorkflow: null,
+    pendingTask: null,
+    lastKnownEntities: {
+      orderId,
+    },
     messages: [new AIMessage(responseText)],
   };
 }

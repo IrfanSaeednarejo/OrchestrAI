@@ -156,6 +156,13 @@ export function evaluatePreClassificationGuards(
   // 3. Active workflow resume guard
   const resumeTarget = checkResumePreconditions(state.activeWorkflow, state.identity);
   if (resumeTarget && isValidSpecialistId(resumeTarget.agent)) {
+    // If a specialist set WAITING_FOR_USER_INPUT targeting itself (e.g. asking for missing info or confirmation),
+    // this is a pending question to the customer, NOT a lateral handoff or satisfied verification block.
+    // It must NOT bypass classification when the user sends a new message.
+    if (state.workflowStatus === 'WAITING_FOR_USER_INPUT' && resumeTarget.agent === state.routing.currentAgent) {
+      return { outcome: 'PROCEED' };
+    }
+
     return {
       outcome: 'RESUME',
       targetSpecialist: resumeTarget.agent,

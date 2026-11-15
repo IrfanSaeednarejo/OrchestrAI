@@ -235,6 +235,7 @@ function CustomerChatContent() {
             isStreaming={chatState.isStreaming}
             streamingText={chatState.streamingText}
             currentNode={chatState.currentNode}
+            currentActivity={chatState.currentActivity}
             serviceOptions={chatState.serviceOptions}
             onOptionSelect={handleSend}
             isEscalated={chatState.workflowStatus === 'ESCALATED'}

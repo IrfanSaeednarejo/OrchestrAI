@@ -42,6 +42,9 @@ function makeState(overrides: Partial<ConversationState> = {}): ConversationStat
     workflowStatus: 'ACTIVE',
     identity: null,
     activeWorkflow: null,
+    lastKnownEntities: null,
+    pendingTask: null,
+    intentQueue: null,
     ...overrides,
   };
 }
