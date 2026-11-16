@@ -9,6 +9,15 @@ import { asyncHandler } from '../utils/async-handler.js';
 
 export const healthRouter = Router();
 
+// Lightweight liveness probe for Railway / container orchestrator health checks.
+// Returns 200 immediately without executing database queries or Redis pings.
+healthRouter.get('/live', (_req, res) => {
+  res.status(200).json({
+    status: 'live',
+    timestamp: new Date().toISOString(),
+  });
+});
+
 healthRouter.get(
   '/',
   asyncHandler(async (_req, res) => {
