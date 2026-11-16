@@ -111,6 +111,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Validate required Vercel secrets
+        env:
+          _VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          _VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          _VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          MISSING=""
+          [ -z "$_VERCEL_TOKEN" ]      && MISSING="$MISSING VERCEL_TOKEN"
+          [ -z "$_VERCEL_ORG_ID" ]     && MISSING="$MISSING VERCEL_ORG_ID"
+          [ -z "$_VERCEL_PROJECT_ID" ] && MISSING="$MISSING VERCEL_PROJECT_ID"
+          if [ -n "$MISSING" ]; then
+            echo "::error::Required GitHub Actions secrets are not set:$MISSING"
+            echo ""
+            echo "Add them at: GitHub → Settings → Secrets and variables → Actions → New repository secret"
+            exit 1
+          fi
+          echo "All required Vercel secrets are present."
+
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v25
         with:
