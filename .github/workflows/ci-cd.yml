@@ -94,16 +94,23 @@ jobs:
           push: true
           tags: ${{ steps.repo_name.outputs.IMAGE_NAME }}
 
-      - name: Validate Railway secret
+      - name: Validate Railway secret and config
         env:
           _RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          _RAILWAY_SERVICE: ${{ vars.RAILWAY_SERVICE_NAME }}
         run: |
-          if [ -z "$_RAILWAY_TOKEN" ]; then
-            echo "::error::RAILWAY_TOKEN secret is not set."
-            echo "Add it at: GitHub → Settings → Secrets and variables → Actions → New repository secret"
+          MISSING=""
+          [ -z "$_RAILWAY_TOKEN" ]  && MISSING="$MISSING RAILWAY_TOKEN (secret)"
+          [ -z "$_RAILWAY_SERVICE" ] && MISSING="$MISSING RAILWAY_SERVICE_NAME (variable)"
+          if [ -n "$MISSING" ]; then
+            echo "::error::Required Railway config is not set:$MISSING"
+            echo ""
+            echo "  RAILWAY_TOKEN      → GitHub Settings → Secrets and variables → Actions → Secrets"
+            echo "  RAILWAY_SERVICE_NAME → GitHub Settings → Secrets and variables → Actions → Variables"
+            echo "    Set RAILWAY_SERVICE_NAME to the exact service name shown in your Railway dashboard."
             exit 1
           fi
-          echo "RAILWAY_TOKEN is present."
+          echo "RAILWAY_TOKEN and RAILWAY_SERVICE_NAME are both present."
 
       - name: Install Railway CLI
         run: npm install -g @railway/cli
@@ -111,18 +118,8 @@ jobs:
       - name: Deploy to Railway
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-          RAILWAY_SERVICE: ${{ vars.RAILWAY_SERVICE_NAME }}
         run: |
-          # RAILWAY_SERVICE_NAME is a repository variable (not a secret) set in GitHub →
-          # Settings → Secrets and variables → Actions → Variables → RAILWAY_SERVICE_NAME.
-          # Set its value to the exact service name shown in your Railway dashboard.
-          # If it is unset, omit --service and let Railway infer from project context.
-          if [ -n "$RAILWAY_SERVICE" ]; then
-            railway up --service "$RAILWAY_SERVICE" --environment production --ci
-          else
-            echo "::warning::RAILWAY_SERVICE_NAME variable is not set; deploying without --service (uses Railway project context)."
-            railway up --environment production --ci
-          fi
+          railway up --service "${{ vars.RAILWAY_SERVICE_NAME }}" --environment production --ci
 
   deploy-frontend:
     name: Deploy Frontend
