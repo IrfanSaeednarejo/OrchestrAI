@@ -1,0 +1,21 @@
+services:
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: orchestrai-backend
+    ports:
+      - "${PORT:-4000}:${PORT:-4000}"
+    volumes:
+      - ./server/src:/app/src
+    environment:
+      - NODE_ENV=development
+      - PORT=${PORT:-4000}
+      - APP_PORT=${PORT:-4000}
+      - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_URL_UNPOOLED=${DATABASE_URL_UNPOOLED}
+      - REDIS_URL=${REDIS_URL}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - RESEND_API_KEY=${RESEND_API_KEY}
+      - TOKEN_SECRET=${TOKEN_SECRET}
+    command: ["npx", "tsx", "watch", "src/api/server.ts"]
