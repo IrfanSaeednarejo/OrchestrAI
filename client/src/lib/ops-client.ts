@@ -9,7 +9,14 @@ import type {
 } from '../types/ops';
 import { ApiClientError } from './api-client';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  (typeof window !== 'undefined' && process.env.NODE_ENV === 'production'
+    ? (() => {
+        console.warn('⚠️ [NEXT_PUBLIC_API_URL] is unset in production; falling back to http://localhost:4000');
+        return 'http://localhost:4000';
+      })()
+    : 'http://localhost:4000');
 
 async function handleOpsResponse<T>(res: Response): Promise<T> {
   if (!res.ok) {
