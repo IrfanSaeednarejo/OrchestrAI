@@ -11,7 +11,8 @@ export const envSchema = z
     POSTGRES_DB: z.string().optional(),
     POSTGRES_PORT: z.coerce.number().optional(),
     POSTGRES_HOST: z.string().default('localhost'),
-    REDIS_PORT: z.coerce.number(),
+    REDIS_URL: z.string().optional(),
+    REDIS_PORT: z.coerce.number().default(6379),
     REDIS_HOST: z.string().default('localhost'),
     GEMINI_API_KEY: z.string(),
     LANGCHAIN_TRACING_V2: z.enum(['true', 'false']).default('false'),
@@ -101,7 +102,7 @@ export const config = Object.freeze({
   redis: {
     host: envVars.REDIS_HOST,
     port: envVars.REDIS_PORT,
-    url: `redis://${envVars.REDIS_HOST}:${envVars.REDIS_PORT}`,
+    url: envVars.REDIS_URL || `redis://${envVars.REDIS_HOST}:${envVars.REDIS_PORT}`,
   },
   gemini: {
     apiKey: envVars.GEMINI_API_KEY,
