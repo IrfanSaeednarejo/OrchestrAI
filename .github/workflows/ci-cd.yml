@@ -94,13 +94,35 @@ jobs:
           push: true
           tags: ${{ steps.repo_name.outputs.IMAGE_NAME }}
 
+      - name: Validate Railway secret
+        env:
+          _RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          if [ -z "$_RAILWAY_TOKEN" ]; then
+            echo "::error::RAILWAY_TOKEN secret is not set."
+            echo "Add it at: GitHub → Settings → Secrets and variables → Actions → New repository secret"
+            exit 1
+          fi
+          echo "RAILWAY_TOKEN is present."
+
       - name: Install Railway CLI
         run: npm install -g @railway/cli
 
       - name: Deploy to Railway
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: railway up --service orchestrai-backend --environment production --ci
+          RAILWAY_SERVICE: ${{ vars.RAILWAY_SERVICE_NAME }}
+        run: |
+          # RAILWAY_SERVICE_NAME is a repository variable (not a secret) set in GitHub →
+          # Settings → Secrets and variables → Actions → Variables → RAILWAY_SERVICE_NAME.
+          # Set its value to the exact service name shown in your Railway dashboard.
+          # If it is unset, omit --service and let Railway infer from project context.
+          if [ -n "$RAILWAY_SERVICE" ]; then
+            railway up --service "$RAILWAY_SERVICE" --environment production --ci
+          else
+            echo "::warning::RAILWAY_SERVICE_NAME variable is not set; deploying without --service (uses Railway project context)."
+            railway up --environment production --ci
+          fi
 
   deploy-frontend:
     name: Deploy Frontend
