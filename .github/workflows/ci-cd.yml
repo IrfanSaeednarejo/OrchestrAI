@@ -156,5 +156,4 @@ jobs:
         run: |
           npx vercel --token "$VERCEL_TOKEN" \
             --yes \
-            --prod \
-            --cwd ./client
+            --prod
