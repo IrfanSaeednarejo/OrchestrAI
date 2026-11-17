@@ -1,37 +1,39 @@
-# Multi-stage production Dockerfile for OrchestrAI backend
+# Multi-stage production Dockerfile for OrchestrAI backend (Express + LangGraph)
+# Pin Node 20-alpine (meets packages requiring Node ^20.19.0+)
 FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copy dependency specifications
+# Copy dependency manifests
 COPY package*.json ./
 
-# Install all dependencies (including devDependencies needed for building TS)
+# Install all dependencies (including devDependencies needed for compiling TypeScript)
 RUN npm ci
 
-# Copy source code and tsconfig
+# Copy TypeScript configuration and source files
 COPY tsconfig.json ./
 COPY src/ ./src/
 
 # Compile TypeScript to dist/
 RUN npm run build
 
-# Production runtime stage
+# ── Stage 2: Minimal Production Runtime ──────────────────────────────
 FROM node:20-alpine AS runner
 
 WORKDIR /app
 
+# Ensure container runs with production environment
 ENV NODE_ENV=production
 
-# Copy package manifests and install only production dependencies
+# Install only production dependencies
 COPY package*.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 
-# Copy compiled assets from builder stage
+# Copy compiled JavaScript output from the builder stage
 COPY --from=builder /app/dist ./dist
 
-# Server defaults to 4000 (APP_PORT or PORT)
+# Internal backend port (Express defaults to 4000)
 EXPOSE 4000
 
-# Run compiled HTTP server
+# Start HTTP server
 CMD ["node", "dist/api/server.js"]

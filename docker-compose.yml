@@ -1,21 +1,66 @@
+# Production-ready Docker Compose orchestration
 services:
+  # ── Backend Service (Express + LangGraph) ───────────────────────────
   backend:
     build:
       context: ./server
       dockerfile: Dockerfile
     container_name: orchestrai-backend
+    restart: unless-stopped
+    # Backend port is kept internal within the custom bridge network ('orchestrai-net')
+    # Uncomment 'ports' only if host access to port 4000 is directly required
     ports:
-      - "${PORT:-4000}:${PORT:-4000}"
-    volumes:
-      - ./server/src:/app/src
+      - "${BACKEND_PORT:-4000}:4000"
     environment:
-      - NODE_ENV=development
-      - PORT=${PORT:-4000}
-      - APP_PORT=${PORT:-4000}
+      - NODE_ENV=production
+      - PORT=4000
+      - APP_PORT=4000
       - DATABASE_URL=${DATABASE_URL}
       - DATABASE_URL_UNPOOLED=${DATABASE_URL_UNPOOLED}
       - REDIS_URL=${REDIS_URL}
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - RESEND_API_KEY=${RESEND_API_KEY}
       - TOKEN_SECRET=${TOKEN_SECRET}
-    command: ["npx", "tsx", "watch", "src/api/server.ts"]
+      - CLIENT_ORIGIN=${CLIENT_ORIGIN:-http://localhost:3000}
+    healthcheck:
+      # Uses the lightweight liveness probe that doesn't trigger DB/Redis locks
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:4000/health/live"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - orchestrai-net
+
+  # ── Frontend Service (Next.js SSR) ──────────────────────────────────
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:4000}
+    container_name: orchestrai-frontend
+    restart: unless-stopped
+    # Only the frontend port is exposed to the host by default
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:4000}
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - orchestrai-net
+
+# Isolated user-defined network allowing inter-container resolution by service name
+networks:
+  orchestrai-net:
+    driver: bridge

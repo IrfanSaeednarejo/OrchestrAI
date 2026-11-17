@@ -1,0 +1,10 @@
+node_modules
+.next
+.env
+.env.*
+*.log
+coverage
+src/**/*.test.tsx
+src/**/*.test.ts
+src/**/*.spec.tsx
+src/**/*.spec.ts
