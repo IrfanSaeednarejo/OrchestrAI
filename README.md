@@ -20,6 +20,7 @@ Built with TypeScript, [LangGraph.js](https://github.com/langchain-ai/langgraphj
 - [Quick Start](#quick-start)
 - [Project Structure](#project-structure)
 - [Testing](#testing)
+- [Docker & Production Deployment](#docker--production-deployment)
 - [Key Design Decisions](#key-design-decisions)
 
 ---
@@ -162,11 +163,12 @@ npm --prefix server test              # 559 server tests including eval integrat
 | **Orchestration** | LangGraph.js (StateGraph, Command, PostgresSaver checkpointing) |
 | **LLM** | Google Gemini (structured output, temperature 0.0 for classification) |
 | **Database** | PostgreSQL 16 + pgvector (embeddings, domain data, checkpoints) |
-| **Cache** | Redis 7 (OTP verification codes, TTL-based expiry) |
+| **Cache** | Redis 7 / Upstash Serverless Redis (OTP verification codes, TTL-based expiry) |
 | **ORM** | Drizzle ORM (type-safe schema, migrations) |
-| **API** | Express.js (JSON + SSE streaming, Zod validation, AppError hierarchy) |
+| **API** | Express.js (JSON + SSE streaming, Zod validation, AppError hierarchy, health probes) |
 | **Frontend** | Next.js 14 (App Router, React 18, Tailwind CSS, Lucide icons) |
 | **Testing** | Vitest (559 server + 95 client = 654 tests, zero mocked LLM calls in integration) |
+| **Deployment** | Docker & Docker Compose (local dev), Railway (backend runtime), Vercel (frontend edge), Neon (Postgres) |
 | **Tracing** | LangSmith (optional, metadata sanitization, PII-safe) |
 
 ---
@@ -186,8 +188,9 @@ npm --prefix server test              # 559 server tests including eval integrat
 git clone <repo-url> && cd OrchestrAI
 
 # Copy and configure environment
+cp .env.example .env
 cp server/.env.example server/.env
-# Edit server/.env — set GEMINI_API_KEY
+# Edit .env and server/.env — set GEMINI_API_KEY, DATABASE_URL, and REDIS_URL
 
 # One-command launch (checks Docker, runs migrations, seeds data, starts both servers)
 powershell -ExecutionPolicy Bypass -File scripts/run-local.ps1
@@ -267,7 +270,8 @@ OrchestrAI/
 │   │   ├── services/               # Conversation lifecycle, verification
 │   │   └── shared/                 # Config, types
 │   ├── knowledge-base/             # 5 policy markdown documents
-│   └── docker-compose.yml          # PostgreSQL + pgvector, Redis
+│   ├── Dockerfile                  # Production multi-stage Docker build
+│   └── docker-compose.yml          # PostgreSQL + pgvector, Redis (infrastructure)
 ├── client/                         # Next.js 14 frontend
 │   └── src/
 │       ├── app/                    # App Router pages (chat, ops, error boundaries)
@@ -278,6 +282,9 @@ OrchestrAI/
 │       └── lib/                    # API client, ops client
 ├── docs/                           # Architecture docs, decisions, roadmap
 ├── scripts/                        # run-local.ps1, verify.ps1
+├── .github/workflows/              # CI/CD pipelines (GHCR, Railway, Vercel)
+├── docker-compose.yml              # Monorepo containerized local stack
+├── .env.example                    # Environment variable template
 └── AGENTS.md                       # Agent operating guide
 ```
 
@@ -306,6 +313,38 @@ powershell -ExecutionPolicy Bypass -File scripts/verify.ps1
 - **API integration tests:** conversation lifecycle, SSE streaming, auth, payload limits
 - **Security boundary tests:** identity mutation restriction, gate allowlist enforcement
 - **Evaluation framework tests:** evaluator correctness, multi-turn runner, CLI output
+
+---
+
+## Docker & Production Deployment
+
+### Local Development via Docker Compose
+
+You can launch the backend services locally using the root `docker-compose.yml`:
+
+```bash
+# Build and run containers in detached mode
+docker compose up -d
+
+# View live service logs
+docker compose logs -f backend
+
+# Check container health and status
+docker compose ps
+
+# Stop containers
+docker compose down
+```
+
+### Production Architecture & Cloud Deployment
+
+OrchestrAI separates production runtime responsibilities across purpose-built platforms:
+
+- **Frontend (Vercel)**: Deployed automatically from `client/` to Vercel's Edge/Serverless infrastructure via GitHub Actions.
+- **Backend (Railway)**: Containerized with `server/Dockerfile` using `node:20-alpine` (multi-stage build), deployed via the Railway CLI (`railway up`). Exposes a lightweight `/health/live` probe to avoid cold-start timeouts.
+- **Database (Neon)**: Serverless PostgreSQL 16 with `pgvector` for domain tables, LangGraph state checkpoints (`PostgresSaver`), and scoped RAG embeddings.
+- **Cache (Upstash)**: Serverless Redis accessed securely over TLS (`rediss://...`) for ephemeral OTP verification codes and rate limiting.
+- **CI/CD (.github/workflows/ci-cd.yml)**: Automated pipeline that runs linting, typechecking, builds backend containers to GitHub Container Registry (`ghcr.io`), and deploys directly to Railway and Vercel on pushes to `main`.
 
 ---
 
