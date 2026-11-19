@@ -12,7 +12,14 @@ import {
   jsonb,
   vector,
   doublePrecision,
+  customType,
 } from 'drizzle-orm/pg-core';
+
+export const tsvector = customType<{ data: string }>({
+  dataType() {
+    return 'tsvector';
+  },
+});
 
 // ---------------------------------------------------------------------------
 // Enums
@@ -383,22 +390,78 @@ export const knowledgeDomainEnum = pgEnum('knowledge_domain', [
   'payments',
   'account',
 ]);
+export type KnowledgeDomain = (typeof knowledgeDomainEnum.enumValues)[number];
 
+// Deprecated legacy table retained for migration safety (dropped in follow-up PR)
 export const knowledgeDocuments = pgTable(
   'knowledge_documents',
   {
     id: uuid('id').primaryKey().defaultRandom(),
     domain: knowledgeDomainEnum('domain').notNull(),
-    documentType: text('document_type').notNull(), // e.g. 'policy', 'faq'
-    topic: text('topic').notNull(),                // e.g. 'returns', 'refunds', 'shipping', 'payments', 'account_security'
+    documentType: text('document_type').notNull(),
+    topic: text('topic').notNull(),
     version: text('version').notNull(),
     effectiveDate: timestamp('effective_date').notNull(),
     content: text('content').notNull(),
-    // Nullable — populated by the Step 3 ingestion pipeline, not at insert time.
     embedding: vector('embedding', { dimensions: 768 }),
     createdAt: timestamp('created_at').notNull().defaultNow(),
   },
   (table) => [
     index('knowledge_documents_domain_idx').on(table.domain),
+  ],
+);
+
+export const knowledgeDocStatusEnum = pgEnum('knowledge_doc_status', [
+  'active',
+  'superseded',
+  'draft',
+  'archived',
+]);
+
+// Part C.3: Document Lifecycle & Version Registry
+export const knowledgeDocVersions = pgTable(
+  'knowledge_doc_versions',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    docId: text('doc_id').notNull(),
+    domain: knowledgeDomainEnum('domain').notNull(),
+    topic: text('topic').notNull(),
+    documentType: text('document_type').notNull(),
+    version: text('version').notNull(),
+    effectiveDate: timestamp('effective_date', { withTimezone: true }).notNull(),
+    fileHash: text('file_hash').notNull(),
+    status: knowledgeDocStatusEnum('status').notNull().default('active'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex('knowledge_doc_versions_doc_id_version_idx').on(table.docId, table.version),
+    index('knowledge_doc_versions_domain_topic_status_idx').on(table.domain, table.topic, table.status),
+  ],
+);
+
+// Part C.3: Searchable Document Chunks
+export const knowledgeChunks = pgTable(
+  'knowledge_chunks',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    versionId: uuid('version_id')
+      .notNull()
+      .references(() => knowledgeDocVersions.id, { onDelete: 'cascade' }),
+    domain: knowledgeDomainEnum('domain').notNull(),
+    topic: text('topic').notNull(),
+    sectionPath: text('section_path').notNull(),
+    chunkIndex: integer('chunk_index').notNull(),
+    pageNumber: integer('page_number').notNull().default(0),
+    content: text('content').notNull(),
+    contentHash: text('content_hash').notNull(),
+    embedding: vector('embedding', { dimensions: 768 }),
+    searchVector: tsvector('search_vector'),
+    status: knowledgeDocStatusEnum('status').notNull().default('active'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    index('idx_knowledge_chunks_embedding_hnsw').using('hnsw', table.embedding.op('vector_cosine_ops')),
+    index('idx_knowledge_chunks_search_vector_gin').using('gin', table.searchVector),
+    index('idx_knowledge_chunks_scope_section').on(table.domain, table.topic, table.status, table.sectionPath),
   ],
 );
