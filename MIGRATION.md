@@ -190,4 +190,5 @@ between test cases, or shard the eval suite across two CI jobs.
 ---
 
 ### Scale Hardening Scope Note
-Phase 29 hardened for medium-sized PDFs (up to ~60 KB). Large-PDF (>1 MB) memory safety unverified and deferred.
+Phase 29 hardened for medium-sized PDFs (up to ~60 KB). Fixture scale: 56KB tested; >500KB unverified.
+`pdf-parser.ts` accumulates runs across all pages into memory before section classification, making memory O(pages); large PDF parsing (>500KB / 100+ pages) requires streaming or per-page text release before production scale-up.

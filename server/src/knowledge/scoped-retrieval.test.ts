@@ -5,16 +5,20 @@
 // A test that passes here proves inArray(topic) is actually filtering, not just
 // benefiting from ranking coincidence.
 //
+// Now seeds knowledge_doc_versions + knowledge_chunks (the Phase 29 scoped path).
+// The legacy knowledge_documents table is NOT touched — this test proves the
+// production retrieval path filters correctly.
+//
 // Anchor dimension: 100 (distinct from retrieval.test.ts [0] and knowledge.tools.test.ts [50])
 // Topics match exact production values from documents.ts / specialist-scope.ts
-// Cleanup: by ID array (primary) + version prefix 'test-scope-1.0' (belt-and-suspenders)
+// Cleanup: by versionId (cascade deletes chunks) + content LIKE prefix (belt-and-suspenders)
 
 import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import { db } from '../persistence/db/client.js';
-import { knowledgeDocuments } from '../persistence/db/schema.js';
-import { inArray, like } from 'drizzle-orm';
-import { createKnowledgeDocument } from '../persistence/repositories/knowledge.repository.js';
+import { knowledgeDocVersions, knowledgeChunks } from '../persistence/db/schema.js';
+import { inArray, like, sql } from 'drizzle-orm';
 import { searchKnowledgeForSpecialist } from './scoped-retrieval.js';
+import crypto from 'node:crypto';
 
 // ---------------------------------------------------------------------------
 // Mock embeddings-client — same pattern as retrieval.test.ts
@@ -23,6 +27,8 @@ import { searchKnowledgeForSpecialist } from './scoped-retrieval.js';
 vi.mock('./embeddings-client.js', () => ({
   embedDocument: vi.fn(),
   embedQuery: vi.fn(),
+  // assertValidEmbedding is imported by knowledge.repository.ts; must not be undefined
+  assertValidEmbedding: vi.fn(),
 }));
 
 import { embedQuery } from './embeddings-client.js';
@@ -50,116 +56,147 @@ function docVec(s: number, spreadDim: number): number[] {
   return v;
 }
 
+function contentHash(content: string): string {
+  return crypto.createHash('sha256').update(content).digest('hex');
+}
+
 // ---------------------------------------------------------------------------
 // Fixtures
 //
-// Topics MUST match the exact production values used in documents.ts and referenced
-// by specialist-scope.ts: 'shipping', 'returns', 'payments', 'refunds', 'account_security'.
-// Cleanup uses the row ID array (primary) and a LIKE on content prefix (belt-and-suspenders),
-// since content is unique to these test rows.
+// Seeds knowledge_doc_versions + knowledge_chunks (the scoped retrieval path).
+// Topics must match exact production values from specialist-scope.ts.
+// Cleanup: delete versions by ID (chunks cascade via ON DELETE CASCADE).
 // ---------------------------------------------------------------------------
 
 const FIXED_DATE = new Date('2026-01-01T00:00:00Z');
 const TEST_CONTENT_PREFIX = 'scoped-retrieval-test:';
+// Unique version prefix so we can LIKE-cleanup in belt-and-suspenders afterAll
+const TEST_VERSION = 'test-scope-9.9.9';
 
-// orders domain:  shipping (correct for order_tracking) at 0.80, returns (wrong) at 0.97
-let idOrdersShipping: string;  // similarity 0.80 — the correct doc for order_tracking
-let idOrdersReturns: string;   // similarity 0.97 — the wrong doc (higher raw score!)
-
-// payments domain: payments (correct for payment) at 0.80, refunds (wrong) at 0.97
-let idPaymentsPayments: string; // similarity 0.80 — correct for payment
-let idPaymentsRefunds: string;  // similarity 0.97 — wrong doc (higher raw score!)
-
-// account domain: account_security (correct for account_access) at 0.90
+// IDs of inserted chunks (what retrieveKnowledge returns as h.id = chunk.id)
+let idOrdersShipping: string;  // shipping chunk id
+let idOrdersReturns: string;   // returns chunk id
+let idPaymentsPayments: string;
+let idPaymentsRefunds: string;
 let idAccountSecurity: string;
 
-const allInsertedIds: string[] = [];
+// Version IDs (for cleanup — cascades to chunks)
+const insertedVersionIds: string[] = [];
+
+/**
+ * Insert one version + one chunk into the scoped tables.
+ * Returns the chunk's id (what retrieval returns as KnowledgeHit.id).
+ */
+async function seedChunk(opts: {
+  domain: 'orders' | 'payments' | 'account';
+  topic: string;
+  content: string;
+  embedding: number[];
+}): Promise<string> {
+  const docId = `test-scope-${opts.domain}-${opts.topic}`;
+
+  // Insert version
+  const [ver] = await db
+    .insert(knowledgeDocVersions)
+    .values({
+      docId,
+      domain: opts.domain,
+      topic: opts.topic,
+      documentType: 'policy',
+      version: TEST_VERSION,
+      effectiveDate: FIXED_DATE,
+      fileHash: contentHash(`${docId}:${TEST_VERSION}`),
+      status: 'active',
+    })
+    .returning({ id: knowledgeDocVersions.id });
+
+  if (!ver) throw new Error(`Failed to insert version for ${docId}`);
+  insertedVersionIds.push(ver.id);
+
+  // Insert chunk
+  const embeddingJson = JSON.stringify(opts.embedding);
+  const content = opts.content;
+  const hash = contentHash(content);
+
+  const [chunk] = await db
+    .insert(knowledgeChunks)
+    .values({
+      versionId: ver.id,
+      domain: opts.domain,
+      topic: opts.topic,
+      sectionPath: 'Overview',
+      chunkIndex: 0,
+      content,
+      contentHash: hash,
+      embedding: sql`${embeddingJson}::vector`,
+      status: 'active',
+    } as never)
+    .returning({ id: knowledgeChunks.id });
+
+  if (!chunk) throw new Error(`Failed to insert chunk for ${docId}`);
+  return chunk.id;
+}
 
 beforeAll(async () => {
-  // Belt-and-suspenders cleanup before seeding: delete any leftover rows
-  await db.delete(knowledgeDocuments).where(
-    like(knowledgeDocuments.content, `${TEST_CONTENT_PREFIX}%`)
-  );
+  // Belt-and-suspenders: wipe any leftover test versions from prior runs
+  await db.execute(sql`
+    DELETE FROM knowledge_doc_versions
+    WHERE version = ${TEST_VERSION}
+  `);
 
   // orders / shipping — similarity 0.80 (dim 101 spread)
-  // topic = 'shipping' matches specialist-scope.ts order_tracking scope exactly
-  const docShipping = await createKnowledgeDocument({
+  idOrdersShipping = await seedChunk({
     domain: 'orders',
-    documentType: 'policy',
     topic: 'shipping',
-    version: '1.0',
-    effectiveDate: FIXED_DATE,
     content: `${TEST_CONTENT_PREFIX} shipping`,
     embedding: docVec(0.80, 101),
   });
-  idOrdersShipping = docShipping.id;
 
   // orders / returns — similarity 0.97 (dim 102 spread) — HIGHER than shipping!
-  // topic = 'returns' matches specialist-scope.ts returns scope exactly
-  const docReturns = await createKnowledgeDocument({
+  idOrdersReturns = await seedChunk({
     domain: 'orders',
-    documentType: 'policy',
     topic: 'returns',
-    version: '1.0',
-    effectiveDate: FIXED_DATE,
     content: `${TEST_CONTENT_PREFIX} returns`,
     embedding: docVec(0.97, 102),
   });
-  idOrdersReturns = docReturns.id;
 
-  // payments / payments topic — similarity 0.80 (dim 103 spread)
-  // topic = 'payments' matches specialist-scope.ts payment scope exactly
-  const docPayments = await createKnowledgeDocument({
+  // payments / payments — similarity 0.80 (dim 103 spread)
+  idPaymentsPayments = await seedChunk({
     domain: 'payments',
-    documentType: 'policy',
     topic: 'payments',
-    version: '1.0',
-    effectiveDate: FIXED_DATE,
     content: `${TEST_CONTENT_PREFIX} payments`,
     embedding: docVec(0.80, 103),
   });
-  idPaymentsPayments = docPayments.id;
 
   // payments / refunds — similarity 0.97 (dim 104 spread) — HIGHER than payments!
-  // topic = 'refunds' matches specialist-scope.ts refund scope exactly
-  const docRefunds = await createKnowledgeDocument({
+  idPaymentsRefunds = await seedChunk({
     domain: 'payments',
-    documentType: 'policy',
     topic: 'refunds',
-    version: '1.0',
-    effectiveDate: FIXED_DATE,
     content: `${TEST_CONTENT_PREFIX} refunds`,
     embedding: docVec(0.97, 104),
   });
-  idPaymentsRefunds = docRefunds.id;
 
   // account / account_security — similarity 0.90 (dim 105 spread)
-  // topic = 'account_security' matches specialist-scope.ts account_access scope exactly
-  const docAccount = await createKnowledgeDocument({
+  idAccountSecurity = await seedChunk({
     domain: 'account',
-    documentType: 'policy',
     topic: 'account_security',
-    version: '1.0',
-    effectiveDate: FIXED_DATE,
     content: `${TEST_CONTENT_PREFIX} account_security`,
     embedding: docVec(0.90, 105),
   });
-  idAccountSecurity = docAccount.id;
-
-  allInsertedIds.push(idOrdersShipping, idOrdersReturns, idPaymentsPayments, idPaymentsRefunds, idAccountSecurity);
 
   // embedQuery returns unitVec(100) — the anchor for all similarity measurements
   mockedEmbedQuery.mockResolvedValue(unitVec(100));
 });
 
 afterAll(async () => {
-  if (allInsertedIds.length > 0) {
-    await db.delete(knowledgeDocuments).where(inArray(knowledgeDocuments.id, allInsertedIds));
+  // Primary cleanup: delete versions by ID; chunks cascade via ON DELETE CASCADE
+  if (insertedVersionIds.length > 0) {
+    await db.delete(knowledgeDocVersions).where(inArray(knowledgeDocVersions.id, insertedVersionIds));
   }
-  // Belt-and-suspenders: wipe any remaining test rows by content prefix
-  await db.delete(knowledgeDocuments).where(
-    like(knowledgeDocuments.content, `${TEST_CONTENT_PREFIX}%`)
-  );
+  // Belt-and-suspenders: wipe any remaining rows by version string
+  await db.execute(sql`
+    DELETE FROM knowledge_doc_versions WHERE version = ${TEST_VERSION}
+  `);
 });
 
 // ---------------------------------------------------------------------------
@@ -168,7 +205,7 @@ afterAll(async () => {
 
 describe('searchKnowledgeForSpecialist', () => {
   describe('order_tracking — sees shipping (0.80) but NOT returns (0.97)', () => {
-    it('contains the shipping doc (0.80) in results', async () => {
+    it('contains the shipping chunk in results', async () => {
       const result = await searchKnowledgeForSpecialist('order_tracking', { query: 'test', topK: 5 });
       expect(result.success).toBe(true);
       if (!result.success) return;
@@ -176,7 +213,7 @@ describe('searchKnowledgeForSpecialist', () => {
       expect(ids).toContain(idOrdersShipping);
     });
 
-    it('does NOT contain the returns doc (0.97) despite its higher raw similarity', async () => {
+    it('does NOT contain the returns chunk despite its higher raw similarity', async () => {
       const result = await searchKnowledgeForSpecialist('order_tracking', { query: 'test', topK: 5 });
       expect(result.success).toBe(true);
       if (!result.success) return;
@@ -186,7 +223,7 @@ describe('searchKnowledgeForSpecialist', () => {
   });
 
   describe('returns — sees returns (0.97) but NOT shipping (0.80)', () => {
-    it('contains the returns doc (0.97) in results', async () => {
+    it('contains the returns chunk in results', async () => {
       const result = await searchKnowledgeForSpecialist('returns', { query: 'test', topK: 5 });
       expect(result.success).toBe(true);
       if (!result.success) return;
@@ -194,7 +231,7 @@ describe('searchKnowledgeForSpecialist', () => {
       expect(ids).toContain(idOrdersReturns);
     });
 
-    it('does NOT contain the shipping doc (0.80)', async () => {
+    it('does NOT contain the shipping chunk', async () => {
       const result = await searchKnowledgeForSpecialist('returns', { query: 'test', topK: 5 });
       expect(result.success).toBe(true);
       if (!result.success) return;
@@ -204,7 +241,7 @@ describe('searchKnowledgeForSpecialist', () => {
   });
 
   describe('payment — sees payments (0.80) but NOT refunds (0.97)', () => {
-    it('contains the payments doc (0.80) in results', async () => {
+    it('contains the payments chunk in results', async () => {
       const result = await searchKnowledgeForSpecialist('payment', { query: 'test', topK: 5 });
       expect(result.success).toBe(true);
       if (!result.success) return;
@@ -212,7 +249,7 @@ describe('searchKnowledgeForSpecialist', () => {
       expect(ids).toContain(idPaymentsPayments);
     });
 
-    it('does NOT contain the refunds doc (0.97) despite its higher raw similarity', async () => {
+    it('does NOT contain the refunds chunk despite its higher raw similarity', async () => {
       const result = await searchKnowledgeForSpecialist('payment', { query: 'test', topK: 5 });
       expect(result.success).toBe(true);
       if (!result.success) return;
@@ -222,7 +259,7 @@ describe('searchKnowledgeForSpecialist', () => {
   });
 
   describe('refund — sees refunds (0.97) but NOT payments (0.80)', () => {
-    it('contains the refunds doc (0.97) in results', async () => {
+    it('contains the refunds chunk in results', async () => {
       const result = await searchKnowledgeForSpecialist('refund', { query: 'test', topK: 5 });
       expect(result.success).toBe(true);
       if (!result.success) return;
@@ -230,7 +267,7 @@ describe('searchKnowledgeForSpecialist', () => {
       expect(ids).toContain(idPaymentsRefunds);
     });
 
-    it('does NOT contain the payments doc (0.80)', async () => {
+    it('does NOT contain the payments chunk', async () => {
       const result = await searchKnowledgeForSpecialist('refund', { query: 'test', topK: 5 });
       expect(result.success).toBe(true);
       if (!result.success) return;
@@ -239,8 +276,8 @@ describe('searchKnowledgeForSpecialist', () => {
     });
   });
 
-  describe('account_access — sees account_security doc', () => {
-    it('contains the account_security doc in results', async () => {
+  describe('account_access — sees account_security chunk', () => {
+    it('contains the account_security chunk in results', async () => {
       const result = await searchKnowledgeForSpecialist('account_access', { query: 'test', topK: 5 });
       expect(result.success).toBe(true);
       if (!result.success) return;
