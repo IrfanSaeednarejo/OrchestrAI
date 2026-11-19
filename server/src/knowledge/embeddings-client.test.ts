@@ -36,58 +36,60 @@ describe('embeddings-client', () => {
     mockEmbedContent.mockResolvedValue(makeSuccessResponse());
   });
 
-  // a. embedDocument prefix
-  it('embedDocument sends contents with the correct document prefix', async () => {
+  // a. embedDocument passes raw text (taskType handles asymmetry, no prefix wrappers)
+  it('embedDocument sends the raw text as contents', async () => {
     await embedDocument('hello world');
     const call = mockEmbedContent.mock.calls[0]?.[0] as { contents: string } | undefined;
-    expect(call?.contents).toBe('title: none | text: hello world');
+    expect(call?.contents).toBe('hello world');
   });
 
-  // b. embedQuery prefix
-  it('embedQuery sends contents with the correct query prefix', async () => {
+  // b. embedQuery passes raw text (taskType handles asymmetry, no prefix wrappers)
+  it('embedQuery sends the raw text as contents', async () => {
     await embedQuery('hello world');
     const call = mockEmbedContent.mock.calls[0]?.[0] as { contents: string } | undefined;
-    expect(call?.contents).toBe('task: search result | query: hello world');
+    expect(call?.contents).toBe('hello world');
   });
 
-  // c. Asymmetry: same input → different contents strings
-  it('embedDocument and embedQuery produce different contents strings for the same input', async () => {
+  // c. Asymmetry: same input text → different taskType values (not different content strings)
+  it('embedDocument uses RETRIEVAL_DOCUMENT taskType and embedQuery uses RETRIEVAL_QUERY taskType', async () => {
     await embedDocument('same text');
-    const docCall = mockEmbedContent.mock.calls[0]?.[0] as { contents: string } | undefined;
+    const docCall = mockEmbedContent.mock.calls[0]?.[0] as { config: Record<string, unknown> } | undefined;
     mockEmbedContent.mockClear();
 
     await embedQuery('same text');
-    const queryCall = mockEmbedContent.mock.calls[0]?.[0] as { contents: string } | undefined;
+    const queryCall = mockEmbedContent.mock.calls[0]?.[0] as { config: Record<string, unknown> } | undefined;
 
-    expect(docCall?.contents).not.toBe(queryCall?.contents);
+    expect(docCall?.config.taskType).toBe('RETRIEVAL_DOCUMENT');
+    expect(queryCall?.config.taskType).toBe('RETRIEVAL_QUERY');
+    expect(docCall?.config.taskType).not.toBe(queryCall?.config.taskType);
   });
 
-  // d. outputDimensionality === 768 and NO taskType key
-  it('embedDocument sends config.outputDimensionality 768 and no taskType', async () => {
+  // d. outputDimensionality === 768 and correct taskType keys
+  it('embedDocument sends config.outputDimensionality 768 and taskType RETRIEVAL_DOCUMENT', async () => {
     await embedDocument('test');
     const call = mockEmbedContent.mock.calls[0]?.[0] as { config: Record<string, unknown> } | undefined;
     expect(call?.config.outputDimensionality).toBe(768);
-    expect(Object.prototype.hasOwnProperty.call(call?.config, 'taskType')).toBe(false);
+    expect(call?.config.taskType).toBe('RETRIEVAL_DOCUMENT');
   });
 
-  it('embedQuery sends config.outputDimensionality 768 and no taskType', async () => {
+  it('embedQuery sends config.outputDimensionality 768 and taskType RETRIEVAL_QUERY', async () => {
     await embedQuery('test');
     const call = mockEmbedContent.mock.calls[0]?.[0] as { config: Record<string, unknown> } | undefined;
     expect(call?.config.outputDimensionality).toBe(768);
-    expect(Object.prototype.hasOwnProperty.call(call?.config, 'taskType')).toBe(false);
+    expect(call?.config.taskType).toBe('RETRIEVAL_QUERY');
   });
 
-  // e. Both use model 'gemini-embedding-2'
-  it('embedDocument uses model gemini-embedding-2', async () => {
+  // e. Both use model 'gemini-embedding-001'
+  it('embedDocument uses model gemini-embedding-001', async () => {
     await embedDocument('test');
     const call = mockEmbedContent.mock.calls[0]?.[0] as { model: string } | undefined;
-    expect(call?.model).toBe('gemini-embedding-2');
+    expect(call?.model).toBe('gemini-embedding-001');
   });
 
-  it('embedQuery uses model gemini-embedding-2', async () => {
+  it('embedQuery uses model gemini-embedding-001', async () => {
     await embedQuery('test');
     const call = mockEmbedContent.mock.calls[0]?.[0] as { model: string } | undefined;
-    expect(call?.model).toBe('gemini-embedding-2');
+    expect(call?.model).toBe('gemini-embedding-001');
   });
 
   // f. Both throw when response has no embeddings/values

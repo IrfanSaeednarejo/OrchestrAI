@@ -1,0 +1,66 @@
+{
+  "evalSetVersion": "1.0.0",
+  "createdAgainstDocVersions": {
+    "pol-orders-returns-001": "1.0.0",
+    "pol-payments-refunds-001": "1.0.0",
+    "faq-orders-shipping-001": "1.0.0",
+    "faq-payments-terms-001": "1.0.0",
+    "faq-account-security-001": "1.0.0"
+  },
+  "queries": [
+    {
+      "id": "eval-q-01",
+      "query": "How many days do I have to return an item after delivery?",
+      "domain": "orders",
+      "topic": "returns",
+      "expectedDocId": "pol-orders-returns-001",
+      "targetSectionPath": "Return Eligibility",
+      "expectedKeywords": ["return", "eligible", "items"]
+    },
+    {
+      "id": "eval-q-02",
+      "query": "What are the rules and exceptions for damaged or defective items?",
+      "domain": "orders",
+      "topic": "returns",
+      "expectedDocId": "pol-orders-returns-001",
+      "targetSectionPath": "Return Eligibility",
+      "expectedKeywords": ["return", "items"]
+    },
+    {
+      "id": "eval-q-03",
+      "query": "How long does standard shipping take and what carriers are used?",
+      "domain": "orders",
+      "topic": "shipping",
+      "expectedDocId": "faq-orders-shipping-001",
+      "targetSectionPath": "What do the different shipment statuses mean?",
+      "expectedKeywords": ["shipping", "delivery"]
+    },
+    {
+      "id": "eval-q-04",
+      "query": "When will a refund show up on my credit card statement?",
+      "domain": "payments",
+      "topic": "refunds",
+      "expectedDocId": "pol-payments-refunds-001",
+      "targetSectionPath": "When Refunds Are Issued",
+      "expectedKeywords": ["refund", "business"]
+    },
+    {
+      "id": "eval-q-05",
+      "query": "What payment methods are supported including Apple Pay or PayPal?",
+      "domain": "payments",
+      "topic": "payments",
+      "expectedDocId": "faq-payments-terms-001",
+      "targetSectionPath": "What do the different payment statuses mean?",
+      "expectedKeywords": ["payment", "charges"]
+    },
+    {
+      "id": "eval-q-06",
+      "query": "How does two-factor authentication and OTP verification work for login security?",
+      "domain": "account",
+      "topic": "account_security",
+      "expectedDocId": "faq-account-security-001",
+      "targetSectionPath": "What is email verification and why is it required?",
+      "expectedKeywords": ["verification", "security"]
+    }
+  ]
+}

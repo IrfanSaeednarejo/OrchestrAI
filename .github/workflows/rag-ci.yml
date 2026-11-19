@@ -1,0 +1,141 @@
+name: RAG Pipeline CI
+
+on:
+  pull_request:
+    paths:
+      - 'server/src/knowledge/**'
+      - 'server/src/persistence/**'
+      - 'server/src/evaluation/**'
+      - 'server/scripts/**'
+      - 'eval/**'
+      - 'docs/knowledge-base/**'
+      - '.github/workflows/rag-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'server/src/knowledge/**'
+      - 'server/src/persistence/**'
+      - 'server/src/evaluation/**'
+      - 'server/scripts/**'
+      - 'eval/**'
+      - 'docs/knowledge-base/**'
+  schedule:
+    # Nightly live model smoke test at 02:00 UTC
+    - cron: '0 2 * * *'
+
+jobs:
+  # Gate 1: Fast PR Unit Checks (mocked embeddings, deterministic)
+  pr-unit-gate:
+    name: Gate 1 - Unit & Type Verification
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Lint Codebase
+        run: npm run lint
+
+      - name: TypeScript Check
+        run: npm run typecheck
+
+      - name: Run Unit Tests (Chunker & RRF)
+        run: npx vitest run src/knowledge/chunker.test.ts src/knowledge/rrf-reranker.test.ts
+
+  # Gate 2: Full Integration Gate against Postgres + pgvector
+  vector-integration-gate:
+    name: Gate 2 - Postgres + pgvector Integration
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: orchestrai
+          POSTGRES_PASSWORD: orchestrai-test-password
+          POSTGRES_DB: orchestrai_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+
+    defaults:
+      run:
+        working-directory: server
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Database Migrations
+        env:
+          DATABASE_URL: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
+        run: npm run db:migrate
+
+      - name: Run Mocked Ingestion & Retrieval Suite
+        env:
+          DATABASE_URL: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || 'mock-ci-key' }}
+        run: |
+          # NOTE: Gate 2 wall-clock ≈90 s — rate-limit risk if >100 s. See MIGRATION.md CI Duration Note.
+          npx vitest run src/evaluation/rag-retrieval.test.ts
+
+  # Gate 3: Nightly Smoke Gate (Validates live Gemini API endpoint and drift)
+  nightly-smoke-gate:
+    name: Gate 3 - Nightly Live Smoke Gate
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Validate Gemini Embedding Endpoint
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          node --input-type=module -e "
+          import { GoogleGenAI } from '@google/genai';
+          const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+          const res = await ai.models.embedContent({
+            model: 'gemini-embedding-2',
+            contents: 'nightly health check',
+            config: { outputDimensionality: 768 }
+          });
+          if (res.embeddings?.[0]?.values?.length !== 768) throw new Error('Smoke check failed');
+          console.log('Gemini Embedding API healthy.');
+          "
