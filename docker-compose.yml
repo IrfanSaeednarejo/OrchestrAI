@@ -13,6 +13,7 @@ services:
       - "${BACKEND_PORT:-4000}:4000"
     environment:
       - NODE_ENV=production
+      - NODE_OPTIONS=--no-network-family-autoselection
       - PORT=4000
       - APP_PORT=4000
       - DATABASE_URL=${DATABASE_URL}
