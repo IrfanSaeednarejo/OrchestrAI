@@ -120,8 +120,8 @@ for (const query of QUERIES) {
   const hits = result.success ? result.data.length : 0;
   const status = result.success ? 'OK' : `FAIL:${(result as any).error?.code}`;
   console.log(`  [${latMs.toFixed(0).padStart(5)}ms] hits=${hits} status=${status} | ${query}`);
-  // 500 ms pacing to respect Gemini rate limits
-  await new Promise((r) => setTimeout(r, 500));
+  // 2000 ms pacing to respect Gemini rate limits and prevent backoff retries
+  await new Promise((r) => setTimeout(r, 2000));
 }
 
 latencies.sort((a, b) => a - b);

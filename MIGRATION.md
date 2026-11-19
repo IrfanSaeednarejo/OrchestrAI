@@ -186,3 +186,8 @@ Gate 2 (`vector-integration-gate`) issues live Gemini embedding calls during
 `rag-retrieval.test.ts`. Observed wall‑clock: **~90 s** (rate-limit risk at > 100 s).
 If Gate 2 starts timing out: add `await new Promise(r => setTimeout(r, 2000))` pacing
 between test cases, or shard the eval suite across two CI jobs.
+
+---
+
+### Scale Hardening Scope Note
+Phase 29 hardened for medium-sized PDFs (up to ~60 KB). Large-PDF (>1 MB) memory safety unverified and deferred.
