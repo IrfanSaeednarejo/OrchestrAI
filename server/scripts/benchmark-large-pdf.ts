@@ -16,6 +16,7 @@ import path from 'node:path';
 import { performance } from 'node:perf_hooks';
 import { ingestPdfKnowledgeBase } from '../src/knowledge/ingest.js';
 import { retrieveKnowledge } from '../src/knowledge/retrieval.js';
+import { poolStats } from '../src/persistence/db/client.js';
 import pg from 'pg';
 
 // ── 0. Reset log files ────────────────────────────────────────────────────────
@@ -108,6 +109,7 @@ console.log('\n=== BENCHMARK: Retrieval Latency (20 queries) ===');
 const latencies: number[] = [];
 
 for (const query of QUERIES) {
+  const beforePool = JSON.stringify(poolStats());
   const t0 = performance.now();
   const result = await retrieveKnowledge({
     query,
@@ -116,10 +118,13 @@ for (const query of QUERIES) {
     topK: 3,
   });
   const latMs = performance.now() - t0;
+  const afterPool = JSON.stringify(poolStats());
   latencies.push(latMs);
   const hits = result.success ? result.data.length : 0;
   const status = result.success ? 'OK' : `FAIL:${(result as any).error?.code}`;
-  console.log(`  [${latMs.toFixed(0).padStart(5)}ms] hits=${hits} status=${status} | ${query}`);
+  console.log(
+    `  [${latMs.toFixed(0).padStart(5)}ms] hits=${hits} status=${status} pool(before=${beforePool}, after=${afterPool}) | ${query}`
+  );
   // 2000 ms pacing to respect Gemini rate limits and prevent backoff retries
   await new Promise((r) => setTimeout(r, 2000));
 }

@@ -7,4 +7,9 @@ export const pgPool = new Pool({
   connectionString: config.postgres.connectionString,
 });
 
+export function poolStats() {
+  const p = (db as any).$client?.pool ?? (db as any).pool ?? pgPool;
+  return { total: p?.totalCount, idle: p?.idleCount, waiting: p?.waitingCount };
+}
+
 export const db = drizzle(pgPool, { schema });
