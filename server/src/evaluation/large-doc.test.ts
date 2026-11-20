@@ -11,7 +11,6 @@
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import pg from 'pg';
-import fs from 'node:fs';
 import { ingestDirectory } from '../knowledge/ingest.js';
 import { retrieveKnowledge } from '../knowledge/retrieval.js';
 
@@ -84,7 +83,7 @@ describe.skipIf(!RUN)('Large-doc ingestion & retrieval', () => {
 
     expect(
       result.success,
-      `retrieveKnowledge failed for "${query}": ${JSON.stringify((result as any).error)}`
+      `retrieveKnowledge failed for "${query}": ${JSON.stringify(result.success ? undefined : result.error)}`
     ).toBe(true);
 
     if (!result.success) return; // type narrowing

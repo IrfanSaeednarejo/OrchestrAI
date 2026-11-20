@@ -16,7 +16,7 @@
 import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import { db } from '../persistence/db/client.js';
 import { knowledgeDocVersions, knowledgeChunks } from '../persistence/db/schema.js';
-import { inArray, like, sql } from 'drizzle-orm';
+import { inArray, sql } from 'drizzle-orm';
 import { searchKnowledgeForSpecialist } from './scoped-retrieval.js';
 import crypto from 'node:crypto';
 

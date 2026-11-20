@@ -165,7 +165,7 @@ export async function parsePdfDocument(pdfBuffer: Buffer | Uint8Array): Promise<
 
   // 3. Classify runs into sections and paragraphs using heading heuristic
   const sections: ParsedSection[] = [];
-  let currentSectionPath = `[Doc: ${metadata.docId} | Page 1]`;
+  let currentSectionPath: string;
   let currentH1 = '';
   let currentH2 = '';
   let currentSection: ParsedSection | null = null;
@@ -182,7 +182,6 @@ export async function parsePdfDocument(pdfBuffer: Buffer | Uint8Array): Promise<
       }
       currentH1 = run.text;
       currentH2 = '';
-      currentSectionPath = currentH1;
       currentSection = null; // Do not create an empty chunk for the top-level document title
       continue;
     }

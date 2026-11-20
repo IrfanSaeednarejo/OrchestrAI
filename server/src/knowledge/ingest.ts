@@ -40,19 +40,21 @@ function parseCliArgs(): { targetDir: string; concurrency: number; dryRun: boole
   let candidateFactor = 3;
 
   for (let i = 0; i < args.length; i++) {
-    if (args[i] === '--dir' && args[i + 1]) {
-      targetDir = args[i + 1]!;
+    const current = args[i];
+    const next = args[i + 1];
+    if (current === '--dir' && next) {
+      targetDir = next;
       i++;
     }
-    if (args[i] === '--concurrency' && args[i + 1]) {
-      concurrency = parseInt(args[i + 1]!, 10);
+    if (current === '--concurrency' && next) {
+      concurrency = parseInt(next, 10);
       i++;
     }
-    if (args[i] === '--dry-run') {
+    if (current === '--dry-run') {
       dryRun = true;
     }
-    if (args[i] === '--candidate-factor' && args[i + 1]) {
-      candidateFactor = parseInt(args[i + 1]!, 10);
+    if (current === '--candidate-factor' && next) {
+      candidateFactor = parseInt(next, 10);
       i++;
     }
   }
@@ -66,10 +68,13 @@ export async function ingestPdfKnowledgeBase(
   targetDir: string,
   concurrency = 3,
   dryRun = false,
-  _candidateFactor = 3
+  candidateFactor = 3
 ) {
   console.log(`\n=== OrchestrAI PDF Knowledge Ingestion ===`);
   console.log(`Source directory: ${targetDir}`);
+  if (candidateFactor !== 3) {
+    console.log(`Candidate factor: ${candidateFactor}`);
+  }
   if (dryRun) console.log(`[DRY-RUN] Mode active — no embeddings or DB writes.`);
 
   if (!fs.existsSync(targetDir)) {
@@ -157,7 +162,7 @@ export async function ingestPdfKnowledgeBase(
         }
 
         let embeddingsComputed = 0;
-        let embeddingsReused = chunks.length - chunksToEmbed.length;
+        const embeddingsReused = chunks.length - chunksToEmbed.length;
 
         // 5. Generate embeddings for new or changed chunks (sequential batches per PDF)
         if (chunksToEmbed.length > 0) {

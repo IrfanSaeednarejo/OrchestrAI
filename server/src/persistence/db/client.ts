@@ -8,7 +8,7 @@ export const pgPool = new Pool({
 });
 
 export function poolStats() {
-  const p = (db as any).$client?.pool ?? (db as any).pool ?? pgPool;
+  const p = (db as unknown as { $client?: { pool?: Pool }; pool?: Pool }).$client?.pool ?? (db as unknown as { pool?: Pool }).pool ?? pgPool;
   return { total: p?.totalCount, idle: p?.idleCount, waiting: p?.waitingCount };
 }
 
