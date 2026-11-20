@@ -64,6 +64,8 @@ jobs:
         env:
           DATABASE_URL: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
           DATABASE_URL_UNPOOLED: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
+          TEST_DATABASE_URL: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
+          TEST_DATABASE_URL_UNPOOLED: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
           REDIS_URL: redis://localhost:6379
           TOKEN_SECRET: da1259dec9ed79f89de8376c281d4c7dc2ac39f219abd8922fdd55c2ea4fc96d
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || 'mock-ci-key' }}
@@ -77,11 +79,15 @@ jobs:
         env:
           DATABASE_URL: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
           DATABASE_URL_UNPOOLED: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
+          TEST_DATABASE_URL: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
+          TEST_DATABASE_URL_UNPOOLED: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
           REDIS_URL: redis://localhost:6379
           TOKEN_SECRET: da1259dec9ed79f89de8376c281d4c7dc2ac39f219abd8922fdd55c2ea4fc96d
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || 'mock-ci-key' }}
           ENABLE_DEMO_ENDPOINTS: 'true'
-        run: npm test
+        # rag-retrieval.test.ts is a live integration test (requires Gemini API +
+        # ingested PDFs). It is owned by rag-ci.yml and excluded here intentionally.
+        run: npx vitest run --exclude 'src/evaluation/rag-retrieval.test.ts'
 
   frontend-ci:
     name: Frontend CI
