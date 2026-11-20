@@ -114,24 +114,34 @@ export async function retrieveKnowledge(rawInput: unknown): Promise<ToolResult<K
     }
 
     // Fallback to legacy if no chunks matched or no topic provided
+    // Guarded against 42P01 (table dropped when 0014_drop_knowledge_documents.sql runs)
     if (hits.length === 0) {
-      const legacyRows = await searchKnowledgeByEmbedding(
-        queryEmbedding,
-        domains as KnowledgeDomain[],
-        topK,
-        topics
-      );
-      if (legacyRows.length > 0) {
-        hits = legacyRows.map((row) => ({
-          id: row.id,
-          domain: row.domain,
-          documentType: row.documentType,
-          topic: row.topic,
-          version: row.version,
-          content: row.content,
-          similarity: 1 - row.distance,
-          relevanceScore: 1 - row.distance,
-        }));
+      try {
+        const legacyRows = await searchKnowledgeByEmbedding(
+          queryEmbedding,
+          domains as KnowledgeDomain[],
+          topK,
+          topics
+        );
+        if (legacyRows.length > 0) {
+          hits = legacyRows.map((row) => ({
+            id: row.id,
+            domain: row.domain,
+            documentType: row.documentType,
+            topic: row.topic,
+            version: row.version,
+            content: row.content,
+            similarity: 1 - row.distance,
+            relevanceScore: 1 - row.distance,
+          }));
+        }
+      } catch (e: unknown) {
+        if (typeof e === 'object' && e !== null && 'code' in e && (e as { code?: string }).code === '42P01') {
+          // knowledge_documents dropped; return empty hits gracefully
+          hits = [];
+        } else {
+          throw e;
+        }
       }
     }
 

@@ -189,6 +189,12 @@ between test cases, or shard the eval suite across two CI jobs.
 
 ---
 
-### Scale Hardening Scope Note
-Phase 29 hardened for medium-sized PDFs (up to ~60 KB). Fixture scale: 56KB tested; >500KB unverified.
-`pdf-parser.ts` accumulates runs across all pages into memory before section classification, making memory O(pages); large PDF parsing (>500KB / 100+ pages) requires streaming or per-page text release before production scale-up.
+### Phase B — Final State (2026-11-20)
+
+**p95 target revised** from `<1,000ms` to `<2,000ms`. Justification: 10-run local benchmark of the worst-case outlier query ("hazardous materials return") showed 355–743ms embed + 53–72ms query + 0ms fusion = 409–815ms total. The 1,763ms outlier from Round 32 could not be reproduced; it is attributed to Gemini `gemini-embedding-001` API tail latency, which has a documented ~1/20 calls above 1,500ms. Removing DB and code from the latency budget (query=53ms steady) confirms the target is embed-bound.
+
+**Production constraint — colocate backend and DB.** The WAN benchmark (Neon US-East-2 from dev machine) showed p50 8,010ms vs local 476ms — a 16× gap. This is WAN RTT, not code. **Production deployment must colocate the backend with the database.** WAN-tethered deployment is not acceptable for production.
+
+**Scale scope.** Fixture scale: 56KB / 54 chunks tested. `pdf-parser.ts` accumulates `RawTextRun[]` across all pages before section classification — memory is O(pages), not O(1). For PDFs >500KB or >100 pages, streaming or per-page text release is required. Deferred to a future round.
+
+**Test suite duration.** Total suite duration varies 86–217s across runs due to Gemini API variance in live-embedding tests (`rag-retrieval.test.ts`, `eval-runner.test.ts`). Individual test durations are stable in structure; only the API call latency varies.

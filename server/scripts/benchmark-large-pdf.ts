@@ -16,6 +16,9 @@ import path from 'node:path';
 import { performance } from 'node:perf_hooks';
 import { ingestPdfKnowledgeBase } from '../src/knowledge/ingest.js';
 import { retrieveKnowledge } from '../src/knowledge/retrieval.js';
+import { embedQuery } from '../src/knowledge/embeddings-client.js';
+import { searchDenseScoped, searchSparseScoped } from '../src/persistence/repositories/knowledge.repository.js';
+import { fuseRrf } from '../src/knowledge/rrf-reranker.js';
 import { poolStats } from '../src/persistence/db/client.js';
 import pg from 'pg';
 
@@ -125,6 +128,24 @@ for (const query of QUERIES) {
   console.log(
     `  [${latMs.toFixed(0).padStart(5)}ms] hits=${hits} status=${status} pool(before=${beforePool}, after=${afterPool}) | ${query}`
   );
+
+  if (query === 'hazardous materials return') {
+    // Detailed phase timing diagnosis for outlier query
+    const tb0 = performance.now();
+    const emb = await embedQuery(query);
+    const tb1 = performance.now();
+    const [dense, sparse] = await Promise.all([
+      searchDenseScoped(emb, 'orders', 'large_doc_test', 3),
+      searchSparseScoped(query, 'orders', 'large_doc_test', 3),
+    ]);
+    const tb2 = performance.now();
+    const fused = fuseRrf(dense, sparse, 60, 3);
+    const tb3 = performance.now();
+    console.log(
+      `    -> [DIAGNOSTIC: ${query}] embed=${(tb1 - tb0).toFixed(0)}ms query=${(tb2 - tb1).toFixed(0)}ms fusion=${(tb3 - tb2).toFixed(0)}ms total=${(tb3 - tb0).toFixed(0)}ms`
+    );
+  }
+
   // 2000 ms pacing to respect Gemini rate limits and prevent backoff retries
   await new Promise((r) => setTimeout(r, 2000));
 }

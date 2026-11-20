@@ -51,7 +51,7 @@ async function retryWithBackoff<T>(fn: () => Promise<T>, retries = 3, baseDelayM
       const errCode = (err as { status?: number; code?: string })?.status
         ?? (err as { code?: string })?.code
         ?? (err instanceof Error ? err.message.slice(0, 60) : String(err).slice(0, 60));
-      console.warn(`[retry] attempt=${attempt} delay=${delay}ms err=${errCode}`);
+      console.error(`[retry] attempt=${attempt} delay=${delay}ms err=${errCode}`);
       await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
