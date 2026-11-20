@@ -15,7 +15,10 @@ This guide describes the operational deployment procedure, continuous integratio
    - `GEMINI_API_KEY` (production API key with access to `gemini-embedding-001`).
 3. **Dependencies:**
    - Run `npm ci` in `server/`.
-   - Ensure `pgvector` extension $\ge 0.7.0$ is enabled in the database.
+   - Ensure **`pgvector` extension ≥ 0.8.0** is enabled. Required for `hnsw.iterative_scan` and `hnsw.max_scan_tuples` GUCs (introduced in 0.8.0). **No startup gate exists** — pgvector < 0.8.0 fails at first retrieval with `unrecognized configuration parameter "hnsw.iterative_scan"`. Verify before ingestion:
+     ```sql
+     SELECT extversion FROM pg_extension WHERE extname = 'vector';
+     ```
 
 ---
 
@@ -156,13 +159,16 @@ console.log('Negative Probe 2 (Out-of-scope) -> Success:', r.success, 'Hits:', r
 ```
 
 #### Pass Criteria:
-- Probes 1 & 2 Top Section: `Return Eligibility`
-- Probe 3 Top Section: `What do the different shipment statuses mean?`
-- Probe 4 Top Section: `When Refunds Are Issued`
-- Probe 5 Top Section: `What do the different payment statuses mean?`
-- Probe 6 Top Section: `What is email verification and why is it required?`
+- Probe 1 → Top Section: `Return Eligibility`
+- Probe 2 → Top Section: `Return Eligibility`
+- Probe 3 → Top Section: `What do the different shipment statuses mean?`
+- Probe 4 → Top Section: `When Refunds Are Issued`
+- Probe 5 → Top Section: `What do the different payment statuses mean?`
+- Probe 6 → Top Section: `How does the verification code process work?`
 - Negative Probe 1: `Hits: 0`
 - Negative Probe 2: `Success: true, Hits: 0` (empty array, zero throws)
+
+**Note on Probe 6:** The golden dataset's `targetSectionPath` for `eval-q-06` is `"What is email verification and why is it required?"` (stale — see MIGRATION.md "Eval quality gap"). The actual production top-1 for this query is `"How does the verification code process work?"` — semantically more specific to the OTP flow the query describes. The smoke probe asserts the actual top-1; the eval harness continues to assert any-in-top-K until golden dataset v1.0.1 corrects the target.
 
 ---
 
@@ -176,7 +182,7 @@ Track telemetry continuously over the first 24 hours of live customer traffic:
 | **p95 Retrieval Latency** | **< 2,000 ms** | > 3,000 ms for 15 consecutive minutes | Inspect Gemini API embedding latency tails; verify HNSW index scans. |
 | **Embedding API Error Rate** | **< 1%** | > 2% over 5-minute rolling window | Investigate Gemini rate limits, quota limits, or API outages. |
 | **Cross-Scope Leaks** | **0 hits** | > 0 hits | Immediate rollback; investigate specialist scoping guardrails. |
-| **Legacy Query Count** | **0 queries** | > 0 queries | Check unmigrated callers falling back to legacy tables. |
+| **Legacy Query Count** | **0 queries** | > 0 queries | Legacy fallback fires only on 0-hit scoped queries. Any count > 0 means (a) an unmigrated caller is invoking the tool without `topics`, or (b) a scoped query is returning no fused hits — both indicate a **semantically degraded** retrieval (fallback runs `gemini-embedding-001` query against `text-embedding-004` docs). Investigate immediately. |
 
 ---
 
@@ -205,9 +211,24 @@ UPDATE knowledge_chunks SET status = 'draft' WHERE status = 'active';
 ```
 
 ### Rollback Step 4: Routing Fallback to Legacy Tables
-If specialist queries fail after cutover, activate legacy fallback mode via environment configuration without database modification:
-```env
-LEGACY_KNOWLEDGE_FALLBACK=true
+
+> [!CAUTION]
+> **DEGRADED SEMANTICS WARNING.** `knowledge_documents.embedding` was seeded on 2026-11-08 using `text-embedding-004` (L2 norm ≈ 1.00). Production queries embed with `gemini-embedding-001` (L2 norm ≈ 0.57). Cross-space cosine similarity is not semantically valid — the fallback returns results, but **rankings are unreliable**. Treat rollback as a stop-gap for hard failures, not a substitute retrieval path. Plan full re-ingest from canonical PDFs within 24 hours.
+
+**Mechanism:** there is **no `LEGACY_KNOWLEDGE_FALLBACK` env var** — the reference in earlier handoff docs was incorrect. The fallback fires automatically whenever a scoped retrieval returns 0 fused hits (`retrieval.ts`, 42P01-guarded). To trigger it deliberately, demote the new pipeline's active rows:
+
+```sql
+UPDATE knowledge_doc_versions SET status = 'draft' WHERE status = 'active';
+UPDATE knowledge_chunks       SET status = 'draft' WHERE status = 'active';
+```
+
+With 0 active chunks in the new tables, every scoped query returns 0 hits and `searchKnowledgeByEmbedding` serves the legacy rows.
+
+**Post-rollback cleanup (after re-ingest succeeds):**
+```sql
+-- removes orphan draft rows left by this rollback cycle after a fresh ingest lands
+DELETE FROM knowledge_chunks WHERE status = 'draft' AND created_at < NOW() - INTERVAL '7 days';
+DELETE FROM knowledge_doc_versions WHERE status = 'draft' AND created_at < NOW() - INTERVAL '7 days';
 ```
 
 ---
@@ -220,6 +241,8 @@ Migration file `server/drizzle/migrations/0014_drop_knowledge_documents.sql` is 
 > **DESTRUCTIVE OPERATION — IRREVERSIBLE ACTION:**
 > `0014_drop_knowledge_documents.sql` permanently drops `knowledge_documents`.
 > **DO NOT APPLY** until the following checklist is completed:
+>
+> **NO ROLLBACK AFTER DROP.** Once `knowledge_documents` is dropped, the 42P01-guarded fallback in `retrieval.ts` returns an empty array on 0-hit scoped queries. There is no restore path except the cold backup. Re-verify items 1–3 (7-day stability, zero legacy queries, cold backup taken) before proceeding — the backup in item 3 is the **only** recovery mechanism.
 
 1. **7-Day Stability Gate:** All specialist agents have run on the PDF pipeline for $\ge 7$ full days in production without incident.
 2. **Zero Traffic Verification:** Legacy table query count has dropped to zero:

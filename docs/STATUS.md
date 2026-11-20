@@ -14,6 +14,11 @@ Last verified suite figure reported: Server 725 passing (1 skipped), Client 150/
   - Step 5: Frontend `VerificationPrompt` component (`client/src/components/chat/verification-prompt.tsx`) with 7-state machine (`idle`, `requesting`, `awaiting_input`, `verifying`, `resending`, `success`, `locked_out`), timer-derived countdowns, friendly copy, and full keyboard/screen-reader accessibility.
   - Step 6: Full acceptance test suite (`server/src/api/profile-verification-flow.integration.test.ts`) covering 23 end-to-end integration scenarios.
   - Step Final: Integration test suites verified — Journey 3 rewritten for profile-owned flow in `conversational-routing.integration.test.ts`, Scenario 7 Redis key isolation in `parent-graph-account.integration.test.ts`; 725 server + 150 client tests passing (0 failures).
+- Phase 29 (PDF RAG Pipeline & Scale Hardening): COMPLETE on branch `phase/29-pdf-rag-pipeline`.
+  - Phase A (Scale Hardening): concurrency limiting (`p-limit`), dry-run mode, RSS memory measurement, embed counter, `page_number` column and migration, `ingestDirectory` support, 56KB large-doc fixture + benchmark script (`benchmark-large-pdf.ts`).
+  - Phase B (Hardening & Latency Budgeting): 128 passed | 20 skipped test suite confirmed, p50 476ms local, p95 target revised to <2,000ms (Gemini API embed-bound), peak RSS ~476MB for 56KB fixture, legacy fallback guarded against 42P01 error code, retry logging verified with `console.error`.
+  - Phase C (Deployment Artifacts & Discrepancy Reconciliation): all 7 discrepancies A–G resolved and locked across `MIGRATION.md`, `DEPLOYMENT.md`, `eval/production-smoke.md`, `eval/retrieval-queries.README.md`, and `.github/workflows/rag-ci.yml`.
+  - Phase D (Production Deployment): operator-ready runbook in `DEPLOYMENT.md` awaiting human execution.
 
   - Phase 6 (Access Control / Verification Gate): Steps 0-5 closed; Step 6a proof graph verified; Step 6b close-out and type unification completed.
   - Phase 7 (Agent Foundation): Steps 0-5 closed; LLM client, prompt loader, handoff contract, common node patterns, and subgraph harness verified (294 tests).
@@ -65,8 +70,8 @@ Phase 19 hardening: recursive tool output PII redaction, `user` reducer null-saf
 6. 6a graph's ALLOWED branch does not clear `activeWorkflow`, so `blockedBy` goes stale after a successful resume (resolved in Phase 8: router writes RE_ROUTE event; specialist clears activeWorkflow on COMPLETED).
 
 ## Immediate next actions
-1. Owner merges phase/22-mandatory-auth-and-storefront-pages and tags phase-22-done.
-2. Full production-grade user authentication, catalog browsing, order history, and conversational support live. 🎉
+1. Operator conducts Phase D production deployment runbook following `DEPLOYMENT.md` (no automated agent execution).
+2. Owner merges `phase/29-pdf-rag-pipeline` and tags `phase-29-done`.
 
 ## Neon Postgres deployment (out-of-phase)
 - Neon project: `withered-wildflower-96418740` (org `org-frosty-river-50490515`), branch `production` (`br-silent-band-bdye411r`).
@@ -112,4 +117,5 @@ Phase 19 hardening: recursive tool output PII redaction, `user` reducer null-saf
 - 2026-11-09: Phase 24 Stabilization completed: session-identity propagation (LIGHTLY_VERIFIED for Bearer tokens), universal blocked-reply helper, tenant isolation across all domain tools, turn-scoped handoffs, duplicate charge confirmation with review_requests table, intent alignment and database idempotency unique indexes, transaction-level advisory locking, LLM/tool retry resilience, and multi-turn HTTP integration tests (615 server tests + 144 client tests = 759 tests, 1 skipped).
 - 2026-11-11: Phase 25 Conversational Routing & Memory Overhaul completed: dynamic router triage eliminating sticky continuation locks, grounded General Assistant specialist node, additive conversation entity memory (`lastKnownEntities`) and pending task tracking, bounded transcript context injection, friendly activity progress streaming, and multi-intent queueing (647 server tests + 144 client tests = 791 tests, 1 skipped).
 - 2026-11-13: Phase 26 Profile Update + Identity Verification Flow completed: profile-owned 4-step update state machine with zero lateral handoffs, Redis-backed atomic verification service (SHA-256 hashed codes, Lua script, 60s/15s cooldowns), dual-mounted REST endpoints (`/profile/update/request-code`, `/verify`, `/resend-code`) with conditional snapshot concurrency protection, client VerificationPrompt 7-state machine, and 23 acceptance integration tests (725 server tests + 150 client tests = 875 tests, 1 skipped).
+- 2026-11-20: Phase 29 PDF RAG Pipeline & Hardening completed: scale hardening (concurrency limiting, dry-run, RSS tracking, embed counter, page_number migration), hybrid RAG retrieval, 42P01 legacy fallback guard, retry logging verification, latency budget revision (p95 <2,000ms), and production deployment runbook reconciliation (128 passed, 20 skipped).
 
