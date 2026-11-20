@@ -295,6 +295,21 @@ Small focused steps; explicit typed state; clear agent boundaries; no agent spag
   - Timers are derived from server timestamps (`expiresAtMs`, `resendAtMs`).
   - Copy is clean and customer-friendly without system-leak tokens (no raw snake_case or technical error strings).
 
+## Phase 29 (PDF RAG Pipeline & Hardening)
+- Hybrid Retrieval: reciprocal rank fusion (RRF) combining dense cosine similarity and sparse full-text search (`tsvector` / `websearch_to_tsquery('english', ...)`).
+- Embeddings Model: `gemini-embedding-001` via `@google/genai` (768 dimensions, L2 norm ≈ 0.57) replacing legacy `text-embedding-004` (L2 norm ≈ 1.0).
+- Scale Hardening: `p-limit` concurrency throttle (`CONCURRENCY_LIMIT = 5`), dry-run validation flag, resident set size (RSS) tracking, embedding call counter, and `page_number` metadata preservation in migration `0013_page_number.sql`.
+- 42P01 Error Guard: `retrieveKnowledge()` catches Postgres `42P01` (`UNDEFINED_TABLE`) on fallback query to `knowledge_documents` and returns `{ success: true, data: [] }` rather than failing, enabling safe future execution of `0014_drop_knowledge_documents.sql`.
+- Latency Budget: p95 latency target locked to `<2,000ms` justified by remote Gemini API embedding tail latency; local query and RRF fusion latency verified at ~53ms and <1ms.
+- Cross-Space Rollback Semantics: Rollback fallback to `knowledge_documents` provides degraded cross-space cosine similarity; documented in `MIGRATION.md` and `DEPLOYMENT.md`.
+- Legacy Golden Set Isolation: `eval/retrieval-queries.json` marked legacy via `eval/retrieval-queries.README.md`; CI strictly evaluates canonical 6-query `knowledge-golden-dataset.json`.
+
+### Phase D Production Sign-Off (2026-11-20)
+- p95 SLI `<2,000ms` accepted for production (embed-bound: query+fusion ≈53ms, embed tail drives budget). Query-embedding cache deferred; revisit when production data shows sustained p95 >2,000ms or high repeat-query rate.
+- Backend + Neon Postgres colocated in `us-east-2`. Operator must verify Neon project region matches backend deploy region before ingestion; mismatch invalidates the p95 target by 12.5–16×.
+- 0014 backup policy: cold `pg_dump` with verified restore + prior-day off-site copy is the sole contractual recovery mechanism. PITR is a bonus, not contractual.
+- CI Gate 2 parallelism deferred; sequential 137–159s accepted at current PR volume. Revisit when PR-velocity friction emerges.
+- Full decisions: see `docs/OPEN-DECISIONS.md` item 30.
 
 
 

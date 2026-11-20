@@ -168,7 +168,7 @@ DROP TABLE IF EXISTS knowledge_documents CASCADE;
 **Impact:**
 - `EMBEDDING_MODEL = 'gemini-embedding-001'` (was `'text-embedding-004'`).
 - **Asymmetric `taskType` is mandatory:** documents embed with `taskType: 'RETRIEVAL_DOCUMENT'`, queries with `taskType: 'RETRIEVAL_QUERY'`. Omitting this produces silently degraded retrieval — dimensions match but vector spaces differ.
-- All existing `knowledge_chunks` embeddings must be regenerated (prior rows were produced under the `gemini-embedding-2` fallback and are in a different vector space).
+- All existing `knowledge_chunks` embeddings must be regenerated with `gemini-embedding-001`. The legacy `knowledge_documents` table was seeded on 2026-11-08 with `text-embedding-004` vectors (L2 norm ≈ 1.00, unit-normalized). Production query embeddings are `gemini-embedding-001` (L2 norm ≈ 0.57). These are different vector spaces; the legacy table is **not** re-embedded by the new pipeline. See "Rollback semantics" below.
 - `VECTOR(768)` schema is unchanged — the dimension contract is preserved.
 
 ---
@@ -178,6 +178,43 @@ Vectors returned by `gemini-embedding-001` are **not unit-length**; observed L2 
 The cosine operator (`<=>`) in pgvector normalises internally, so retrieval rankings are correct.
 **Do not switch to inner-product (`<#>`) or L2 (`<->`) operators** without first L2-normalising
 all stored embeddings — doing so would silently rerank results against a different metric.
+
+---
+
+### Rollback semantics — legacy fallback is degraded, not safe
+
+When `knowledge_chunks` is drained (all `status` set to `draft`), every scoped retrieval returns 0 hits and `retrieval.ts` falls back to `searchKnowledgeByEmbedding` against `knowledge_documents`. That fallback embeds the query with `gemini-embedding-001` and cosine-scores it against `text-embedding-004` document vectors. Cross-space cosine similarity is numerically valid but semantically meaningless — results are returned, but their rankings are unreliable.
+
+Rollback is therefore a **stop-gap for hard failures**, not a substitute retrieval path. If rollback is executed, plan for full re-ingest from canonical PDFs within 24 hours.
+
+---
+
+### Latent limitations (documented for operators)
+
+**Chunk supersession granularity.** `upsertKnowledgeVersion` demotes `WHERE domain = ? AND topic = ? AND status = 'active'`, not `WHERE doc_id = ? AND version = ?`. Safe at current corpus (one document per scope). If any scope ever contains two concurrent documents, one will silently supersede the other on the next ingest. No action needed today; flagged for future scope expansion.
+
+**Caller array handling.** `retrieveKnowledge` uses `domains[0]` and `topics?.[0]`. Callers passing `domains: ['orders', 'payments']` retrieve from `orders` only. Production specialists pass single-element arrays; schema permits more. No action needed today; flag for tool-contract tightening if multi-domain use ever arises.
+
+**`minSimilarity` filter on sparse-only hits.** When a chunk appears in the sparse branch but not the dense branch, `retrieval.ts` sets `similarity = rrfScore` (≈ 0.016–0.03). Any caller passing `minSimilarity ≥ 0.1` filters out all sparse-only hits. No production caller passes `minSimilarity`. Documented as a known tool-contract limitation.
+
+**Rollback row growth.** Demote-only rollback leaves orphan `draft` rows in `knowledge_chunks`. Each rollback+reingest cycle adds another orphan set. Optional cleanup (deferred until corpus growth makes it matter):
+
+```sql
+DELETE FROM knowledge_chunks
+WHERE status = 'draft'
+  AND created_at < NOW() - INTERVAL '7 days';
+```
+
+**pgvector version gate.** There is **no startup gate** for pgvector version. pgvector < 0.8.0 fails at first retrieval with `unrecognized configuration parameter "hnsw.iterative_scan"`. Operator must verify version before ingestion:
+
+```sql
+SELECT extversion FROM pg_extension WHERE extname = 'vector';
+-- must return >= 0.8.0
+```
+
+**Golden dataset provenance.** `eval/knowledge-golden-dataset.json` (6 queries) is authoritative and referenced by `server/src/evaluation/rag-retrieval.test.ts`. `eval/retrieval-queries.json` (30 queries) is Phase 13 legacy against the synthetic flat corpus — **not referenced** by `server/src/` or `.github/workflows/`. Do not add it back to CI.
+
+**Eval quality gap (`eval-q-06`).** Golden `targetSectionPath = "What is email verification and why is it required?"`, but actual top-1 = `"How does the verification code process work?"` for the OTP/2FA query. Eval passes (assertion is any-in-top-K), but the golden target appears stale. Queued for golden dataset v1.0.1 correction post-Phase-C. Until corrected, the eval does **not** assert top-1 precision for `eval-q-06`.
 
 ---
 
@@ -193,7 +230,7 @@ between test cases, or shard the eval suite across two CI jobs.
 
 **p95 target revised** from `<1,000ms` to `<2,000ms`. Justification: 10-run local benchmark of the worst-case outlier query ("hazardous materials return") showed 355–743ms embed + 53–72ms query + 0ms fusion = 409–815ms total. The 1,763ms outlier from Round 32 could not be reproduced; it is attributed to Gemini `gemini-embedding-001` API tail latency, which has a documented ~1/20 calls above 1,500ms. Removing DB and code from the latency budget (query=53ms steady) confirms the target is embed-bound.
 
-**Production constraint — colocate backend and DB.** The WAN benchmark (Neon US-East-2 from dev machine) showed p50 8,010ms vs local 476ms — a 16× gap. This is WAN RTT, not code. **Production deployment must colocate the backend with the database.** WAN-tethered deployment is not acceptable for production.
+**Production constraint — colocate backend and DB.** The WAN benchmark (Neon US-East-2 from dev machine) showed p50 8,010ms vs local 476–639ms (pooled: 639ms; direct: 476ms) — a **~12.5× to 16×** penalty. The spread reflects the difference between the two local baseline runs; both are network-bound, not code-bound. **Production deployment must colocate the backend with the database.** WAN-tethered deployment is not acceptable for production.
 
 **Scale scope.** Fixture scale: 56KB / 54 chunks tested. `pdf-parser.ts` accumulates `RawTextRun[]` across all pages before section classification — memory is O(pages), not O(1). For PDFs >500KB or >100 pages, streaming or per-page text release is required. Deferred to a future round.
 

@@ -132,7 +132,7 @@ jobs:
           import { GoogleGenAI } from '@google/genai';
           const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
           const res = await ai.models.embedContent({
-            model: 'gemini-embedding-2',
+            model: 'gemini-embedding-001',
             contents: 'nightly health check',
             config: { outputDimensionality: 768 }
           });
