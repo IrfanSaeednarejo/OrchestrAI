@@ -13,6 +13,11 @@ This guide describes the operational deployment procedure, continuous integratio
    - `DATABASE_URL` (pooled connection string pointing to colocated Postgres).
    - `DATABASE_URL_UNPOOLED` (direct connection string for schema migrations / DDL).
    - `GEMINI_API_KEY` (production API key with access to `gemini-embedding-001`).
+   - `ENABLE_DEMO_ENDPOINTS` (**must be `false` in production**). When `true`, demo identity and OTP inspection routes are active and the server logs `⚠️ [SECURITY WARNING] ENABLE_DEMO_ENDPOINTS is enabled` on startup and every CLI command. Harmless during DB-only operations, but **must be `false` before the backend HTTP server launches**. Verify before starting the server:
+     ```bash
+     grep '^ENABLE_DEMO_ENDPOINTS=' server/.env
+     # must return: ENABLE_DEMO_ENDPOINTS=false
+     ```
 3. **Dependencies:**
    - Run `npm ci` in `server/`.
    - Ensure **`pgvector` extension ≥ 0.8.0** is enabled. Required for `hnsw.iterative_scan` and `hnsw.max_scan_tuples` GUCs (introduced in 0.8.0). **No startup gate exists** — pgvector < 0.8.0 fails at first retrieval with `unrecognized configuration parameter "hnsw.iterative_scan"`. Verify before ingestion:
