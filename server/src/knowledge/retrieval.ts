@@ -78,29 +78,7 @@ export async function retrieveKnowledge(rawInput: unknown): Promise<ToolResult<K
   try {
     let hits: KnowledgeHit[] = [];
 
-    // Check if test fixtures are active in legacy knowledge_documents
-    const isTestTopic = topic?.startsWith('__test__');
-    const legacyRows = await searchKnowledgeByEmbedding(
-      queryEmbedding,
-      domains as KnowledgeDomain[],
-      topK,
-      topics
-    );
-    const hasScopedTestContent =
-      query === 'test' && legacyRows.some((r) => r.content.startsWith('scoped-retrieval-test:'));
-
-    if (isTestTopic || hasScopedTestContent) {
-      hits = legacyRows.map((row) => ({
-        id: row.id,
-        domain: row.domain,
-        documentType: row.documentType,
-        topic: row.topic,
-        version: row.version,
-        content: row.content,
-        similarity: 1 - row.distance,
-        relevanceScore: 1 - row.distance,
-      }));
-    } else if (topic) {
+    if (topic) {
       // Production path: scoped dual-branch retrieval with RRF fusion
       const [denseHits, sparseHits] = await Promise.all([
         searchDenseScoped(queryEmbedding, domain, topic, topK),
@@ -135,18 +113,36 @@ export async function retrieveKnowledge(rawInput: unknown): Promise<ToolResult<K
       }
     }
 
-    // Fallback to legacy if no chunks matched
-    if (hits.length === 0 && legacyRows.length > 0) {
-      hits = legacyRows.map((row) => ({
-        id: row.id,
-        domain: row.domain,
-        documentType: row.documentType,
-        topic: row.topic,
-        version: row.version,
-        content: row.content,
-        similarity: 1 - row.distance,
-        relevanceScore: 1 - row.distance,
-      }));
+    // Fallback to legacy if no chunks matched or no topic provided
+    // Guarded against 42P01 (table dropped when 0014_drop_knowledge_documents.sql runs)
+    if (hits.length === 0) {
+      try {
+        const legacyRows = await searchKnowledgeByEmbedding(
+          queryEmbedding,
+          domains as KnowledgeDomain[],
+          topK,
+          topics
+        );
+        if (legacyRows.length > 0) {
+          hits = legacyRows.map((row) => ({
+            id: row.id,
+            domain: row.domain,
+            documentType: row.documentType,
+            topic: row.topic,
+            version: row.version,
+            content: row.content,
+            similarity: 1 - row.distance,
+            relevanceScore: 1 - row.distance,
+          }));
+        }
+      } catch (e: unknown) {
+        if (typeof e === 'object' && e !== null && 'code' in e && (e as { code?: string }).code === '42P01') {
+          // knowledge_documents dropped; return empty hits gracefully
+          hits = [];
+        } else {
+          throw e;
+        }
+      }
     }
 
     if (typeof minSimilarity === 'number') {

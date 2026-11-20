@@ -25,4 +25,15 @@ describe('retrieveKnowledge — REPOSITORY_ERROR path', () => {
     if (result.success) return;
     expect(result.error.code).toBe('REPOSITORY_ERROR');
   });
+
+  it('gracefully returns { success: true, data: [] } when 42P01 (relation does not exist) is thrown', async () => {
+    const err = Object.assign(new Error('relation "knowledge_documents" does not exist'), { code: '42P01' });
+    const { searchKnowledgeByEmbedding } = await import('../persistence/repositories/knowledge.repository.js');
+    vi.mocked(searchKnowledgeByEmbedding).mockRejectedValueOnce(err);
+
+    const result = await retrieveKnowledge({ query: 'test', domains: ['orders'] });
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+    expect(result.data).toEqual([]);
+  });
 });

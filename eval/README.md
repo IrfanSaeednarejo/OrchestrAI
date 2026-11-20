@@ -14,3 +14,6 @@ grows to ≥ 50 documents.
 ## Golden Dataset
 `eval/knowledge-golden-dataset.json` — bidirectional staleness guard verifies that
 the golden set stays in sync with the ingested chunks in both directions.
+
+## Scale Hardening Scope Note
+Phase 29 hardened for medium-sized PDFs (up to ~60 KB). Large-PDF (>1 MB) memory safety unverified and deferred.

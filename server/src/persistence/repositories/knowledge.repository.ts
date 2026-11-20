@@ -72,9 +72,11 @@ export async function searchDenseScoped(
   const embeddingJson = JSON.stringify(embedding);
 
   return db.transaction(async (tx) => {
-    await tx.execute(sql`SET LOCAL hnsw.iterative_scan = relaxed_order`);
-    await tx.execute(sql`SET LOCAL hnsw.ef_search = 100`);
-    await tx.execute(sql`SET LOCAL hnsw.max_scan_tuples = 40000`);
+    await tx.execute(sql`
+      SET LOCAL hnsw.iterative_scan = relaxed_order;
+      SET LOCAL hnsw.ef_search = 100;
+      SET LOCAL hnsw.max_scan_tuples = 40000;
+    `);
 
     const result = await tx.execute(sql`
       SELECT 

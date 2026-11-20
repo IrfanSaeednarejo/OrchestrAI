@@ -1,116 +1,240 @@
 # OrchestrAI RAG Pipeline — Deployment Guide
 
-## Prerequisites
-- Docker + WSL2 running (`wsl docker compose ps` should show `postgres` and `redis` healthy)
-- `GEMINI_API_KEY` set in `server/.env`
-- `npm ci` run in `server/`
+This guide describes the operational deployment procedure, continuous integration gates, verification probes, monitoring criteria, and rollback runbooks for the PDF-canonical RAG retrieval pipeline.
 
-## CI Gates
-| Gate | Job | Trigger | Pass Criteria |
-|------|-----|---------|---------------|
-| 1 | `pr-unit-gate` | Every PR touching `server/src/knowledge/**` | Lint, typecheck, chunker + RRF unit tests pass |
-| 2 | `vector-integration-gate` | Same PR trigger | `rag-retrieval.test.ts` 127/127 pass against ephemeral Postgres |
-| 3 | `nightly-smoke-gate` | `schedule: 02:00 UTC` | Live `gemini-embedding-001` endpoint returns 768-dim vector |
+---
 
-> **Note:** Gate 2 wall-clock ≈ 90 s. See `MIGRATION.md` CI Duration Note for rate-limit guidance.
+## 1. Prerequisites & Architectural Constraints
 
-## Deployment Steps (manual, operator-executed)
+1. **Production Infrastructure Constraint — Backend Colocation:**
+   - **MANDATORY:** The application backend and PostgreSQL database **must be colocated** in the same cloud region and data center (e.g., AWS `us-east-2`).
+   - **Documented WAN Penalty:** Cross-country or WAN-tethered deployment (such as dev machines connecting to remote DB over public internet) incurs a **16× latency penalty** ($p50 \approx 8,010\text{ ms}$ over WAN vs $476\text{ ms}$ colocated). WAN-tethered deployment is strictly unacceptable for production.
+2. **Environment Variables:**
+   - `DATABASE_URL` (pooled connection string pointing to colocated Postgres).
+   - `DATABASE_URL_UNPOOLED` (direct connection string for schema migrations / DDL).
+   - `GEMINI_API_KEY` (production API key with access to `gemini-embedding-001`).
+3. **Dependencies:**
+   - Run `npm ci` in `server/`.
+   - Ensure `pgvector` extension $\ge 0.7.0$ is enabled in the database.
 
-### Step 1 — Run migrations
+---
+
+## 2. CI Quality Gates
+
+Automated gates executed before any code or knowledge release:
+
+| Gate | Job Name | Trigger | Pass Criteria | Expected Duration |
+| :--- | :--- | :--- | :--- | :--- |
+| **Gate 1** | `pr-unit-gate` | Every PR touching `server/src/knowledge/**` | ESLint, TypeScript `tsc --noEmit`, unit tests (parser, chunker, RRF reranker, error guards) pass. | ~15 s |
+| **Gate 2** | `vector-integration-gate` | PR touching knowledge or schema | `rag-retrieval.test.ts` passes against integration DB. Verifies bidirectional staleness guard and 6/6 scope retrieval queries. | **~90 s** (issues live Gemini API calls; rate-limited pacing applied) |
+| **Gate 3** | `nightly-smoke-gate` | Scheduled `02:00 UTC` daily | Live `gemini-embedding-001` endpoint health check returns valid 768-dimensional vector with expected norm. | ~10 s |
+
+---
+
+## 3. Deployment Procedure (Operator Steps)
+
+### Step 1: Schema Migration
+Apply schema updates (`0012_nice_groot.sql`, `0013_add_page_number.sql`):
 ```bash
 cd server
 npm run db:migrate
 ```
-Verify `page_number` column was added:
+**Verification:**
 ```sql
-SELECT column_name, data_type, column_default
-FROM information_schema.columns
+SELECT table_name FROM information_schema.tables 
+WHERE table_schema = 'public' 
+  AND table_name IN ('knowledge_doc_versions', 'knowledge_chunks');
+
+SELECT column_name, data_type, column_default 
+FROM information_schema.columns 
 WHERE table_name = 'knowledge_chunks' AND column_name = 'page_number';
 ```
-Expected: `page_number | integer | 0`
+*Expected: Tables exist; `page_number` column is `integer` with default `0`.*
 
-### Step 2 — Generate PDFs (if markdown sources changed)
+---
+
+### Step 2: Canonical Policy PDF Generation
+Generate the 5 canonical customer policy PDFs with Adobe XMP metadata packets (`orch:doc_id`, `orch:domain`, `orch:topic`, `orch:doc_version`, `orch:effective_date`, `orch:document_type`):
 ```bash
 cd server
 npx tsx scripts/generate-policy-pdfs.ts
 ```
+*Expected: 5 PDFs generated in `docs/knowledge-base/`.*
 
-### Step 3 — Ingest knowledge base
+---
+
+### Step 3: Production Knowledge Ingestion
+Ingest canonical PDFs into production database:
 ```bash
 cd server
 NODE_ENV=production npm run knowledge:ingest -- --dir ../docs/knowledge-base
 ```
-Expected: 5 PDFs, 14 chunks, `Embeddings Reused: 14` on re-run (idempotent).
 
-Optional dry-run first to estimate cost:
-```bash
-npm run knowledge:ingest -- --dir ../docs/knowledge-base --dry-run
-```
+#### Expected Ingestion Output:
+- **Files Processed:** 5 PDFs (`returns-policy.pdf`, `refund-policy.pdf`, `shipping-policy.pdf`, `payment-terms.pdf`, `account-security.pdf`).
+- **Chunks Ingested:** 14 active chunks created across 5 active document versions.
+- **Embeddings Computed:** 14 embeddings generated via `gemini-embedding-001` with `taskType: 'RETRIEVAL_DOCUMENT'`.
+- **Re-run Idempotency:** If re-run without content changes, output must show `Embeddings Reused: 14` with 0 new API calls.
 
-### Step 4 — Smoke retrieval
+#### Failure Conditions to Halt On:
+1. `Directory does not exist`: PDF source directory path invalid.
+2. `GEMINI_API_KEY missing`: Embedding client throws auth error.
+3. `Relation does not exist (42P01)`: Migrations from Step 1 were skipped or failed.
+4. `Embedding rate limit / 429 exhaustion`: Network or quota exhaustion beyond 3 backoff retries.
+5. `PDF parse error / corrupted XMP`: PDF violates Adobe XMP schema contract.
+
+---
+
+### Step 4: Smoke Retrieval Verification
+Execute the 6 positive probes and 2 negative guardrail probes defined in `eval/production-smoke.md`:
+
 ```bash
 cd server
+# Probe 1: Orders / Returns
 node --input-type=module -e "
 import 'dotenv/config';
 import { retrieveKnowledge } from './src/knowledge/retrieval.js';
-const r = await retrieveKnowledge({ query: 'return window', domains: ['orders'], topics: ['returns'] });
-console.log('success:', r.success, 'hits:', r.success ? r.data.length : 0);
-if (r.success && r.data[0]) console.log('top section:', r.data[0].sectionPath);
+const r = await retrieveKnowledge({ query: 'How many days do I have to return an item after delivery?', domains: ['orders'], topics: ['returns'] });
+console.log('Probe 1 -> Success:', r.success, 'Hits:', r.data?.length, 'Top:', r.data?.[0]?.sectionPath);
 "
-```
-Expected: `success: true  hits: 3  top section: Return Eligibility` (or similar H2 heading).
 
-### Step 5 — Cross-domain scope guard (expect 0 hits)
-```bash
-cd server
+# Probe 2: Orders / Returns (Defects)
 node --input-type=module -e "
 import 'dotenv/config';
 import { retrieveKnowledge } from './src/knowledge/retrieval.js';
-const r = await retrieveKnowledge({ query: 'return window', domains: ['payments'], topics: ['returns'] });
-console.log('cross-domain hits:', r.success ? r.data.length : 'error');
+const r = await retrieveKnowledge({ query: 'What are the rules and exceptions for damaged or defective items?', domains: ['orders'], topics: ['returns'] });
+console.log('Probe 2 -> Success:', r.success, 'Hits:', r.data?.length, 'Top:', r.data?.[0]?.sectionPath);
+"
+
+# Probe 3: Orders / Shipping
+node --input-type=module -e "
+import 'dotenv/config';
+import { retrieveKnowledge } from './src/knowledge/retrieval.js';
+const r = await retrieveKnowledge({ query: 'How long does standard shipping take and what carriers are used?', domains: ['orders'], topics: ['shipping'] });
+console.log('Probe 3 -> Success:', r.success, 'Hits:', r.data?.length, 'Top:', r.data?.[0]?.sectionPath);
+"
+
+# Probe 4: Payments / Refunds
+node --input-type=module -e "
+import 'dotenv/config';
+import { retrieveKnowledge } from './src/knowledge/retrieval.js';
+const r = await retrieveKnowledge({ query: 'When will a refund show up on my credit card statement?', domains: ['payments'], topics: ['refunds'] });
+console.log('Probe 4 -> Success:', r.success, 'Hits:', r.data?.length, 'Top:', r.data?.[0]?.sectionPath);
+"
+
+# Probe 5: Payments / Payments
+node --input-type=module -e "
+import 'dotenv/config';
+import { retrieveKnowledge } from './src/knowledge/retrieval.js';
+const r = await retrieveKnowledge({ query: 'What payment methods are supported including Apple Pay or PayPal?', domains: ['payments'], topics: ['payments'] });
+console.log('Probe 5 -> Success:', r.success, 'Hits:', r.data?.length, 'Top:', r.data?.[0]?.sectionPath);
+"
+
+# Probe 6: Account / Account Security
+node --input-type=module -e "
+import 'dotenv/config';
+import { retrieveKnowledge } from './src/knowledge/retrieval.js';
+const r = await retrieveKnowledge({ query: 'How does two-factor authentication and OTP verification work for login security?', domains: ['account'], topics: ['account_security'] });
+console.log('Probe 6 -> Success:', r.success, 'Hits:', r.data?.length, 'Top:', r.data?.[0]?.sectionPath);
+"
+
+# Negative Probe 1: Cross-Domain Guard (must return 0 hits)
+node --input-type=module -e "
+import 'dotenv/config';
+import { retrieveKnowledge } from './src/knowledge/retrieval.js';
+const r = await retrieveKnowledge({ query: 'How many days do I have to return an item after delivery?', domains: ['payments'], topics: ['returns'] });
+console.log('Negative Probe 1 (Cross-domain) -> Success:', r.success, 'Hits:', r.data?.length);
+"
+
+# Negative Probe 2: Nonexistent Topic Guard (must return 0 hits, empty array, no error)
+node --input-type=module -e "
+import 'dotenv/config';
+import { retrieveKnowledge } from './src/knowledge/retrieval.js';
+const r = await retrieveKnowledge({ query: 'What is the pet policy for retail store visits?', domains: ['orders'], topics: ['pet_policy_nonexistent'] });
+console.log('Negative Probe 2 (Out-of-scope) -> Success:', r.success, 'Hits:', r.data?.length);
 "
 ```
-Expected: `cross-domain hits: 0`
 
-## Legacy Table Drop — Migration Plan (DO NOT EXECUTE YET)
+#### Pass Criteria:
+- Probes 1 & 2 Top Section: `Return Eligibility`
+- Probe 3 Top Section: `What do the different shipment statuses mean?`
+- Probe 4 Top Section: `When Refunds Are Issued`
+- Probe 5 Top Section: `What do the different payment statuses mean?`
+- Probe 6 Top Section: `What is email verification and why is it required?`
+- Negative Probe 1: `Hits: 0`
+- Negative Probe 2: `Success: true, Hits: 0` (empty array, zero throws)
 
-Migration file `server/drizzle/migrations/0014_drop_knowledge_documents.sql` is **authored but not applied**.
+---
 
-Apply only after completing the following checklist:
-1. All specialists operate on the PDF pipeline for ≥ 1 full week without incident.
-2. `knowledge_documents` query count drops to 0:
+## 4. First 24-Hour Production Monitoring Criteria
+
+Track telemetry continuously over the first 24 hours of live customer traffic:
+
+| Metric | Target | Action Threshold | Remediation |
+| :--- | :--- | :--- | :--- |
+| **p50 Retrieval Latency** | **< 500 ms** | > 800 ms for 15 consecutive minutes | Check DB connection pool saturation; verify DB colocation. |
+| **p95 Retrieval Latency** | **< 2,000 ms** | > 3,000 ms for 15 consecutive minutes | Inspect Gemini API embedding latency tails; verify HNSW index scans. |
+| **Embedding API Error Rate** | **< 1%** | > 2% over 5-minute rolling window | Investigate Gemini rate limits, quota limits, or API outages. |
+| **Cross-Scope Leaks** | **0 hits** | > 0 hits | Immediate rollback; investigate specialist scoping guardrails. |
+| **Legacy Query Count** | **0 queries** | > 0 queries | Check unmigrated callers falling back to legacy tables. |
+
+---
+
+## 5. Rollback Runbooks
+
+For each operational step, execute the corresponding rollback command if failure criteria are breached:
+
+### Rollback Step 1: Schema Migration Reversal
+```sql
+DROP TABLE IF EXISTS knowledge_chunks CASCADE;
+DROP TABLE IF EXISTS knowledge_doc_versions CASCADE;
+DELETE FROM "__drizzle_migrations" 
+WHERE "hash" = (SELECT "hash" FROM "__drizzle_migrations" ORDER BY "created_at" DESC LIMIT 1);
+```
+
+### Rollback Step 2: Canonical PDF Reversal
+```bash
+rm -rf ../docs/knowledge-base/*.pdf
+```
+
+### Rollback Step 3: Ingestion Inactivation
+Revert active versions to draft to stop serving new chunks:
+```sql
+UPDATE knowledge_doc_versions SET status = 'draft' WHERE status = 'active';
+UPDATE knowledge_chunks SET status = 'draft' WHERE status = 'active';
+```
+
+### Rollback Step 4: Routing Fallback to Legacy Tables
+If specialist queries fail after cutover, activate legacy fallback mode via environment configuration without database modification:
+```env
+LEGACY_KNOWLEDGE_FALLBACK=true
+```
+
+---
+
+## 6. Legacy Table Drop — Final Decommissioning (Step 7)
+
+Migration file `server/drizzle/migrations/0014_drop_knowledge_documents.sql` is **authored but NOT applied**.
+
+> [!CAUTION]
+> **DESTRUCTIVE OPERATION — IRREVERSIBLE ACTION:**
+> `0014_drop_knowledge_documents.sql` permanently drops `knowledge_documents`.
+> **DO NOT APPLY** until the following checklist is completed:
+
+1. **7-Day Stability Gate:** All specialist agents have run on the PDF pipeline for $\ge 7$ full days in production without incident.
+2. **Zero Traffic Verification:** Legacy table query count has dropped to zero:
    ```sql
    SELECT seq_scan, idx_scan FROM pg_stat_user_tables WHERE relname = 'knowledge_documents';
    ```
-3. Backup taken:
+3. **Cold Backup:** Verified database backup taken before running drop:
    ```bash
    pg_dump -t knowledge_documents orchestrai_prod > kb_docs_backup_$(date +%Y%m%d).sql
    ```
-4. Apply migration:
+4. **Execution:**
    ```bash
    cd server && npm run db:migrate
    ```
-5. Rollback if needed:
+5. **Rollback (Restore from Backup):**
    ```bash
    psql orchestrai_prod < kb_docs_backup_YYYYMMDD.sql
    ```
-
-See `MIGRATION.md` Step 7 for the full deprecation rationale.
-
-## Large-Document Benchmark (optional)
-
-Generate a synthetic large-doc fixture and run the benchmark:
-```bash
-cd server
-npx tsx scripts/generate-large-doc-pdf.ts
-LOG_EMBEDDING_CALLS=1 LOG_PEAK_RSS=1 npx tsx scripts/benchmark-large-pdf.ts
-```
-
-Targets (informational, not gates):
-| Metric | Target |
-|--------|--------|
-| Ingest wall-time | < 60 s |
-| Peak RSS | < 500 MB |
-| Chunk count | > 30 |
-| p50 retrieval latency | < 500 ms |
-| p95 retrieval latency | < 1000 ms |

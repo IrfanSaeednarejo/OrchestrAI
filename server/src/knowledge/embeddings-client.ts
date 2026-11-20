@@ -48,6 +48,10 @@ async function retryWithBackoff<T>(fn: () => Promise<T>, retries = 3, baseDelayM
       attempt++;
       if (attempt >= retries) throw err;
       const delay = baseDelayMs * Math.pow(2, attempt);
+      const errCode = (err as { status?: number; code?: string })?.status
+        ?? (err as { code?: string })?.code
+        ?? (err instanceof Error ? err.message.slice(0, 60) : String(err).slice(0, 60));
+      console.error(`[retry] attempt=${attempt} delay=${delay}ms err=${errCode}`);
       await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
