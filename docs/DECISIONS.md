@@ -304,6 +304,12 @@ Small focused steps; explicit typed state; clear agent boundaries; no agent spag
 - Cross-Space Rollback Semantics: Rollback fallback to `knowledge_documents` provides degraded cross-space cosine similarity; documented in `MIGRATION.md` and `DEPLOYMENT.md`.
 - Legacy Golden Set Isolation: `eval/retrieval-queries.json` marked legacy via `eval/retrieval-queries.README.md`; CI strictly evaluates canonical 6-query `knowledge-golden-dataset.json`.
 
+### Phase D Production Sign-Off (2026-11-20)
+- p95 SLI `<2,000ms` accepted for production (embed-bound: query+fusion ≈53ms, embed tail drives budget). Query-embedding cache deferred; revisit when production data shows sustained p95 >2,000ms or high repeat-query rate.
+- Backend + Neon Postgres colocated in `us-east-2`. Operator must verify Neon project region matches backend deploy region before ingestion; mismatch invalidates the p95 target by 12.5–16×.
+- 0014 backup policy: cold `pg_dump` with verified restore + prior-day off-site copy is the sole contractual recovery mechanism. PITR is a bonus, not contractual.
+- CI Gate 2 parallelism deferred; sequential 137–159s accepted at current PR volume. Revisit when PR-velocity friction emerges.
+- Full decisions: see `docs/OPEN-DECISIONS.md` item 30.
 
 
 
