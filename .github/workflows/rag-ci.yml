@@ -94,6 +94,7 @@ jobs:
       - name: Run Database Migrations
         env:
           DATABASE_URL: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || 'mock-ci-key' }}
         run: npm run db:migrate
 
       - name: Run Mocked Ingestion & Retrieval Suite
