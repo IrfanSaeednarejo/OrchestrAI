@@ -92,6 +92,13 @@
       "when": 1794937053544,
       "tag": "0012_nice_groot",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1795180167531,
+      "tag": "0013_add_page_number",
+      "breakpoints": true
     }
   ]
 }

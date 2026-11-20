@@ -310,6 +310,17 @@ Small focused steps; explicit typed state; clear agent boundaries; no agent spag
 - 0014 backup policy: cold `pg_dump` with verified restore + prior-day off-site copy is the sole contractual recovery mechanism. PITR is a bonus, not contractual.
 - CI Gate 2 parallelism deferred; sequential 137–159s accepted at current PR volume. Revisit when PR-velocity friction emerges.
 - Full decisions: see `docs/OPEN-DECISIONS.md` item 30.
+### Phase D Production Deployment (2026-11-20)
+
+- **Fresh database bootstrap.** PROD started as an empty Neon Postgres 18.7 database in `us-east-2`. Migration chain applied 14 migrations (0000–0013); `0014_drop_knowledge_documents` moved to `migrations-deferred/` and deferred to Phase E, because `searchKnowledgeByEmbedding` and `schema.ts` still reference the table — running `0014` now would cause the next `drizzle-kit generate` to re-create it.
+- **Migration journal repair.** Discovered during fresh-bootstrap audit: `_journal.json` was missing entries 0013 and 0014 despite `.sql` files existing. `drizzle-orm/node-postgres/migrator` silently skipped them, meaning `page_number` was never added on a fresh DB. Repaired by regenerating 0013 via `drizzle-kit generate` and moving 0014 to `migrations-deferred/`. Journal now 14 entries, 14 snapshots, 14 active .sql files.
+- **Test DB isolation.** `TEST_DATABASE_URL` and `TEST_DATABASE_URL_UNPOOLED` added to `server/.env`, pointing at a Neon branch `ep-odd-wildflower` off PROD. `test-global-setup.ts` now prefers `TEST_DATABASE_URL` over `DATABASE_URL` with a loud log line when the override is active. Prevents test runs from mutating PROD.
+- **Ingest verified end-to-end.** PROD and TEST both at 14 chunks / 5 doc versions. Embedding L2 norm 0.5795 confirms `gemini-embedding-001` with `RETRIEVAL_DOCUMENT` taskType; if the pipeline had regressed to `text-embedding-004` or dropped taskType, L2 would be ≈ 1.00. Section paths identical between PROD and TEST — pipeline is deterministic.
+- **Smoke probes 8/8 PASS.** P1–P6 top-1 match expected sections; N1 (cross-domain) and N2 (nonexistent topic) return 0 hits. Notably P6 top-1 is `"How does the verification code process work?"`, not the stale golden `targetSectionPath` — RRF ranks the more specific section first.
+- **Test suite green.** 128 passed | 20 skipped (148 total) against the isolated TEST database. 20 skipped are the deferred large-doc fixture tests behind `RUN_LARGE_DOC_TESTS`.
+- **Latency (dev-only).** Smoke probe p50 3,059ms / p95 7,190ms measured from Pakistan to Ohio — WAN-bound, not code-bound. Confirms the colocation requirement (production backend in `us-east-2` should see p50 500–800ms, embed-dominated).
+- **Pre-backend-launch blocker.** `ENABLE_DEMO_ENDPOINTS=true` currently set in `server/.env` — must be `false` before the backend HTTP server launches. Documented in `DEPLOYMENT.md` §1.
+
 
 
 

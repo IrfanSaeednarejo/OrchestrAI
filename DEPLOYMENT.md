@@ -13,6 +13,11 @@ This guide describes the operational deployment procedure, continuous integratio
    - `DATABASE_URL` (pooled connection string pointing to colocated Postgres).
    - `DATABASE_URL_UNPOOLED` (direct connection string for schema migrations / DDL).
    - `GEMINI_API_KEY` (production API key with access to `gemini-embedding-001`).
+   - `ENABLE_DEMO_ENDPOINTS` (**must be `false` in production**). When `true`, demo identity and OTP inspection routes are active and the server logs `⚠️ [SECURITY WARNING] ENABLE_DEMO_ENDPOINTS is enabled` on startup and every CLI command. Harmless during DB-only operations, but **must be `false` before the backend HTTP server launches**. Verify before starting the server:
+     ```bash
+     grep '^ENABLE_DEMO_ENDPOINTS=' server/.env
+     # must return: ENABLE_DEMO_ENDPOINTS=false
+     ```
 3. **Dependencies:**
    - Run `npm ci` in `server/`.
    - Ensure **`pgvector` extension ≥ 0.8.0** is enabled. Required for `hnsw.iterative_scan` and `hnsw.max_scan_tuples` GUCs (introduced in 0.8.0). **No startup gate exists** — pgvector < 0.8.0 fails at first retrieval with `unrecognized configuration parameter "hnsw.iterative_scan"`. Verify before ingestion:
@@ -243,6 +248,31 @@ Migration file `server/drizzle/migrations/0014_drop_knowledge_documents.sql` is 
 > **DO NOT APPLY** until the following checklist is completed:
 >
 > **NO ROLLBACK AFTER DROP.** Once `knowledge_documents` is dropped, the 42P01-guarded fallback in `retrieval.ts` returns an empty array on 0-hit scoped queries. There is no restore path except the cold backup. Re-verify items 1–3 (7-day stability, zero legacy queries, cold backup taken) before proceeding — the backup in item 3 is the **only** recovery mechanism.
+
+> **Fresh-bootstrap vs incremental-migration context:**
+>
+> The gate below applies to incremental migration: a production DB that
+> already had `knowledge_documents` populated with real data.
+>
+> **On fresh bootstrap (empty Neon DB), no data exists in
+> `knowledge_documents`.** Migration 0006 creates the table; nothing
+> ever inserts into it. The table is empty. The 7-day stability gate,
+> zero-traffic verification, and cold-backup requirement are all
+> **no-ops on fresh bootstrap** — there is nothing to stabilize, no
+> traffic to observe, and no data to back up.
+>
+> **Current Phase D state:** `0014_drop_knowledge_documents.sql` is
+> moved to `migrations-deferred/` and NOT registered in `_journal.json`.
+> The empty `knowledge_documents` table remains present after migration.
+> It will be dropped in Phase E as part of a separate code+DB change
+> (which includes refactoring `searchKnowledgeByEmbedding` to raw SQL
+> and removing `knowledgeDocuments` from `schema.ts`, so that
+> `drizzle-kit generate` does not re-create the dropped table on the
+> next generation).
+>
+> **Until Phase E, `knowledge_documents` exists but contains zero rows.
+> The fallback in `retrieval.ts` queries it and returns 0 hits — same
+> outcome as the 42P01-guarded post-drop path.**
 
 1. **7-Day Stability Gate:** All specialist agents have run on the PDF pipeline for $\ge 7$ full days in production without incident.
 2. **Zero Traffic Verification:** Legacy table query count has dropped to zero:

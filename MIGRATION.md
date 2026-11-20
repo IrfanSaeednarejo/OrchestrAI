@@ -218,6 +218,33 @@ SELECT extversion FROM pg_extension WHERE extname = 'vector';
 
 ---
 
+### Migration journal repair (2026-11-20)
+
+Prior to Phase D, `_journal.json` contained 13 entries (0000–0012) but
+the migrations directory contained 15 `.sql` files (0000–0014). Because
+`drizzle-orm/node-postgres/migrator` resolves migrations strictly via
+`_journal.json`, migrations `0013_add_page_number` and
+`0014_drop_knowledge_documents` were **silently skipped** on any fresh
+database. `page_number` would not exist on `knowledge_chunks` and
+ingestion would fail.
+
+**Repair applied:**
+- `0013_add_page_number.sql` regenerated via `drizzle-kit generate --name add_page_number`.
+  Journal now has 14 entries; snapshot 0013 exists; `page_number` is
+  correctly present in the snapshot's `knowledge_chunks`.
+- `0014_drop_knowledge_documents.sql` moved to
+  `server/drizzle/migrations-deferred/`. It is **not** in the active
+  journal. It will be activated in Phase E after
+  `searchKnowledgeByEmbedding` is refactored to raw SQL and
+  `knowledgeDocuments` is removed from `schema.ts` — otherwise
+  `drizzle-kit generate` would re-create the dropped table on the next
+  generation pass.
+
+**Impact:** fresh DB now correctly applies 14 migrations (0000–0013).
+`knowledge_documents` exists as an empty table until Phase E.
+
+---
+
 ### CI Duration Note — Gate 2 Wall‑Clock
 Gate 2 (`vector-integration-gate`) issues live Gemini embedding calls during
 `rag-retrieval.test.ts`. Observed wall‑clock: **~90 s** (rate-limit risk at > 100 s).
