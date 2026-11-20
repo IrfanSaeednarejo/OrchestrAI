@@ -73,7 +73,7 @@ Approved items move to DECISIONS.md. Items marked [CONFLICT] are inconsistencies
     - OD-29b [RESOLVED 2026-11-20]: p95 Latency Budget Revision — Revised from `<1,000ms` to `<2,000ms`. Tail latency (>1,500ms) is attributable to Gemini `gemini-embedding-001` remote API response variance; local database query and RRF fusion latency remain steady at ~53ms and <1ms respectively.
     - OD-29c [RESOLVED 2026-11-20]: Legacy Fallback Degraded Semantics — Documented in `MIGRATION.md` and `DEPLOYMENT.md` that legacy `knowledge_documents.embedding` was populated using `text-embedding-004` (L2 norm ≈ 1.0), whereas active queries use `gemini-embedding-001` (L2 norm ≈ 0.57). Fallback provides degraded cross-space retrieval, not seamless safe fallback.
     - OD-29d [DEFERRED POST-PHASE-C]: Golden Dataset v1.0.1 Alignment — `eval-q-06` targetSectionPath currently points to `"What is email verification and why is it required?"`, but actual top-1 semantic retrieval is `"How does the verification code process work?"`. Smoke tests assert actual top-1; golden dataset update deferred.
-    - OD-29e [RESOLVED 2026-11-20]: Legacy Retrieval Queries Dataset Companion — `eval/retrieval-queries.json` (30 queries) is retained as legacy artifact with companion `eval/retrieval-queries.README.md`; `server/src/evaluation/dataset/knowledge-golden-dataset.json` (6 queries) remains authoritative for CI.
+    - OD-29e [RESOLVED 2026-11-20]: Legacy Retrieval Queries Dataset Companion — `eval/retrieval-queries.json` (30 queries) is retained as legacy artifact with companion `eval/retrieval-queries.README.md`; `eval/knowledge-golden-dataset.json` (6 queries) remains authoritative for CI.
 
 
 
