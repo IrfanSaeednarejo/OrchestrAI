@@ -14,6 +14,29 @@ jobs:
   backend-ci:
     name: Backend CI
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: orchestrai
+          POSTGRES_PASSWORD: orchestrai-test-password
+          POSTGRES_DB: orchestrai_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
     defaults:
       run:
         working-directory: server
@@ -36,6 +59,28 @@ jobs:
 
       - name: Typecheck
         run: npm run typecheck
+
+      - name: Setup Checkpointer & Run Migrations
+        env:
+          DATABASE_URL: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
+          DATABASE_URL_UNPOOLED: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
+          REDIS_URL: redis://localhost:6379
+          TOKEN_SECRET: da1259dec9ed79f89de8376c281d4c7dc2ac39f219abd8922fdd55c2ea4fc96d
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || 'mock-ci-key' }}
+        run: |
+          npm run checkpointer:setup
+          npm run db:migrate
+          npm run db:seed
+
+      - name: Run Tests
+        env:
+          DATABASE_URL: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
+          DATABASE_URL_UNPOOLED: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
+          REDIS_URL: redis://localhost:6379
+          TOKEN_SECRET: da1259dec9ed79f89de8376c281d4c7dc2ac39f219abd8922fdd55c2ea4fc96d
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || 'mock-ci-key' }}
+          ENABLE_DEMO_ENDPOINTS: 'true'
+        run: npm test
 
   frontend-ci:
     name: Frontend CI
@@ -62,6 +107,9 @@ jobs:
 
       - name: Typecheck
         run: npm run typecheck
+
+      - name: Run Tests
+        run: npm test
 
   deploy-backend:
     name: Deploy Backend
