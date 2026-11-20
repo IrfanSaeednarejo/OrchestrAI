@@ -68,6 +68,7 @@ jobs:
           TOKEN_SECRET: da1259dec9ed79f89de8376c281d4c7dc2ac39f219abd8922fdd55c2ea4fc96d
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || 'mock-ci-key' }}
         run: |
+          docker exec -i $(docker ps -q --filter ancestor=pgvector/pgvector:pg16) psql -U orchestrai -d orchestrai_test -c "CREATE EXTENSION IF NOT EXISTS vector;" || true
           npm run checkpointer:setup
           npm run db:migrate
           npm run db:seed
