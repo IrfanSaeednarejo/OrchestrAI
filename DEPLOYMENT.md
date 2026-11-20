@@ -244,6 +244,31 @@ Migration file `server/drizzle/migrations/0014_drop_knowledge_documents.sql` is 
 >
 > **NO ROLLBACK AFTER DROP.** Once `knowledge_documents` is dropped, the 42P01-guarded fallback in `retrieval.ts` returns an empty array on 0-hit scoped queries. There is no restore path except the cold backup. Re-verify items 1–3 (7-day stability, zero legacy queries, cold backup taken) before proceeding — the backup in item 3 is the **only** recovery mechanism.
 
+> **Fresh-bootstrap vs incremental-migration context:**
+>
+> The gate below applies to incremental migration: a production DB that
+> already had `knowledge_documents` populated with real data.
+>
+> **On fresh bootstrap (empty Neon DB), no data exists in
+> `knowledge_documents`.** Migration 0006 creates the table; nothing
+> ever inserts into it. The table is empty. The 7-day stability gate,
+> zero-traffic verification, and cold-backup requirement are all
+> **no-ops on fresh bootstrap** — there is nothing to stabilize, no
+> traffic to observe, and no data to back up.
+>
+> **Current Phase D state:** `0014_drop_knowledge_documents.sql` is
+> moved to `migrations-deferred/` and NOT registered in `_journal.json`.
+> The empty `knowledge_documents` table remains present after migration.
+> It will be dropped in Phase E as part of a separate code+DB change
+> (which includes refactoring `searchKnowledgeByEmbedding` to raw SQL
+> and removing `knowledgeDocuments` from `schema.ts`, so that
+> `drizzle-kit generate` does not re-create the dropped table on the
+> next generation).
+>
+> **Until Phase E, `knowledge_documents` exists but contains zero rows.
+> The fallback in `retrieval.ts` queries it and returns 0 hits — same
+> outcome as the 42P01-guarded post-drop path.**
+
 1. **7-Day Stability Gate:** All specialist agents have run on the PDF pipeline for $\ge 7$ full days in production without incident.
 2. **Zero Traffic Verification:** Legacy table query count has dropped to zero:
    ```sql
