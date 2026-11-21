@@ -1,7 +1,7 @@
 'use client';
 
 // src/components/ops/handoff-breadcrumbs.tsx
-// Phase 18 Step 5: Visual handoff breadcrumbs showing multi-agent routing transitions.
+// Phase 34: Visual handoff breadcrumbs with Midnight Burgundy and Imperial Crimson theme.
 
 import React from 'react';
 import { ArrowRight, Bot, Compass } from 'lucide-react';
@@ -35,10 +35,10 @@ export function HandoffBreadcrumbs({
   return (
     <div
       data-testid="handoff-breadcrumbs"
-      className={`bg-slate-900 border border-slate-800 rounded-lg p-3.5 ${className}`}
+      className={`bg-surface border border-edge-subtle rounded-xl p-4 shadow-xs ${className}`}
     >
-      <div className="flex items-center gap-2 mb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
-        <Compass className="h-4 w-4 text-indigo-400" />
+      <div className="flex items-center gap-2 mb-3 text-xs font-semibold text-content-muted uppercase tracking-wider font-mono">
+        <Compass className="h-4 w-4 text-brand-link" />
         <span>Multi-Agent Routing Trajectory</span>
       </div>
 
@@ -51,23 +51,23 @@ export function HandoffBreadcrumbs({
             <React.Fragment key={`${agent}-${index}`}>
               <div
                 data-testid={`breadcrumb-node-${index}`}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium border shadow-sm transition-all ${
+                className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium border shadow-xs transition-all ${
                   isLast
-                    ? 'bg-indigo-950 border-indigo-700 text-indigo-200 ring-1 ring-indigo-500/30'
-                    : 'bg-slate-800/80 border-slate-700 text-slate-300'
+                    ? 'bg-brand-primary/20 border-brand-primary text-brand-link ring-1 ring-brand-primary/30 font-semibold'
+                    : 'bg-surface-inset border-edge-subtle text-content-secondary'
                 }`}
               >
-                <Bot className={`h-3.5 w-3.5 ${isLast ? 'text-indigo-400' : 'text-slate-400'}`} />
+                <Bot className={`h-3.5 w-3.5 ${isLast ? 'text-brand-link' : 'text-content-muted'}`} />
                 <span>{label}</span>
                 {isLast && (
-                  <span className="text-[10px] bg-indigo-800/60 text-indigo-300 px-1.5 py-0.2 rounded font-mono font-semibold ml-1">
+                  <span className="text-[10px] bg-brand-primary/40 text-brand-link px-1.5 py-0.5 rounded font-mono font-semibold ml-1">
                     Active
                   </span>
                 )}
               </div>
 
               {!isLast && (
-                <ArrowRight className="h-3.5 w-3.5 text-slate-500 shrink-0" />
+                <ArrowRight className="h-3.5 w-3.5 text-content-muted/60 shrink-0" />
               )}
             </React.Fragment>
           );
@@ -76,4 +76,3 @@ export function HandoffBreadcrumbs({
     </div>
   );
 }
-
