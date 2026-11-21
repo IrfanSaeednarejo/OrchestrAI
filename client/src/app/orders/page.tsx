@@ -2,6 +2,7 @@
 
 // src/app/orders/page.tsx
 // Phase 22 Step 4: Dedicated Order Management page with live status and 1-click Agent Support.
+// Phase 32: Redesigned with Midnight Burgundy / Imperial Crimson design system.
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
@@ -32,39 +33,39 @@ function getStatusBadge(status: Order['status']) {
     case 'paid':
       return {
         label: 'Paid & Processing',
-        icon: <Clock className="h-3.5 w-3.5 text-emerald-400" />,
-        className: 'bg-emerald-950/70 text-emerald-300 border-emerald-800/60',
+        icon: <Clock className="h-3.5 w-3.5 text-status-success" />,
+        className: 'bg-status-success/10 text-status-success border-status-success/20',
       };
     case 'shipped':
       return {
         label: 'Shipped',
-        icon: <Truck className="h-3.5 w-3.5 text-sky-400" />,
-        className: 'bg-sky-950/70 text-sky-300 border-sky-800/60',
+        icon: <Truck className="h-3.5 w-3.5 text-status-info" />,
+        className: 'bg-status-info/10 text-status-info border-status-info/20',
       };
     case 'delivered':
       return {
         label: 'Delivered',
-        icon: <CheckCircle2 className="h-3.5 w-3.5 text-purple-400" />,
-        className: 'bg-purple-950/70 text-purple-300 border-purple-800/60',
+        icon: <CheckCircle2 className="h-3.5 w-3.5 text-status-success" />,
+        className: 'bg-status-success/15 text-status-success border-status-success/30',
       };
     case 'cancelled':
       return {
         label: 'Cancelled',
-        icon: <XCircle className="h-3.5 w-3.5 text-rose-400" />,
-        className: 'bg-rose-950/70 text-rose-300 border-rose-800/60',
+        icon: <XCircle className="h-3.5 w-3.5 text-status-error" />,
+        className: 'bg-status-error/10 text-status-error border-status-error/20',
       };
     case 'returned':
       return {
         label: 'Returned',
-        icon: <RotateCcw className="h-3.5 w-3.5 text-amber-400" />,
-        className: 'bg-amber-950/70 text-amber-300 border-amber-800/60',
+        icon: <RotateCcw className="h-3.5 w-3.5 text-status-warning" />,
+        className: 'bg-status-warning/10 text-status-warning border-status-warning/20',
       };
     case 'pending':
     default:
       return {
         label: 'Pending Confirmation',
-        icon: <Clock className="h-3.5 w-3.5 text-amber-400" />,
-        className: 'bg-amber-950/70 text-amber-300 border-amber-800/60',
+        icon: <Clock className="h-3.5 w-3.5 text-status-warning" />,
+        className: 'bg-status-warning/10 text-status-warning border-status-warning/20',
       };
   }
 }
@@ -97,26 +98,28 @@ export default function OrdersPage() {
 
   if (isAuthLoading || !isAuthenticated) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-slate-400 gap-2">
-        <Loader2 className="h-5 w-5 animate-spin text-indigo-500" />
-        <span>Authenticating...</span>
+      <div className="min-h-screen bg-surface-canvas flex items-center justify-center text-content-secondary gap-2.5">
+        <Loader2 className="h-5 w-5 animate-spin text-brand-link" />
+        <span className="text-sm font-medium">Authenticating...</span>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-surface-canvas text-content-primary flex flex-col">
       <TopNav />
 
       <main className="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
         {/* Page Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-800">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-edge-subtle">
           <div>
-            <div className="flex items-center gap-2">
-              <Package className="h-6 w-6 text-indigo-400" />
-              <h1 className="text-2xl font-bold tracking-tight text-white">Your Orders</h1>
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-control bg-surface border border-edge-subtle flex items-center justify-center text-brand-link shadow-sm">
+                <Package className="h-5 w-5" />
+              </div>
+              <h1 className="text-2xl font-bold tracking-tight text-content-primary">Your Orders</h1>
             </div>
-            <p className="text-sm text-slate-400 mt-1">
+            <p className="text-xs sm:text-sm text-content-secondary mt-1.5">
               Review order history, view live delivery statuses, and launch direct AI support.
             </p>
           </div>
@@ -124,17 +127,17 @@ export default function OrdersPage() {
             <button
               onClick={loadOrders}
               disabled={isLoading}
-              className="inline-flex items-center gap-2 px-3 py-2 text-xs font-medium rounded-lg bg-slate-900 border border-slate-800 hover:bg-slate-850 hover:border-slate-700 text-slate-300 transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-3 py-2 text-xs font-medium rounded-control bg-surface border border-edge-subtle hover:bg-surface-hover hover:border-edge-strong text-content-secondary hover:text-content-primary transition-colors disabled:opacity-50"
               title="Refresh order list"
             >
-              <RefreshCw className={`h-3.5 w-3.5 ${isLoading ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`h-3.5 w-3.5 text-brand-link ${isLoading ? 'animate-spin' : ''}`} />
               <span>Refresh</span>
             </button>
             <Link
               href="/store"
-              className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition-colors shadow-sm shadow-indigo-950"
+              className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-control bg-surface hover:bg-surface-hover border border-edge-subtle text-content-primary transition-colors shadow-sm"
             >
-              <ShoppingBag className="h-3.5 w-3.5" />
+              <ShoppingBag className="h-3.5 w-3.5 text-brand-link" />
               <span>Storefront</span>
             </Link>
           </div>
@@ -142,14 +145,14 @@ export default function OrdersPage() {
 
         {/* Error Banner */}
         {error && (
-          <div className="flex items-center justify-between p-4 rounded-xl bg-rose-950/40 border border-rose-800/60 text-rose-300 text-sm">
+          <div className="flex items-center justify-between p-4 rounded-card bg-status-error/10 border border-status-error/30 text-status-error text-sm">
             <div className="flex items-center gap-3">
-              <AlertCircle className="h-5 w-5 flex-shrink-0 text-rose-400" />
+              <AlertCircle className="h-5 w-5 flex-shrink-0" />
               <span>{error}</span>
             </div>
             <button
               onClick={loadOrders}
-              className="px-3 py-1 text-xs font-medium bg-rose-900/60 hover:bg-rose-800/80 rounded-lg text-rose-200 transition-colors"
+              className="px-3 py-1.5 text-xs font-semibold bg-status-error/20 hover:bg-status-error/30 border border-status-error/30 rounded-control text-status-error transition-colors"
             >
               Retry
             </button>
@@ -158,28 +161,28 @@ export default function OrdersPage() {
 
         {/* Loading State */}
         {isLoading && (
-          <div className="flex flex-col items-center justify-center py-20 text-slate-400 space-y-3">
-            <Loader2 className="h-8 w-8 animate-spin text-indigo-500" />
-            <p className="text-sm">Loading your order history...</p>
+          <div className="flex flex-col items-center justify-center py-20 text-content-secondary space-y-3">
+            <Loader2 className="h-7 w-7 animate-spin text-brand-link" />
+            <p className="text-sm font-medium">Loading your order history...</p>
           </div>
         )}
 
         {/* Empty State */}
         {!isLoading && !error && orders.length === 0 && (
-          <div className="rounded-2xl border border-dashed border-slate-800 bg-slate-900/30 p-12 text-center space-y-4">
-            <div className="mx-auto w-12 h-12 rounded-full bg-slate-800/80 flex items-center justify-center text-slate-400">
+          <div className="rounded-dialog border border-dashed border-edge-subtle bg-surface/40 p-12 text-center space-y-4">
+            <div className="mx-auto w-12 h-12 rounded-full bg-surface-elevated border border-edge-subtle flex items-center justify-center text-brand-link shadow-sm">
               <Package className="h-6 w-6" />
             </div>
             <div className="space-y-1">
-              <h2 className="text-base font-semibold text-white">No orders found</h2>
-              <p className="text-sm text-slate-400 max-w-sm mx-auto">
+              <h2 className="text-base font-semibold text-content-primary">No orders found</h2>
+              <p className="text-sm text-content-secondary max-w-sm mx-auto">
                 You haven&apos;t placed any orders yet. Browse our hardware catalog and place your first checkout order!
               </p>
             </div>
             <div className="pt-2">
               <Link
                 href="/store"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold transition-colors shadow-lg shadow-indigo-950"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-control bg-brand-primary hover:bg-brand-hover active:bg-brand-deep text-white text-sm font-semibold transition-all shadow-md shadow-brand-primary/20"
               >
                 <span>Browse Store Catalog</span>
                 <ArrowRight className="h-4 w-4" />
@@ -206,25 +209,26 @@ export default function OrdersPage() {
               return (
                 <div
                   key={order.id}
-                  className="rounded-xl border border-slate-800 bg-slate-900/70 hover:border-slate-700 transition-all p-5 sm:p-6 space-y-4"
+                  className="rounded-card border border-edge-subtle bg-surface hover:border-edge-strong transition-all p-5 sm:p-6 space-y-4 shadow-sm"
                 >
                   {/* Order Top Bar */}
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-slate-800/80">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-edge-subtle">
                     <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs uppercase tracking-wider font-semibold text-slate-400">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-[11px] uppercase tracking-wider font-semibold text-content-muted">
                           Order ID
                         </span>
-                        <code className="text-xs font-mono font-medium text-indigo-300 bg-indigo-950/60 px-2 py-0.5 rounded border border-indigo-900/60">
+                        <code className="text-xs font-mono font-semibold text-brand-link bg-surface-inset px-2.5 py-0.5 rounded border border-edge-subtle">
                           {order.id}
                         </code>
+                        <span className="text-xs text-content-muted hidden sm:inline">•</span>
+                        <span className="text-xs text-content-muted">Placed on {formattedDate}</span>
                       </div>
-                      <p className="text-xs text-slate-500">Placed on {formattedDate}</p>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 shrink-0">
                       <div
-                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${badge.className}`}
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-tag text-xs font-semibold border ${badge.className}`}
                       >
                         {badge.icon}
                         <span>{badge.label}</span>
@@ -233,18 +237,18 @@ export default function OrdersPage() {
                   </div>
 
                   {/* Order Details Body */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-slate-300 pt-1">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs pt-1">
                     <div>
-                      <span className="text-slate-500 block mb-1">Total Paid</span>
-                      <span className="text-lg font-bold text-white">
+                      <span className="text-content-muted block mb-1">Total Paid</span>
+                      <span className="text-xl font-bold text-content-primary tabular-nums tracking-tight">
                         ${parseFloat(order.totalAmount || '0').toFixed(2)}
                       </span>
                     </div>
 
                     <div>
-                      <span className="text-slate-500 block mb-1">Shipping Destination</span>
-                      <div className="flex items-start gap-1.5 text-slate-300">
-                        <MapPin className="h-3.5 w-3.5 text-slate-500 flex-shrink-0 mt-0.5" />
+                      <span className="text-content-muted block mb-1">Shipping Destination</span>
+                      <div className="flex items-start gap-1.5 text-content-secondary">
+                        <MapPin className="h-3.5 w-3.5 text-brand-link flex-shrink-0 mt-0.5" />
                         <span className="truncate">
                           {order.shippingAddressSnapshot || 'Primary address on file'}
                         </span>
@@ -252,22 +256,24 @@ export default function OrdersPage() {
                     </div>
                   </div>
 
-                  {/* Bottom Action Footer */}
-                  <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-t border-slate-800/50">
-                    <p className="text-xs text-slate-400 flex items-center gap-1.5">
-                      <Sparkles className="h-3.5 w-3.5 text-indigo-400" />
-                      <span>Need order tracking, address change, or return assistance?</span>
-                    </p>
+                  {/* Bottom Action Footer — AI Autonomous Assistant Dock */}
+                  <div className="pt-2 border-t border-edge-subtle">
+                    <div className="p-3 rounded-control bg-surface-inset border border-edge-subtle flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                      <p className="text-xs text-content-muted flex items-center gap-1.5">
+                        <Sparkles className="h-3.5 w-3.5 text-brand-link flex-shrink-0" />
+                        <span>Need order tracking, address change, or return assistance?</span>
+                      </p>
 
-                    <button
-                      type="button"
-                      onClick={() => router.push(`/?orderId=${order.id}`)}
-                      className="inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-lg bg-indigo-600/90 hover:bg-indigo-500 text-white text-xs font-semibold transition-colors shadow-sm shadow-indigo-950"
-                    >
-                      <MessageSquare className="h-3.5 w-3.5" />
-                      <span>Ask Agent About This Order</span>
-                      <ArrowRight className="h-3.5 w-3.5" />
-                    </button>
+                      <button
+                        type="button"
+                        onClick={() => router.push(`/?orderId=${order.id}`)}
+                        className="inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-control bg-brand-primary hover:bg-brand-hover active:bg-brand-deep text-white text-xs font-semibold transition-all shadow-sm shadow-brand-primary/20 shrink-0"
+                      >
+                        <MessageSquare className="h-3.5 w-3.5" />
+                        <span>Ask Agent About This Order</span>
+                        <ArrowRight className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               );
