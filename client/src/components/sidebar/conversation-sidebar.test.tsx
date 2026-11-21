@@ -69,7 +69,7 @@ describe('ConversationSidebar', () => {
     expect(screen.getByText(/Chat conv-222/i)).toBeInTheDocument();
 
     const activeItem = screen.getByTestId('conversation-item-conv-1111-aaaa');
-    expect(activeItem).toHaveClass('bg-slate-800');
+    expect(activeItem).toHaveClass('bg-surface-hover');
   });
 
   it('calls onSelect when a conversation item is clicked', () => {

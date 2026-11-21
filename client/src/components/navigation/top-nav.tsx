@@ -3,18 +3,20 @@
 // src/components/navigation/top-nav.tsx
 // Phase 18 Step 3: Global top navigation header.
 // Phase 22 Step 2: Added Store, My Orders, active user profile, and Sign Out.
+// Phase 30 Step 2: Redesigned to Midnight Burgundy / Imperial Crimson design system.
 
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sparkles, MessageSquare, Activity, ShoppingBag, Package, LogOut, LogIn, User } from 'lucide-react';
+import { MessageSquare, Activity, ShoppingBag, Package, LogOut, LogIn, User, Menu } from 'lucide-react';
 import { useAuth } from '../../context/auth-context';
 
 interface TopNavProps {
   className?: string;
+  onMenuToggle?: () => void;
 }
 
-export function TopNav({ className = '' }: TopNavProps) {
+export function TopNav({ className = '', onMenuToggle }: TopNavProps) {
   const pathname = usePathname();
   let authContext: ReturnType<typeof useAuth> | null = null;
   try {
@@ -35,16 +37,29 @@ export function TopNav({ className = '' }: TopNavProps) {
   return (
     <header
       data-testid="top-nav"
-      className={`h-14 border-b border-slate-800 bg-slate-900 text-slate-100 flex items-center justify-between px-4 md:px-6 shrink-0 ${className}`}
+      className={`h-14 border-b border-edge-subtle bg-surface-sidebar text-content-primary flex items-center justify-between px-4 md:px-6 shrink-0 ${className}`}
     >
-      {/* Brand logo & Primary Navigation Links */}
-      <div className="flex items-center gap-4 md:gap-6">
+      {/* Left: Brand + Mobile Menu + Nav Links */}
+      <div className="flex items-center gap-3 md:gap-5">
+        {/* Mobile menu toggle — visible below lg */}
+        {onMenuToggle && (
+          <button
+            type="button"
+            onClick={onMenuToggle}
+            data-testid="mobile-menu-toggle"
+            aria-label="Toggle sidebar"
+            className="lg:hidden inline-flex items-center justify-center p-1.5 rounded-control text-content-secondary hover:text-content-primary hover:bg-surface-hover transition-colors"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+        )}
+
         <Link
           href="/"
-          className="flex items-center gap-2 font-bold text-white tracking-tight hover:opacity-90 transition-opacity"
+          className="flex items-center gap-2 font-bold text-content-primary tracking-tight hover:opacity-90 transition-opacity"
         >
-          <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white shadow-sm">
-            <Sparkles className="h-4 w-4" />
+          <div className="w-7 h-7 rounded-lg bg-brand-primary flex items-center justify-center text-white shadow-sm">
+            <span className="text-xs font-bold">O</span>
           </div>
           <span className="text-sm md:text-base font-semibold tracking-tight">OrchestrAI</span>
         </Link>
@@ -54,49 +69,49 @@ export function TopNav({ className = '' }: TopNavProps) {
           <Link
             href="/"
             data-testid="nav-chat-link"
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-control text-xs font-medium transition-colors ${
               isChat
-                ? 'bg-slate-800 text-white shadow-sm'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                ? 'bg-surface-hover text-content-primary shadow-sm'
+                : 'text-content-muted hover:text-content-primary hover:bg-surface-hover/50'
             }`}
           >
             <MessageSquare className="h-3.5 w-3.5" />
-            <span>Support Chat</span>
+            <span className="hidden sm:inline">Support Chat</span>
           </Link>
 
           <Link
             href="/store"
             data-testid="nav-store-link"
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-control text-xs font-medium transition-colors ${
               isStore
-                ? 'bg-slate-800 text-white shadow-sm'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                ? 'bg-surface-hover text-content-primary shadow-sm'
+                : 'text-content-muted hover:text-content-primary hover:bg-surface-hover/50'
             }`}
           >
             <ShoppingBag className="h-3.5 w-3.5" />
-            <span>Store</span>
+            <span className="hidden sm:inline">Store</span>
           </Link>
 
           <Link
             href="/orders"
             data-testid="nav-orders-link"
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-control text-xs font-medium transition-colors ${
               isOrders
-                ? 'bg-slate-800 text-white shadow-sm'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                ? 'bg-surface-hover text-content-primary shadow-sm'
+                : 'text-content-muted hover:text-content-primary hover:bg-surface-hover/50'
             }`}
           >
             <Package className="h-3.5 w-3.5" />
-            <span>My Orders</span>
+            <span className="hidden sm:inline">My Orders</span>
           </Link>
 
           <Link
             href="/ops"
             data-testid="nav-ops-link"
-            className={`hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+            className={`hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-control text-xs font-medium transition-colors ${
               isOps
-                ? 'bg-indigo-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                ? 'bg-brand-primary text-white shadow-sm'
+                : 'text-content-muted hover:text-content-primary hover:bg-surface-hover/50'
             }`}
           >
             <Activity className="h-3.5 w-3.5" />
@@ -108,13 +123,13 @@ export function TopNav({ className = '' }: TopNavProps) {
       {/* Right side: Authenticated User Pill / Sign In button */}
       <div className="flex items-center gap-2">
         {isAuthenticated && authUser ? (
-          <div className="flex items-center gap-2 bg-slate-800/80 border border-slate-700/80 rounded-lg px-2.5 py-1">
-            <div className="w-5 h-5 rounded-full bg-indigo-600/30 border border-indigo-500/40 flex items-center justify-center text-indigo-400">
+          <div className="flex items-center gap-2 bg-surface-elevated border border-edge-subtle rounded-lg px-2.5 py-1">
+            <div className="w-5 h-5 rounded-full bg-brand-primary/20 border border-brand-primary/30 flex items-center justify-center text-brand-link">
               <User className="h-3 w-3" />
             </div>
             <span
               data-testid="nav-user-email"
-              className="text-xs text-slate-200 font-medium max-w-[140px] truncate"
+              className="text-xs text-content-secondary font-medium max-w-[140px] truncate"
             >
               {authUser.name || authUser.email}
             </span>
@@ -123,7 +138,7 @@ export function TopNav({ className = '' }: TopNavProps) {
               onClick={() => authContext?.logout()}
               data-testid="nav-logout-btn"
               title="Sign Out"
-              className="text-slate-400 hover:text-rose-400 transition-colors ml-1"
+              className="text-content-muted hover:text-status-error transition-colors ml-1"
             >
               <LogOut className="h-3.5 w-3.5" />
             </button>
@@ -132,7 +147,7 @@ export function TopNav({ className = '' }: TopNavProps) {
           <Link
             href="/login"
             data-testid="nav-login-link"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-indigo-600 hover:bg-indigo-500 text-white transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-brand-primary hover:bg-brand-hover text-white transition-colors"
           >
             <LogIn className="h-3.5 w-3.5" />
             <span>Sign In</span>
