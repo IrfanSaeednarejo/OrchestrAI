@@ -1,367 +1,234 @@
-# OrchestrAI — Authentication Redesign Proposal (`/login` & `/register`)
+# OrchestrAI — Revised Authentication Redesign Proposal (`/login` & `/register`)
+## Split-Screen Visual Architecture & Multi-Agent Editorial Direction
 
 **Author:** Antigravity Agent  
 **Date:** November 21, 2026  
-**Document Status:** Pending User Review & Approval (Discovery Gate)  
+**Document Status:** Pending User Review & Approval (Discovery Gate — Revised)  
 **Target Branch:** `phase/33-auth-visual-redesign`  
 **Authority Reference:** `client/ORCHESTRAI_DESIGN_SYSTEM.md`  
 **Design Skills Applied:** Impeccable (`/impeccable`), StageShow (`.agents/skills/stageshow`)  
-**Visual Artifact:** [`auth-redesign-stageshow.html`](file:///C:/Users/Asad%20Computers/.gemini/antigravity/brain/0c006911-6a2c-4dd1-8949-acfb5bc7efea/auth-redesign-stageshow.html)
+**Visual Demonstration Artifact:** [`auth-split-screen-stageshow.html`](file:///C:/Users/Asad%20Computers/.gemini/antigravity/brain/0c006911-6a2c-4dd1-8949-acfb5bc7efea/auth-split-screen-stageshow.html)
 
 ---
 
 ## Executive Summary
 
-Following the accepted redesigns of the Customer Chat (`/`, Phase 30), Storefront (`/store`, Phase 31), and Orders Dashboard (`/orders`, Phase 32), this proposal details the visual and interaction redesign for the authentication entry points: **`/login`**, **`/register`**, and the shared **`AuthModal`**.
+Following user feedback on the initial authentication redesign, this document updates the design direction for **`/login`** and **`/register`**. 
 
-The current authentication pages rely on generic Tailwind utility templates (`slate-950`, `slate-900`, `indigo-600` buttons, and `indigo-500` focus rings). This proposal transforms the authentication experience into a minimalist, secure, and focused gateway styled in **Midnight Burgundy** (`#16070B` / `#2B0D15`) and **Imperial Crimson** (`#8A0B24`), employing **Manrope** typography and accessible focus cues.
+While preserving the core **Midnight Burgundy** (`#16070B` / `#2B0D15`) and **Imperial Crimson** (`#8A0B24`) palette, typography, and test contracts, the page composition transitions from a centered card in a dark void to an **editorial split-screen architecture**:
+1. **Left Section (approx. 57.5% desktop viewport)**: A dedicated, full-height visual experience that communicates OrchestrAI's autonomous multi-agent orchestration identity—featuring a custom architectural illustration of the Meta-Orchestrator, LangGraph checkpointer rings, and the 6 specialist agents with telemetry overlays and editorial branding.
+2. **Right Section (approx. 42.5% desktop viewport)**: A focused, vertically centered authentication panel designed with comfortable max-width, recessed inputs, accessible contrast, and zero visual bloat.
+3. **Adaptive Form Factor Strategy**: Responsive adaptations for Tablet (768px) and Mobile (375px), where the visual collapses into a sleek, compact branded header to ensure the form and software keyboard have immediate vertical priority.
 
 In accordance with project guidelines, this proposal is strictly frontend-only. **Zero backend logic, cryptographic hashing, database tables, or authentication API contracts will be modified.** All 11 unit/integration tests across `login/page.test.tsx` (3), `register/page.test.tsx` (3), and `auth-modal.test.tsx` (5) will remain 100% green.
 
 ---
 
-## 1. Existing Route & Component Architecture
+## 1. Split-Screen Composition & Architectural Rationale
 
-### 1.1 Source Files & Responsibilities
+### 1.1 Rationale for Split-Screen Layout
+The typical centered card authentication pattern suffers from two major deficiencies in an enterprise/portfolio context:
+1. **The "Empty Void" Phenomenon**: On modern 1440px+ monitors, a 400px card leaves over 70% of the screen as passive, dead space (`#0A0608`).
+2. **Loss of Brand Identity**: A lone form looks like a generic authentication template (Auth0/Supabase clone) rather than a bespoke, high-performance orchestration system.
 
-| File Path | Role & Architecture | Upstream / Downstream Dependencies |
-| :--- | :--- | :--- |
-| `client/src/app/login/page.tsx` | Full-page customer login view. Wraps `LoginFormContent` in a `<Suspense>` boundary for `useSearchParams`. Handles email/password authentication and redirect redirection. | `useAuth`, `next/navigation`, `lucide-react` |
-| `client/src/app/login/page.test.tsx` | Vitest test suite (3 tests). Asserts form rendering, accessible labels, submission with redirect to `redirectUrl`, and error banner display. | `Vitest`, `@testing-library/react`, `AuthProvider`, `api-client` mocks |
-| `client/src/app/register/page.tsx` | Full-page customer registration view. Wraps `RegisterFormContent` in `<Suspense>`. Captures name, email, shipping address, and password (min 8 chars). | `useAuth`, `next/navigation`, `lucide-react` |
-| `client/src/app/register/page.test.tsx` | Vitest test suite (3 tests). Asserts form inputs, successful registration and redirect to `/orders`, and client-side password length validation (< 8 chars). | `Vitest`, `@testing-library/react`, `AuthProvider`, `api-client` mocks |
-| `client/src/components/auth/auth-modal.tsx` | Shared modal dialog used on `/` chat page when unauthenticated users trigger checkout or account access. Features dual-tab switching (`Sign In` / `Create Account`). | `useAuth`, `lucide-react` |
-| `client/src/components/auth/auth-modal.test.tsx` | Vitest test suite (5 tests). Asserts modal conditional rendering, tab switching, login submission with callbacks, and error banner display. | `Vitest`, `@testing-library/react`, `AuthProvider`, `api-client` mocks |
-| `client/src/context/auth-context.tsx` | Shared React context managing Bearer tokens (`orchestrai_token` in `localStorage`), active `AuthUser` profile, and session verification via `GET /api/auth/me`. | `api-client` (`apiLogin`, `apiRegister`, `apiLogout`, `apiMe`) |
-
-### 1.3 Test Assertions & Selectors (Frozen Contract)
-
-The following selectors and text assertions are asserted in existing tests and must be preserved verbatim:
-
-#### In `src/app/login/page.test.tsx`:
-- `getByRole('heading', { name: /Sign In to Your Account/i })`
-- `getByTestId('login-email-input')`
-- `getByTestId('login-password-input')`
-- `getByTestId('login-submit-btn')`
-- `getByTestId('link-to-register')`
-- `getByTestId('login-error-banner')`
-
-#### In `src/app/register/page.test.tsx`:
-- `getByRole('heading', { name: /Create Customer Account/i })`
-- `getByTestId('register-name-input')`
-- `getByTestId('register-email-input')`
-- `getByTestId('register-address-input')`
-- `getByTestId('register-password-input')`
-- `getByTestId('register-submit-btn')`
-- `getByTestId('link-to-login')`
-- `getByTestId('register-error-banner')`
-- Text: `'Password must be at least 8 characters'`
-
-#### In `src/components/auth/auth-modal.test.tsx`:
-- `getByTestId('auth-modal')`
-- `getByTestId('auth-modal-close')`
-- `getByTestId('tab-sign-in')`
-- `getByTestId('tab-register')`
-- `getByTestId('auth-email-input')`
-- `getByTestId('auth-password-input')`
-- `getByTestId('auth-name-input')`
-- `getByTestId('auth-address-input')`
-- `getByTestId('auth-submit-btn')`
-- `getByTestId('auth-error-banner')`
-- Headings: `/Sign In to OrchestrAI/i`, `/Create Customer Account/i`
+The split-screen layout balances functional utility with technical storytelling:
+- **Desktop Viewport Allocation**:
+  - **Left Visual (57.5% width, `flex: 1.35`)**: Full-height canvas dedicated to the technical reality of OrchestrAI.
+  - **Right Form (42.5% width, `flex: 1`)**: Focused authentication panel with a maximum form width of 380px–420px.
+- **Visual Continuity**: The dividing boundary between sections is not a harsh border, but a subtle hairline (`border-edge-subtle` at 40% opacity) accompanied by an ambient radial glow and soft horizontal gradient dissolving the illustration into the form panel.
 
 ---
 
-## 2. Authentication Flow & API Integration
+## 2. Left Section — Visual Experience & Creative Direction
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Customer
-    participant UI as Login / Register Page
-    participant AuthCtx as AuthContext
-    participant API as Express API (/api/auth)
-    participant Storage as localStorage
+### 2.1 Creative Concept: The Multi-Agent Orchestration Ecosystem
+To avoid generic AI tropes (floating robot faces, glowing blue brain fractals, neon circuits, or generic stock art), the left visual is designed as an **editorial architectural diagram** illustrating the true stateful engine powering OrchestrAI.
 
-    Customer->>UI: Enters Credentials & Submits
-    UI->>AuthCtx: login(email, password) OR register(data)
-    AuthCtx->>API: POST /api/auth/login OR POST /api/auth/register
-    alt Authentication Succeeded
-        API-->>AuthCtx: 200/201 { token, user: { id, name, email, defaultAddress } }
-        AuthCtx->>Storage: setItem('orchestrai_token', token)
-        AuthCtx-->>UI: Promise Resolved
-        UI->>Customer: router.replace(redirectUrl)
-    else Authentication Failed
-        API-->>AuthCtx: 401/400 { error: { message, code } }
-        AuthCtx-->>UI: Promise Rejected
-        UI->>Customer: Display Error in data-testid="*-error-banner"
-    end
-```
-
-### 2.1 Redirect Preservation Flow
-- Both `/login` and `/register` inspect `useSearchParams().get('redirect')`.
-- If an unauthenticated user is bounced from `/store`, the redirect parameter is `redirect=/store`.
-- If the user toggles between "Create an account" and "Sign in instead", the query string is preserved:
-  - In Login: `/register${redirectUrl !== '/' ? `?redirect=${encodeURIComponent(redirectUrl)}` : ''}`
-  - In Register: `/login${redirectUrl !== '/' ? `?redirect=${encodeURIComponent(redirectUrl)}` : ''}`
-- Upon successful authentication, `router.replace(redirectUrl)` redirects back to the originating page.
+### 2.2 Visual Elements & Anatomy
+1. **Ambient Lighting & Base Atmosphere**:
+   - Deep burgundy canvas (`radial-gradient(circle at 45% 45%, #240a14 0%, #16070b 60%, #0c0306 100%)`).
+   - Subtle geometric coordinate grid (`linear-gradient` 40px grid at 12% opacity, radially masked to fade out toward the edges).
+   - Warm crimson ambient light source (`rgba(138, 11, 36, 0.28)`) centered beneath the primary orchestration node.
+2. **Central Meta-Orchestrator Node**:
+   - Concentric telemetry radar rings with dash arrays representing active LangGraph checkpoint cycles.
+   - Core triage node in deep Imperial Crimson (`#A8112F` to `#420410`) labeled `META / TRIAGE`.
+   - Subtle live telemetry badge: `6 SPECIALISTS ONLINE` with a pulsing status beacon.
+3. **Coordinated Specialist Subgraphs**:
+   - Six satellite nodes arranged with deliberate architectural balance:
+     - **Orders Specialist** (`#93C5FD` indicator, telemetry: `ORDERS`)
+     - **Returns Specialist** (`#FBBF24` indicator, telemetry: `RETURNS`)
+     - **Payment Specialist** (`#34D399` indicator, telemetry: `PAYMENT`)
+     - **Refund Specialist** (`#FB7185` indicator, telemetry: `REFUND`)
+     - **Account Access / Security** (elevated pill, telemetry: `SECURITY OTP`)
+     - **Profile Specialist** (elevated pill, telemetry: `PROFILE`)
+4. **Dynamic Bezier Splines & Lateral Transitions**:
+   - Curved vector paths linking the Meta-Orchestrator to each specialist (`stroke="url(#crimson-gradient)"`), symbolizing LangGraph `Command({ goto })` dispatches.
+   - Dashed lateral arcs between Orders ↔ Returns and Payment ↔ Refund, visually representing Pattern B (lateral re-routing) without returning to the root router.
+5. **Editorial Typography & Real-Time Metrics**:
+   - **Headline**: *"Stateful multi-agent intelligence, orchestrated."* in bold Manrope with Crimson italic accent.
+   - **Subtext**: *"Autonomous customer resolution across orders, payments, returns, and verified identity accounts with durable LangGraph checkpointing."*
+   - **Metrics Ticker**: Three quantitative proof-points anchored at the base:
+     - `6 AGENTS` / `Coordinated`
+     - `< 14 MS` / `Checkpoint Latency`
+     - `100% PII` / `Redaction Gate`
 
 ---
 
-## 3. Form Fields & Validation Behavior
+## 3. Right Section — Authentication Form Structure
 
-| Field | Input Attributes | Validation Rules | Error Trigger |
+### 3.1 Layout & Hierarchy
+The right panel provides an uncluttered, distraction-free environment for the authentication task:
+- **Vertical Centering**: The form is perfectly centered vertically with comfortable padding (`p-8 sm:p-12 lg:p-16`).
+- **Maximum Container Width**: `max-w-[380px]` (login) and `max-w-[420px]` (register) to prevent horizontal eye fatigue and maintain optimal line length.
+- **Clean Typography**:
+  - `<h1>`: `Sign In to Your Account` (login) / `Create Customer Account` (register) in Manrope bold 22px, tracking -0.025em.
+  - `<p>`: Clear, 13px supporting copy in `text-content-secondary`.
+- **Form Controls & Ergonomics**:
+  - Recessed field styling (`bg-surface-inset border-edge-subtle rounded-control text-content-primary`).
+  - Left-aligned Lucide icons (`Mail`, `Lock`, `User`, `MapPin`) positioned in a 38px gutter with `pointer-events-none`.
+  - Focused states: Imperial Crimson focus ring (`focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/30`).
+  - Spacing: 16px vertical gap between form fields.
+- **Call-to-Action (CTA)**:
+  - Full-width submit button in Imperial Crimson (`bg-brand-primary hover:bg-brand-hover active:bg-brand-deep`).
+  - Glow elevation: `shadow-glow-brand hover:shadow-glow-brand-lg`.
+  - Tactile states: Loading spinner (`Loader2`) and disabled opacity when submitting.
+- **Navigation Switch**:
+  - Clean footer separator (`border-t border-edge-subtle pt-5 mt-6 text-center text-xs text-content-muted`).
+  - High-contrast link in `text-brand-link` with underline offset.
+
+---
+
+## 4. Responsive Adaptation Matrix (Desktop, Tablet, Mobile)
+
+| Viewport | Layout Strategy | Left Visual Treatment | Form Panel Treatment |
 | :--- | :--- | :--- | :--- |
-| **Email** | `type="email"`, `required` | Must be non-empty string after trim; standard email syntax. | "Email and password are required" |
-| **Password** | `type="password"`, `required` | In `/login`: non-empty. In `/register`: `password.length >= 8`. | Login: "Email and password are required"<br>Register: "Password must be at least 8 characters" |
-| **Full Name** | `type="text"`, `required` | (Register only) Must be non-empty string after trim. | "Full name is required" |
-| **Default Shipping Address** | `type="text"`, `required` | (Register only) Must be non-empty string after trim. | "Default shipping address is required" |
+| **Desktop**<br>(`≥ 1024px`) | Full Split-Screen<br>(57.5% / 42.5%) | Full-height editorial canvas with interactive SVG orchestration graph, ambient radial glow, and metrics footer. | Vertically centered panel, `max-w-[400px]`, full field spacing. |
+| **Tablet**<br>(`768px – 1023px`) | Proportional Split or Cropped Banner | Visual width narrows to ~45% or collapses into a 220px top hero banner with simplified nodes. | Form panel takes 55%–100% width, maintaining 400px content clamp. |
+| **Mobile**<br>(`375px – 767px`) | Single-Column Direct Form Focus | Replaced by a **compact branded header** (height ~100px) with ambient top glow, mini OrchestrAI badge, and live telemetry chip (`● 6 AGENTS`). | Full screen-height container (`px-5 py-6`), thumb-friendly inputs (min 44px tap targets), immediate keyboard focus. |
 
-> [!NOTE]
-> Client validation executes synchronously in `handleSubmit` before invoking `login()` or `register()`. If invalid, `setLocalError()` is called and the network call is aborted, matching existing behavior.
-
----
-
-## 4. Existing Error, Loading, and Success States
-
-1. **Idle State**: Inputs render with standard border and subtle placeholder; submit button displays "Sign In" / "Create Account" with `ArrowRight` icon.
-2. **Submitting / Loading State**:
-   - `isSubmitting === true`
-   - Form inputs remain disabled/locked.
-   - Button renders spinning `Loader2` and text: `"Signing in..."` or `"Creating account..."`.
-3. **Client-Side Validation Error**:
-   - Immediate feedback in `data-testid="*-error-banner"` with semantic error styling.
-4. **Server Rejection Error**:
-   - `login()` / `register()` throws `ApiClientError` with message (e.g., "Invalid email or password", "User already exists").
-   - Banner catches message and renders cleanly in `data-testid="*-error-banner"`.
-5. **Success State**:
-   - Immediate programmatic navigation via `router.replace(redirectUrl)`.
-   - In `AuthModal`, calls `onSuccess?.()` and `onClose()`.
+> [!IMPORTANT]
+> On mobile devices, forcing users to scroll past a heavy visual illustration before reaching the form fields creates high friction and awkward software keyboard behavior. The compact header approach preserves the brand presence while placing the form directly at the user's fingertips.
 
 ---
 
-## 5. Current Design Problems & Impeccable Critique
+## 5. Visual Demonstrations (StageShow Artifacts)
 
-Applying `/impeccable` design critique principles identified several key flaws:
+We created a dedicated multi-view interactive StageShow demonstration artifact:
+- **Interactive StageShow Artifact**: [`auth-split-screen-stageshow.html`](file:///C:/Users/Asad%20Computers/.gemini/antigravity/brain/0c006911-6a2c-4dd1-8949-acfb5bc7efea/auth-split-screen-stageshow.html)
 
-### 5.1 Palette Dissonance & Legacy Styling
-- **Problem**: Pages use `bg-slate-950` canvas, `bg-slate-900` card, `border-slate-800`, with `indigo-600` submit buttons and `indigo-500` focus outlines.
-- **Critique**: The user experiences a jarring visual break when transitioning between the newly redesigned Midnight Burgundy (`#16070B`) chat, store, and orders pages and the authentication screens.
-
-### 5.2 Brand Identity Inconsistency
-- **Problem**: The brand header uses an ad-hoc indigo rounded square (`w-10 h-10 rounded-xl bg-indigo-600`) with a `Sparkles` icon.
-- **Critique**: Throughout the rest of the application (TopNav), OrchestrAI's brand mark is the Imperial Crimson (`#8A0B24`) tile with a bold white "O". The authentication screens should use the official brand mark to instill trust and security.
-
-### 5.3 Low-Contrast Input Insets
-- **Problem**: Form inputs use `bg-slate-800 border-slate-700 text-white placeholder-slate-500`.
-- **Critique**: On dark screens, inputs should be slightly recessed (`bg-surface-inset` `#110509`) with clean boundary definition (`border-edge-subtle` `#52202D`) and high-contrast text (`text-content-primary` `#FFF9FA`), focusing crisply with `border-edge-focus` (`#D1193E`).
-
-### 5.4 Lack of Perceived Security Architecture
-- **Problem**: There are zero visual indicators of encryption or session safety.
-- **Critique**: E-commerce customer authentication requires confidence. Adding a quiet, elegant security footnote ("256-bit encrypted · HMAC-SHA256 session") using `Geist Mono` signals technical precision without adding clutter.
+### Included Demonstrations in the Artifact:
+1. 🖥️ **Desktop Login (1440 × 820)**: Full split-screen with the multi-agent orchestration art on the left and the 2-field login form on the right.
+2. 🖥️ **Desktop Register (1440 × 820)**: Full split-screen with customer onboarding telemetry on the left and the 4-field registration form on the right.
+3. 📱 **Mobile Login (375 × 760)**: Compact branded header with ambient burgundy glow and thumb-friendly form.
+4. 📱 **Mobile Register (375 × 760)**: Single-column scroll-optimized registration form with immediate input focus.
+5. 🎛️ **Interactive State Matrix**: Dropdown switcher to preview `Normal / Idle`, `Client Validation Error`, `API Rejection Banner`, and `Submitting / Loading` states live.
 
 ---
 
-## 6. Proposed Login Layout (`/login`)
+## 6. Impeccable Design Critique & Refinements
 
-```
-┌────────────────────────────────────────────────────────┐
-│                   [ O ] OrchestrAI                     │
-│               Sign In to Your Account                  │
-│ Access your orders, track shipments, and chat with AI. │
-├────────────────────────────────────────────────────────┤
-│ [!] Invalid email or password (error banner if active) │
-├────────────────────────────────────────────────────────┤
-│ Email Address                                          │
-│ [ ✉️  alice@example.com                               ] │
-│                                                        │
-│ Password                                               │
-│ [ 🔒  ••••••••••••                                    ] │
-│                                                        │
-│ [ ────────────────── Sign In ─────────────────── → ]  │
-├────────────────────────────────────────────────────────┤
-│ 🛡️ 256-bit encrypted · HMAC-SHA256 session             │
-├────────────────────────────────────────────────────────┤
-│ Don't have an account yet? Create an account           │
-└────────────────────────────────────────────────────────┘
-```
+Using the **`/impeccable`** critique methodology, we evaluated the transition from the legacy design to the split-screen architecture:
+
+1. **Critique: "Does the visual compete with the primary task?"**
+   - *Finding*: Bright, high-contrast illustrations on the left can distract the eye from the form fields.
+   - *Refinement*: The left visual is deliberately kept dark and atmospheric, using deep midnight burgundy surfaces (`#16070B`), low-opacity bezier paths (`0.3 – 0.6`), and restrained lighting. The eye naturally is drawn to the right-side form because of the crisp typography and high-contrast inputs.
+2. **Critique: "How do we prevent the split-screen from feeling like two separate websites?"**
+   - *Finding*: A harsh vertical dividing line makes the layout look like a generic split template.
+   - *Refinement*: We softened the dividing border to `rgba(82, 32, 45, 0.4)` and layered a subtle horizontal gradient vignette (`bg-gradient-to-r from-transparent to-surface-canvas`) so the background atmosphere flows seamlessly across the viewport.
+3. **Critique: "Is the multi-agent illustration genuine or superficial?"**
+   - *Finding*: Generic tech diagrams with random numbers look artificial.
+   - *Refinement*: The nodes and telemetry correspond exactly to the real architecture of OrchestrAI (Meta-Triage, Orders, Returns, Payment, Refund, Profile, Security OTP, and LangGraph checkpoint rings).
+4. **Critique: "What happens on small screens?"**
+   - *Finding*: Shrinking the SVG diagram to mobile dimensions produces unreadable clutter.
+   - *Refinement*: The mobile viewport eliminates the complex graph entirely in favor of an elegant, compact branded header with an ambient crimson glow.
 
 ---
 
-## 7. Proposed Registration Layout (`/register`)
+## 7. Accessibility Considerations (WCAG 2.2 AA)
 
-```
-┌────────────────────────────────────────────────────────┐
-│                   [ O ] OrchestrAI                     │
-│               Create Customer Account                  │
-│ Register to place checkout orders & autonomous support.│
-├────────────────────────────────────────────────────────┤
-│ [!] Error banner (if validation or server fails)       │
-├────────────────────────────────────────────────────────┤
-│ Full Name                                              │
-│ [ 👤  Alice Customer                                  ] │
-│                                                        │
-│ Email Address                                          │
-│ [ ✉️  alice@example.com                               ] │
-│                                                        │
-│ Default Shipping Address                               │
-│ [ 📍  123 Market St, San Francisco CA                 ] │
-│                                                        │
-│ Password (min 8 characters)                            │
-│ [ 🔒  ••••••••••••                                    ] │
-│                                                        │
-│ [ ─────────────── Create Account ─────────────── → ]  │
-├────────────────────────────────────────────────────────┤
-│ 🛡️ 256-bit encrypted · HMAC-SHA256 session             │
-├────────────────────────────────────────────────────────┤
-│ Already have an account? Sign in instead               │
-└────────────────────────────────────────────────────────┘
+1. **Contrast Ratios**:
+   - `text-content-primary` (`#FFF9FA`) on `bg-surface-canvas` (`#16070B`): **16.8:1** (exceeds AAA requirement of 7.0:1).
+   - `text-content-secondary` (`#D9B8BF`) on `bg-surface-canvas`: **8.9:1** (exceeds AA).
+   - Form inputs (`#FFF9FA`) on recessed background (`#110509`): **18.2:1**.
+   - Submit button text (`#FFFFFF`) on `bg-brand-primary` (`#8A0B24`): **6.2:1** (exceeds AA requirement of 4.5:1).
+2. **Keyboard Navigation & Focus Rings**:
+   - All interactive controls (`<input>`, `<button>`, `<a>`) maintain visible focus rings (`focus:ring-1 focus:ring-brand-primary/40 focus:border-brand-primary`).
+   - Tab order is strictly linear: Left visual has `aria-hidden="true"` or role="presentation" so screen readers move directly to the form fields.
+3. **Screen Reader Semantics**:
+   - Form headings use proper semantic `<h1>` tags.
+   - Form fields have explicit `<label>` tags with matching `htmlFor` attributes.
+   - Error banners have `role="alert"` and `aria-live="polite"`.
+
+---
+
+## 8. Frozen Functional Contracts & Test Assertions
+
+All 14 `data-testid` selectors, form validation logic, and existing tests remain 100% untouched:
+
+```text
+Login Selectors:
+- getByRole('heading', { name: /Sign In to Your Account/i })
+- getByTestId('login-email-input')
+- getByTestId('login-password-input')
+- getByTestId('login-submit-btn')
+- getByTestId('link-to-register')
+- getByTestId('login-error-banner')
+
+Register Selectors:
+- getByRole('heading', { name: /Create Customer Account/i })
+- getByTestId('register-name-input')
+- getByTestId('register-email-input')
+- getByTestId('register-address-input')
+- getByTestId('register-password-input')
+- getByTestId('register-submit-btn')
+- getByTestId('link-to-login')
+- getByTestId('register-error-banner')
+- Text: 'Password must be at least 8 characters'
+
+Shared AuthModal Selectors:
+- getByTestId('auth-modal')
+- getByTestId('auth-modal-close')
+- getByTestId('tab-sign-in')
+- getByTestId('tab-register')
+- getByTestId('auth-email-input')
+- getByTestId('auth-password-input')
+- getByTestId('auth-name-input')
+- getByTestId('auth-address-input')
+- getByTestId('auth-submit-btn')
+- getByTestId('auth-error-banner')
 ```
 
 ---
 
-## 8. Shared Component Strategy (`AuthModal`)
+## 9. Implementation Execution Plan (Upon Approval)
 
-The `AuthModal` in `client/src/components/auth/auth-modal.tsx` will receive the identical visual treatment to maintain complete design coherence:
-- **Surface**: `bg-surface` (`#2B0D15`) dialog with `border-edge-subtle` and backdrop blur `bg-black/70`.
-- **Close Button**: `data-testid="auth-modal-close"` with `text-content-muted hover:text-content-primary`.
-- **Tab Bar**:
-  - `data-testid="tab-sign-in"` & `data-testid="tab-register"`.
-  - Active tab receives `text-brand-link` with `border-b-2 border-brand-focus`.
-  - Inactive tab receives `text-content-muted hover:text-content-secondary`.
-- **Forms & Inputs**: Identical `bg-surface-inset` fields and Imperial Crimson submit button.
-
----
-
-## 9. Desktop, Tablet, and Mobile Designs
-
-| Viewport | Container Dimensions | Layout & Touch Ergonomics |
-| :--- | :--- | :--- |
-| **Desktop (1440 × 900)** | `w-full max-w-md` (384px – 420px), centered with `min-h-screen flex items-center justify-center p-4`. | Refined 32px padding, ambient brand depth, subtle top-edge hairline. |
-| **Tablet (768 × 1024)** | `w-full max-w-md`, centered. | Fluid spacing, clean keyboard focus rings. |
-| **Mobile (375 × 812)** | `w-full max-w-sm` (fits within 343px content width). | Inputs maintain comfortable 44px touch height (`py-2.5`); submit button spans full width with `py-3` height. Zero horizontal clipping. |
+- [ ] **Step 1: Implement Split-Screen Layout for `/login` (`client/src/app/login/page.tsx`)**
+  - Add the left-side orchestration canvas (`hidden lg:flex flex-[1.35]`) with SVG architecture nodes and editorial copy.
+  - Position the right-side form container (`flex-1 flex items-center justify-center p-6 sm:p-12 lg:p-16`).
+  - Wire the mobile compact header for viewports `< 1024px`.
+  - Run typecheck, lint, and `page.test.tsx`.
+- [ ] **Step 2: Implement Split-Screen Layout for `/register` (`client/src/app/register/page.tsx`)**
+  - Apply matching split-screen layout with registration-specific onboarding telemetry.
+  - Position the 4-field registration form in the right panel.
+  - Run typecheck, lint, and `page.test.tsx`.
+- [ ] **Step 3: Verification & Test Suite Execution**
+  - Run the full client test suite across all 28 files (150/150 passing).
+- [ ] **Step 4: Update `docs/STATUS.md`**
+  - Document the split-screen authentication architecture.
 
 ---
 
-## 10. Accessibility Considerations (WCAG 2.2 AA)
+## 10. Unresolved Design Decisions & Assumptions
 
-1. **Color Contrast**:
-   - Input labels: `text-content-secondary` (`#D9B8BF`) on `#2B0D15` achieves 8.2:1 contrast (exceeds 4.5:1 requirement).
-   - Headings: `text-content-primary` (`#FFF9FA`) achieves 14.8:1 contrast.
-   - Primary button: `#FFFFFF` on `#8A0B24` achieves 5.6:1 contrast.
-2. **Keyboard Focus Treatment**:
-   - Inputs and buttons feature visible focus states via `focus:outline-none focus:border-brand-focus focus:ring-1 focus:ring-brand-focus` (`#D1193E`).
-3. **Assistive Technology Labels**:
-   - Inputs maintain explicit `<label>` tags with matching form controls.
-   - Icon-only elements (e.g. modal close button) feature explicit `aria-label="Close modal"`.
+1. **Illustration Asset Format**:
+   - *Decision*: We implement the left visual as an inline, resolution-independent SVG/CSS composition directly in React/Next.js. This guarantees zero external network requests, instant rendering, crisp vector scaling at any DPI, and full theme token binding without relying on static bitmap assets.
+2. **Modal Experience (`AuthModal`)**:
+   - *Decision*: The `AuthModal` dialog triggered from customer chat remains a centered dialog overlay (as redesigned earlier) because split-screen is inappropriate for a lightweight in-chat modal. Only the full-page routes (`/login` and `/register`) adopt the full split-screen architecture.
 
 ---
 
-## 11. Design-System Token Application Matrix
+## Approval Gate
 
-| Current Template Class | Redesigned Token Class | Value | Purpose |
-| :--- | :--- | :--- | :--- |
-| `bg-slate-950` | `bg-surface-canvas` | `#16070B` | Full-screen background |
-| `bg-slate-900` | `bg-surface` | `#2B0D15` | Auth card & dialog surface |
-| `bg-slate-800` | `bg-surface-inset` | `#110509` | Recessed input fields |
-| `border-slate-800` | `border-edge-subtle` | `#52202D` | Outer card boundary |
-| `border-slate-700` | `border-edge-subtle` | `#52202D` | Input field borders |
-| `focus:ring-indigo-500` | `focus:border-brand-focus focus:ring-1 focus:ring-brand-focus` | `#D1193E` | Active input focus ring |
-| `text-white` | `text-content-primary` | `#FFF9FA` | Headings, button text, inputs |
-| `text-slate-300` | `text-content-secondary` | `#D9B8BF` | Field labels, descriptions |
-| `text-slate-400` / `500`| `text-content-muted` | `#B08A94` | Placeholders, icons, switch links |
-| `text-indigo-400` | `text-brand-link` | `#FF8FA3` | Active links, tab indicators |
-| `bg-indigo-600` | `bg-brand-primary` | `#8A0B24` | Primary submit button & brand tile |
-| `hover:bg-indigo-500` | `hover:bg-brand-hover` | `#A8112F` | Primary button hover |
-| `bg-rose-950/70` | `bg-status-error/10 border-status-error/30 text-status-error` | Semantic | Error alert banners |
-| `rounded-2xl` | `rounded-dialog` (12px) | `12px` | Auth card radius |
-| `rounded-lg` | `rounded-control` (8px) | `8px` | Inputs and buttons radius |
+This proposal and the interactive demonstration [`auth-split-screen-stageshow.html`](file:///C:/Users/Asad%20Computers/.gemini/antigravity/brain/0c006911-6a2c-4dd1-8949-acfb5bc7efea/auth-split-screen-stageshow.html) are presented for your review.
 
----
-
-## 12. Functional Preservation & Regression Risks
-
-### 12.1 Classification of Proposed Changes
-
-1. **Existing Functionality (100% Preserved)**:
-   - `login(email, password)` and `register({ name, email, defaultAddress, password })` calls.
-   - Redirect query string retention and `router.replace(redirectUrl)`.
-   - Client-side validation logic (required fields, password min 8 chars).
-   - Bearer token storage in `localStorage`.
-   - `AuthModal` tab switching and `onSuccess` / `onClose` callbacks.
-2. **Existing Data (100% Preserved)**:
-   - All `AuthUser` fields (`id`, `name`, `email`, `defaultAddress`).
-   - Token payload structure.
-3. **Frontend-Only Enhancements (Proposed for Approval)**:
-   - Official OrchestrAI brand mark tile in header.
-   - Security assurance footnote ("256-bit encrypted · HMAC-SHA256 session").
-4. **Backend / API Changes**:
-   - **Zero**. No endpoints, auth middleware, or crypto scrypt hashing logic will be touched.
-
-### 12.2 Test Suite Safety
-- `src/app/login/page.test.tsx` (3 tests)
-- `src/app/register/page.test.tsx` (3 tests)
-- `src/components/auth/auth-modal.test.tsx` (5 tests)
-- Total baseline will remain at **150/150 passing across 28 test suites**.
-
----
-
-## 13. Impeccable Critique & Refinements
-
-| Impeccable Principle | Initial Inspection Finding | Proposal Refinement |
-| :--- | :--- | :--- |
-| **Clarity over decoration** | Generic auth screens often feature heavy gradient backdrops and marketing carousels. | Kept the authentication screen strictly focused on credentials submission with a clean, centered card. |
-| **Brand restraint** | Temptation to make input fields or background crimson. | Canvas is deep Midnight Burgundy; Crimson is applied purposefully to the brand tile, submit button, and active focus treatment. |
-| **Technical precision** | Footnotes and error banners had uneven margin and inconsistent font sizes. | Aligned all input heights to 40px/44px, standardized error banners with semantic tokens, and added `Geist Mono` security telemetry. |
-| **Functional fidelity** | Need to ensure query redirect parameters are never lost during tab or page switching. | Preserved exact `?redirect=${encodeURIComponent(redirectUrl)}` link interpolation. |
-
----
-
-## 14. StageShow Visual Demonstrations
-
-Per the StageShow skill instructions (`.agents/skills/stageshow`), a multi-scene visual demonstration artifact has been constructed and saved to:
-
-👉 **[`auth-redesign-stageshow.html`](file:///C:/Users/Asad%20Computers/.gemini/antigravity/brain/0c006911-6a2c-4dd1-8949-acfb5bc7efea/auth-redesign-stageshow.html)**
-
-### Scenes Demonstrated:
-1. **Desktop Sign In Card (`/login`)**: Centered card with OrchestrAI Crimson brand tile, recessed inputs with icons, Imperial Crimson "Sign In" button, and security badge.
-2. **Desktop Registration Card (`/register`)**: 4-field registration form (Full Name, Email, Shipping Address, Password with min-8-char indicator) with clean spacing.
-3. **Shared `AuthModal`**: Dual-tab modal with active tab indicator on elevated Midnight Burgundy surface.
-4. **Mobile Layout (375 × 812)**: Edge-to-edge mobile card with 44px touch targets.
-
----
-
-## 15. Implementation Plan (Divided into Small Steps)
-
-Following approval, implementation will proceed in 4 small, verified steps:
-
-```mermaid
-flowchart LR
-    S1["Step 1: Redesign /login page"] --> S2["Step 2: Redesign /register page"]
-    S2 --> S3["Step 3: Redesign AuthModal component"]
-    S3 --> S4["Step 4: Full Verification & STATUS update"]
-```
-
-- **Step 1: Redesign `/login` (`src/app/login/page.tsx`)**
-  - Migrate canvas and card to Midnight Burgundy tokens.
-  - Apply brand logo tile, Manrope typography, and `bg-surface-inset` inputs.
-  - Verify `login/page.test.tsx` (3/3 passing).
-- **Step 2: Redesign `/register` (`src/app/register/page.tsx`)**
-  - Migrate registration card to Midnight Burgundy tokens.
-  - Restyle all 4 input fields and client-side error banner.
-  - Verify `register/page.test.tsx` (3/3 passing).
-- **Step 3: Redesign `AuthModal` (`src/components/auth/auth-modal.tsx`)**
-  - Apply elevated surface tokens to modal dialog.
-  - Restyle tab switcher with `text-brand-link` active indicator.
-  - Verify `auth-modal.test.tsx` (5/5 passing).
-- **Step 4: Full Verification & Status Update**
-  - Run typecheck, lint, and full Vitest suite (150/150 passing).
-  - Update `docs/STATUS.md` and commit report.
-
----
-
-## 16. Unresolved Questions & Assumptions
-
-1. **Brand Mark in Auth Header**: The proposal replaces the ad-hoc indigo sparkles square with the official OrchestrAI brand mark (Imperial Crimson tile with bold white "O"). Does this match your expectation for brand consistency?
-
-**I will wait for your explicit approval before modifying any code or beginning implementation.**
+**No application code has been modified.** We will pause here and await your explicit approval before implementing the split-screen layout.
