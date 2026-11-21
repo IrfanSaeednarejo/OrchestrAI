@@ -1,10 +1,10 @@
 'use client';
 
 // src/components/auth/auth-modal.tsx
-// Phase 21: Authentication modal for Sign In and Register.
+// Phase 33: Authentication modal for Sign In and Register with Midnight Burgundy / Imperial Crimson design system.
 
 import React, { useState } from 'react';
-import { X, Lock, Mail, User, MapPin, Loader2 } from 'lucide-react';
+import { X, Lock, Mail, User, MapPin, Loader2, AlertCircle } from 'lucide-react';
 import { useAuth } from '../../context/auth-context';
 
 interface AuthModalProps {
@@ -86,29 +86,29 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
       role="dialog"
       aria-modal="true"
       data-testid="auth-modal"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-surface-canvas/80 backdrop-blur-sm p-4 animate-in fade-in duration-200"
     >
-      <div className="relative w-full max-w-md bg-slate-900 border border-slate-800 rounded-xl shadow-2xl p-6 text-slate-100">
+      <div className="relative w-full max-w-md bg-surface border border-edge-subtle rounded-dialog shadow-elevated p-6 sm:p-7 text-content-primary selection:bg-brand-primary/30 selection:text-white">
         {/* Close Button */}
         <button
           type="button"
           onClick={onClose}
           data-testid="auth-modal-close"
           aria-label="Close modal"
-          className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors"
+          className="absolute top-4 right-4 p-1.5 rounded-control text-content-muted hover:text-content-primary hover:bg-surface-inset border border-transparent hover:border-edge-subtle transition-colors cursor-pointer"
         >
-          <X className="h-5 w-5" />
+          <X className="h-4 w-4" />
         </button>
 
         {/* Modal Header */}
         <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-indigo-950/80 border border-indigo-700/60 text-indigo-400 mb-3">
-            <Lock className="h-6 w-6" />
+          <div className="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-brand-primary/10 border border-brand-primary/20 text-brand-link mb-3 shadow-glow-brand">
+            <Lock className="h-5 w-5" />
           </div>
-          <h2 className="text-xl font-bold text-white tracking-tight">
+          <h2 className="text-xl font-bold text-content-primary tracking-tight">
             {tab === 'login' ? 'Sign In to OrchestrAI' : 'Create Customer Account'}
           </h2>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-content-secondary mt-1">
             {tab === 'login'
               ? 'Access your orders and converse with support agents.'
               : 'Register to place orders and manage your account.'}
@@ -116,15 +116,15 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex border-b border-slate-800 mb-6">
+        <div className="flex border-b border-edge-subtle mb-6">
           <button
             type="button"
             onClick={() => handleSwitchTab('login')}
             data-testid="tab-sign-in"
-            className={`flex-1 pb-2.5 text-sm font-medium transition-colors border-b-2 ${
+            className={`flex-1 pb-2.5 text-sm font-medium transition-all border-b-2 cursor-pointer ${
               tab === 'login'
-                ? 'border-indigo-500 text-indigo-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-brand-link text-brand-link font-semibold'
+                : 'border-transparent text-content-muted hover:text-content-secondary'
             }`}
           >
             Sign In
@@ -133,10 +133,10 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
             type="button"
             onClick={() => handleSwitchTab('register')}
             data-testid="tab-register"
-            className={`flex-1 pb-2.5 text-sm font-medium transition-colors border-b-2 ${
+            className={`flex-1 pb-2.5 text-sm font-medium transition-all border-b-2 cursor-pointer ${
               tab === 'register'
-                ? 'border-indigo-500 text-indigo-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-brand-link text-brand-link font-semibold'
+                : 'border-transparent text-content-muted hover:text-content-secondary'
             }`}
           >
             Create Account
@@ -147,9 +147,11 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
         {displayError && (
           <div
             data-testid="auth-error-banner"
-            className="mb-4 p-3 rounded-lg bg-rose-950/60 border border-rose-800 text-rose-300 text-xs font-medium"
+            role="alert"
+            className="mb-4 p-3 rounded-control bg-status-error/10 border border-status-error/25 text-status-error text-xs font-medium flex items-start gap-2.5"
           >
-            {displayError}
+            <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
+            <span className="leading-relaxed">{displayError}</span>
           </div>
         )}
 
@@ -158,11 +160,11 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
           {tab === 'register' && (
             <>
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">
+                <label className="block text-xs font-semibold text-content-secondary mb-1.5">
                   Full Name
                 </label>
                 <div className="relative">
-                  <User className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+                  <User className="absolute left-3.5 top-3 h-4 w-4 text-content-muted pointer-events-none" />
                   <input
                     type="text"
                     required
@@ -170,17 +172,17 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Jane Doe"
-                    className="w-full pl-9 pr-3 py-2 text-sm bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full pl-10 pr-3.5 py-2 text-sm bg-surface-inset border border-edge-subtle rounded-control text-content-primary placeholder-content-muted focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/30 transition-all font-sans"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">
+                <label className="block text-xs font-semibold text-content-secondary mb-1.5">
                   Default Shipping Address
                 </label>
                 <div className="relative">
-                  <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+                  <MapPin className="absolute left-3.5 top-3 h-4 w-4 text-content-muted pointer-events-none" />
                   <input
                     type="text"
                     required
@@ -188,7 +190,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
                     value={defaultAddress}
                     onChange={(e) => setDefaultAddress(e.target.value)}
                     placeholder="123 Market St, Suite 400"
-                    className="w-full pl-9 pr-3 py-2 text-sm bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full pl-10 pr-3.5 py-2 text-sm bg-surface-inset border border-edge-subtle rounded-control text-content-primary placeholder-content-muted focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/30 transition-all font-sans"
                   />
                 </div>
               </div>
@@ -196,11 +198,11 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
           )}
 
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">
+            <label className="block text-xs font-semibold text-content-secondary mb-1.5">
               Email Address
             </label>
             <div className="relative">
-              <Mail className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+              <Mail className="absolute left-3.5 top-3 h-4 w-4 text-content-muted pointer-events-none" />
               <input
                 type="email"
                 required
@@ -208,17 +210,17 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="w-full pl-9 pr-3 py-2 text-sm bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full pl-10 pr-3.5 py-2 text-sm bg-surface-inset border border-edge-subtle rounded-control text-content-primary placeholder-content-muted focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/30 transition-all font-sans"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">
-              Password {tab === 'register' && <span className="text-slate-400 font-normal">(min 8 chars)</span>}
+            <label className="block text-xs font-semibold text-content-secondary mb-1.5">
+              Password {tab === 'register' && <span className="text-content-muted font-normal">(min 8 chars)</span>}
             </label>
             <div className="relative">
-              <Lock className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+              <Lock className="absolute left-3.5 top-3 h-4 w-4 text-content-muted pointer-events-none" />
               <input
                 type="password"
                 required
@@ -226,7 +228,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full pl-9 pr-3 py-2 text-sm bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full pl-10 pr-3.5 py-2 text-sm bg-surface-inset border border-edge-subtle rounded-control text-content-primary placeholder-content-muted focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/30 transition-all font-sans"
               />
             </div>
           </div>
@@ -235,7 +237,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
             type="submit"
             disabled={isSubmitting}
             data-testid="auth-submit-btn"
-            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-medium text-sm transition-colors disabled:opacity-50 mt-6"
+            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-control bg-brand-primary hover:bg-brand-hover active:bg-brand-deep text-white font-medium text-sm transition-all shadow-glow-brand hover:shadow-glow-brand-lg disabled:opacity-50 disabled:pointer-events-none mt-6 cursor-pointer"
           >
             {isSubmitting ? (
               <>
@@ -251,4 +253,3 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
     </div>
   );
 }
-
