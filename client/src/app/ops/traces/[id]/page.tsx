@@ -1,7 +1,7 @@
 'use client';
 
 // src/app/ops/traces/[id]/page.tsx
-// Phase 18 Step 5: Trace & Timeline Inspector page for an individual conversation thread.
+// Phase 34: Trace & Timeline Inspector page with Midnight Burgundy theme.
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
@@ -16,7 +16,7 @@ import {
   Layers,
   MessageSquare,
   AlertTriangle,
-  CheckCircle2,
+  Radio,
   Archive,
   RefreshCw,
   ShieldAlert,
@@ -53,22 +53,22 @@ export default function OpsTraceInspectorPage() {
     switch (status) {
       case 'escalated':
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-950 text-rose-300 border border-rose-800">
-            <AlertTriangle className="h-3 w-3 text-rose-400" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-950/60 text-amber-400 border border-amber-800/60">
+            <AlertTriangle className="h-3 w-3 text-amber-400 shrink-0" />
             <span>Escalated</span>
           </span>
         );
       case 'archived':
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-800 text-slate-400 border border-slate-700">
-            <Archive className="h-3 w-3 text-slate-400" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-surface-inset text-content-muted border border-edge-subtle">
+            <Archive className="h-3 w-3 text-content-muted shrink-0" />
             <span>Archived</span>
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-950 text-emerald-300 border border-emerald-800">
-            <CheckCircle2 className="h-3 w-3 text-emerald-400" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-950/60 text-sky-400 border border-sky-800/60">
+            <Radio className="h-3 w-3 text-sky-400 shrink-0" />
             <span>Active</span>
           </span>
         );
@@ -82,7 +82,7 @@ export default function OpsTraceInspectorPage() {
         <Link
           href="/ops"
           data-testid="back-to-conversations-link"
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-400 hover:text-white transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-medium text-content-muted hover:text-content-primary transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           <span>Back to Conversations</span>
@@ -93,7 +93,7 @@ export default function OpsTraceInspectorPage() {
           onClick={loadTrace}
           disabled={isLoading}
           data-testid="refresh-trace-btn"
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-medium border border-slate-800 transition-colors disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface hover:bg-surface-hover text-content-primary text-xs font-medium border border-edge-subtle transition-colors disabled:opacity-50 shadow-xs"
         >
           <RefreshCw className={`h-3.5 w-3.5 ${isLoading ? 'animate-spin' : ''}`} />
           <span>Refresh Trace</span>
@@ -101,13 +101,13 @@ export default function OpsTraceInspectorPage() {
       </div>
 
       {/* Header Info */}
-      <div className="bg-slate-900 border border-slate-800 rounded-lg p-5 space-y-4 shadow-sm">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+      <div className="bg-surface border border-edge-subtle rounded-xl p-5 space-y-4 shadow-xs">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 border-b border-edge-subtle pb-4">
           <div className="space-y-1">
-            <div className="text-[11px] font-semibold text-indigo-400 uppercase tracking-wider">
+            <div className="text-[11px] font-semibold text-brand-link uppercase tracking-wider font-mono">
               Execution Trace Inspector
             </div>
-            <h1 className="text-base md:text-lg font-mono font-bold text-white break-all">
+            <h1 className="text-base md:text-lg font-mono font-bold text-content-primary break-all">
               {conversationId}
             </h1>
           </div>
@@ -117,19 +117,19 @@ export default function OpsTraceInspectorPage() {
 
         {/* Metric Badges */}
         {traceData && (
-          <div className="flex flex-wrap items-center gap-4 text-xs font-mono text-slate-400">
+          <div className="flex flex-wrap items-center gap-4 text-xs font-mono text-content-muted">
             <div className="flex items-center gap-1.5">
-              <MessageSquare className="h-4 w-4 text-slate-500" />
+              <MessageSquare className="h-4 w-4 text-brand-link/70" />
               <span>{traceData.messageCount} messages</span>
             </div>
 
             <div className="flex items-center gap-1.5">
-              <Activity className="h-4 w-4 text-slate-500" />
+              <Activity className="h-4 w-4 text-brand-link/70" />
               <span>{traceData.eventCount} trace events</span>
             </div>
 
             <div className="flex items-center gap-1.5">
-              <Layers className="h-4 w-4 text-slate-500" />
+              <Layers className="h-4 w-4 text-brand-link/70" />
               <span>{traceData.handoffPath.length} routing steps</span>
             </div>
           </div>
@@ -140,16 +140,16 @@ export default function OpsTraceInspectorPage() {
       {error && (
         <div
           data-testid="trace-error-banner"
-          className="bg-rose-950/60 border border-rose-800 text-rose-200 px-4 py-3 rounded-lg text-xs flex items-center gap-2"
+          className="bg-rose-950/40 border border-status-error/40 text-status-error px-4 py-3 rounded-xl text-xs flex items-center gap-2.5 shadow-xs"
         >
-          <ShieldAlert className="h-4 w-4 text-rose-400 shrink-0" />
+          <ShieldAlert className="h-4 w-4 text-status-error shrink-0" />
           <span>Error loading trace: {error}</span>
         </div>
       )}
 
       {/* Loading State */}
       {isLoading && !traceData && (
-        <div className="py-12 text-center text-slate-500 text-sm">
+        <div className="py-12 text-center text-content-muted text-sm">
           Loading execution trace and timeline...
         </div>
       )}
@@ -158,8 +158,8 @@ export default function OpsTraceInspectorPage() {
       {traceData && (
         <div className="space-y-6">
           <HandoffBreadcrumbs handoffPath={traceData.handoffPath} />
-          <div className="bg-slate-900 border border-slate-800 rounded-lg p-5">
-            <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">
+          <div className="bg-surface border border-edge-subtle rounded-xl p-5 shadow-xs">
+            <h2 className="text-xs font-semibold text-content-muted uppercase tracking-wider mb-4">
               Execution Event Log
             </h2>
             <TraceTimeline timeline={traceData.timeline} />
@@ -169,4 +169,3 @@ export default function OpsTraceInspectorPage() {
     </div>
   );
 }
-

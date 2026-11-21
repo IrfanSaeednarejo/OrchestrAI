@@ -1,7 +1,7 @@
 'use client';
 
 // src/components/ops/tool-execution-card.tsx
-// Phase 18 Step 5: Collapsible tool execution card with duration and error telemetry.
+// Phase 34: Collapsible tool execution card with duration and error telemetry in Midnight Burgundy theme.
 
 import React, { useState } from 'react';
 import type { OpsToolEvent } from '../../types/ops';
@@ -19,18 +19,19 @@ export function ToolExecutionCard({ tool, className = '' }: ToolExecutionCardPro
   return (
     <div
       data-testid={`tool-card-${tool.tool}`}
-      className={`rounded-md border bg-slate-950/60 transition-colors ${
-        isSuccess ? 'border-emerald-900/60' : 'border-rose-900/60'
+      className={`rounded-lg border bg-surface/90 transition-colors shadow-xs ${
+        isSuccess ? 'border-emerald-900/50 hover:border-emerald-800/70' : 'border-rose-900/50 hover:border-rose-800/70'
       } ${className}`}
     >
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full text-left px-3 py-2 flex items-center justify-between gap-2 hover:bg-slate-900/50 transition-colors rounded-md"
+        aria-expanded={isOpen}
+        className="w-full text-left px-3 py-2 flex items-center justify-between gap-2 hover:bg-surface-hover/60 transition-colors rounded-lg"
       >
         <div className="flex items-center gap-2 min-w-0">
-          <Wrench className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
-          <span className="font-mono text-xs font-semibold text-slate-200 truncate">
+          <Wrench className="h-3.5 w-3.5 text-brand-link shrink-0" />
+          <span className="font-mono text-xs font-semibold text-content-primary truncate">
             {tool.tool}
           </span>
         </div>
@@ -38,8 +39,8 @@ export function ToolExecutionCard({ tool, className = '' }: ToolExecutionCardPro
         <div className="flex items-center gap-2.5 shrink-0">
           {/* Duration */}
           {tool.duration !== null && (
-            <span className="inline-flex items-center gap-1 text-[11px] font-mono text-slate-400">
-              <Clock className="h-3 w-3 text-slate-500" />
+            <span className="inline-flex items-center gap-1 text-[11px] font-mono text-content-muted">
+              <Clock className="h-3 w-3 text-content-muted/70" />
               <span>{tool.duration}ms</span>
             </span>
           )}
@@ -48,7 +49,7 @@ export function ToolExecutionCard({ tool, className = '' }: ToolExecutionCardPro
           {isSuccess ? (
             <span
               data-testid="tool-status-success"
-              className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-950 text-emerald-300 border border-emerald-800"
+              className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-950/80 text-emerald-300 border border-emerald-800/60"
             >
               <CheckCircle2 className="h-2.5 w-2.5 text-emerald-400" />
               <span>success</span>
@@ -56,7 +57,7 @@ export function ToolExecutionCard({ tool, className = '' }: ToolExecutionCardPro
           ) : (
             <span
               data-testid="tool-status-failure"
-              className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-rose-950 text-rose-300 border border-rose-800"
+              className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-rose-950/80 text-rose-300 border border-rose-800/60"
             >
               <XCircle className="h-2.5 w-2.5 text-rose-400" />
               <span>failure</span>
@@ -65,29 +66,29 @@ export function ToolExecutionCard({ tool, className = '' }: ToolExecutionCardPro
 
           {/* Expand toggle */}
           {isOpen ? (
-            <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
+            <ChevronDown className="h-3.5 w-3.5 text-content-muted" />
           ) : (
-            <ChevronRight className="h-3.5 w-3.5 text-slate-400" />
+            <ChevronRight className="h-3.5 w-3.5 text-content-muted" />
           )}
         </div>
       </button>
 
       {/* Expanded details */}
       {isOpen && (
-        <div className="px-3 pb-2.5 pt-1 border-t border-slate-800/80 text-xs text-slate-400 space-y-1.5 font-mono">
+        <div className="px-3 pb-2.5 pt-1.5 border-t border-edge-subtle/80 text-xs text-content-muted space-y-2 font-mono">
           <div className="text-[11px]">
-            <span className="text-slate-500">Timestamp: </span>
-            <span>{new Date(tool.timestamp).toLocaleTimeString()}</span>
+            <span className="text-content-muted/80">Timestamp: </span>
+            <span className="text-content-secondary">{new Date(tool.timestamp).toLocaleTimeString()}</span>
           </div>
 
           {tool.error && (
-            <div className="flex items-start gap-1.5 p-2 rounded bg-rose-950/40 border border-rose-900/60 text-rose-300 text-xs font-sans">
-              <AlertCircle className="h-3.5 w-3.5 text-rose-400 shrink-0 mt-0.5" />
+            <div className="flex items-start gap-2 p-2.5 rounded-lg bg-rose-950/40 border border-status-error/40 text-status-error text-xs font-sans">
+              <AlertCircle className="h-3.5 w-3.5 text-status-error shrink-0 mt-0.5" />
               <div>
-                <div className="font-semibold text-[11px] uppercase tracking-wider text-rose-400">
+                <div className="font-semibold text-[11px] uppercase tracking-wider text-status-error">
                   Execution Error
                 </div>
-                <div>{tool.error}</div>
+                <div className="text-content-secondary">{tool.error}</div>
               </div>
             </div>
           )}
@@ -96,4 +97,3 @@ export function ToolExecutionCard({ tool, className = '' }: ToolExecutionCardPro
     </div>
   );
 }
-
