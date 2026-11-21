@@ -1,8 +1,10 @@
 // src/components/chat/specialist-badge.tsx
 // Phase 17 Step 5b: Specialist badge with unknown-agent tolerance and handoff notice.
+// Phase 30 Step 4: Design system redesign — unified brand surface, specialist identity
+//   preserved via label text and icon shape; no rainbow colors.
 
 import React from 'react';
-import { Bot, ArrowRightLeft, ShieldAlert } from 'lucide-react';
+import { Bot, ArrowRightLeft, Package, CreditCard, RefreshCw, Wallet, Shield, User as UserIcon } from 'lucide-react';
 
 interface SpecialistBadgeProps {
   currentAgent: string | null | undefined;
@@ -10,48 +12,34 @@ interface SpecialistBadgeProps {
   className?: string;
 }
 
-const AGENT_LABELS: Record<string, { label: string; bg: string; text: string; border: string }> = {
+const AGENT_META: Record<string, { label: string; Icon: React.ElementType }> = {
   order_tracking: {
     label: 'Order Tracking Specialist',
-    bg: 'bg-blue-50',
-    text: 'text-blue-700',
-    border: 'border-blue-200',
+    Icon: Package,
   },
   payment: {
     label: 'Payments & Billing Specialist',
-    bg: 'bg-emerald-50',
-    text: 'text-emerald-700',
-    border: 'border-emerald-200',
+    Icon: CreditCard,
   },
   returns: {
     label: 'Returns & Exchanges Specialist',
-    bg: 'bg-purple-50',
-    text: 'text-purple-700',
-    border: 'border-purple-200',
+    Icon: RefreshCw,
   },
   refund: {
     label: 'Refunds Specialist',
-    bg: 'bg-teal-50',
-    text: 'text-teal-700',
-    border: 'border-teal-200',
+    Icon: Wallet,
   },
   account_access: {
     label: 'Account Access & Security Specialist',
-    bg: 'bg-amber-50',
-    text: 'text-amber-800',
-    border: 'border-amber-200',
+    Icon: Shield,
   },
   profile: {
     label: 'Customer Profile Specialist',
-    bg: 'bg-indigo-50',
-    text: 'text-indigo-700',
-    border: 'border-indigo-200',
+    Icon: UserIcon,
   },
   router: {
     label: 'OrchestrAI Supervisor',
-    bg: 'bg-slate-100',
-    text: 'text-slate-700',
-    border: 'border-slate-300',
+    Icon: Bot,
   },
 };
 
@@ -61,34 +49,35 @@ export function SpecialistBadge({
   className = '',
 }: SpecialistBadgeProps) {
   const agentKey = currentAgent?.toLowerCase().trim() || '';
-  const meta = AGENT_LABELS[agentKey] || {
-    label: currentAgent ? `${currentAgent.replace(/_/g, ' ')} Specialist` : 'AI Support Specialist',
-    bg: 'bg-slate-100',
-    text: 'text-slate-700',
-    border: 'border-slate-200',
+  const meta = AGENT_META[agentKey] ?? {
+    label: currentAgent
+      ? `${currentAgent.replace(/_/g, ' ')} Specialist`
+      : 'AI Support Specialist',
+    Icon: Bot,
   };
+
+  const { Icon } = meta;
 
   return (
     <div className={`inline-flex items-center gap-2 ${className}`}>
       <span
         data-testid="specialist-badge"
-        className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium border ${meta.bg} ${meta.text} ${meta.border} shadow-sm`}
+        className="inline-flex items-center gap-1.5 rounded-tag px-2.5 py-1 text-xs font-medium border border-edge-subtle bg-surface-elevated text-content-secondary shadow-sm"
       >
-        <Bot className="h-3.5 w-3.5 shrink-0" />
+        <Icon className="h-3.5 w-3.5 shrink-0 text-brand-link" />
         <span>{meta.label}</span>
       </span>
 
       {handoffCount > 0 && (
         <span
           data-testid="handoff-count-badge"
-          className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium bg-slate-100 text-slate-600 border border-slate-200"
+          className="inline-flex items-center gap-1 rounded-tag px-2 py-0.5 text-[11px] font-medium bg-surface-elevated text-content-muted border border-edge-subtle"
           title={`${handoffCount} multi-agent handoff(s) occurred`}
         >
-          <ArrowRightLeft className="h-3 w-3 text-slate-400" />
+          <ArrowRightLeft className="h-3 w-3 text-content-disabled" />
           <span>Handoffs: {handoffCount}</span>
         </span>
       )}
     </div>
   );
 }
-

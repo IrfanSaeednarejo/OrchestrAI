@@ -1,5 +1,6 @@
 // src/components/chat/markdown-renderer.tsx
 // Phase 17 Step 5a: Security-hardened Markdown renderer.
+// Phase 30 Step 4: Dark theme prose styling. Sanitization logic is UNCHANGED.
 
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -27,7 +28,7 @@ function sanitizeUrl(url?: string): string {
 
 export function MarkdownRenderer({ content }: MarkdownRendererProps) {
   return (
-    <div className="prose prose-sm max-w-none break-words text-slate-800 leading-relaxed">
+    <div className="prose prose-sm max-w-none break-words text-content-primary leading-relaxed">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
@@ -39,7 +40,7 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
                 href={safeHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 underline hover:text-blue-800 font-medium"
+                className="text-brand-link underline hover:text-white font-medium"
                 {...props}
               >
                 {children}
@@ -50,36 +51,36 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
           img: ({ src, alt }) => {
             const safeSrc = sanitizeUrl(src);
             return (
-              <span className="inline-block my-1 text-xs text-slate-500 bg-slate-100 border border-slate-300 rounded px-2 py-1">
-                Image: <a href={safeSrc} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">{alt || safeSrc}</a>
+              <span className="inline-block my-1 text-xs text-content-muted bg-surface-inset border border-edge-subtle rounded px-2 py-1">
+                Image: <a href={safeSrc} target="_blank" rel="noopener noreferrer" className="text-brand-link underline">{alt || safeSrc}</a>
               </span>
             );
           },
           // Clean typography for lists, tables, code
-          ul: ({ children }) => <ul className="list-disc pl-5 my-2 space-y-1">{children}</ul>,
-          ol: ({ children }) => <ol className="list-decimal pl-5 my-2 space-y-1">{children}</ol>,
+          ul: ({ children }) => <ul className="list-disc pl-5 my-2 space-y-1 text-content-primary">{children}</ul>,
+          ol: ({ children }) => <ol className="list-decimal pl-5 my-2 space-y-1 text-content-primary">{children}</ol>,
           table: ({ children }) => (
             <div className="overflow-x-auto my-2">
-              <table className="min-w-full divide-y divide-slate-200 text-xs border border-slate-200">{children}</table>
+              <table className="min-w-full divide-y divide-edge-subtle text-xs border border-edge-subtle">{children}</table>
             </div>
           ),
           th: ({ children }) => (
-            <th className="px-3 py-1.5 bg-slate-100 text-left font-semibold text-slate-700 border-b">{children}</th>
+            <th className="px-3 py-1.5 bg-surface-elevated text-left font-semibold text-content-secondary border-b border-edge-subtle">{children}</th>
           ),
           td: ({ children }) => (
-            <td className="px-3 py-1.5 border-b border-slate-200">{children}</td>
+            <td className="px-3 py-1.5 border-b border-edge-subtle text-content-primary">{children}</td>
           ),
           code: ({ children, className }) => {
             const isInline = !className;
             if (isInline) {
               return (
-                <code className="bg-slate-100 text-slate-800 rounded px-1.5 py-0.5 text-xs font-mono">
+                <code className="bg-surface-inset text-brand-link rounded px-1.5 py-0.5 text-xs font-mono">
                   {children}
                 </code>
               );
             }
             return (
-              <pre className="bg-slate-900 text-slate-100 rounded-md p-3 my-2 text-xs font-mono overflow-x-auto">
+              <pre className="bg-surface-inset text-content-secondary rounded-card p-3 my-2 text-xs font-mono overflow-x-auto border border-edge-subtle">
                 <code>{children}</code>
               </pre>
             );
@@ -91,4 +92,3 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
     </div>
   );
 }
-

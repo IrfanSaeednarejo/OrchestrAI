@@ -1,10 +1,8 @@
 // src/components/chat/verification-prompt.tsx
 // Phase 17 Step 5c: Neutral verification prompt & optional dev OTP peek.
-// Phase 26: Extended to support profile-update flow states:
-//   SENT_AWAITING_CODE, COOLDOWN_ACTIVE, SEND_FAILED, EXPIRED, LOCKED_OUT.
-// Removed system-leak strings: "Identity verification required." replaced with
-// actionable, user-facing copy. No "Send me a verification code" prompt without
-// the assistant having already sent one.
+// Phase 26: Extended to support profile-update flow states.
+// Phase 30 Step 5: Dark theme redesign — elevated surface, semantic colors, Geist Mono countdowns.
+//   All data-testids, state machine logic, and functional behavior preserved.
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { ShieldAlert, KeyRound, Copy, Check, Eye, AlertTriangle, RefreshCw, Headphones } from 'lucide-react';
@@ -136,24 +134,32 @@ export function VerificationPrompt({
   else if (!canResend && resendAt && resendAt > Date.now()) uiState = 'COOLDOWN_ACTIVE';
   else if (isAwaitingCode) uiState = 'SENT_AWAITING_CODE';
 
-  const bannerColor =
-    uiState === 'SEND_FAILED' || uiState === 'LOCKED_OUT' || uiState === 'EXPIRED'
-      ? 'bg-red-50 border-red-200 text-red-900'
-      : isFull
-        ? 'bg-amber-50 border-amber-200 text-amber-900'
-        : 'bg-blue-50 border-blue-200 text-blue-900';
+  // Surface and icon colors using design system semantic tokens
+  const isError = uiState === 'SEND_FAILED' || uiState === 'LOCKED_OUT' || uiState === 'EXPIRED';
+  const isWarning = isFull && !isError;
 
-  const iconColor =
-    uiState === 'SEND_FAILED' || uiState === 'LOCKED_OUT' || uiState === 'EXPIRED'
-      ? 'text-red-600'
-      : isFull
-        ? 'text-amber-600'
-        : 'text-blue-600';
+  const bannerBg = isError
+    ? 'bg-surface border-status-error/30'
+    : isWarning
+    ? 'bg-surface border-status-warning/30'
+    : 'bg-surface border-edge-subtle';
+
+  const iconColor = isError
+    ? 'text-status-error'
+    : isWarning
+    ? 'text-status-warning'
+    : 'text-status-info';
+
+  const titleColor = isError
+    ? 'text-status-error'
+    : isWarning
+    ? 'text-status-warning'
+    : 'text-content-secondary';
 
   return (
     <div
       data-testid="verification-prompt-banner"
-      className={`rounded-lg border p-3 text-sm transition-all shadow-sm ${bannerColor} ${className}`}
+      className={`rounded-card border p-3 text-sm transition-all shadow-sm ${bannerBg} ${className}`}
     >
       <div className="flex items-start gap-2.5">
         {uiState === 'SEND_FAILED' ? (
@@ -164,7 +170,7 @@ export function VerificationPrompt({
 
         <div className="flex-1 space-y-1">
           {/* ── Title ── */}
-          <div className="font-semibold text-xs tracking-wide uppercase">
+          <div className={`font-semibold text-xs tracking-wide uppercase ${titleColor}`}>
             {uiState === 'SEND_FAILED' && 'Delivery Failed'}
             {uiState === 'LOCKED_OUT' && 'Too Many Attempts'}
             {uiState === 'EXPIRED' && 'Code Expired'}
@@ -175,7 +181,7 @@ export function VerificationPrompt({
 
           {/* ── Body copy — no system-leak strings ── */}
           {uiState === 'IDLE' && (
-            <p className="text-xs" data-testid="idle-body">
+            <p className="text-xs text-content-secondary" data-testid="idle-body">
               {isFull
                 ? 'Your assistant will guide you through the verification steps. Please follow the instructions above.'
                 : 'Your assistant will ask you to confirm your identity details. Please follow the instructions above.'}
@@ -183,12 +189,12 @@ export function VerificationPrompt({
           )}
 
           {uiState === 'SENT_AWAITING_CODE' && (
-            <p className="text-xs" data-testid="awaiting-code-body">
+            <p className="text-xs text-content-secondary" data-testid="awaiting-code-body">
               {maskedEmail
-                ? <>A 6-digit code was sent to <strong>{maskedEmail}</strong>. Enter it in the chat.</>
+                ? <>A 6-digit code was sent to <strong className="text-content-primary">{maskedEmail}</strong>. Enter it in the chat.</>
                 : 'A 6-digit code was sent to your email. Enter it in the chat.'}
               {expiryCountdown > 0 && (
-                <span className="ml-1 text-amber-700">
+                <span className="ml-1 font-mono text-status-warning">
                   (expires in {expiryCountdown}s)
                 </span>
               )}
@@ -196,32 +202,32 @@ export function VerificationPrompt({
           )}
 
           {uiState === 'COOLDOWN_ACTIVE' && (
-            <p className="text-xs" data-testid="cooldown-body">
+            <p className="text-xs text-content-secondary" data-testid="cooldown-body">
               Your code is still active.
-              {resendCountdown > 0 && ` You can resend in ${resendCountdown}s.`}
-              {maskedEmail && <> Check your inbox at <strong>{maskedEmail}</strong> (including spam).</>}
+              {resendCountdown > 0 && <span className="font-mono"> You can resend in {resendCountdown}s.</span>}
+              {maskedEmail && <> Check your inbox at <strong className="text-content-primary">{maskedEmail}</strong> (including spam).</>}
             </p>
           )}
 
           {uiState === 'SEND_FAILED' && (
-            <p className="text-xs" data-testid="send-failed-body">
+            <p className="text-xs text-content-secondary" data-testid="send-failed-body">
               {maskedEmail
-                ? <>We couldn&apos;t deliver the code to <strong>{maskedEmail}</strong>.</>
+                ? <>We couldn&apos;t deliver the code to <strong className="text-content-primary">{maskedEmail}</strong>.</>
                 : "We couldn't deliver the verification code."}
               {sendFailReason && <span className="ml-1 opacity-70">({sendFailReason})</span>}
             </p>
           )}
 
           {uiState === 'EXPIRED' && (
-            <p className="text-xs" data-testid="expired-body">
+            <p className="text-xs text-content-secondary" data-testid="expired-body">
               Your verification code has expired. Click &quot;Resend code&quot; to get a new one.
             </p>
           )}
 
           {uiState === 'LOCKED_OUT' && (
-            <p className="text-xs" data-testid="locked-out-body">
+            <p className="text-xs text-content-secondary" data-testid="locked-out-body">
               You&apos;ve used all 5 verification attempts.
-              Clicking <strong>&quot;Resend code&quot;</strong> will generate a fresh code and reset your attempts to 0.
+              Clicking <strong className="text-content-primary">&quot;Resend code&quot;</strong> will generate a fresh code and reset your attempts to 0.
             </p>
           )}
 
@@ -229,7 +235,7 @@ export function VerificationPrompt({
           {uiState === 'SENT_AWAITING_CODE' && (
             <div
               data-testid="otp-hint"
-              className="mt-2 flex items-center gap-1.5 text-xs font-medium text-amber-800"
+              className="mt-2 flex items-center gap-1.5 text-xs font-medium text-status-warning"
             >
               <KeyRound className="h-3.5 w-3.5" />
               <span>Enter your 6-digit code in the chat below.</span>
@@ -246,10 +252,10 @@ export function VerificationPrompt({
                 onClick={onResend}
                 disabled={!canResend}
                 data-testid="resend-code-button"
-                className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded bg-amber-200 hover:bg-amber-300 text-amber-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-tag bg-surface-elevated hover:bg-surface-hover text-content-secondary border border-edge-subtle disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <RefreshCw className="h-3 w-3" />
-                {resendCountdown > 0 ? `Resend in ${resendCountdown}s` : 'Resend code'}
+                {resendCountdown > 0 ? <span className="font-mono">Resend in {resendCountdown}s</span> : 'Resend code'}
               </button>
 
               {onContactSupport && (
@@ -257,7 +263,7 @@ export function VerificationPrompt({
                   type="button"
                   onClick={onContactSupport}
                   data-testid="contact-support-button"
-                  className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-tag bg-surface-elevated hover:bg-surface-hover text-content-muted border border-edge-subtle transition-colors"
                 >
                   <Headphones className="h-3 w-3" />
                   Contact support
@@ -270,9 +276,9 @@ export function VerificationPrompt({
           {isDevCodeEnabled && isAwaitingCode && userId && (
             <div
               data-testid="dev-otp-container"
-              className="mt-2.5 pt-2 border-t border-amber-200 flex flex-wrap items-center gap-2"
+              className="mt-2.5 pt-2 border-t border-edge-subtle flex flex-wrap items-center gap-2"
             >
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-content-muted bg-surface-elevated px-1.5 py-0.5 rounded-tag border border-edge-subtle">
                 Dev Helper
               </span>
               {!devCode ? (
@@ -281,26 +287,26 @@ export function VerificationPrompt({
                   onClick={handleFetchDevCode}
                   disabled={isPeeking}
                   data-testid="peek-dev-otp-button"
-                  className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium bg-amber-200 hover:bg-amber-300 text-amber-900 rounded transition-colors"
+                  className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium bg-surface-elevated hover:bg-surface-hover text-brand-link rounded-tag border border-edge-subtle transition-colors"
                 >
                   <Eye className="h-3 w-3" />
                   <span>{isPeeking ? 'Checking...' : 'Peek Dev OTP'}</span>
                 </button>
               ) : (
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-bold tracking-widest bg-amber-200/80 px-2 py-0.5 rounded text-amber-950">
+                  <span className="text-xs font-mono font-bold tracking-widest bg-brand-deep px-2 py-0.5 rounded-tag text-brand-link border border-brand-mid">
                     {devCode}
                   </span>
                   <button
                     type="button"
                     onClick={() => handleCopy(devCode)}
                     data-testid="copy-dev-otp-button"
-                    className="inline-flex items-center gap-1 text-xs text-amber-800 hover:text-amber-950 underline"
+                    className="inline-flex items-center gap-1 text-xs text-content-muted hover:text-content-primary underline"
                   >
                     {copied ? (
                       <>
-                        <Check className="h-3 w-3 text-emerald-600" />
-                        <span className="text-emerald-700 font-medium">Copied!</span>
+                        <Check className="h-3 w-3 text-status-success" />
+                        <span className="text-status-success font-medium">Copied!</span>
                       </>
                     ) : (
                       <>

@@ -2,6 +2,8 @@
 // Phase 17 Step 5c: Chat message feed with plain-text user bubbles, OTP masking,
 // safe markdown assistant bubbles, live node-progress, and auto-scroll.
 // Phase 23: Render ServiceOptionBar beneath the last assistant message when options are present.
+// Phase 30 Step 4: Dark theme redesign — canvas background, structured message cards,
+//   semantic streaming indicators. All data-testids, OTP masking, and streaming logic preserved.
 
 import React, { useEffect, useRef } from 'react';
 import { Bot, User, Loader2 } from 'lucide-react';
@@ -62,15 +64,16 @@ export function ChatFeed({
     <div
       data-testid="chat-feed"
       ref={scrollContainerRef}
-      className={`flex-1 overflow-y-auto p-4 md:p-6 space-y-4 bg-slate-50 ${className}`}
+      className={`flex-1 overflow-y-auto p-4 md:p-6 space-y-6 bg-surface-canvas ${className}`}
     >
       {messages.length === 0 && !isStreaming ? (
-        <div className="flex flex-col items-center justify-center h-full min-h-[250px] text-center text-slate-500 space-y-2">
-          <div className="w-12 h-12 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 mb-2">
-            <Bot className="h-6 w-6" />
+        /* Empty state */
+        <div className="flex flex-col items-center justify-center h-full min-h-[250px] text-center space-y-3">
+          <div className="w-14 h-14 rounded-full bg-brand-deep border border-brand-mid flex items-center justify-center mb-1">
+            <Bot className="h-7 w-7 text-brand-link" />
           </div>
-          <h3 className="font-semibold text-slate-800 text-sm">Welcome to OrchestrAI Support</h3>
-          <p className="text-xs text-slate-500 max-w-sm">
+          <h3 className="font-semibold text-content-primary text-sm">Welcome to OrchestrAI Support</h3>
+          <p className="text-xs text-content-muted max-w-sm leading-relaxed">
             Ask about your order status, request a return or refund, update payment methods, or verify your account.
           </p>
         </div>
@@ -86,35 +89,35 @@ export function ChatFeed({
             <div
               key={msg.id || `msg-${index}`}
               data-testid={`message-${msg.role}-${index}`}
-              className={`flex items-start gap-3 ${
+              className={`flex items-end gap-3 ${
                 isUser ? 'flex-row-reverse' : 'flex-row'
               }`}
             >
               {/* Avatar */}
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-xs font-medium shadow-sm ${
+                className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-xs font-medium ${
                   isUser
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-white border border-slate-200 text-indigo-600'
+                    ? 'bg-brand-primary text-white'
+                    : 'bg-surface-elevated border border-edge-subtle text-brand-link'
                 }`}
               >
-                {isUser ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
+                {isUser ? <User className="h-3.5 w-3.5" /> : <Bot className="h-3.5 w-3.5" />}
               </div>
 
               {/* Message Bubble + optional service options */}
-              <div className={`max-w-[80%] flex flex-col ${isUser ? 'items-end' : 'items-start'}`}>
+              <div className={`max-w-[78%] flex flex-col ${isUser ? 'items-end' : 'items-start'}`}>
                 <div
-                  className={`rounded-2xl px-4 py-3 text-sm shadow-sm transition-all ${
+                  className={`rounded-message px-4 py-3 text-sm transition-all ${
                     isUser
-                      ? 'bg-blue-600 text-white rounded-tr-sm font-sans whitespace-pre-wrap break-words'
-                      : 'bg-white border border-slate-200 text-slate-800 rounded-tl-sm'
+                      ? 'bg-brand-deep border border-brand-mid text-content-primary rounded-br-sm font-sans whitespace-pre-wrap break-words'
+                      : 'bg-surface border border-edge-subtle text-content-primary rounded-bl-sm'
                   }`}
                 >
                   {isUser ? (
                     <span
                       data-testid={`user-message-text-${index}`}
                       title={isOtpMasked ? 'Code hidden for security' : undefined}
-                      className={isOtpMasked ? 'font-mono tracking-widest text-base' : ''}
+                      className={isOtpMasked ? 'font-mono tracking-widest text-base text-content-muted' : ''}
                     >
                       {displayContent}
                     </span>
@@ -142,20 +145,21 @@ export function ChatFeed({
       {isStreaming && (
         <div
           data-testid="streaming-bubble"
-          className="flex items-start gap-3 flex-row"
+          className="flex items-end gap-3 flex-row"
         >
-          <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-white border border-slate-200 text-indigo-600 shadow-sm">
-            <Bot className="h-4 w-4" />
+          <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 bg-surface-elevated border border-edge-subtle text-brand-link">
+            <Bot className="h-3.5 w-3.5" />
           </div>
 
-          <div className="max-w-[80%] rounded-2xl rounded-tl-sm px-4 py-3 text-sm bg-white border border-slate-200 text-slate-800 shadow-sm space-y-2">
+          <div className="max-w-[78%] rounded-message rounded-bl-sm px-4 py-3 text-sm bg-surface border border-edge-subtle text-content-primary space-y-2">
             {/* Live Activity Progress Pill */}
             {(currentActivity || currentNode) && (
               <div
                 data-testid="node-progress-indicator"
-                className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-200 animate-pulse"
+                className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-tag text-xs font-medium bg-status-active-bg text-status-active border border-brand-mid"
+                style={{ backgroundColor: 'var(--status-active-bg)' }}
               >
-                <Loader2 className="h-3 w-3 animate-spin text-indigo-500" />
+                <Loader2 className="h-3 w-3 animate-spin" />
                 <span>{currentActivity || `Working: ${currentNode?.replace(/_/g, ' ')}...`}</span>
               </div>
             )}
@@ -168,15 +172,15 @@ export function ChatFeed({
             ) : !currentNode && !currentActivity ? (
               <div
                 data-testid="typing-indicator"
-                className="flex items-center gap-1.5 py-1 px-1 text-slate-400"
+                className="flex items-center gap-1.5 py-1 px-1 text-content-muted"
               >
-                <span className="w-2 h-2 rounded-full bg-slate-400 animate-bounce" />
+                <span className="w-2 h-2 rounded-full bg-content-muted animate-bounce" />
                 <span
-                  className="w-2 h-2 rounded-full bg-slate-400 animate-bounce"
+                  className="w-2 h-2 rounded-full bg-content-muted animate-bounce"
                   style={{ animationDelay: '0.15s' }}
                 />
                 <span
-                  className="w-2 h-2 rounded-full bg-slate-400 animate-bounce"
+                  className="w-2 h-2 rounded-full bg-content-muted animate-bounce"
                   style={{ animationDelay: '0.3s' }}
                 />
               </div>
@@ -189,4 +193,3 @@ export function ChatFeed({
     </div>
   );
 }
-

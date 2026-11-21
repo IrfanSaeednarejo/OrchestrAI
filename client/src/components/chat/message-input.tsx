@@ -2,9 +2,11 @@
 
 // src/components/chat/message-input.tsx
 // Phase 17 Step 5a: Message input bar with lock guards and auto-resize.
+// Phase 30 Step 5: Dark theme redesign — inset input, Crimson send button.
+//   All aria-labels, data-testids, lock logic, and keyboard handling preserved.
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send } from 'lucide-react';
+import { Send, Lock } from 'lucide-react';
 import type { WorkflowStatus } from '../../types/api';
 
 interface MessageInputProps {
@@ -72,8 +74,8 @@ export function MessageInput({
   };
 
   return (
-    <div className="border-t border-slate-200 bg-white p-3 md:p-4">
-      <div className="flex items-end gap-2 max-w-4xl mx-auto">
+    <div className="border-t border-edge-subtle bg-surface-canvas px-4 py-3 md:px-6 md:py-4">
+      <div className="flex items-end gap-3 max-w-4xl mx-auto">
         <textarea
           ref={textareaRef}
           value={content}
@@ -84,7 +86,7 @@ export function MessageInput({
           rows={1}
           aria-label="Message input"
           data-testid="message-input"
-          className="flex-1 resize-none overflow-y-auto rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-slate-100 disabled:text-slate-500 disabled:cursor-not-allowed"
+          className="flex-1 resize-none overflow-y-auto rounded-control border border-edge-subtle bg-surface-inset px-3.5 py-2.5 text-sm text-content-primary placeholder-content-disabled shadow-sm focus:border-border-focus focus:outline-none focus:ring-1 focus:ring-brand-focus disabled:bg-surface disabled:text-content-disabled disabled:cursor-not-allowed transition-colors"
           style={{ maxHeight: '160px' }}
         />
         <button
@@ -93,17 +95,17 @@ export function MessageInput({
           disabled={isLocked || !content.trim()}
           aria-label="Send message"
           data-testid="send-button"
-          className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed transition-colors"
+          className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-control bg-brand-primary text-white shadow-sm hover:bg-brand-hover focus:outline-none focus:ring-2 focus:ring-brand-focus focus:ring-offset-1 focus:ring-offset-surface-canvas disabled:bg-surface disabled:text-content-disabled disabled:cursor-not-allowed transition-colors"
         >
           <Send className="h-4 w-4" />
         </button>
       </div>
       {isEscalated && (
-        <p className="text-center text-xs text-amber-700 mt-2 font-medium">
-          🔒 This session has been transferred to human support. Customer input is closed.
+        <p className="flex items-center justify-center gap-1.5 text-center text-xs text-content-muted mt-2 font-medium">
+          <Lock className="h-3 w-3" />
+          <span>This session has been transferred to human support. Customer input is closed.</span>
         </p>
       )}
     </div>
   );
 }
-
