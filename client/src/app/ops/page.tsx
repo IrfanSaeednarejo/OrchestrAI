@@ -1,13 +1,13 @@
 'use client';
 
 // src/app/ops/page.tsx
-// Phase 18 Step 4: Platform/Ops Conversation Explorer page.
+// Phase 34: Platform/Ops Conversation Explorer page with Midnight Burgundy theme.
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { fetchOpsConversations } from '../../lib/ops-client';
 import type { OpsConversation } from '../../types/ops';
 import { ConversationTable } from '../../components/ops/conversation-table';
-import { MessageSquare, AlertTriangle, CheckCircle2, ShieldAlert } from 'lucide-react';
+import { MessageSquare, AlertTriangle, Radio, ShieldAlert } from 'lucide-react';
 
 export default function OpsConversationsPage() {
   const [conversations, setConversations] = useState<OpsConversation[]>([]);
@@ -39,45 +39,59 @@ export default function OpsConversationsPage() {
   return (
     <div className="p-6 md:p-8 space-y-6 max-w-7xl mx-auto" data-testid="ops-page">
       {/* Header & Metrics */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl md:text-2xl font-bold text-white tracking-tight">
-            Conversation Explorer
-          </h1>
-          <p className="text-xs md:text-sm text-slate-400 mt-1">
-            Real-time inspection of multi-agent orchestration threads, routing decisions, and escalations.
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl md:text-2xl font-bold text-content-primary tracking-tight">
+              Conversation Explorer
+            </h1>
+            <span className="text-[11px] font-mono font-medium px-2 py-0.5 rounded-full bg-surface-inset text-content-muted border border-edge-subtle">
+              Live Inspector
+            </span>
+          </div>
+          <p className="text-xs md:text-sm text-content-muted mt-1">
+            Real-time inspection of multi-agent orchestration threads, routing decisions, and escalations. Showing up to 50 recent threads.
           </p>
         </div>
 
         {/* KPI stat cards */}
-        <div className="flex items-center gap-3">
-          <div className="bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-md bg-indigo-950 border border-indigo-800 flex items-center justify-center text-indigo-400">
-              <MessageSquare className="h-4 w-4" />
+        <div className="flex items-center gap-3 w-full lg:w-auto">
+          {/* Total */}
+          <div className="flex-1 lg:flex-initial bg-surface border border-edge-subtle rounded-xl px-3.5 py-2.5 flex items-center gap-3 shadow-xs">
+            <div className="w-8 h-8 rounded-lg bg-surface-inset border border-edge-subtle flex items-center justify-center text-content-muted">
+              <MessageSquare className="h-4 w-4 text-brand-link" />
             </div>
             <div>
-              <div className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Total</div>
-              <div className="text-sm font-bold text-white font-mono" data-testid="metric-total">{totalCount}</div>
+              <div className="text-[10px] text-content-muted font-medium uppercase tracking-wider">Total</div>
+              <div className="text-base font-bold text-content-primary font-mono" data-testid="metric-total">
+                {totalCount}
+              </div>
             </div>
           </div>
 
-          <div className="bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-md bg-emerald-950 border border-emerald-800 flex items-center justify-center text-emerald-400">
-              <CheckCircle2 className="h-4 w-4" />
+          {/* Active */}
+          <div className="flex-1 lg:flex-initial bg-surface border border-edge-subtle rounded-xl px-3.5 py-2.5 flex items-center gap-3 shadow-xs">
+            <div className="w-8 h-8 rounded-lg bg-sky-950/60 border border-sky-800/60 flex items-center justify-center text-sky-400">
+              <Radio className="h-4 w-4" />
             </div>
             <div>
-              <div className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Active</div>
-              <div className="text-sm font-bold text-emerald-400 font-mono" data-testid="metric-active">{activeCount}</div>
+              <div className="text-[10px] text-sky-400/90 font-medium uppercase tracking-wider">Active</div>
+              <div className="text-base font-bold text-sky-400 font-mono" data-testid="metric-active">
+                {activeCount}
+              </div>
             </div>
           </div>
 
-          <div className="bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-md bg-rose-950 border border-rose-800 flex items-center justify-center text-rose-400">
+          {/* Escalated */}
+          <div className="flex-1 lg:flex-initial bg-surface border border-edge-subtle rounded-xl px-3.5 py-2.5 flex items-center gap-3 shadow-xs">
+            <div className="w-8 h-8 rounded-lg bg-amber-950/60 border border-amber-800/60 flex items-center justify-center text-amber-400">
               <AlertTriangle className="h-4 w-4" />
             </div>
             <div>
-              <div className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Escalated</div>
-              <div className="text-sm font-bold text-rose-400 font-mono" data-testid="metric-escalated">{escalatedCount}</div>
+              <div className="text-[10px] text-amber-400/90 font-medium uppercase tracking-wider">Escalated</div>
+              <div className="text-base font-bold text-amber-400 font-mono" data-testid="metric-escalated">
+                {escalatedCount}
+              </div>
             </div>
           </div>
         </div>
@@ -87,9 +101,9 @@ export default function OpsConversationsPage() {
       {error && (
         <div
           data-testid="ops-error-banner"
-          className="bg-rose-950/60 border border-rose-800 text-rose-200 px-4 py-3 rounded-lg text-xs flex items-center gap-2"
+          className="bg-rose-950/40 border border-status-error/40 text-status-error px-4 py-3 rounded-xl text-xs flex items-center gap-2.5 shadow-xs"
         >
-          <ShieldAlert className="h-4 w-4 text-rose-400 shrink-0" />
+          <ShieldAlert className="h-4 w-4 text-status-error shrink-0" />
           <span>Error loading conversations: {error}</span>
         </div>
       )}
@@ -103,4 +117,3 @@ export default function OpsConversationsPage() {
     </div>
   );
 }
-
