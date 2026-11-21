@@ -1,9 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  /* ── Brand tokens ── */
+  --brand-primary: #8A0B24;
+  --brand-hover: #A8112F;
+  --brand-focus: #D1193E;
+  --brand-mid: #68071A;
+  --brand-deep: #420410;
+  --brand-link: #FF8FA3;
+
+  /* ── Background & surface tokens ── */
+  --bg-canvas: #16070B;
+  --bg-sidebar: #20090F;
+  --bg-surface: #2B0D15;
+  --bg-elevated: #36121C;
+  --bg-hover: #421724;
+  --bg-inset: #110509;
+
+  /* ── Text tokens ── */
+  --text-primary: #FFF9FA;
+  --text-secondary: #D9B8BF;
+  --text-muted: #B08A94;
+  --text-disabled: #80616A;
+
+  /* ── Border tokens ── */
+  --border-subtle: #52202D;
+  --border-strong: #753044;
+  --border-focus: #D1193E;
+
+  /* ── Semantic status colors ── */
+  --status-success: #34D399;
+  --status-success-bg: rgba(52, 211, 153, 0.12);
+  --status-warning: #FBBF24;
+  --status-warning-bg: rgba(251, 191, 36, 0.12);
+  --status-error: #FB7185;
+  --status-error-bg: rgba(251, 113, 133, 0.12);
+  --status-info: #93C5FD;
+  --status-info-bg: rgba(147, 197, 253, 0.12);
+  --status-active: #D1193E;
+  --status-active-bg: rgba(209, 25, 62, 0.12);
+
+  /* ── Font families (overridden at runtime by next/font CSS variables) ── */
+  --font-sans: 'Manrope', sans-serif;
+  --font-mono: 'Geist Mono', monospace;
+
+  /* ── Legacy compat (referenced by existing tailwind extend) ── */
+  --background: var(--bg-canvas);
+  --foreground: var(--text-primary);
 }
 
+/* ── Base typography: mono elements ── */
+@layer base {
+  code,
+  pre,
+  kbd,
+  samp,
+  [data-font="mono"] {
+    font-family: var(--font-mono);
+  }
+}
