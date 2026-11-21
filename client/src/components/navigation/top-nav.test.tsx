@@ -1,5 +1,6 @@
 // src/components/navigation/top-nav.test.tsx
 // Phase 18 Step 3 / Phase 22 Step 2: Tests for TopNav component.
+// Phase 30 Step 2: Updated class assertions for design-system tokens.
 
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
@@ -30,9 +31,9 @@ describe('TopNav', () => {
     const opsLink = screen.getByTestId('nav-ops-link');
     const storeLink = screen.getByTestId('nav-store-link');
 
-    expect(chatLink).toHaveClass('bg-slate-800');
-    expect(opsLink).not.toHaveClass('bg-indigo-600');
-    expect(storeLink).not.toHaveClass('bg-slate-800');
+    expect(chatLink).toHaveClass('bg-surface-hover');
+    expect(opsLink).not.toHaveClass('bg-brand-primary');
+    expect(storeLink).not.toHaveClass('bg-surface-hover');
   });
 
   it('highlights Store link when on /store route', () => {
@@ -45,7 +46,7 @@ describe('TopNav', () => {
     );
 
     const storeLink = screen.getByTestId('nav-store-link');
-    expect(storeLink).toHaveClass('bg-slate-800');
+    expect(storeLink).toHaveClass('bg-surface-hover');
   });
 
   it('highlights My Orders link when on /orders route', () => {
@@ -58,7 +59,7 @@ describe('TopNav', () => {
     );
 
     const ordersLink = screen.getByTestId('nav-orders-link');
-    expect(ordersLink).toHaveClass('bg-slate-800');
+    expect(ordersLink).toHaveClass('bg-surface-hover');
   });
 
   it('highlights Platform Ops link when on /ops route', () => {
@@ -71,7 +72,7 @@ describe('TopNav', () => {
     );
 
     const opsLink = screen.getByTestId('nav-ops-link');
-    expect(opsLink).toHaveClass('bg-indigo-600');
+    expect(opsLink).toHaveClass('bg-brand-primary');
   });
 
   it('displays user profile pill when authenticated', () => {

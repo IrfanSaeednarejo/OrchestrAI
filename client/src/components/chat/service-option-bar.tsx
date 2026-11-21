@@ -2,8 +2,8 @@
 
 // src/components/chat/service-option-bar.tsx
 // Phase 23: Interactive service-option pill buttons rendered beneath the assistant
-// greeting message. Clicking a button fires sendMessage with the option's preset message,
-// letting users select a service without having to type manually.
+// greeting message.
+// Phase 30 Step 4: Design system redesign — Crimson-toned pills on dark surface.
 
 import React from 'react';
 import type { ServiceOption } from '../../types/api';
@@ -38,11 +38,11 @@ export function ServiceOptionBar({
           onClick={() => onSelect(option.message)}
           data-testid={`service-option-${option.label.replace(/\s+/g, '-').toLowerCase()}`}
           className={
-            'inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-medium ' +
-            'border transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-1 ' +
+            'inline-flex items-center px-3.5 py-1.5 rounded-tag text-xs font-medium ' +
+            'border transition-colors focus:outline-none focus:ring-2 focus:ring-brand-focus focus:ring-offset-1 focus:ring-offset-surface-canvas ' +
             (isDisabled
-              ? 'border-slate-200 bg-slate-50 text-slate-400 cursor-not-allowed'
-              : 'border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 hover:border-indigo-300 cursor-pointer')
+              ? 'border-edge-subtle bg-surface text-content-disabled cursor-not-allowed'
+              : 'border-brand-mid bg-brand-deep text-brand-link hover:bg-brand-primary hover:border-brand-primary hover:text-white cursor-pointer')
           }
         >
           {option.label}
@@ -51,4 +51,3 @@ export function ServiceOptionBar({
     </div>
   );
 }
-

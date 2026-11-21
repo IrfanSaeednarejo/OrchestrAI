@@ -1,6 +1,13 @@
 import type { Metadata } from 'next';
+import { Manrope } from 'next/font/google';
 import './globals.css';
 import { Providers } from '../components/providers';
+
+const manrope = Manrope({
+  subsets: ['latin'],
+  variable: '--font-sans',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'OrchestrAI — Support Chat & Store',
@@ -13,8 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="bg-slate-50 text-slate-900 antialiased">
+    <html lang="en" className={manrope.variable}>
+      <body className="bg-surface-canvas text-content-primary font-sans antialiased">
         <Providers>{children}</Providers>
       </body>
     </html>
