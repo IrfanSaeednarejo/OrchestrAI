@@ -1,0 +1,86 @@
+[
+  {
+    "id": "absent-crypto-payments",
+    "query": "Can I pay for my order using Bitcoin or Ethereum?",
+    "answerable": false,
+    "difficulty": "negative"
+  },
+  {
+    "id": "absent-gift-wrapping",
+    "query": "Do you offer complimentary gift wrapping or gift boxes at checkout?",
+    "answerable": false,
+    "difficulty": "negative"
+  },
+  {
+    "id": "absent-sameday-manhattan",
+    "query": "Is same-day courier delivery available for Manhattan addresses?",
+    "answerable": false,
+    "difficulty": "negative"
+  },
+  {
+    "id": "absent-b2b-net30",
+    "query": "How can corporate accounts apply for Net-30 invoicing terms?",
+    "answerable": false,
+    "difficulty": "negative"
+  },
+  {
+    "id": "absent-student-discount",
+    "query": "Is there a student discount code available through Unidays or Student Beans?",
+    "answerable": false,
+    "difficulty": "negative"
+  },
+  {
+    "id": "absent-loyalty-points",
+    "query": "How do I redeem my accumulated loyalty rewards points at checkout?",
+    "answerable": false,
+    "difficulty": "negative"
+  },
+  {
+    "id": "absent-price-match",
+    "query": "Will Northvale match a lower advertised price found at another retailer?",
+    "answerable": false,
+    "difficulty": "negative"
+  },
+  {
+    "id": "absent-pet-subscription",
+    "query": "Can I sign up for a monthly recurring subscription box for dog treats?",
+    "answerable": false,
+    "difficulty": "negative"
+  },
+  {
+    "id": "absent-wedding-registry",
+    "query": "How do I create and share a wedding registry list with guests?",
+    "answerable": false,
+    "difficulty": "negative"
+  },
+  {
+    "id": "absent-manufacturer-warranty",
+    "query": "How do I file a second-year manufacturer extended warranty claim?",
+    "answerable": false,
+    "difficulty": "negative"
+  },
+  {
+    "id": "absent-drone-delivery",
+    "query": "Do you offer autonomous drone drop-off delivery in rural areas?",
+    "answerable": false,
+    "difficulty": "negative"
+  },
+  {
+    "id": "absent-giftcard-reload",
+    "query": "Can I add additional funds to reload an existing physical gift card?",
+    "answerable": false,
+    "difficulty": "negative"
+  },
+  {
+    "id": "absent-transfer-store-credit",
+    "query": "Can I transfer my store credit balance to a friend's Northvale account?",
+    "answerable": false,
+    "difficulty": "negative"
+  },
+  {
+    "id": "absent-referral-bonus",
+    "query": "Where do I find my friend referral link to earn credit for new signups?",
+    "answerable": false,
+    "difficulty": "negative"
+  }
+]
