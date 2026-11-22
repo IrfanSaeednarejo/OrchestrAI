@@ -1,0 +1,470 @@
+[
+  {
+    "seed_id": "s-returns-001",
+    "doc": "pol-orders-returns-001",
+    "page": 1,
+    "snippet": "accepted within 30 days of delivery",
+    "multi_gold_snippets": [],
+    "gold_chunk_ids": [
+      "7dd1abc8-3c1c-4342-883d-4962aa11c6ba"
+    ],
+    "sections": [
+      "Return Window"
+    ],
+    "status": "resolved",
+    "resolution_method": "exact_ilike",
+    "n_matches": 1
+  },
+  {
+    "seed_id": "s-returns-002",
+    "doc": "pol-orders-returns-001",
+    "page": 1,
+    "snippet": "eligibility window starts the day after carrier delivery confirmation",
+    "multi_gold_snippets": [],
+    "gold_chunk_ids": [
+      "7dd1abc8-3c1c-4342-883d-4962aa11c6ba"
+    ],
+    "sections": [
+      "Return Window"
+    ],
+    "status": "resolved",
+    "resolution_method": "exact_ilike",
+    "n_matches": 1
+  },
+  {
+    "seed_id": "s-returns-003",
+    "doc": "pol-orders-returns-001",
+    "page": 1,
+    "snippet": "defective items are completely exempt from standard condition requirements",
+    "multi_gold_snippets": [],
+    "gold_chunk_ids": [
+      "1f81ecb6-1e75-44b5-aa1f-8d49d8ff8914"
+    ],
+    "sections": [
+      "Item Condition Requirements"
+    ],
+    "status": "resolved",
+    "resolution_method": "exact_ilike",
+    "n_matches": 1
+  },
+  {
+    "seed_id": "s-returns-004",
+    "doc": "pol-orders-returns-001",
+    "page": 1,
+    "snippet": "calculated return shipping cost is deducted directly from the final issued refund balance",
+    "multi_gold_snippets": [],
+    "gold_chunk_ids": [
+      "db883c4f-04c1-479e-be39-0af5045f9dd6"
+    ],
+    "sections": [
+      "Return Shipping Costs"
+    ],
+    "status": "resolved",
+    "resolution_method": "exact_ilike",
+    "n_matches": 1
+  },
+  {
+    "seed_id": "s-returns-005",
+    "doc": "pol-orders-returns-001",
+    "page": 1,
+    "snippet": "prepaid return shipping label can be accessed directly through the online account portal",
+    "multi_gold_snippets": [],
+    "gold_chunk_ids": [
+      "db883c4f-04c1-479e-be39-0af5045f9dd6"
+    ],
+    "sections": [
+      "Return Shipping Costs"
+    ],
+    "status": "resolved",
+    "resolution_method": "exact_ilike",
+    "n_matches": 1
+  },
+  {
+    "seed_id": "s-returns-006",
+    "doc": "pol-orders-returns-001",
+    "page": 1,
+    "snippet": "Standard refund processing requires 5 to 7 business days following verified receipt",
+    "multi_gold_snippets": [],
+    "gold_chunk_ids": [
+      "15d8a63c-74e8-43c7-a23c-077ecc5d087c"
+    ],
+    "sections": [
+      "Refund Method and Timeline"
+    ],
+    "status": "resolved",
+    "resolution_method": "exact_ilike",
+    "n_matches": 1
+  },
+  {
+    "seed_id": "s-returns-007",
+    "doc": "pol-orders-returns-001",
+    "page": 1,
+    "snippet": "prepaid return shipping label can be accessed directly through the online account portal",
+    "multi_gold_snippets": [],
+    "gold_chunk_ids": [
+      "db883c4f-04c1-479e-be39-0af5045f9dd6"
+    ],
+    "sections": [
+      "Return Shipping Costs"
+    ],
+    "status": "resolved",
+    "resolution_method": "exact_ilike",
+    "n_matches": 1
+  },
+  {
+    "seed_id": "s-returns-008",
+    "doc": "pol-orders-returns-001",
+    "page": 1,
+    "snippet": "Returns originating from gift purchases are non-refundable to payment cards and are issued strictly as store credit",
+    "multi_gold_snippets": [],
+    "gold_chunk_ids": [
+      "15d8a63c-74e8-43c7-a23c-077ecc5d087c"
+    ],
+    "sections": [
+      "Refund Method and Timeline"
+    ],
+    "status": "resolved",
+    "resolution_method": "exact_ilike",
+    "n_matches": 1
+  },
+  {
+    "seed_id": "s-shipping-001",
+    "doc": "faq-orders-shipping-001",
+    "page": 1,
+    "snippet": "three domestic shipping tiers at checkout to suit your schedule and budget",
+    "multi_gold_snippets": [],
+    "gold_chunk_ids": [
+      "f638b0c3-2dc9-4909-87f1-703439071f0e"
+    ],
+    "sections": [
+      "What domestic shipping options can I choose?"
+    ],
+    "status": "resolved",
+    "resolution_method": "exact_ilike",
+    "n_matches": 1
+  },
+  {
+    "seed_id": "s-shipping-002",
+    "doc": "faq-orders-shipping-001",
+    "page": 1,
+    "snippet": "provided your order is submitted by 12 pm Eastern Time",
+    "multi_gold_snippets": [],
+    "gold_chunk_ids": [
+      "f638b0c3-2dc9-4909-87f1-703439071f0e"
+    ],
+    "sections": [
+      "What domestic shipping options can I choose?"
+    ],
+    "status": "resolved",
+    "resolution_method": "exact_ilike",
+    "n_matches": 1
+  },
+  {
+    "seed_id": "s-shipping-003",
+    "doc": "faq-orders-shipping-001",
+    "page": 1,
+    "snippet": "Any orders placed after 3 pm Eastern Time begin order fulfillment processing on the following business day",
+    "multi_gold_snippets": [],
+    "gold_chunk_ids": [
+      "2d6e803f-a442-4ff4-a4bd-91c2b517a427"
+    ],
+    "sections": [
+      "How long does order processing and dispatch take?"
+    ],
+    "status": "resolved",
+    "resolution_method": "exact_ilike",
+    "n_matches": 1
+  },
+  {
+    "seed_id": "s-shipping-004",
+    "doc": "faq-orders-shipping-001",
+    "page": 1,
+    "snippet": "International delivery typically takes 10 to 21 business days depending on your specific destination country",
+    "multi_gold_snippets": [],
+    "gold_chunk_ids": [
+      "419cdab9-eb6d-4e4b-bd76-9b7be4c13db3"
+    ],
+    "sections": [
+      "Do you offer international delivery and customs clearance?"
+    ],
+    "status": "resolved",
+    "resolution_method": "exact_ilike",
+    "n_matches": 1
+  },
+  {
+    "seed_id": "s-shipping-005",
+    "doc": "faq-orders-shipping-001",
+    "page": 1,
+    "snippet": "international orders valued over $200 require a physical signature at delivery",
+    "multi_gold_snippets": [],
+    "gold_chunk_ids": [
+      "419cdab9-eb6d-4e4b-bd76-9b7be4c13db3"
+    ],
+    "sections": [
+      "Do you offer international delivery and customs clearance?"
+    ],
+    "status": "resolved",
+    "resolution_method": "exact_ilike",
+    "n_matches": 1
+  },
+  {
+    "seed_id": "s-shipping-006",
+    "doc": "faq-orders-shipping-001",
+    "page": 1,
+    "snippet": "delivery is marked confirmed but your package was stolen, filing a reimbursement or replacement claim",
+    "multi_gold_snippets": [],
+    "gold_chunk_ids": [
+      "4c40816f-8535-4aaa-aa3a-233358118127"
+    ],
+    "sections": [
+      "What should I do if my package is lost, stolen, or damaged?"
+    ],
+    "status": "resolved",
+    "resolution_method": "exact_ilike",
+    "n_matches": 1
+  },
+  {
+    "seed_id": "s-shipping-007",
+    "doc": "faq-orders-shipping-001",
+    "page": 1,
+    "snippet": "Damage claims must be filed through support within 48 hours of carrier delivery along with supporting photographic evidence",
+    "multi_gold_snippets": [],
+    "gold_chunk_ids": [
+      "4c40816f-8535-4aaa-aa3a-233358118127"
+    ],
+    "sections": [
+      "What should I do if my package is lost, stolen, or damaged?"
+    ],
+    "status": "resolved",
+    "resolution_method": "exact_ilike",
+    "n_matches": 1
+  },
+  {
+    "seed_id": "s-shipping-008",
+    "doc": "faq-orders-shipping-001",
+    "page": 1,
+    "snippet": "Carriers officially mark packages as lost after 10 consecutive business days pass without any registered scanning activity",
+    "multi_gold_snippets": [],
+    "gold_chunk_ids": [
+      "4c40816f-8535-4aaa-aa3a-233358118127"
+    ],
+    "sections": [
+      "What should I do if my package is lost, stolen, or damaged?"
+    ],
+    "status": "resolved",
+    "resolution_method": "exact_ilike",
+    "n_matches": 1
+  },
+  {
+    "seed_id": "s-payments-001",
+    "doc": "faq-payments-terms-001",
+    "page": 1,
+    "snippet": "Buy Now Pay Later is available via Klarna on qualifying orders valued between $50 and $2,000",
+    "multi_gold_snippets": [],
+    "gold_chunk_ids": [
+      "27bf998a-001d-4e75-9eee-cc6bd770c252"
+    ],
+    "sections": [
+      "What payment methods do you accept at checkout?"
+    ],
+    "status": "resolved",
+    "resolution_method": "exact_ilike",
+    "n_matches": 1
+  },
+  {
+    "seed_id": "s-payments-002",
+    "doc": "faq-payments-terms-001",
+    "page": 1,
+    "snippet": "standardized descriptor \"NORTHVALE*ORDER\"",
+    "multi_gold_snippets": [],
+    "gold_chunk_ids": [
+      "1d8aa03d-9c04-41a9-a9bc-9f318a34b6d9"
+    ],
+    "sections": [
+      "How will charges appear on my billing statement?"
+    ],
+    "status": "resolved",
+    "resolution_method": "exact_ilike",
+    "n_matches": 1
+  },
+  {
+    "seed_id": "s-payments-003",
+    "doc": "faq-payments-terms-001",
+    "page": 1,
+    "snippet": "authorization holds expire automatically after 7 days",
+    "multi_gold_snippets": [],
+    "gold_chunk_ids": [
+      "e6143777-f9b4-46e5-963b-b1a691b2b299"
+    ],
+    "sections": [
+      "How do card authorizations and temporary holds work?"
+    ],
+    "status": "resolved",
+    "resolution_method": "exact_ilike",
+    "n_matches": 1
+  },
+  {
+    "seed_id": "s-payments-004",
+    "doc": "faq-payments-terms-001",
+    "page": 1,
+    "snippet": "initial authorization amount can exceed the final charge by up to 20% for estimated shipping",
+    "multi_gold_snippets": [],
+    "gold_chunk_ids": [
+      "e6143777-f9b4-46e5-963b-b1a691b2b299"
+    ],
+    "sections": [
+      "How do card authorizations and temporary holds work?"
+    ],
+    "status": "resolved",
+    "resolution_method": "exact_ilike",
+    "n_matches": 1
+  },
+  {
+    "seed_id": "s-payments-005",
+    "doc": "faq-payments-terms-001",
+    "page": 1,
+    "snippet": "calculated automatically based on your destination shipping address",
+    "multi_gold_snippets": [],
+    "gold_chunk_ids": [
+      "1deb29bb-edc0-4636-b8bd-d5aa362f8804"
+    ],
+    "sections": [
+      "How are sales taxes, international duties, and currencies handled?"
+    ],
+    "status": "resolved",
+    "resolution_method": "exact_ilike",
+    "n_matches": 1
+  },
+  {
+    "seed_id": "s-payments-006",
+    "doc": "faq-payments-terms-001",
+    "page": 1,
+    "snippet": "billing system automatically retries the payment after 3, 5, and 7 days",
+    "multi_gold_snippets": [],
+    "gold_chunk_ids": [
+      "1d8aa03d-9c04-41a9-a9bc-9f318a34b6d9"
+    ],
+    "sections": [
+      "How will charges appear on my billing statement?"
+    ],
+    "status": "resolved",
+    "resolution_method": "exact_ilike",
+    "n_matches": 1
+  },
+  {
+    "seed_id": "s-payments-007",
+    "doc": "faq-payments-terms-001",
+    "page": 1,
+    "snippet": "most common causes of payment failure include an expired card",
+    "multi_gold_snippets": [],
+    "gold_chunk_ids": [
+      "fdecc37e-11db-45ab-b8cb-809910f005b1"
+    ],
+    "sections": [
+      "Why did my payment fail and how can I resolve it?"
+    ],
+    "status": "resolved",
+    "resolution_method": "exact_ilike",
+    "n_matches": 1
+  },
+  {
+    "seed_id": "s-payments-008",
+    "doc": "faq-payments-terms-001",
+    "page": 1,
+    "snippet": "three consecutive failed transaction attempts will temporarily block your account from attempting checkout for 48 hours",
+    "multi_gold_snippets": [],
+    "gold_chunk_ids": [
+      "fdecc37e-11db-45ab-b8cb-809910f005b1"
+    ],
+    "sections": [
+      "Why did my payment fail and how can I resolve it?"
+    ],
+    "status": "resolved",
+    "resolution_method": "exact_ilike",
+    "n_matches": 1
+  },
+  {
+    "seed_id": "s-refunds-003",
+    "doc": "pol-payments-refunds-001",
+    "page": 1,
+    "snippet": "missing components or unreturned accessories incurs a deduction of up to 25%",
+    "multi_gold_snippets": [],
+    "gold_chunk_ids": [
+      "86906f27-1bc4-4d4a-a773-9280d130b5a2"
+    ],
+    "sections": [
+      "Partial Refunds"
+    ],
+    "status": "resolved",
+    "resolution_method": "exact_ilike",
+    "n_matches": 1
+  },
+  {
+    "seed_id": "s-account-security-002",
+    "doc": "faq-account-security-001",
+    "page": 1,
+    "snippet": "all passwords expire automatically after 365 days",
+    "multi_gold_snippets": [],
+    "gold_chunk_ids": [
+      "940abee1-414e-4ad7-9fc8-62e13a32516f"
+    ],
+    "sections": [
+      "What are the password complexity and rotation requirements?"
+    ],
+    "status": "resolved",
+    "resolution_method": "exact_ilike",
+    "n_matches": 1
+  },
+  {
+    "seed_id": "s-methods-001",
+    "doc": "faq-payments-methods-001",
+    "page": 1,
+    "snippet": "Visa, Mastercard, American Express, and Discover",
+    "multi_gold_snippets": [],
+    "gold_chunk_ids": [
+      "fb4a68d1-59e2-4247-b3dc-c57bdaa57232"
+    ],
+    "sections": [
+      "What credit and debit cards can I use at Northvale?"
+    ],
+    "status": "resolved",
+    "resolution_method": "exact_ilike",
+    "n_matches": 1
+  },
+  {
+    "seed_id": "s-methods-007",
+    "doc": "faq-payments-methods-001",
+    "page": 1,
+    "snippet": "simply deleting a saved card from your account wallet does not cancel active recurring subscriptions",
+    "multi_gold_snippets": [],
+    "gold_chunk_ids": [
+      "ee8f11e8-7e96-4995-aa22-9130d52520ee"
+    ],
+    "sections": [
+      "How can I update or change my payment method?"
+    ],
+    "status": "resolved",
+    "resolution_method": "exact_ilike",
+    "n_matches": 1
+  },
+  {
+    "seed_id": "s-data-deletion-007",
+    "doc": "faq-account-data-deletion-001",
+    "page": 1,
+    "snippet": "recover and reactivate your deleted account exclusively while the account remains within the initial 30-day grace period",
+    "multi_gold_snippets": [
+      "All stored payment methods, including tokenized credit card profiles and billing configurations, are completely expunged"
+    ],
+    "gold_chunk_ids": [
+      "e69d00ce-be5e-4a85-b941-49b3d40274ba",
+      "612bb6c5-6762-46a8-b953-3b135c8ac121"
+    ],
+    "sections": [
+      "Can I recover a deleted account or create a new one?",
+      "What personal information is permanently deleted?"
+    ],
+    "status": "multi_gold",
+    "resolution_method": "exact_ilike",
+    "n_matches": 2
+  }
+]
