@@ -91,15 +91,24 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Run Database Migrations
+      - name: Run Database Migrations & Ingest Knowledge
         env:
           DATABASE_URL: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
+          DATABASE_URL_UNPOOLED: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
+          TEST_DATABASE_URL: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
+          TEST_DATABASE_URL_UNPOOLED: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || 'mock-ci-key' }}
-        run: npm run db:migrate
+        run: |
+          docker exec -i $(docker ps -q --filter ancestor=pgvector/pgvector:pg16) psql -U orchestrai -d orchestrai_test -c "CREATE EXTENSION IF NOT EXISTS vector;" || true
+          npm run db:migrate
+          npm run knowledge:ingest -- --dir ../docs/knowledge-base
 
       - name: Run Mocked Ingestion & Retrieval Suite
         env:
           DATABASE_URL: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
+          DATABASE_URL_UNPOOLED: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
+          TEST_DATABASE_URL: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
+          TEST_DATABASE_URL_UNPOOLED: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || 'mock-ci-key' }}
         run: |
           # NOTE: Gate 2 wall-clock ≈90 s — rate-limit risk if >100 s. See MIGRATION.md CI Duration Note.
