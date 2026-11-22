@@ -1,0 +1,254 @@
+[
+  {
+    "id": "s-returns-006-p2",
+    "tier": 1,
+    "reason": "pattern_a_answer_leakage_business_days",
+    "query": "how many business days until credit reaches bank account",
+    "seed": "when does the money actually show up on my card"
+  },
+  {
+    "id": "s-returns-007-p2",
+    "tier": 2,
+    "reason": "unnatural_freight_costs_register",
+    "query": "freight costs applied when returning four items out of eight",
+    "seed": "returning 4 items from an 8 item order, what shipping fees apply"
+  },
+  {
+    "id": "s-shipping-007-p1",
+    "tier": 1,
+    "reason": "pattern_b_fact_drift_european_export",
+    "query": "who covers costs when European export arrives broken during transit",
+    "seed": "shipping to germany and package arrives damaged, who pays"
+  },
+  {
+    "id": "s-refunds-005-p2",
+    "tier": 1,
+    "reason": "pattern_b_fact_drift_loan_cancellation",
+    "query": "cancelling installment loan balance upon sending back merchandise",
+    "seed": "paid with klarna in 4 installments and returning"
+  },
+  {
+    "id": "s-account-security-005-p1",
+    "tier": 1,
+    "reason": "pattern_a_answer_leakage",
+    "query": "lockout period after entering invalid one-time verification tokens",
+    "seed": "kept typing the wrong login code"
+  },
+  {
+    "id": "s-account-security-005-p2",
+    "tier": 1,
+    "reason": "pattern_a_answer_leakage",
+    "query": "temporary freeze caused by consecutive incorrect one-time passcode submissions",
+    "seed": "kept typing the wrong login code"
+  },
+  {
+    "id": "s-cancellations-003-p1",
+    "tier": 2,
+    "reason": "bureaucratic_product_reservation",
+    "query": "cutoff deadline for voiding advance product reservation before launch",
+    "seed": "cancel a pre-order before release"
+  },
+  {
+    "id": "s-cancellations-003-p2",
+    "tier": 2,
+    "reason": "bureaucratic_street_date",
+    "query": "how many hours prior to official street date can advance order be voided",
+    "seed": "cancel a pre-order before release"
+  },
+  {
+    "id": "s-cancellations-004-p1",
+    "tier": 2,
+    "reason": "bureaucratic_corporate_order",
+    "query": "prior notice requirement to cancel corporate order of ten units or more",
+    "seed": "bulk order cancellation notice"
+  },
+  {
+    "id": "s-cancellations-004-p2",
+    "tier": 2,
+    "reason": "bureaucratic_high_volume",
+    "query": "advance warning required before terminating high volume commercial purchase",
+    "seed": "bulk order cancellation notice"
+  },
+  {
+    "id": "s-cancellations-005-p1",
+    "tier": 2,
+    "reason": "unnatural_doorstep_phrasing",
+    "query": "procedure and costs when customer declines to accept delivery at doorstep",
+    "seed": "refused the package at the door, what now"
+  },
+  {
+    "id": "s-exchanges-002-p1",
+    "tier": 2,
+    "reason": "unnatural_measurement_phrasing",
+    "query": "process for trading clothing item for smaller or larger measurement",
+    "seed": "swapping for a different size"
+  },
+  {
+    "id": "s-exchanges-005-p1",
+    "tier": 1,
+    "reason": "pattern_a_answer_leakage_intake_scan",
+    "query": "does replacement order dispatch upon carrier intake scan of return box",
+    "seed": "when does new item ship after I drop off return"
+  },
+  {
+    "id": "s-exchanges-006-p2",
+    "tier": 2,
+    "reason": "bureaucratic_preference_based",
+    "query": "customer freight fee for standard preference based exchange return",
+    "seed": "change of mind exchange shipping fee"
+  },
+  {
+    "id": "s-exchanges-007-p1",
+    "tier": 2,
+    "reason": "bureaucratic_price_variance",
+    "query": "settling price variance when trading item for higher catalog model",
+    "seed": "exchanging for a more expensive jacket"
+  },
+  {
+    "id": "s-exchanges-008-p2",
+    "tier": 2,
+    "reason": "bureaucratic_promotional_markdown",
+    "query": "does promotional markdown transfer over when exchanging for regular priced product",
+    "seed": "bought a $60 sale sweater, exchange for $90 regular price one"
+  },
+  {
+    "id": "s-disputes-001-p1",
+    "tier": 2,
+    "reason": "legal_register_statutory_window",
+    "query": "statutory calendar window allowed for bank chargeback investigation",
+    "seed": "chargeback timeline"
+  },
+  {
+    "id": "s-disputes-001-p2",
+    "tier": 2,
+    "reason": "legal_register_adjudicate",
+    "query": "how many weeks does merchant bank take to adjudicate card dispute",
+    "seed": "chargeback timeline"
+  },
+  {
+    "id": "s-disputes-002-p2",
+    "tier": 2,
+    "reason": "formal_account_holder_auth",
+    "query": "reporting stolen payment details used without account holder authorization",
+    "seed": "someone used my card without permission"
+  },
+  {
+    "id": "s-disputes-004-p2",
+    "tier": 2,
+    "reason": "legal_register_criminal_filing",
+    "query": "when is formal criminal report filing mandatory for unauthorized transactions",
+    "seed": "police report unauthorized charge threshold"
+  },
+  {
+    "id": "s-disputes-005-p2",
+    "tier": 2,
+    "reason": "formal_payment_grievance",
+    "query": "how many hours until support confirms receipt of payment grievance",
+    "seed": "when do I hear back after opening a dispute"
+  },
+  {
+    "id": "s-disputes-006-p2",
+    "tier": 2,
+    "reason": "formal_contesting_charge",
+    "query": "what documentation must customer upload when contesting credit charge",
+    "seed": "what docs do I need for a chargeback"
+  },
+  {
+    "id": "s-disputes-008-p2",
+    "tier": 2,
+    "reason": "formal_payment_contest",
+    "query": "does submitting payment contest suspend active warehouse return inspection",
+    "seed": "my card was charged twice and I already requested a return"
+  },
+  {
+    "id": "s-methods-003-p2",
+    "tier": 2,
+    "reason": "bureaucratic_reimbursement_routing",
+    "query": "reimbursement routing for purchases completed through external wallet account",
+    "seed": "paypal refund destination"
+  },
+  {
+    "id": "s-privacy-002-p1",
+    "tier": 2,
+    "reason": "llm_register_monetize",
+    "query": "does store monetize or trade customer profiles with external advertising agencies",
+    "seed": "northvale selling my personal info to third parties"
+  },
+  {
+    "id": "s-privacy-002-p2",
+    "tier": 1,
+    "reason": "pattern_b_fact_drift_brokers",
+    "query": "policy regarding commercial sale of consumer identities to third party brokers",
+    "seed": "northvale selling my personal info to third parties"
+  },
+  {
+    "id": "s-privacy-003-p1",
+    "tier": 2,
+    "reason": "legal_register_statutory_preservation",
+    "query": "statutory years required for preserving tax records and invoice archives",
+    "seed": "order data retention"
+  },
+  {
+    "id": "s-privacy-005-p2",
+    "tier": 2,
+    "reason": "technical_register_machine_readable",
+    "query": "requesting structured machine readable data file of account history",
+    "seed": "want my data in a file I can download"
+  },
+  {
+    "id": "s-privacy-007-p1",
+    "tier": 2,
+    "reason": "bureaucratic_protocol_termination",
+    "query": "protocol for immediate termination of profiles registered by children under thirteen",
+    "seed": "underage user got an account"
+  },
+  {
+    "id": "s-data-deletion-001-p1",
+    "tier": 2,
+    "reason": "bureaucratic_profile_erasure",
+    "query": "holding duration before profile erasure becomes unrecoverable",
+    "seed": "account deletion 30 day grace"
+  },
+  {
+    "id": "s-data-deletion-001-p2",
+    "tier": 2,
+    "reason": "legal_register_cooling_off",
+    "query": "cooling off period allowed to reconsider profile termination",
+    "seed": "account deletion 30 day grace"
+  },
+  {
+    "id": "s-data-deletion-005-p1",
+    "tier": 2,
+    "reason": "technical_register_disaster_recovery",
+    "query": "days required for server disaster recovery snapshots to cycle out deleted user data",
+    "seed": "backup purge timeline"
+  },
+  {
+    "id": "s-data-deletion-007-p2",
+    "tier": 1,
+    "reason": "pattern_b_fact_drift_timeline",
+    "query": "reopening account after three weeks do saved cards remain available",
+    "seed": "deleted my account 20 days ago, want to reopen, is my old saved card still there"
+  },
+  {
+    "id": "s-notifications-003-p1",
+    "tier": 1,
+    "reason": "pattern_a_answer_leakage_hours",
+    "query": "hours elapsed before carrier transit problem notification is sent to customer",
+    "seed": "delivery exception alert timing"
+  },
+  {
+    "id": "s-notifications-005-p2",
+    "tier": 2,
+    "reason": "legal_register_remedy_correspondence",
+    "query": "remedy for receiving advertising correspondence without registration",
+    "seed": "getting marketing emails I didn't sign up for"
+  },
+  {
+    "id": "s-notifications-008-p2",
+    "tier": 2,
+    "reason": "unnatural_delivery_receipts",
+    "query": "does sending stop response to SMS eliminate transactional email delivery receipts",
+    "seed": "replied STOP but still getting dispatch emails"
+  }
+]

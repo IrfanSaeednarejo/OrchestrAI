@@ -142,3 +142,8 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
 .neon
+
+# Evaluation & Benchmark local caches
+.embed-cache/
+.ablation-query-cache.json
+

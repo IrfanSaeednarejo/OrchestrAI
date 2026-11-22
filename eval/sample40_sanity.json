@@ -1,0 +1,402 @@
+[
+  {
+    "id": "s-returns-001-p1",
+    "query": "allowed timeframe for customer product returns",
+    "doc": "pol-orders-returns-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "paraphrase",
+    "variant_of": "s-returns-001",
+    "status": "active"
+  },
+  {
+    "id": "s-returns-001-p2",
+    "query": "how many calendar days are permitted for sending an item back",
+    "doc": "pol-orders-returns-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "paraphrase",
+    "variant_of": "s-returns-001",
+    "status": "active"
+  },
+  {
+    "id": "s-returns-001-m",
+    "query": "30 days return window policy??",
+    "doc": "pol-orders-returns-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "messy",
+    "variant_of": "s-returns-001",
+    "status": "active"
+  },
+  {
+    "id": "s-shipping-001-p1",
+    "query": "flat rate fee charged for two to three day transit",
+    "doc": "faq-orders-shipping-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "paraphrase",
+    "variant_of": "s-shipping-001",
+    "status": "active"
+  },
+  {
+    "id": "s-shipping-001-p2",
+    "query": "pricing for faster delivery options at checkout",
+    "doc": "faq-orders-shipping-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "paraphrase",
+    "variant_of": "s-shipping-001",
+    "status": "active"
+  },
+  {
+    "id": "s-shipping-001-m",
+    "query": "cost of expedited shipping??",
+    "doc": "faq-orders-shipping-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "messy",
+    "variant_of": "s-shipping-001",
+    "status": "active"
+  },
+  {
+    "id": "s-payments-001-p1",
+    "query": "minimum and maximum basket amounts allowed for installment financing",
+    "doc": "faq-payments-terms-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "paraphrase",
+    "variant_of": "s-payments-001",
+    "status": "active"
+  },
+  {
+    "id": "s-payments-001-p2",
+    "query": "qualifying price boundaries for using buy now pay later",
+    "doc": "faq-payments-terms-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "paraphrase",
+    "variant_of": "s-payments-001",
+    "status": "active"
+  },
+  {
+    "id": "s-payments-001-m",
+    "query": "klarna max and min order amount",
+    "doc": "faq-payments-terms-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "messy",
+    "variant_of": "s-payments-001",
+    "status": "active"
+  },
+  {
+    "id": "s-refunds-001-p1",
+    "query": "hours required for warehouse intake inspection to authorize return credit",
+    "doc": "pol-payments-refunds-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "paraphrase",
+    "variant_of": "s-refunds-001",
+    "status": "active"
+  },
+  {
+    "id": "s-refunds-001-p2",
+    "query": "how long until return inspection team approves reimbursement",
+    "doc": "pol-payments-refunds-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "paraphrase",
+    "variant_of": "s-refunds-001",
+    "status": "active"
+  },
+  {
+    "id": "s-refunds-001-m",
+    "query": "how fast refund approved after return",
+    "doc": "pol-payments-refunds-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "messy",
+    "variant_of": "s-refunds-001",
+    "status": "active"
+  },
+  {
+    "id": "s-account-security-001-p1",
+    "query": "character count and symbol rules for creating an account password",
+    "doc": "faq-account-security-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "paraphrase",
+    "variant_of": "s-account-security-001",
+    "status": "active"
+  },
+  {
+    "id": "s-account-security-001-p2",
+    "query": "mandatory security criteria for user credentials",
+    "doc": "faq-account-security-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "paraphrase",
+    "variant_of": "s-account-security-001",
+    "status": "active"
+  },
+  {
+    "id": "s-account-security-001-m",
+    "query": "password rules length symbols numbers",
+    "doc": "faq-account-security-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "messy",
+    "variant_of": "s-account-security-001",
+    "status": "active"
+  },
+  {
+    "id": "s-cancellations-001-p1",
+    "query": "can an order be revoked while status remains pending in fulfillment",
+    "doc": "pol-orders-cancellation-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "paraphrase",
+    "variant_of": "s-cancellations-001",
+    "status": "active"
+  },
+  {
+    "id": "s-cancellations-001-p2",
+    "query": "stopping shipment before parcel leaves distribution dock",
+    "doc": "pol-orders-cancellation-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "paraphrase",
+    "variant_of": "s-cancellations-001",
+    "status": "active"
+  },
+  {
+    "id": "s-cancellations-001-m",
+    "query": "can i cancel order before it ships",
+    "doc": "pol-orders-cancellation-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "messy",
+    "variant_of": "s-cancellations-001",
+    "status": "active"
+  },
+  {
+    "id": "s-exchanges-001-p1",
+    "query": "how many days from carrier dropoff to request replacement variation",
+    "doc": "faq-orders-exchanges-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "paraphrase",
+    "variant_of": "s-exchanges-001",
+    "status": "active"
+  },
+  {
+    "id": "s-exchanges-001-p2",
+    "query": "timeframe allowed for requesting garment swap for another size",
+    "doc": "faq-orders-exchanges-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "paraphrase",
+    "variant_of": "s-exchanges-001",
+    "status": "active"
+  },
+  {
+    "id": "s-exchanges-001-m",
+    "query": "how long do i have to exchange an item",
+    "doc": "faq-orders-exchanges-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "messy",
+    "variant_of": "s-exchanges-001",
+    "status": "active"
+  },
+  {
+    "id": "s-disputes-001-m",
+    "query": "how long bank chargeback take",
+    "doc": "pol-payments-disputes-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "messy",
+    "variant_of": "s-disputes-001",
+    "status": "active"
+  },
+  {
+    "id": "s-disputes-002-p1",
+    "query": "filing claim for fraudulent debit or credit card transaction on account",
+    "doc": "pol-payments-disputes-001",
+    "answerable": true,
+    "difficulty": "paraphrase",
+    "variant_type": "paraphrase",
+    "variant_of": "s-disputes-002",
+    "status": "active"
+  },
+  {
+    "id": "s-disputes-002-m",
+    "query": "unauthorized charge on my card what to do",
+    "doc": "pol-payments-disputes-001",
+    "answerable": true,
+    "difficulty": "paraphrase",
+    "variant_type": "messy",
+    "variant_of": "s-disputes-002",
+    "status": "active"
+  },
+  {
+    "id": "s-methods-001-p1",
+    "query": "which major credit card brands are supported for online checkout",
+    "doc": "faq-payments-methods-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "paraphrase",
+    "variant_of": "s-methods-001",
+    "status": "active"
+  },
+  {
+    "id": "s-methods-001-p2",
+    "query": "supported payment card logos accepted at web store",
+    "doc": "faq-payments-methods-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "paraphrase",
+    "variant_of": "s-methods-001",
+    "status": "active"
+  },
+  {
+    "id": "s-methods-001-m",
+    "query": "what cards accepted visa mastercard amex discover",
+    "doc": "faq-payments-methods-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "messy",
+    "variant_of": "s-methods-001",
+    "status": "active"
+  },
+  {
+    "id": "s-privacy-001-p1",
+    "query": "categories of personal records and technical telemetry gathered by website",
+    "doc": "pol-account-privacy-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "paraphrase",
+    "variant_of": "s-privacy-001",
+    "status": "active"
+  },
+  {
+    "id": "s-privacy-001-p2",
+    "query": "what customer information and browsing metrics are logged during site visits",
+    "doc": "pol-account-privacy-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "paraphrase",
+    "variant_of": "s-privacy-001",
+    "status": "active"
+  },
+  {
+    "id": "s-privacy-001-m",
+    "query": "what info do you collect on me",
+    "doc": "pol-account-privacy-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "messy",
+    "variant_of": "s-privacy-001",
+    "status": "active"
+  },
+  {
+    "id": "s-data-deletion-001-m",
+    "query": "account deletion grace period days",
+    "doc": "faq-account-data-deletion-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "messy",
+    "variant_of": "s-data-deletion-001",
+    "status": "active"
+  },
+  {
+    "id": "s-data-deletion-002-p1",
+    "query": "how to restore pending profile closure during initial waiting window",
+    "doc": "faq-account-data-deletion-001",
+    "answerable": true,
+    "difficulty": "paraphrase",
+    "variant_type": "paraphrase",
+    "variant_of": "s-data-deletion-002",
+    "status": "active"
+  },
+  {
+    "id": "s-data-deletion-002-p2",
+    "query": "steps to halt scheduled account removal and preserve profile data",
+    "doc": "faq-account-data-deletion-001",
+    "answerable": true,
+    "difficulty": "paraphrase",
+    "variant_type": "paraphrase",
+    "variant_of": "s-data-deletion-002",
+    "status": "active"
+  },
+  {
+    "id": "s-notifications-001-p1",
+    "query": "communication channels available for customer alerts and transactional updates",
+    "doc": "faq-account-notifications-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "paraphrase",
+    "variant_of": "s-notifications-001",
+    "status": "active"
+  },
+  {
+    "id": "s-notifications-001-p2",
+    "query": "ways store sends order status and security notifications to shoppers",
+    "doc": "faq-account-notifications-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "paraphrase",
+    "variant_of": "s-notifications-001",
+    "status": "active"
+  },
+  {
+    "id": "s-notifications-001-m",
+    "query": "what notification channels email text push",
+    "doc": "faq-account-notifications-001",
+    "answerable": true,
+    "difficulty": "keyword",
+    "variant_type": "messy",
+    "variant_of": "s-notifications-001",
+    "status": "active"
+  },
+  {
+    "id": "s-returns-002-p1",
+    "query": "maximum eligible timeframe post delivery to start a return",
+    "doc": "pol-orders-returns-001",
+    "answerable": true,
+    "difficulty": "paraphrase",
+    "variant_type": "paraphrase",
+    "variant_of": "s-returns-002",
+    "status": "active"
+  },
+  {
+    "id": "s-returns-002-p2",
+    "query": "number of days allowed once carrier delivers package",
+    "doc": "pol-orders-returns-001",
+    "answerable": true,
+    "difficulty": "paraphrase",
+    "variant_type": "paraphrase",
+    "variant_of": "s-returns-002",
+    "status": "active"
+  },
+  {
+    "id": "s-returns-002-m",
+    "query": "how long i have to return package after it arrived",
+    "doc": "pol-orders-returns-001",
+    "answerable": true,
+    "difficulty": "paraphrase",
+    "variant_type": "messy",
+    "variant_of": "s-returns-002",
+    "status": "active"
+  },
+  {
+    "id": "s-returns-003-p1",
+    "query": "will you accept broken merchandise without original tags attached",
+    "doc": "pol-orders-returns-001",
+    "answerable": true,
+    "difficulty": "paraphrase",
+    "variant_type": "paraphrase",
+    "variant_of": "s-returns-003",
+    "status": "active"
+  }
+]

@@ -1,0 +1,1348 @@
+[
+  {
+    "seed_id": "s-returns-001",
+    "doc": "pol-orders-returns-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "7dd1abc8-3c1c-4342-883d-4962aa11c6ba"
+    ],
+    "sections": [
+      "Return Window"
+    ],
+    "primary_chunk_id": "7dd1abc8-3c1c-4342-883d-4962aa11c6ba",
+    "primary_section": "Return Window"
+  },
+  {
+    "seed_id": "s-returns-002",
+    "doc": "pol-orders-returns-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "7dd1abc8-3c1c-4342-883d-4962aa11c6ba"
+    ],
+    "sections": [
+      "Return Window"
+    ],
+    "primary_chunk_id": "7dd1abc8-3c1c-4342-883d-4962aa11c6ba",
+    "primary_section": "Return Window"
+  },
+  {
+    "seed_id": "s-returns-003",
+    "doc": "pol-orders-returns-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "1f81ecb6-1e75-44b5-aa1f-8d49d8ff8914"
+    ],
+    "sections": [
+      "Item Condition Requirements"
+    ],
+    "primary_chunk_id": "1f81ecb6-1e75-44b5-aa1f-8d49d8ff8914",
+    "primary_section": "Item Condition Requirements"
+  },
+  {
+    "seed_id": "s-returns-004",
+    "doc": "pol-orders-returns-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "db883c4f-04c1-479e-be39-0af5045f9dd6"
+    ],
+    "sections": [
+      "Return Shipping Costs"
+    ],
+    "primary_chunk_id": "db883c4f-04c1-479e-be39-0af5045f9dd6",
+    "primary_section": "Return Shipping Costs"
+  },
+  {
+    "seed_id": "s-returns-005",
+    "doc": "pol-orders-returns-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "db883c4f-04c1-479e-be39-0af5045f9dd6"
+    ],
+    "sections": [
+      "Return Shipping Costs"
+    ],
+    "primary_chunk_id": "db883c4f-04c1-479e-be39-0af5045f9dd6",
+    "primary_section": "Return Shipping Costs"
+  },
+  {
+    "seed_id": "s-returns-006",
+    "doc": "pol-orders-returns-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "15d8a63c-74e8-43c7-a23c-077ecc5d087c"
+    ],
+    "sections": [
+      "Refund Method and Timeline"
+    ],
+    "primary_chunk_id": "15d8a63c-74e8-43c7-a23c-077ecc5d087c",
+    "primary_section": "Refund Method and Timeline"
+  },
+  {
+    "seed_id": "s-returns-007",
+    "doc": "pol-orders-returns-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "db883c4f-04c1-479e-be39-0af5045f9dd6"
+    ],
+    "sections": [
+      "Return Shipping Costs"
+    ],
+    "primary_chunk_id": "db883c4f-04c1-479e-be39-0af5045f9dd6",
+    "primary_section": "Return Shipping Costs"
+  },
+  {
+    "seed_id": "s-returns-008",
+    "doc": "pol-orders-returns-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "15d8a63c-74e8-43c7-a23c-077ecc5d087c"
+    ],
+    "sections": [
+      "Refund Method and Timeline"
+    ],
+    "primary_chunk_id": "15d8a63c-74e8-43c7-a23c-077ecc5d087c",
+    "primary_section": "Refund Method and Timeline"
+  },
+  {
+    "seed_id": "s-shipping-001",
+    "doc": "faq-orders-shipping-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "f638b0c3-2dc9-4909-87f1-703439071f0e"
+    ],
+    "sections": [
+      "What domestic shipping options can I choose?"
+    ],
+    "primary_chunk_id": "f638b0c3-2dc9-4909-87f1-703439071f0e",
+    "primary_section": "What domestic shipping options can I choose?"
+  },
+  {
+    "seed_id": "s-shipping-002",
+    "doc": "faq-orders-shipping-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "f638b0c3-2dc9-4909-87f1-703439071f0e"
+    ],
+    "sections": [
+      "What domestic shipping options can I choose?"
+    ],
+    "primary_chunk_id": "f638b0c3-2dc9-4909-87f1-703439071f0e",
+    "primary_section": "What domestic shipping options can I choose?"
+  },
+  {
+    "seed_id": "s-shipping-003",
+    "doc": "faq-orders-shipping-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "2d6e803f-a442-4ff4-a4bd-91c2b517a427"
+    ],
+    "sections": [
+      "How long does order processing and dispatch take?"
+    ],
+    "primary_chunk_id": "2d6e803f-a442-4ff4-a4bd-91c2b517a427",
+    "primary_section": "How long does order processing and dispatch take?"
+  },
+  {
+    "seed_id": "s-shipping-004",
+    "doc": "faq-orders-shipping-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "419cdab9-eb6d-4e4b-bd76-9b7be4c13db3"
+    ],
+    "sections": [
+      "Do you offer international delivery and customs clearance?"
+    ],
+    "primary_chunk_id": "419cdab9-eb6d-4e4b-bd76-9b7be4c13db3",
+    "primary_section": "Do you offer international delivery and customs clearance?"
+  },
+  {
+    "seed_id": "s-shipping-005",
+    "doc": "faq-orders-shipping-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "419cdab9-eb6d-4e4b-bd76-9b7be4c13db3"
+    ],
+    "sections": [
+      "Do you offer international delivery and customs clearance?"
+    ],
+    "primary_chunk_id": "419cdab9-eb6d-4e4b-bd76-9b7be4c13db3",
+    "primary_section": "Do you offer international delivery and customs clearance?"
+  },
+  {
+    "seed_id": "s-shipping-006",
+    "doc": "faq-orders-shipping-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "4c40816f-8535-4aaa-aa3a-233358118127"
+    ],
+    "sections": [
+      "What should I do if my package is lost, stolen, or damaged?"
+    ],
+    "primary_chunk_id": "4c40816f-8535-4aaa-aa3a-233358118127",
+    "primary_section": "What should I do if my package is lost, stolen, or damaged?"
+  },
+  {
+    "seed_id": "s-shipping-007",
+    "doc": "faq-orders-shipping-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "4c40816f-8535-4aaa-aa3a-233358118127"
+    ],
+    "sections": [
+      "What should I do if my package is lost, stolen, or damaged?"
+    ],
+    "primary_chunk_id": "4c40816f-8535-4aaa-aa3a-233358118127",
+    "primary_section": "What should I do if my package is lost, stolen, or damaged?"
+  },
+  {
+    "seed_id": "s-shipping-008",
+    "doc": "faq-orders-shipping-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "4c40816f-8535-4aaa-aa3a-233358118127"
+    ],
+    "sections": [
+      "What should I do if my package is lost, stolen, or damaged?"
+    ],
+    "primary_chunk_id": "4c40816f-8535-4aaa-aa3a-233358118127",
+    "primary_section": "What should I do if my package is lost, stolen, or damaged?"
+  },
+  {
+    "seed_id": "s-payments-001",
+    "doc": "faq-payments-terms-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "27bf998a-001d-4e75-9eee-cc6bd770c252"
+    ],
+    "sections": [
+      "What payment methods do you accept at checkout?"
+    ],
+    "primary_chunk_id": "27bf998a-001d-4e75-9eee-cc6bd770c252",
+    "primary_section": "What payment methods do you accept at checkout?"
+  },
+  {
+    "seed_id": "s-payments-002",
+    "doc": "faq-payments-terms-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "1d8aa03d-9c04-41a9-a9bc-9f318a34b6d9"
+    ],
+    "sections": [
+      "How will charges appear on my billing statement?"
+    ],
+    "primary_chunk_id": "1d8aa03d-9c04-41a9-a9bc-9f318a34b6d9",
+    "primary_section": "How will charges appear on my billing statement?"
+  },
+  {
+    "seed_id": "s-payments-003",
+    "doc": "faq-payments-terms-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "e6143777-f9b4-46e5-963b-b1a691b2b299"
+    ],
+    "sections": [
+      "How do card authorizations and temporary holds work?"
+    ],
+    "primary_chunk_id": "e6143777-f9b4-46e5-963b-b1a691b2b299",
+    "primary_section": "How do card authorizations and temporary holds work?"
+  },
+  {
+    "seed_id": "s-payments-004",
+    "doc": "faq-payments-terms-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "e6143777-f9b4-46e5-963b-b1a691b2b299"
+    ],
+    "sections": [
+      "How do card authorizations and temporary holds work?"
+    ],
+    "primary_chunk_id": "e6143777-f9b4-46e5-963b-b1a691b2b299",
+    "primary_section": "How do card authorizations and temporary holds work?"
+  },
+  {
+    "seed_id": "s-payments-005",
+    "doc": "faq-payments-terms-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "1deb29bb-edc0-4636-b8bd-d5aa362f8804"
+    ],
+    "sections": [
+      "How are sales taxes, international duties, and currencies handled?"
+    ],
+    "primary_chunk_id": "1deb29bb-edc0-4636-b8bd-d5aa362f8804",
+    "primary_section": "How are sales taxes, international duties, and currencies handled?"
+  },
+  {
+    "seed_id": "s-payments-006",
+    "doc": "faq-payments-terms-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "1d8aa03d-9c04-41a9-a9bc-9f318a34b6d9"
+    ],
+    "sections": [
+      "How will charges appear on my billing statement?"
+    ],
+    "primary_chunk_id": "1d8aa03d-9c04-41a9-a9bc-9f318a34b6d9",
+    "primary_section": "How will charges appear on my billing statement?"
+  },
+  {
+    "seed_id": "s-payments-007",
+    "doc": "faq-payments-terms-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "fdecc37e-11db-45ab-b8cb-809910f005b1"
+    ],
+    "sections": [
+      "Why did my payment fail and how can I resolve it?"
+    ],
+    "primary_chunk_id": "fdecc37e-11db-45ab-b8cb-809910f005b1",
+    "primary_section": "Why did my payment fail and how can I resolve it?"
+  },
+  {
+    "seed_id": "s-payments-008",
+    "doc": "faq-payments-terms-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "fdecc37e-11db-45ab-b8cb-809910f005b1"
+    ],
+    "sections": [
+      "Why did my payment fail and how can I resolve it?"
+    ],
+    "primary_chunk_id": "fdecc37e-11db-45ab-b8cb-809910f005b1",
+    "primary_section": "Why did my payment fail and how can I resolve it?"
+  },
+  {
+    "seed_id": "s-data-deletion-007",
+    "doc": "faq-account-data-deletion-001",
+    "status": "resolved",
+    "n_matches": 2,
+    "chunks": [
+      "e69d00ce-be5e-4a85-b941-49b3d40274ba",
+      "612bb6c5-6762-46a8-b953-3b135c8ac121"
+    ],
+    "sections": [
+      "Can I recover a deleted account or create a new one?",
+      "What personal information is permanently deleted?"
+    ],
+    "primary_chunk_id": "e69d00ce-be5e-4a85-b941-49b3d40274ba",
+    "primary_section": "Can I recover a deleted account or create a new one?"
+  },
+  {
+    "seed_id": "s-refunds-001",
+    "doc": "pol-payments-refunds-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "2bf2a706-bcd4-458a-9d5d-0eac97c21b79"
+    ],
+    "sections": [
+      "Refund Timing"
+    ],
+    "primary_chunk_id": "2bf2a706-bcd4-458a-9d5d-0eac97c21b79",
+    "primary_section": "Refund Timing"
+  },
+  {
+    "seed_id": "s-refunds-002",
+    "doc": "pol-payments-refunds-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "2bf2a706-bcd4-458a-9d5d-0eac97c21b79"
+    ],
+    "sections": [
+      "Refund Timing"
+    ],
+    "primary_chunk_id": "2bf2a706-bcd4-458a-9d5d-0eac97c21b79",
+    "primary_section": "Refund Timing"
+  },
+  {
+    "seed_id": "s-refunds-003",
+    "doc": "pol-payments-refunds-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "86906f27-1bc4-4d4a-a773-9280d130b5a2"
+    ],
+    "sections": [
+      "Partial Refunds"
+    ],
+    "primary_chunk_id": "86906f27-1bc4-4d4a-a773-9280d130b5a2",
+    "primary_section": "Partial Refunds"
+  },
+  {
+    "seed_id": "s-refunds-004",
+    "doc": "pol-payments-refunds-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "286dba61-be34-4baa-a36f-fe41ba2fb97b"
+    ],
+    "sections": [
+      "Refund Methods"
+    ],
+    "primary_chunk_id": "286dba61-be34-4baa-a36f-fe41ba2fb97b",
+    "primary_section": "Refund Methods"
+  },
+  {
+    "seed_id": "s-refunds-005",
+    "doc": "pol-payments-refunds-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "286dba61-be34-4baa-a36f-fe41ba2fb97b"
+    ],
+    "sections": [
+      "Refund Methods"
+    ],
+    "primary_chunk_id": "286dba61-be34-4baa-a36f-fe41ba2fb97b",
+    "primary_section": "Refund Methods"
+  },
+  {
+    "seed_id": "s-refunds-006",
+    "doc": "pol-payments-refunds-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "4279aee9-d0db-4f43-844d-9b632b7f6bed"
+    ],
+    "sections": [
+      "Shipping Fee Refunds"
+    ],
+    "primary_chunk_id": "4279aee9-d0db-4f43-844d-9b632b7f6bed",
+    "primary_section": "Shipping Fee Refunds"
+  },
+  {
+    "seed_id": "s-refunds-007",
+    "doc": "pol-payments-refunds-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "286dba61-be34-4baa-a36f-fe41ba2fb97b"
+    ],
+    "sections": [
+      "Refund Methods"
+    ],
+    "primary_chunk_id": "286dba61-be34-4baa-a36f-fe41ba2fb97b",
+    "primary_section": "Refund Methods"
+  },
+  {
+    "seed_id": "s-refunds-008",
+    "doc": "pol-payments-refunds-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "86906f27-1bc4-4d4a-a773-9280d130b5a2"
+    ],
+    "sections": [
+      "Partial Refunds"
+    ],
+    "primary_chunk_id": "86906f27-1bc4-4d4a-a773-9280d130b5a2",
+    "primary_section": "Partial Refunds"
+  },
+  {
+    "seed_id": "s-account-security-001",
+    "doc": "faq-account-security-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "940abee1-414e-4ad7-9fc8-62e13a32516f"
+    ],
+    "sections": [
+      "What are the password complexity and rotation requirements?"
+    ],
+    "primary_chunk_id": "940abee1-414e-4ad7-9fc8-62e13a32516f",
+    "primary_section": "What are the password complexity and rotation requirements?"
+  },
+  {
+    "seed_id": "s-account-security-002",
+    "doc": "faq-account-security-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "940abee1-414e-4ad7-9fc8-62e13a32516f"
+    ],
+    "sections": [
+      "What are the password complexity and rotation requirements?"
+    ],
+    "primary_chunk_id": "940abee1-414e-4ad7-9fc8-62e13a32516f",
+    "primary_section": "What are the password complexity and rotation requirements?"
+  },
+  {
+    "seed_id": "s-account-security-003",
+    "doc": "faq-account-security-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "0b296aa3-e7bb-4a10-9323-3e0b6703e9c8"
+    ],
+    "sections": [
+      "How does two-factor authentication protect my profile?"
+    ],
+    "primary_chunk_id": "0b296aa3-e7bb-4a10-9323-3e0b6703e9c8",
+    "primary_section": "How does two-factor authentication protect my profile?"
+  },
+  {
+    "seed_id": "s-account-security-004",
+    "doc": "faq-account-security-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "0b296aa3-e7bb-4a10-9323-3e0b6703e9c8"
+    ],
+    "sections": [
+      "How does two-factor authentication protect my profile?"
+    ],
+    "primary_chunk_id": "0b296aa3-e7bb-4a10-9323-3e0b6703e9c8",
+    "primary_section": "How does two-factor authentication protect my profile?"
+  },
+  {
+    "seed_id": "s-account-security-005",
+    "doc": "faq-account-security-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "ca4fcf9e-ed66-4ac9-a169-0b6b7bbf7b8f"
+    ],
+    "sections": [
+      "How do one-time verification codes (OTP) work?"
+    ],
+    "primary_chunk_id": "ca4fcf9e-ed66-4ac9-a169-0b6b7bbf7b8f",
+    "primary_section": "How do one-time verification codes (OTP) work?"
+  },
+  {
+    "seed_id": "s-account-security-006",
+    "doc": "faq-account-security-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "7959dd7a-8b4e-4836-bab4-8b8c1b7dedf6"
+    ],
+    "sections": [
+      "What causes account lockouts and how are they unlocked?"
+    ],
+    "primary_chunk_id": "7959dd7a-8b4e-4836-bab4-8b8c1b7dedf6",
+    "primary_section": "What causes account lockouts and how are they unlocked?"
+  },
+  {
+    "seed_id": "s-account-security-007",
+    "doc": "faq-account-security-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "03450274-9209-4b2a-b5e9-7d0f45546d9c"
+    ],
+    "sections": [
+      "How does Northvale detect and handle suspicious activity?"
+    ],
+    "primary_chunk_id": "03450274-9209-4b2a-b5e9-7d0f45546d9c",
+    "primary_section": "How does Northvale detect and handle suspicious activity?"
+  },
+  {
+    "seed_id": "s-account-security-008",
+    "doc": "faq-account-security-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "7959dd7a-8b4e-4836-bab4-8b8c1b7dedf6"
+    ],
+    "sections": [
+      "What causes account lockouts and how are they unlocked?"
+    ],
+    "primary_chunk_id": "7959dd7a-8b4e-4836-bab4-8b8c1b7dedf6",
+    "primary_section": "What causes account lockouts and how are they unlocked?"
+  },
+  {
+    "seed_id": "s-cancellations-001",
+    "doc": "pol-orders-cancellation-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "90f9a4cd-867f-4a6c-9c90-9e584076dca0"
+    ],
+    "sections": [
+      "Cancellation Window"
+    ],
+    "primary_chunk_id": "90f9a4cd-867f-4a6c-9c90-9e584076dca0",
+    "primary_section": "Cancellation Window"
+  },
+  {
+    "seed_id": "s-cancellations-002",
+    "doc": "pol-orders-cancellation-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "90f9a4cd-867f-4a6c-9c90-9e584076dca0"
+    ],
+    "sections": [
+      "Cancellation Window"
+    ],
+    "primary_chunk_id": "90f9a4cd-867f-4a6c-9c90-9e584076dca0",
+    "primary_section": "Cancellation Window"
+  },
+  {
+    "seed_id": "s-cancellations-003",
+    "doc": "pol-orders-cancellation-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "671d0e81-8969-463d-97d7-39df8ac184aa"
+    ],
+    "sections": [
+      "Pre-Order Cancellation"
+    ],
+    "primary_chunk_id": "671d0e81-8969-463d-97d7-39df8ac184aa",
+    "primary_section": "Pre-Order Cancellation"
+  },
+  {
+    "seed_id": "s-cancellations-004",
+    "doc": "pol-orders-cancellation-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "eaf4a4f6-2903-44c1-bee9-f41d008e096d"
+    ],
+    "sections": [
+      "Bulk Order Cancellation"
+    ],
+    "primary_chunk_id": "eaf4a4f6-2903-44c1-bee9-f41d008e096d",
+    "primary_section": "Bulk Order Cancellation"
+  },
+  {
+    "seed_id": "s-cancellations-005",
+    "doc": "pol-orders-cancellation-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "189ecddb-6cff-4a24-88d4-e114b79c7464"
+    ],
+    "sections": [
+      "Cancellation After Shipping"
+    ],
+    "primary_chunk_id": "189ecddb-6cff-4a24-88d4-e114b79c7464",
+    "primary_section": "Cancellation After Shipping"
+  },
+  {
+    "seed_id": "s-cancellations-006",
+    "doc": "pol-orders-cancellation-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "2c4b2f2b-0a47-4710-a3cb-f67a60cd54b0"
+    ],
+    "sections": [
+      "Refund on Cancellation"
+    ],
+    "primary_chunk_id": "2c4b2f2b-0a47-4710-a3cb-f67a60cd54b0",
+    "primary_section": "Refund on Cancellation"
+  },
+  {
+    "seed_id": "s-cancellations-007",
+    "doc": "pol-orders-cancellation-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "eaf4a4f6-2903-44c1-bee9-f41d008e096d"
+    ],
+    "sections": [
+      "Bulk Order Cancellation"
+    ],
+    "primary_chunk_id": "eaf4a4f6-2903-44c1-bee9-f41d008e096d",
+    "primary_section": "Bulk Order Cancellation"
+  },
+  {
+    "seed_id": "s-cancellations-008",
+    "doc": "pol-orders-cancellation-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "eaf4a4f6-2903-44c1-bee9-f41d008e096d"
+    ],
+    "sections": [
+      "Bulk Order Cancellation"
+    ],
+    "primary_chunk_id": "eaf4a4f6-2903-44c1-bee9-f41d008e096d",
+    "primary_section": "Bulk Order Cancellation"
+  },
+  {
+    "seed_id": "s-exchanges-001",
+    "doc": "faq-orders-exchanges-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "106e03b3-df5d-4455-824c-713f5aca1dbd"
+    ],
+    "sections": [
+      "What items are eligible for an exchange?"
+    ],
+    "primary_chunk_id": "106e03b3-df5d-4455-824c-713f5aca1dbd",
+    "primary_section": "What items are eligible for an exchange?"
+  },
+  {
+    "seed_id": "s-exchanges-002",
+    "doc": "faq-orders-exchanges-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "0d5edf2a-bb5c-4efd-9940-641ffe78be4b"
+    ],
+    "sections": [
+      "How do size and color exchanges work with inventory?"
+    ],
+    "primary_chunk_id": "0d5edf2a-bb5c-4efd-9940-641ffe78be4b",
+    "primary_section": "How do size and color exchanges work with inventory?"
+  },
+  {
+    "seed_id": "s-exchanges-003",
+    "doc": "faq-orders-exchanges-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "0d5edf2a-bb5c-4efd-9940-641ffe78be4b"
+    ],
+    "sections": [
+      "How do size and color exchanges work with inventory?"
+    ],
+    "primary_chunk_id": "0d5edf2a-bb5c-4efd-9940-641ffe78be4b",
+    "primary_section": "How do size and color exchanges work with inventory?"
+  },
+  {
+    "seed_id": "s-exchanges-004",
+    "doc": "faq-orders-exchanges-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "64aafead-a454-4aab-a048-ac8e8a461c03"
+    ],
+    "sections": [
+      "What is the step-by-step exchange process?"
+    ],
+    "primary_chunk_id": "64aafead-a454-4aab-a048-ac8e8a461c03",
+    "primary_section": "What is the step-by-step exchange process?"
+  },
+  {
+    "seed_id": "s-exchanges-005",
+    "doc": "faq-orders-exchanges-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "64aafead-a454-4aab-a048-ac8e8a461c03"
+    ],
+    "sections": [
+      "What is the step-by-step exchange process?"
+    ],
+    "primary_chunk_id": "64aafead-a454-4aab-a048-ac8e8a461c03",
+    "primary_section": "What is the step-by-step exchange process?"
+  },
+  {
+    "seed_id": "s-exchanges-006",
+    "doc": "faq-orders-exchanges-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "9fbc24e7-6805-44a2-8e57-056b44a4b4c5"
+    ],
+    "sections": [
+      "Who pays for exchange shipping and surcharges?"
+    ],
+    "primary_chunk_id": "9fbc24e7-6805-44a2-8e57-056b44a4b4c5",
+    "primary_section": "Who pays for exchange shipping and surcharges?"
+  },
+  {
+    "seed_id": "s-exchanges-007",
+    "doc": "faq-orders-exchanges-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "4c3e65a3-9dd3-4320-972e-b8c7bb606a43"
+    ],
+    "sections": [
+      "How are pricing differences and discounts calculated?"
+    ],
+    "primary_chunk_id": "4c3e65a3-9dd3-4320-972e-b8c7bb606a43",
+    "primary_section": "How are pricing differences and discounts calculated?"
+  },
+  {
+    "seed_id": "s-exchanges-008",
+    "doc": "faq-orders-exchanges-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "4c3e65a3-9dd3-4320-972e-b8c7bb606a43"
+    ],
+    "sections": [
+      "How are pricing differences and discounts calculated?"
+    ],
+    "primary_chunk_id": "4c3e65a3-9dd3-4320-972e-b8c7bb606a43",
+    "primary_section": "How are pricing differences and discounts calculated?"
+  },
+  {
+    "seed_id": "s-disputes-001",
+    "doc": "pol-payments-disputes-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "91aeb932-12bf-467c-b866-859e51719d3a"
+    ],
+    "sections": [
+      "Chargeback Handling"
+    ],
+    "primary_chunk_id": "91aeb932-12bf-467c-b866-859e51719d3a",
+    "primary_section": "Chargeback Handling"
+  },
+  {
+    "seed_id": "s-disputes-002",
+    "doc": "pol-payments-disputes-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "3a5617b4-a571-4dd6-a8ae-627d823dea9e"
+    ],
+    "sections": [
+      "When to File a Dispute"
+    ],
+    "primary_chunk_id": "3a5617b4-a571-4dd6-a8ae-627d823dea9e",
+    "primary_section": "When to File a Dispute"
+  },
+  {
+    "seed_id": "s-disputes-003",
+    "doc": "pol-payments-disputes-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "afa790a8-63df-4d4e-ac65-8f4a67b01c9b"
+    ],
+    "sections": [
+      "Internal Review Process"
+    ],
+    "primary_chunk_id": "afa790a8-63df-4d4e-ac65-8f4a67b01c9b",
+    "primary_section": "Internal Review Process"
+  },
+  {
+    "seed_id": "s-disputes-004",
+    "doc": "pol-payments-disputes-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "a4d894b9-7844-4576-a9ed-4c46b2951919"
+    ],
+    "sections": [
+      "Documentation Requirements"
+    ],
+    "primary_chunk_id": "a4d894b9-7844-4576-a9ed-4c46b2951919",
+    "primary_section": "Documentation Requirements"
+  },
+  {
+    "seed_id": "s-disputes-005",
+    "doc": "pol-payments-disputes-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "416c520c-f8c0-42ad-8dd0-40406de3b0d8"
+    ],
+    "sections": [
+      "Timeline and Resolution"
+    ],
+    "primary_chunk_id": "416c520c-f8c0-42ad-8dd0-40406de3b0d8",
+    "primary_section": "Timeline and Resolution"
+  },
+  {
+    "seed_id": "s-disputes-006",
+    "doc": "pol-payments-disputes-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "a4d894b9-7844-4576-a9ed-4c46b2951919"
+    ],
+    "sections": [
+      "Documentation Requirements"
+    ],
+    "primary_chunk_id": "a4d894b9-7844-4576-a9ed-4c46b2951919",
+    "primary_section": "Documentation Requirements"
+  },
+  {
+    "seed_id": "s-disputes-007",
+    "doc": "pol-payments-disputes-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "416c520c-f8c0-42ad-8dd0-40406de3b0d8"
+    ],
+    "sections": [
+      "Timeline and Resolution"
+    ],
+    "primary_chunk_id": "416c520c-f8c0-42ad-8dd0-40406de3b0d8",
+    "primary_section": "Timeline and Resolution"
+  },
+  {
+    "seed_id": "s-disputes-008",
+    "doc": "pol-payments-disputes-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "3a5617b4-a571-4dd6-a8ae-627d823dea9e"
+    ],
+    "sections": [
+      "When to File a Dispute"
+    ],
+    "primary_chunk_id": "3a5617b4-a571-4dd6-a8ae-627d823dea9e",
+    "primary_section": "When to File a Dispute"
+  },
+  {
+    "seed_id": "s-methods-001",
+    "doc": "faq-payments-methods-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "fb4a68d1-59e2-4247-b3dc-c57bdaa57232"
+    ],
+    "sections": [
+      "What credit and debit cards can I use at Northvale?"
+    ],
+    "primary_chunk_id": "fb4a68d1-59e2-4247-b3dc-c57bdaa57232",
+    "primary_section": "What credit and debit cards can I use at Northvale?"
+  },
+  {
+    "seed_id": "s-methods-002",
+    "doc": "faq-payments-methods-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "7f70036e-e17d-4e44-b5d3-076357b0ca0f"
+    ],
+    "sections": [
+      "Which digital wallets are supported for purchases?"
+    ],
+    "primary_chunk_id": "7f70036e-e17d-4e44-b5d3-076357b0ca0f",
+    "primary_section": "Which digital wallets are supported for purchases?"
+  },
+  {
+    "seed_id": "s-methods-003",
+    "doc": "faq-payments-methods-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "7f70036e-e17d-4e44-b5d3-076357b0ca0f"
+    ],
+    "sections": [
+      "Which digital wallets are supported for purchases?"
+    ],
+    "primary_chunk_id": "7f70036e-e17d-4e44-b5d3-076357b0ca0f",
+    "primary_section": "Which digital wallets are supported for purchases?"
+  },
+  {
+    "seed_id": "s-methods-004",
+    "doc": "faq-payments-methods-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "868f773c-fddf-42d5-9b0c-f66b855eff43"
+    ],
+    "sections": [
+      "How do Buy Now Pay Later installments work with Klarna?"
+    ],
+    "primary_chunk_id": "868f773c-fddf-42d5-9b0c-f66b855eff43",
+    "primary_section": "How do Buy Now Pay Later installments work with Klarna?"
+  },
+  {
+    "seed_id": "s-methods-005",
+    "doc": "faq-payments-methods-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "f80d3895-e021-4ead-8c74-b2785a2ddf28"
+    ],
+    "sections": [
+      "Can I pay directly using a bank transfer or wire?"
+    ],
+    "primary_chunk_id": "f80d3895-e021-4ead-8c74-b2785a2ddf28",
+    "primary_section": "Can I pay directly using a bank transfer or wire?"
+  },
+  {
+    "seed_id": "s-methods-006",
+    "doc": "faq-payments-methods-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "ee8f11e8-7e96-4995-aa22-9130d52520ee"
+    ],
+    "sections": [
+      "How can I update or change my payment method?"
+    ],
+    "primary_chunk_id": "ee8f11e8-7e96-4995-aa22-9130d52520ee",
+    "primary_section": "How can I update or change my payment method?"
+  },
+  {
+    "seed_id": "s-methods-007",
+    "doc": "faq-payments-methods-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "ee8f11e8-7e96-4995-aa22-9130d52520ee"
+    ],
+    "sections": [
+      "How can I update or change my payment method?"
+    ],
+    "primary_chunk_id": "ee8f11e8-7e96-4995-aa22-9130d52520ee",
+    "primary_section": "How can I update or change my payment method?"
+  },
+  {
+    "seed_id": "s-methods-008",
+    "doc": "faq-payments-methods-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "868f773c-fddf-42d5-9b0c-f66b855eff43"
+    ],
+    "sections": [
+      "How do Buy Now Pay Later installments work with Klarna?"
+    ],
+    "primary_chunk_id": "868f773c-fddf-42d5-9b0c-f66b855eff43",
+    "primary_section": "How do Buy Now Pay Later installments work with Klarna?"
+  },
+  {
+    "seed_id": "s-privacy-001",
+    "doc": "pol-account-privacy-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "4d18b217-8468-44f1-b637-c30e3ba5d07b"
+    ],
+    "sections": [
+      "Data We Collect"
+    ],
+    "primary_chunk_id": "4d18b217-8468-44f1-b637-c30e3ba5d07b",
+    "primary_section": "Data We Collect"
+  },
+  {
+    "seed_id": "s-privacy-002",
+    "doc": "pol-account-privacy-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "6c1bd031-4b93-42c1-97f7-9c093b1d56c7"
+    ],
+    "sections": [
+      "Data Sharing"
+    ],
+    "primary_chunk_id": "6c1bd031-4b93-42c1-97f7-9c093b1d56c7",
+    "primary_section": "Data Sharing"
+  },
+  {
+    "seed_id": "s-privacy-003",
+    "doc": "pol-account-privacy-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "9cb2f803-0205-4e20-904f-88d192cb24d9"
+    ],
+    "sections": [
+      "Data Retention"
+    ],
+    "primary_chunk_id": "9cb2f803-0205-4e20-904f-88d192cb24d9",
+    "primary_section": "Data Retention"
+  },
+  {
+    "seed_id": "s-privacy-004",
+    "doc": "pol-account-privacy-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "9cb2f803-0205-4e20-904f-88d192cb24d9"
+    ],
+    "sections": [
+      "Data Retention"
+    ],
+    "primary_chunk_id": "9cb2f803-0205-4e20-904f-88d192cb24d9",
+    "primary_section": "Data Retention"
+  },
+  {
+    "seed_id": "s-privacy-005",
+    "doc": "pol-account-privacy-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "0e17d8a1-7d5d-4ed6-98d6-e41ae32b89b8"
+    ],
+    "sections": [
+      "Your Privacy Rights"
+    ],
+    "primary_chunk_id": "0e17d8a1-7d5d-4ed6-98d6-e41ae32b89b8",
+    "primary_section": "Your Privacy Rights"
+  },
+  {
+    "seed_id": "s-privacy-006",
+    "doc": "pol-account-privacy-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "0e17d8a1-7d5d-4ed6-98d6-e41ae32b89b8"
+    ],
+    "sections": [
+      "Your Privacy Rights"
+    ],
+    "primary_chunk_id": "0e17d8a1-7d5d-4ed6-98d6-e41ae32b89b8",
+    "primary_section": "Your Privacy Rights"
+  },
+  {
+    "seed_id": "s-privacy-007",
+    "doc": "pol-account-privacy-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "27542bf2-ea6f-43aa-b02f-c85b9283222b"
+    ],
+    "sections": [
+      "Children's Privacy"
+    ],
+    "primary_chunk_id": "27542bf2-ea6f-43aa-b02f-c85b9283222b",
+    "primary_section": "Children's Privacy"
+  },
+  {
+    "seed_id": "s-privacy-008",
+    "doc": "pol-account-privacy-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "6c1bd031-4b93-42c1-97f7-9c093b1d56c7"
+    ],
+    "sections": [
+      "Data Sharing"
+    ],
+    "primary_chunk_id": "6c1bd031-4b93-42c1-97f7-9c093b1d56c7",
+    "primary_section": "Data Sharing"
+  },
+  {
+    "seed_id": "s-data-deletion-001",
+    "doc": "faq-account-data-deletion-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "627e90ad-dbaa-4373-ab37-60033d62fc92"
+    ],
+    "sections": [
+      "How do I request the deletion of my account?"
+    ],
+    "primary_chunk_id": "627e90ad-dbaa-4373-ab37-60033d62fc92",
+    "primary_section": "How do I request the deletion of my account?"
+  },
+  {
+    "seed_id": "s-data-deletion-002",
+    "doc": "faq-account-data-deletion-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "627e90ad-dbaa-4373-ab37-60033d62fc92"
+    ],
+    "sections": [
+      "How do I request the deletion of my account?"
+    ],
+    "primary_chunk_id": "627e90ad-dbaa-4373-ab37-60033d62fc92",
+    "primary_section": "How do I request the deletion of my account?"
+  },
+  {
+    "seed_id": "s-data-deletion-003",
+    "doc": "faq-account-data-deletion-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "612bb6c5-6762-46a8-b953-3b135c8ac121"
+    ],
+    "sections": [
+      "What personal information is permanently deleted?"
+    ],
+    "primary_chunk_id": "612bb6c5-6762-46a8-b953-3b135c8ac121",
+    "primary_section": "What personal information is permanently deleted?"
+  },
+  {
+    "seed_id": "s-data-deletion-004",
+    "doc": "faq-account-data-deletion-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "b5f09fd1-ce6f-467f-b932-a6ca5782ab14"
+    ],
+    "sections": [
+      "What data is retained after account deletion?"
+    ],
+    "primary_chunk_id": "b5f09fd1-ce6f-467f-b932-a6ca5782ab14",
+    "primary_section": "What data is retained after account deletion?"
+  },
+  {
+    "seed_id": "s-data-deletion-005",
+    "doc": "faq-account-data-deletion-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "c489d060-0af6-4945-b695-fcc4dff56f97"
+    ],
+    "sections": [
+      "What is the timeline for data deletion?"
+    ],
+    "primary_chunk_id": "c489d060-0af6-4945-b695-fcc4dff56f97",
+    "primary_section": "What is the timeline for data deletion?"
+  },
+  {
+    "seed_id": "s-data-deletion-006",
+    "doc": "faq-account-data-deletion-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "e69d00ce-be5e-4a85-b941-49b3d40274ba"
+    ],
+    "sections": [
+      "Can I recover a deleted account or create a new one?"
+    ],
+    "primary_chunk_id": "e69d00ce-be5e-4a85-b941-49b3d40274ba",
+    "primary_section": "Can I recover a deleted account or create a new one?"
+  },
+  {
+    "seed_id": "s-data-deletion-008",
+    "doc": "faq-account-data-deletion-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "612bb6c5-6762-46a8-b953-3b135c8ac121"
+    ],
+    "sections": [
+      "What personal information is permanently deleted?"
+    ],
+    "primary_chunk_id": "612bb6c5-6762-46a8-b953-3b135c8ac121",
+    "primary_section": "What personal information is permanently deleted?"
+  },
+  {
+    "seed_id": "s-notifications-001",
+    "doc": "faq-account-notifications-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "53137309-82ce-4b17-a30e-11b62ccc5f4b"
+    ],
+    "sections": [
+      "What notification channels does Northvale use?"
+    ],
+    "primary_chunk_id": "53137309-82ce-4b17-a30e-11b62ccc5f4b",
+    "primary_section": "What notification channels does Northvale use?"
+  },
+  {
+    "seed_id": "s-notifications-002",
+    "doc": "faq-account-notifications-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "53137309-82ce-4b17-a30e-11b62ccc5f4b"
+    ],
+    "sections": [
+      "What notification channels does Northvale use?"
+    ],
+    "primary_chunk_id": "53137309-82ce-4b17-a30e-11b62ccc5f4b",
+    "primary_section": "What notification channels does Northvale use?"
+  },
+  {
+    "seed_id": "s-notifications-003",
+    "doc": "faq-account-notifications-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "01de3d20-2d6c-4e0b-a979-394bea1c6eed"
+    ],
+    "sections": [
+      "What notifications will I receive about my order?"
+    ],
+    "primary_chunk_id": "01de3d20-2d6c-4e0b-a979-394bea1c6eed",
+    "primary_section": "What notifications will I receive about my order?"
+  },
+  {
+    "seed_id": "s-notifications-004",
+    "doc": "faq-account-notifications-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "0c1e5f4e-db07-4773-9fee-65de300c65c4"
+    ],
+    "sections": [
+      "What security alerts are sent to protect my account?"
+    ],
+    "primary_chunk_id": "0c1e5f4e-db07-4773-9fee-65de300c65c4",
+    "primary_section": "What security alerts are sent to protect my account?"
+  },
+  {
+    "seed_id": "s-notifications-005",
+    "doc": "faq-account-notifications-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "19df7150-4976-4567-b00c-3e289a3c153e"
+    ],
+    "sections": [
+      "How do I manage my marketing communication preferences?"
+    ],
+    "primary_chunk_id": "19df7150-4976-4567-b00c-3e289a3c153e",
+    "primary_section": "How do I manage my marketing communication preferences?"
+  },
+  {
+    "seed_id": "s-notifications-006",
+    "doc": "faq-account-notifications-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "8c7fc0ed-e69e-4a22-a2e4-3ef982326f8a"
+    ],
+    "sections": [
+      "How long does unsubscribing take and what are the rules?"
+    ],
+    "primary_chunk_id": "8c7fc0ed-e69e-4a22-a2e4-3ef982326f8a",
+    "primary_section": "How long does unsubscribing take and what are the rules?"
+  },
+  {
+    "seed_id": "s-notifications-007",
+    "doc": "faq-account-notifications-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "19df7150-4976-4567-b00c-3e289a3c153e"
+    ],
+    "sections": [
+      "How do I manage my marketing communication preferences?"
+    ],
+    "primary_chunk_id": "19df7150-4976-4567-b00c-3e289a3c153e",
+    "primary_section": "How do I manage my marketing communication preferences?"
+  },
+  {
+    "seed_id": "s-notifications-008",
+    "doc": "faq-account-notifications-001",
+    "status": "resolved",
+    "n_matches": 1,
+    "chunks": [
+      "8c7fc0ed-e69e-4a22-a2e4-3ef982326f8a"
+    ],
+    "sections": [
+      "How long does unsubscribing take and what are the rules?"
+    ],
+    "primary_chunk_id": "8c7fc0ed-e69e-4a22-a2e4-3ef982326f8a",
+    "primary_section": "How long does unsubscribing take and what are the rules?"
+  }
+]
