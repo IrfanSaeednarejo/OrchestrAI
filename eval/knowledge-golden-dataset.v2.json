@@ -1,10 +1,9 @@
 {
-  "dataset_version": "v2.0.0-pilot",
-  "built_at": "2026-11-22T10:42:34.316Z",
+  "dataset_version": "v2.0.0",
+  "built_at": "2026-11-22T11:44:03.980Z",
   "corpus_chunk_count": 66,
   "seed_count": 96,
-  "pilot_seed_count": 10,
-  "total_query_count": 302,
+  "active_with_gold": 249,
   "queries": [
     {
       "id": "s-returns-001-p1",
@@ -92,8 +91,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-returns-003",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "1f81ecb6-1e75-44b5-aa1f-8d49d8ff8914"
+      ],
+      "status": "active"
     },
     {
       "id": "s-returns-003-p2",
@@ -103,8 +104,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-returns-003",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "1f81ecb6-1e75-44b5-aa1f-8d49d8ff8914"
+      ],
+      "status": "active"
     },
     {
       "id": "s-returns-003-m",
@@ -114,8 +117,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-returns-003",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "1f81ecb6-1e75-44b5-aa1f-8d49d8ff8914"
+      ],
+      "status": "active"
     },
     {
       "id": "s-returns-004-p1",
@@ -125,8 +130,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-returns-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "db883c4f-04c1-479e-be39-0af5045f9dd6"
+      ],
+      "status": "active"
     },
     {
       "id": "s-returns-004-p2",
@@ -136,8 +143,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-returns-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "db883c4f-04c1-479e-be39-0af5045f9dd6"
+      ],
+      "status": "active"
     },
     {
       "id": "s-returns-004-m",
@@ -147,8 +156,10 @@
       "difficulty": "keyword",
       "variant_type": "messy",
       "variant_of": "s-returns-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "db883c4f-04c1-479e-be39-0af5045f9dd6"
+      ],
+      "status": "active"
     },
     {
       "id": "s-returns-005-p1",
@@ -158,8 +169,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-returns-005",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "db883c4f-04c1-479e-be39-0af5045f9dd6"
+      ],
+      "status": "active"
     },
     {
       "id": "s-returns-005-p2",
@@ -169,8 +182,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-returns-005",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "db883c4f-04c1-479e-be39-0af5045f9dd6"
+      ],
+      "status": "active"
     },
     {
       "id": "s-returns-005-m",
@@ -180,8 +195,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-returns-005",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "db883c4f-04c1-479e-be39-0af5045f9dd6"
+      ],
+      "status": "active"
     },
     {
       "id": "s-returns-006-p1",
@@ -191,8 +208,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-returns-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "15d8a63c-74e8-43c7-a23c-077ecc5d087c"
+      ],
+      "status": "active"
     },
     {
       "id": "s-returns-006-p2",
@@ -215,8 +234,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-returns-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "15d8a63c-74e8-43c7-a23c-077ecc5d087c"
+      ],
+      "status": "active"
     },
     {
       "id": "s-returns-007-p1",
@@ -227,8 +248,7 @@
       "variant_type": "paraphrase",
       "variant_of": "s-returns-007",
       "gold_chunk_ids": [
-        "db883c4f-04c1-479e-be39-0af5045f9dd6",
-        "15d8a63c-74e8-43c7-a23c-077ecc5d087c"
+        "db883c4f-04c1-479e-be39-0af5045f9dd6"
       ],
       "status": "active"
     },
@@ -254,8 +274,7 @@
       "variant_type": "messy",
       "variant_of": "s-returns-007",
       "gold_chunk_ids": [
-        "db883c4f-04c1-479e-be39-0af5045f9dd6",
-        "15d8a63c-74e8-43c7-a23c-077ecc5d087c"
+        "db883c4f-04c1-479e-be39-0af5045f9dd6"
       ],
       "status": "active"
     },
@@ -267,8 +286,10 @@
       "difficulty": "hard",
       "variant_type": "paraphrase",
       "variant_of": "s-returns-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "15d8a63c-74e8-43c7-a23c-077ecc5d087c"
+      ],
+      "status": "active"
     },
     {
       "id": "s-returns-008-p2",
@@ -278,8 +299,10 @@
       "difficulty": "hard",
       "variant_type": "paraphrase",
       "variant_of": "s-returns-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "15d8a63c-74e8-43c7-a23c-077ecc5d087c"
+      ],
+      "status": "active"
     },
     {
       "id": "s-returns-008-m",
@@ -289,8 +312,10 @@
       "difficulty": "hard",
       "variant_type": "messy",
       "variant_of": "s-returns-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "15d8a63c-74e8-43c7-a23c-077ecc5d087c"
+      ],
+      "status": "active"
     },
     {
       "id": "s-shipping-001-p1",
@@ -300,8 +325,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-shipping-001",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "f638b0c3-2dc9-4909-87f1-703439071f0e"
+      ],
+      "status": "active"
     },
     {
       "id": "s-shipping-001-p2",
@@ -311,8 +338,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-shipping-001",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "f638b0c3-2dc9-4909-87f1-703439071f0e"
+      ],
+      "status": "active"
     },
     {
       "id": "s-shipping-001-m",
@@ -322,8 +351,10 @@
       "difficulty": "keyword",
       "variant_type": "messy",
       "variant_of": "s-shipping-001",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "f638b0c3-2dc9-4909-87f1-703439071f0e"
+      ],
+      "status": "active"
     },
     {
       "id": "s-shipping-002-p1",
@@ -333,8 +364,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-shipping-002",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "f638b0c3-2dc9-4909-87f1-703439071f0e"
+      ],
+      "status": "active"
     },
     {
       "id": "s-shipping-002-p2",
@@ -344,8 +377,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-shipping-002",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "f638b0c3-2dc9-4909-87f1-703439071f0e"
+      ],
+      "status": "active"
     },
     {
       "id": "s-shipping-002-m",
@@ -355,8 +390,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-shipping-002",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "f638b0c3-2dc9-4909-87f1-703439071f0e"
+      ],
+      "status": "active"
     },
     {
       "id": "s-shipping-003-p1",
@@ -366,8 +403,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-shipping-003",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "2d6e803f-a442-4ff4-a4bd-91c2b517a427"
+      ],
+      "status": "active"
     },
     {
       "id": "s-shipping-003-p2",
@@ -377,8 +416,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-shipping-003",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "2d6e803f-a442-4ff4-a4bd-91c2b517a427"
+      ],
+      "status": "active"
     },
     {
       "id": "s-shipping-003-m",
@@ -388,8 +429,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-shipping-003",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "2d6e803f-a442-4ff4-a4bd-91c2b517a427"
+      ],
+      "status": "active"
     },
     {
       "id": "s-shipping-004-p1",
@@ -399,8 +442,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-shipping-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "419cdab9-eb6d-4e4b-bd76-9b7be4c13db3"
+      ],
+      "status": "active"
     },
     {
       "id": "s-shipping-004-p2",
@@ -410,8 +455,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-shipping-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "419cdab9-eb6d-4e4b-bd76-9b7be4c13db3"
+      ],
+      "status": "active"
     },
     {
       "id": "s-shipping-004-m",
@@ -421,8 +468,10 @@
       "difficulty": "keyword",
       "variant_type": "messy",
       "variant_of": "s-shipping-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "419cdab9-eb6d-4e4b-bd76-9b7be4c13db3"
+      ],
+      "status": "active"
     },
     {
       "id": "s-shipping-005-p1",
@@ -432,8 +481,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-shipping-005",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "419cdab9-eb6d-4e4b-bd76-9b7be4c13db3"
+      ],
+      "status": "active"
     },
     {
       "id": "s-shipping-005-p2",
@@ -443,8 +494,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-shipping-005",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "419cdab9-eb6d-4e4b-bd76-9b7be4c13db3"
+      ],
+      "status": "active"
     },
     {
       "id": "s-shipping-005-m",
@@ -454,8 +507,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-shipping-005",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "419cdab9-eb6d-4e4b-bd76-9b7be4c13db3"
+      ],
+      "status": "active"
     },
     {
       "id": "s-shipping-006-p1",
@@ -465,8 +520,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-shipping-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "4c40816f-8535-4aaa-aa3a-233358118127"
+      ],
+      "status": "active"
     },
     {
       "id": "s-shipping-006-p2",
@@ -476,8 +533,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-shipping-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "4c40816f-8535-4aaa-aa3a-233358118127"
+      ],
+      "status": "active"
     },
     {
       "id": "s-shipping-006-m",
@@ -487,8 +546,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-shipping-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "4c40816f-8535-4aaa-aa3a-233358118127"
+      ],
+      "status": "active"
     },
     {
       "id": "s-shipping-007-p1",
@@ -511,8 +572,10 @@
       "difficulty": "hard",
       "variant_type": "paraphrase",
       "variant_of": "s-shipping-007",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "4c40816f-8535-4aaa-aa3a-233358118127"
+      ],
+      "status": "active"
     },
     {
       "id": "s-shipping-007-m",
@@ -522,8 +585,10 @@
       "difficulty": "hard",
       "variant_type": "messy",
       "variant_of": "s-shipping-007",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "4c40816f-8535-4aaa-aa3a-233358118127"
+      ],
+      "status": "active"
     },
     {
       "id": "s-shipping-008-p1",
@@ -533,8 +598,10 @@
       "difficulty": "hard",
       "variant_type": "paraphrase",
       "variant_of": "s-shipping-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "4c40816f-8535-4aaa-aa3a-233358118127"
+      ],
+      "status": "active"
     },
     {
       "id": "s-shipping-008-p2",
@@ -544,8 +611,10 @@
       "difficulty": "hard",
       "variant_type": "paraphrase",
       "variant_of": "s-shipping-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "4c40816f-8535-4aaa-aa3a-233358118127"
+      ],
+      "status": "active"
     },
     {
       "id": "s-shipping-008-m",
@@ -555,8 +624,10 @@
       "difficulty": "hard",
       "variant_type": "messy",
       "variant_of": "s-shipping-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "4c40816f-8535-4aaa-aa3a-233358118127"
+      ],
+      "status": "active"
     },
     {
       "id": "s-payments-001-p1",
@@ -566,8 +637,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-payments-001",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "27bf998a-001d-4e75-9eee-cc6bd770c252"
+      ],
+      "status": "active"
     },
     {
       "id": "s-payments-001-p2",
@@ -577,8 +650,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-payments-001",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "27bf998a-001d-4e75-9eee-cc6bd770c252"
+      ],
+      "status": "active"
     },
     {
       "id": "s-payments-001-m",
@@ -588,8 +663,10 @@
       "difficulty": "keyword",
       "variant_type": "messy",
       "variant_of": "s-payments-001",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "27bf998a-001d-4e75-9eee-cc6bd770c252"
+      ],
+      "status": "active"
     },
     {
       "id": "s-payments-002-p1",
@@ -599,8 +676,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-payments-002",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "1d8aa03d-9c04-41a9-a9bc-9f318a34b6d9"
+      ],
+      "status": "active"
     },
     {
       "id": "s-payments-002-p2",
@@ -610,8 +689,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-payments-002",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "1d8aa03d-9c04-41a9-a9bc-9f318a34b6d9"
+      ],
+      "status": "active"
     },
     {
       "id": "s-payments-002-m",
@@ -621,8 +702,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-payments-002",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "1d8aa03d-9c04-41a9-a9bc-9f318a34b6d9"
+      ],
+      "status": "active"
     },
     {
       "id": "s-payments-003-p1",
@@ -671,8 +754,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-payments-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "e6143777-f9b4-46e5-963b-b1a691b2b299"
+      ],
+      "status": "active"
     },
     {
       "id": "s-payments-004-p2",
@@ -682,8 +767,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-payments-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "e6143777-f9b4-46e5-963b-b1a691b2b299"
+      ],
+      "status": "active"
     },
     {
       "id": "s-payments-004-m",
@@ -693,8 +780,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-payments-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "e6143777-f9b4-46e5-963b-b1a691b2b299"
+      ],
+      "status": "active"
     },
     {
       "id": "s-payments-005-p1",
@@ -743,8 +832,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-payments-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "1d8aa03d-9c04-41a9-a9bc-9f318a34b6d9"
+      ],
+      "status": "active"
     },
     {
       "id": "s-payments-006-p2",
@@ -754,8 +845,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-payments-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "1d8aa03d-9c04-41a9-a9bc-9f318a34b6d9"
+      ],
+      "status": "active"
     },
     {
       "id": "s-payments-006-m",
@@ -765,8 +858,10 @@
       "difficulty": "keyword",
       "variant_type": "messy",
       "variant_of": "s-payments-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "1d8aa03d-9c04-41a9-a9bc-9f318a34b6d9"
+      ],
+      "status": "active"
     },
     {
       "id": "s-payments-007-p1",
@@ -776,8 +871,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-payments-007",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "status": "excluded",
+      "exclusion_tier": 1,
+      "exclusion_reason": "mislabel_subscription_retry_resolved_to_failed_payment_section",
+      "gold_chunk_ids": []
     },
     {
       "id": "s-payments-007-p2",
@@ -787,8 +884,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-payments-007",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "status": "excluded",
+      "exclusion_tier": 1,
+      "exclusion_reason": "mislabel_subscription_retry_resolved_to_failed_payment_section",
+      "gold_chunk_ids": []
     },
     {
       "id": "s-payments-007-m",
@@ -798,8 +897,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-payments-007",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "status": "excluded",
+      "exclusion_tier": 1,
+      "exclusion_reason": "mislabel_subscription_retry_resolved_to_failed_payment_section",
+      "gold_chunk_ids": []
     },
     {
       "id": "s-payments-008-p1",
@@ -809,8 +910,10 @@
       "difficulty": "hard",
       "variant_type": "paraphrase",
       "variant_of": "s-payments-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "fdecc37e-11db-45ab-b8cb-809910f005b1"
+      ],
+      "status": "active"
     },
     {
       "id": "s-payments-008-p2",
@@ -820,8 +923,10 @@
       "difficulty": "hard",
       "variant_type": "paraphrase",
       "variant_of": "s-payments-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "fdecc37e-11db-45ab-b8cb-809910f005b1"
+      ],
+      "status": "active"
     },
     {
       "id": "s-payments-008-m",
@@ -831,8 +936,10 @@
       "difficulty": "hard",
       "variant_type": "messy",
       "variant_of": "s-payments-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "fdecc37e-11db-45ab-b8cb-809910f005b1"
+      ],
+      "status": "active"
     },
     {
       "id": "s-refunds-001-p1",
@@ -842,8 +949,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-refunds-001",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "2bf2a706-bcd4-458a-9d5d-0eac97c21b79"
+      ],
+      "status": "active"
     },
     {
       "id": "s-refunds-001-p2",
@@ -853,8 +962,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-refunds-001",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "2bf2a706-bcd4-458a-9d5d-0eac97c21b79"
+      ],
+      "status": "active"
     },
     {
       "id": "s-refunds-001-m",
@@ -864,8 +975,10 @@
       "difficulty": "keyword",
       "variant_type": "messy",
       "variant_of": "s-refunds-001",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "2bf2a706-bcd4-458a-9d5d-0eac97c21b79"
+      ],
+      "status": "active"
     },
     {
       "id": "s-refunds-002-p1",
@@ -875,8 +988,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-refunds-002",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "2bf2a706-bcd4-458a-9d5d-0eac97c21b79"
+      ],
+      "status": "active"
     },
     {
       "id": "s-refunds-002-p2",
@@ -886,8 +1001,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-refunds-002",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "2bf2a706-bcd4-458a-9d5d-0eac97c21b79"
+      ],
+      "status": "active"
     },
     {
       "id": "s-refunds-002-m",
@@ -897,8 +1014,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-refunds-002",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "2bf2a706-bcd4-458a-9d5d-0eac97c21b79"
+      ],
+      "status": "active"
     },
     {
       "id": "s-refunds-003-p1",
@@ -947,8 +1066,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-refunds-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "286dba61-be34-4baa-a36f-fe41ba2fb97b"
+      ],
+      "status": "active"
     },
     {
       "id": "s-refunds-004-p2",
@@ -958,8 +1079,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-refunds-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "286dba61-be34-4baa-a36f-fe41ba2fb97b"
+      ],
+      "status": "active"
     },
     {
       "id": "s-refunds-004-m",
@@ -969,8 +1092,10 @@
       "difficulty": "keyword",
       "variant_type": "messy",
       "variant_of": "s-refunds-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "286dba61-be34-4baa-a36f-fe41ba2fb97b"
+      ],
+      "status": "active"
     },
     {
       "id": "s-refunds-005-p1",
@@ -980,8 +1105,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-refunds-005",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "286dba61-be34-4baa-a36f-fe41ba2fb97b"
+      ],
+      "status": "active"
     },
     {
       "id": "s-refunds-005-p2",
@@ -1004,8 +1131,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-refunds-005",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "286dba61-be34-4baa-a36f-fe41ba2fb97b"
+      ],
+      "status": "active"
     },
     {
       "id": "s-refunds-006-p1",
@@ -1015,8 +1144,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-refunds-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "4279aee9-d0db-4f43-844d-9b632b7f6bed"
+      ],
+      "status": "active"
     },
     {
       "id": "s-refunds-006-p2",
@@ -1026,8 +1157,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-refunds-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "4279aee9-d0db-4f43-844d-9b632b7f6bed"
+      ],
+      "status": "active"
     },
     {
       "id": "s-refunds-006-m",
@@ -1037,8 +1170,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-refunds-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "4279aee9-d0db-4f43-844d-9b632b7f6bed"
+      ],
+      "status": "active"
     },
     {
       "id": "s-refunds-007-p1",
@@ -1048,8 +1183,10 @@
       "difficulty": "hard",
       "variant_type": "paraphrase",
       "variant_of": "s-refunds-007",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "286dba61-be34-4baa-a36f-fe41ba2fb97b"
+      ],
+      "status": "active"
     },
     {
       "id": "s-refunds-007-p2",
@@ -1059,8 +1196,10 @@
       "difficulty": "hard",
       "variant_type": "paraphrase",
       "variant_of": "s-refunds-007",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "286dba61-be34-4baa-a36f-fe41ba2fb97b"
+      ],
+      "status": "active"
     },
     {
       "id": "s-refunds-007-m",
@@ -1070,8 +1209,10 @@
       "difficulty": "hard",
       "variant_type": "messy",
       "variant_of": "s-refunds-007",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "286dba61-be34-4baa-a36f-fe41ba2fb97b"
+      ],
+      "status": "active"
     },
     {
       "id": "s-refunds-008-p1",
@@ -1081,8 +1222,10 @@
       "difficulty": "hard",
       "variant_type": "paraphrase",
       "variant_of": "s-refunds-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "86906f27-1bc4-4d4a-a773-9280d130b5a2"
+      ],
+      "status": "active"
     },
     {
       "id": "s-refunds-008-p2",
@@ -1092,8 +1235,10 @@
       "difficulty": "hard",
       "variant_type": "paraphrase",
       "variant_of": "s-refunds-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "86906f27-1bc4-4d4a-a773-9280d130b5a2"
+      ],
+      "status": "active"
     },
     {
       "id": "s-refunds-008-m",
@@ -1103,8 +1248,10 @@
       "difficulty": "hard",
       "variant_type": "messy",
       "variant_of": "s-refunds-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "86906f27-1bc4-4d4a-a773-9280d130b5a2"
+      ],
+      "status": "active"
     },
     {
       "id": "s-account-security-001-p1",
@@ -1114,8 +1261,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-account-security-001",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "940abee1-414e-4ad7-9fc8-62e13a32516f"
+      ],
+      "status": "active"
     },
     {
       "id": "s-account-security-001-p2",
@@ -1125,8 +1274,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-account-security-001",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "940abee1-414e-4ad7-9fc8-62e13a32516f"
+      ],
+      "status": "active"
     },
     {
       "id": "s-account-security-001-m",
@@ -1136,8 +1287,10 @@
       "difficulty": "keyword",
       "variant_type": "messy",
       "variant_of": "s-account-security-001",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "940abee1-414e-4ad7-9fc8-62e13a32516f"
+      ],
+      "status": "active"
     },
     {
       "id": "s-account-security-002-p1",
@@ -1186,8 +1339,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-account-security-003",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "0b296aa3-e7bb-4a10-9323-3e0b6703e9c8"
+      ],
+      "status": "active"
     },
     {
       "id": "s-account-security-003-p2",
@@ -1197,8 +1352,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-account-security-003",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "0b296aa3-e7bb-4a10-9323-3e0b6703e9c8"
+      ],
+      "status": "active"
     },
     {
       "id": "s-account-security-003-m",
@@ -1208,8 +1365,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-account-security-003",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "0b296aa3-e7bb-4a10-9323-3e0b6703e9c8"
+      ],
+      "status": "active"
     },
     {
       "id": "s-account-security-004-p1",
@@ -1219,8 +1378,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-account-security-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "0b296aa3-e7bb-4a10-9323-3e0b6703e9c8"
+      ],
+      "status": "active"
     },
     {
       "id": "s-account-security-004-p2",
@@ -1230,8 +1391,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-account-security-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "0b296aa3-e7bb-4a10-9323-3e0b6703e9c8"
+      ],
+      "status": "active"
     },
     {
       "id": "s-account-security-004-m",
@@ -1241,8 +1404,10 @@
       "difficulty": "keyword",
       "variant_type": "messy",
       "variant_of": "s-account-security-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "0b296aa3-e7bb-4a10-9323-3e0b6703e9c8"
+      ],
+      "status": "active"
     },
     {
       "id": "s-account-security-005-p1",
@@ -1278,8 +1443,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-account-security-005",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "ca4fcf9e-ed66-4ac9-a169-0b6b7bbf7b8f"
+      ],
+      "status": "active"
     },
     {
       "id": "s-account-security-006-p1",
@@ -1289,8 +1456,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-account-security-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "7959dd7a-8b4e-4836-bab4-8b8c1b7dedf6"
+      ],
+      "status": "active"
     },
     {
       "id": "s-account-security-006-p2",
@@ -1300,8 +1469,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-account-security-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "7959dd7a-8b4e-4836-bab4-8b8c1b7dedf6"
+      ],
+      "status": "active"
     },
     {
       "id": "s-account-security-006-m",
@@ -1311,8 +1482,10 @@
       "difficulty": "keyword",
       "variant_type": "messy",
       "variant_of": "s-account-security-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "7959dd7a-8b4e-4836-bab4-8b8c1b7dedf6"
+      ],
+      "status": "active"
     },
     {
       "id": "s-account-security-007-p1",
@@ -1322,8 +1495,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-account-security-007",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "03450274-9209-4b2a-b5e9-7d0f45546d9c"
+      ],
+      "status": "active"
     },
     {
       "id": "s-account-security-007-p2",
@@ -1333,8 +1508,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-account-security-007",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "03450274-9209-4b2a-b5e9-7d0f45546d9c"
+      ],
+      "status": "active"
     },
     {
       "id": "s-account-security-007-m",
@@ -1344,8 +1521,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-account-security-007",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "03450274-9209-4b2a-b5e9-7d0f45546d9c"
+      ],
+      "status": "active"
     },
     {
       "id": "s-account-security-008-p1",
@@ -1355,8 +1534,10 @@
       "difficulty": "hard",
       "variant_type": "paraphrase",
       "variant_of": "s-account-security-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "7959dd7a-8b4e-4836-bab4-8b8c1b7dedf6"
+      ],
+      "status": "active"
     },
     {
       "id": "s-account-security-008-p2",
@@ -1366,8 +1547,10 @@
       "difficulty": "hard",
       "variant_type": "paraphrase",
       "variant_of": "s-account-security-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "7959dd7a-8b4e-4836-bab4-8b8c1b7dedf6"
+      ],
+      "status": "active"
     },
     {
       "id": "s-account-security-008-m",
@@ -1377,8 +1560,10 @@
       "difficulty": "hard",
       "variant_type": "messy",
       "variant_of": "s-account-security-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "7959dd7a-8b4e-4836-bab4-8b8c1b7dedf6"
+      ],
+      "status": "active"
     },
     {
       "id": "s-cancellations-001-p1",
@@ -1388,8 +1573,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-cancellations-001",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "90f9a4cd-867f-4a6c-9c90-9e584076dca0"
+      ],
+      "status": "active"
     },
     {
       "id": "s-cancellations-001-p2",
@@ -1399,8 +1586,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-cancellations-001",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "90f9a4cd-867f-4a6c-9c90-9e584076dca0"
+      ],
+      "status": "active"
     },
     {
       "id": "s-cancellations-001-m",
@@ -1410,8 +1599,10 @@
       "difficulty": "keyword",
       "variant_type": "messy",
       "variant_of": "s-cancellations-001",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "90f9a4cd-867f-4a6c-9c90-9e584076dca0"
+      ],
+      "status": "active"
     },
     {
       "id": "s-cancellations-002-p1",
@@ -1421,8 +1612,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-cancellations-002",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "90f9a4cd-867f-4a6c-9c90-9e584076dca0"
+      ],
+      "status": "active"
     },
     {
       "id": "s-cancellations-002-p2",
@@ -1432,8 +1625,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-cancellations-002",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "90f9a4cd-867f-4a6c-9c90-9e584076dca0"
+      ],
+      "status": "active"
     },
     {
       "id": "s-cancellations-002-m",
@@ -1443,8 +1638,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-cancellations-002",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "90f9a4cd-867f-4a6c-9c90-9e584076dca0"
+      ],
+      "status": "active"
     },
     {
       "id": "s-cancellations-003-p1",
@@ -1480,8 +1677,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-cancellations-003",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "671d0e81-8969-463d-97d7-39df8ac184aa"
+      ],
+      "status": "active"
     },
     {
       "id": "s-cancellations-004-p1",
@@ -1517,8 +1716,10 @@
       "difficulty": "keyword",
       "variant_type": "messy",
       "variant_of": "s-cancellations-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "eaf4a4f6-2903-44c1-bee9-f41d008e096d"
+      ],
+      "status": "active"
     },
     {
       "id": "s-cancellations-005-p1",
@@ -1541,8 +1742,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-cancellations-005",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "189ecddb-6cff-4a24-88d4-e114b79c7464"
+      ],
+      "status": "active"
     },
     {
       "id": "s-cancellations-005-m",
@@ -1552,8 +1755,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-cancellations-005",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "189ecddb-6cff-4a24-88d4-e114b79c7464"
+      ],
+      "status": "active"
     },
     {
       "id": "s-cancellations-006-p1",
@@ -1563,8 +1768,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-cancellations-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "2c4b2f2b-0a47-4710-a3cb-f67a60cd54b0"
+      ],
+      "status": "active"
     },
     {
       "id": "s-cancellations-006-p2",
@@ -1574,8 +1781,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-cancellations-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "2c4b2f2b-0a47-4710-a3cb-f67a60cd54b0"
+      ],
+      "status": "active"
     },
     {
       "id": "s-cancellations-006-m",
@@ -1585,8 +1794,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-cancellations-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "2c4b2f2b-0a47-4710-a3cb-f67a60cd54b0"
+      ],
+      "status": "active"
     },
     {
       "id": "s-cancellations-007-p1",
@@ -1596,8 +1807,10 @@
       "difficulty": "hard",
       "variant_type": "paraphrase",
       "variant_of": "s-cancellations-007",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "eaf4a4f6-2903-44c1-bee9-f41d008e096d"
+      ],
+      "status": "active"
     },
     {
       "id": "s-cancellations-007-p2",
@@ -1607,8 +1820,10 @@
       "difficulty": "hard",
       "variant_type": "paraphrase",
       "variant_of": "s-cancellations-007",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "eaf4a4f6-2903-44c1-bee9-f41d008e096d"
+      ],
+      "status": "active"
     },
     {
       "id": "s-cancellations-007-m",
@@ -1618,8 +1833,10 @@
       "difficulty": "hard",
       "variant_type": "messy",
       "variant_of": "s-cancellations-007",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "eaf4a4f6-2903-44c1-bee9-f41d008e096d"
+      ],
+      "status": "active"
     },
     {
       "id": "s-cancellations-008-p1",
@@ -1629,8 +1846,10 @@
       "difficulty": "hard",
       "variant_type": "paraphrase",
       "variant_of": "s-cancellations-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "eaf4a4f6-2903-44c1-bee9-f41d008e096d"
+      ],
+      "status": "active"
     },
     {
       "id": "s-cancellations-008-p2",
@@ -1640,8 +1859,10 @@
       "difficulty": "hard",
       "variant_type": "paraphrase",
       "variant_of": "s-cancellations-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "eaf4a4f6-2903-44c1-bee9-f41d008e096d"
+      ],
+      "status": "active"
     },
     {
       "id": "s-cancellations-008-m",
@@ -1651,8 +1872,10 @@
       "difficulty": "hard",
       "variant_type": "messy",
       "variant_of": "s-cancellations-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "eaf4a4f6-2903-44c1-bee9-f41d008e096d"
+      ],
+      "status": "active"
     },
     {
       "id": "s-exchanges-001-p1",
@@ -1662,8 +1885,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-exchanges-001",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "106e03b3-df5d-4455-824c-713f5aca1dbd"
+      ],
+      "status": "active"
     },
     {
       "id": "s-exchanges-001-p2",
@@ -1673,8 +1898,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-exchanges-001",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "106e03b3-df5d-4455-824c-713f5aca1dbd"
+      ],
+      "status": "active"
     },
     {
       "id": "s-exchanges-001-m",
@@ -1684,8 +1911,10 @@
       "difficulty": "keyword",
       "variant_type": "messy",
       "variant_of": "s-exchanges-001",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "106e03b3-df5d-4455-824c-713f5aca1dbd"
+      ],
+      "status": "active"
     },
     {
       "id": "s-exchanges-002-p1",
@@ -1708,8 +1937,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-exchanges-002",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "0d5edf2a-bb5c-4efd-9940-641ffe78be4b"
+      ],
+      "status": "active"
     },
     {
       "id": "s-exchanges-002-m",
@@ -1719,8 +1950,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-exchanges-002",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "0d5edf2a-bb5c-4efd-9940-641ffe78be4b"
+      ],
+      "status": "active"
     },
     {
       "id": "s-exchanges-003-p1",
@@ -1730,8 +1963,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-exchanges-003",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "0d5edf2a-bb5c-4efd-9940-641ffe78be4b"
+      ],
+      "status": "active"
     },
     {
       "id": "s-exchanges-003-p2",
@@ -1741,8 +1976,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-exchanges-003",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "0d5edf2a-bb5c-4efd-9940-641ffe78be4b"
+      ],
+      "status": "active"
     },
     {
       "id": "s-exchanges-003-m",
@@ -1752,8 +1989,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-exchanges-003",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "0d5edf2a-bb5c-4efd-9940-641ffe78be4b"
+      ],
+      "status": "active"
     },
     {
       "id": "s-exchanges-004-p1",
@@ -1763,8 +2002,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-exchanges-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "64aafead-a454-4aab-a048-ac8e8a461c03"
+      ],
+      "status": "active"
     },
     {
       "id": "s-exchanges-004-p2",
@@ -1774,8 +2015,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-exchanges-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "64aafead-a454-4aab-a048-ac8e8a461c03"
+      ],
+      "status": "active"
     },
     {
       "id": "s-exchanges-004-m",
@@ -1785,8 +2028,10 @@
       "difficulty": "keyword",
       "variant_type": "messy",
       "variant_of": "s-exchanges-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "64aafead-a454-4aab-a048-ac8e8a461c03"
+      ],
+      "status": "active"
     },
     {
       "id": "s-exchanges-005-p1",
@@ -1809,8 +2054,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-exchanges-005",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "64aafead-a454-4aab-a048-ac8e8a461c03"
+      ],
+      "status": "active"
     },
     {
       "id": "s-exchanges-005-m",
@@ -1820,8 +2067,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-exchanges-005",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "64aafead-a454-4aab-a048-ac8e8a461c03"
+      ],
+      "status": "active"
     },
     {
       "id": "s-exchanges-006-p1",
@@ -1831,8 +2080,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-exchanges-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "9fbc24e7-6805-44a2-8e57-056b44a4b4c5"
+      ],
+      "status": "active"
     },
     {
       "id": "s-exchanges-006-p2",
@@ -1855,8 +2106,10 @@
       "difficulty": "keyword",
       "variant_type": "messy",
       "variant_of": "s-exchanges-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "9fbc24e7-6805-44a2-8e57-056b44a4b4c5"
+      ],
+      "status": "active"
     },
     {
       "id": "s-exchanges-007-p1",
@@ -1879,8 +2132,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-exchanges-007",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "4c3e65a3-9dd3-4320-972e-b8c7bb606a43"
+      ],
+      "status": "active"
     },
     {
       "id": "s-exchanges-007-m",
@@ -1890,8 +2145,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-exchanges-007",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "4c3e65a3-9dd3-4320-972e-b8c7bb606a43"
+      ],
+      "status": "active"
     },
     {
       "id": "s-exchanges-008-p1",
@@ -1901,8 +2158,10 @@
       "difficulty": "hard",
       "variant_type": "paraphrase",
       "variant_of": "s-exchanges-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "4c3e65a3-9dd3-4320-972e-b8c7bb606a43"
+      ],
+      "status": "active"
     },
     {
       "id": "s-exchanges-008-p2",
@@ -1925,8 +2184,10 @@
       "difficulty": "hard",
       "variant_type": "messy",
       "variant_of": "s-exchanges-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "4c3e65a3-9dd3-4320-972e-b8c7bb606a43"
+      ],
+      "status": "active"
     },
     {
       "id": "s-disputes-001-p1",
@@ -1962,8 +2223,10 @@
       "difficulty": "keyword",
       "variant_type": "messy",
       "variant_of": "s-disputes-001",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "91aeb932-12bf-467c-b866-859e51719d3a"
+      ],
+      "status": "active"
     },
     {
       "id": "s-disputes-002-p1",
@@ -1973,8 +2236,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-disputes-002",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "3a5617b4-a571-4dd6-a8ae-627d823dea9e"
+      ],
+      "status": "active"
     },
     {
       "id": "s-disputes-002-p2",
@@ -1997,8 +2262,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-disputes-002",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "3a5617b4-a571-4dd6-a8ae-627d823dea9e"
+      ],
+      "status": "active"
     },
     {
       "id": "s-disputes-003-p1",
@@ -2008,8 +2275,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-disputes-003",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "afa790a8-63df-4d4e-ac65-8f4a67b01c9b"
+      ],
+      "status": "active"
     },
     {
       "id": "s-disputes-003-p2",
@@ -2019,8 +2288,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-disputes-003",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "afa790a8-63df-4d4e-ac65-8f4a67b01c9b"
+      ],
+      "status": "active"
     },
     {
       "id": "s-disputes-003-m",
@@ -2030,8 +2301,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-disputes-003",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "afa790a8-63df-4d4e-ac65-8f4a67b01c9b"
+      ],
+      "status": "active"
     },
     {
       "id": "s-disputes-004-p1",
@@ -2041,8 +2314,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-disputes-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "a4d894b9-7844-4576-a9ed-4c46b2951919"
+      ],
+      "status": "active"
     },
     {
       "id": "s-disputes-004-p2",
@@ -2065,8 +2340,10 @@
       "difficulty": "keyword",
       "variant_type": "messy",
       "variant_of": "s-disputes-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "a4d894b9-7844-4576-a9ed-4c46b2951919"
+      ],
+      "status": "active"
     },
     {
       "id": "s-disputes-005-p1",
@@ -2076,8 +2353,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-disputes-005",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "416c520c-f8c0-42ad-8dd0-40406de3b0d8"
+      ],
+      "status": "active"
     },
     {
       "id": "s-disputes-005-p2",
@@ -2100,8 +2379,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-disputes-005",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "416c520c-f8c0-42ad-8dd0-40406de3b0d8"
+      ],
+      "status": "active"
     },
     {
       "id": "s-disputes-006-p1",
@@ -2111,8 +2392,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-disputes-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "a4d894b9-7844-4576-a9ed-4c46b2951919"
+      ],
+      "status": "active"
     },
     {
       "id": "s-disputes-006-p2",
@@ -2135,8 +2418,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-disputes-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "a4d894b9-7844-4576-a9ed-4c46b2951919"
+      ],
+      "status": "active"
     },
     {
       "id": "s-disputes-007-p1",
@@ -2146,8 +2431,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-disputes-007",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "416c520c-f8c0-42ad-8dd0-40406de3b0d8"
+      ],
+      "status": "active"
     },
     {
       "id": "s-disputes-007-p2",
@@ -2157,8 +2444,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-disputes-007",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "416c520c-f8c0-42ad-8dd0-40406de3b0d8"
+      ],
+      "status": "active"
     },
     {
       "id": "s-disputes-007-m",
@@ -2168,8 +2457,10 @@
       "difficulty": "keyword",
       "variant_type": "messy",
       "variant_of": "s-disputes-007",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "416c520c-f8c0-42ad-8dd0-40406de3b0d8"
+      ],
+      "status": "active"
     },
     {
       "id": "s-disputes-008-p1",
@@ -2179,8 +2470,10 @@
       "difficulty": "hard",
       "variant_type": "paraphrase",
       "variant_of": "s-disputes-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "3a5617b4-a571-4dd6-a8ae-627d823dea9e"
+      ],
+      "status": "active"
     },
     {
       "id": "s-disputes-008-p2",
@@ -2203,8 +2496,10 @@
       "difficulty": "hard",
       "variant_type": "messy",
       "variant_of": "s-disputes-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "3a5617b4-a571-4dd6-a8ae-627d823dea9e"
+      ],
+      "status": "active"
     },
     {
       "id": "s-methods-001-p1",
@@ -2253,8 +2548,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-methods-002",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "7f70036e-e17d-4e44-b5d3-076357b0ca0f"
+      ],
+      "status": "active"
     },
     {
       "id": "s-methods-002-p2",
@@ -2264,8 +2561,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-methods-002",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "7f70036e-e17d-4e44-b5d3-076357b0ca0f"
+      ],
+      "status": "active"
     },
     {
       "id": "s-methods-002-m",
@@ -2275,8 +2574,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-methods-002",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "7f70036e-e17d-4e44-b5d3-076357b0ca0f"
+      ],
+      "status": "active"
     },
     {
       "id": "s-methods-003-p1",
@@ -2286,8 +2587,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-methods-003",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "7f70036e-e17d-4e44-b5d3-076357b0ca0f"
+      ],
+      "status": "active"
     },
     {
       "id": "s-methods-003-p2",
@@ -2310,8 +2613,10 @@
       "difficulty": "keyword",
       "variant_type": "messy",
       "variant_of": "s-methods-003",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "7f70036e-e17d-4e44-b5d3-076357b0ca0f"
+      ],
+      "status": "active"
     },
     {
       "id": "s-methods-004-p1",
@@ -2321,8 +2626,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-methods-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "868f773c-fddf-42d5-9b0c-f66b855eff43"
+      ],
+      "status": "active"
     },
     {
       "id": "s-methods-004-p2",
@@ -2332,8 +2639,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-methods-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "868f773c-fddf-42d5-9b0c-f66b855eff43"
+      ],
+      "status": "active"
     },
     {
       "id": "s-methods-004-m",
@@ -2343,8 +2652,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-methods-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "868f773c-fddf-42d5-9b0c-f66b855eff43"
+      ],
+      "status": "active"
     },
     {
       "id": "s-methods-005-p1",
@@ -2354,8 +2665,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-methods-005",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "f80d3895-e021-4ead-8c74-b2785a2ddf28"
+      ],
+      "status": "active"
     },
     {
       "id": "s-methods-005-p2",
@@ -2365,8 +2678,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-methods-005",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "f80d3895-e021-4ead-8c74-b2785a2ddf28"
+      ],
+      "status": "active"
     },
     {
       "id": "s-methods-005-m",
@@ -2376,8 +2691,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-methods-005",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "f80d3895-e021-4ead-8c74-b2785a2ddf28"
+      ],
+      "status": "active"
     },
     {
       "id": "s-methods-006-p1",
@@ -2387,8 +2704,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-methods-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "ee8f11e8-7e96-4995-aa22-9130d52520ee"
+      ],
+      "status": "active"
     },
     {
       "id": "s-methods-006-p2",
@@ -2398,8 +2717,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-methods-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "ee8f11e8-7e96-4995-aa22-9130d52520ee"
+      ],
+      "status": "active"
     },
     {
       "id": "s-methods-006-m",
@@ -2409,8 +2730,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-methods-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "ee8f11e8-7e96-4995-aa22-9130d52520ee"
+      ],
+      "status": "active"
     },
     {
       "id": "s-methods-007-p1",
@@ -2459,8 +2782,10 @@
       "difficulty": "hard",
       "variant_type": "paraphrase",
       "variant_of": "s-methods-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "868f773c-fddf-42d5-9b0c-f66b855eff43"
+      ],
+      "status": "active"
     },
     {
       "id": "s-methods-008-p2",
@@ -2470,8 +2795,10 @@
       "difficulty": "hard",
       "variant_type": "paraphrase",
       "variant_of": "s-methods-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "868f773c-fddf-42d5-9b0c-f66b855eff43"
+      ],
+      "status": "active"
     },
     {
       "id": "s-methods-008-m",
@@ -2481,8 +2808,10 @@
       "difficulty": "hard",
       "variant_type": "messy",
       "variant_of": "s-methods-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "868f773c-fddf-42d5-9b0c-f66b855eff43"
+      ],
+      "status": "active"
     },
     {
       "id": "s-privacy-001-p1",
@@ -2492,8 +2821,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-privacy-001",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "4d18b217-8468-44f1-b637-c30e3ba5d07b"
+      ],
+      "status": "active"
     },
     {
       "id": "s-privacy-001-p2",
@@ -2503,8 +2834,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-privacy-001",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "4d18b217-8468-44f1-b637-c30e3ba5d07b"
+      ],
+      "status": "active"
     },
     {
       "id": "s-privacy-001-m",
@@ -2514,8 +2847,10 @@
       "difficulty": "keyword",
       "variant_type": "messy",
       "variant_of": "s-privacy-001",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "4d18b217-8468-44f1-b637-c30e3ba5d07b"
+      ],
+      "status": "active"
     },
     {
       "id": "s-privacy-002-p1",
@@ -2551,8 +2886,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-privacy-002",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "6c1bd031-4b93-42c1-97f7-9c093b1d56c7"
+      ],
+      "status": "active"
     },
     {
       "id": "s-privacy-003-p1",
@@ -2575,8 +2912,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-privacy-003",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "9cb2f803-0205-4e20-904f-88d192cb24d9"
+      ],
+      "status": "active"
     },
     {
       "id": "s-privacy-003-m",
@@ -2586,8 +2925,10 @@
       "difficulty": "keyword",
       "variant_type": "messy",
       "variant_of": "s-privacy-003",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "9cb2f803-0205-4e20-904f-88d192cb24d9"
+      ],
+      "status": "active"
     },
     {
       "id": "s-privacy-004-p1",
@@ -2597,8 +2938,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-privacy-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "9cb2f803-0205-4e20-904f-88d192cb24d9"
+      ],
+      "status": "active"
     },
     {
       "id": "s-privacy-004-p2",
@@ -2608,8 +2951,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-privacy-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "9cb2f803-0205-4e20-904f-88d192cb24d9"
+      ],
+      "status": "active"
     },
     {
       "id": "s-privacy-004-m",
@@ -2619,8 +2964,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-privacy-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "9cb2f803-0205-4e20-904f-88d192cb24d9"
+      ],
+      "status": "active"
     },
     {
       "id": "s-privacy-005-p1",
@@ -2630,8 +2977,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-privacy-005",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "0e17d8a1-7d5d-4ed6-98d6-e41ae32b89b8"
+      ],
+      "status": "active"
     },
     {
       "id": "s-privacy-005-p2",
@@ -2654,8 +3003,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-privacy-005",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "0e17d8a1-7d5d-4ed6-98d6-e41ae32b89b8"
+      ],
+      "status": "active"
     },
     {
       "id": "s-privacy-006-p1",
@@ -2665,8 +3016,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-privacy-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "0e17d8a1-7d5d-4ed6-98d6-e41ae32b89b8"
+      ],
+      "status": "active"
     },
     {
       "id": "s-privacy-006-p2",
@@ -2676,8 +3029,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-privacy-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "0e17d8a1-7d5d-4ed6-98d6-e41ae32b89b8"
+      ],
+      "status": "active"
     },
     {
       "id": "s-privacy-006-m",
@@ -2687,8 +3042,10 @@
       "difficulty": "keyword",
       "variant_type": "messy",
       "variant_of": "s-privacy-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "0e17d8a1-7d5d-4ed6-98d6-e41ae32b89b8"
+      ],
+      "status": "active"
     },
     {
       "id": "s-privacy-007-p1",
@@ -2711,8 +3068,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-privacy-007",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "27542bf2-ea6f-43aa-b02f-c85b9283222b"
+      ],
+      "status": "active"
     },
     {
       "id": "s-privacy-007-m",
@@ -2722,8 +3081,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-privacy-007",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "27542bf2-ea6f-43aa-b02f-c85b9283222b"
+      ],
+      "status": "active"
     },
     {
       "id": "s-privacy-008-p1",
@@ -2733,8 +3094,10 @@
       "difficulty": "hard",
       "variant_type": "paraphrase",
       "variant_of": "s-privacy-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "6c1bd031-4b93-42c1-97f7-9c093b1d56c7"
+      ],
+      "status": "active"
     },
     {
       "id": "s-privacy-008-p2",
@@ -2744,8 +3107,10 @@
       "difficulty": "hard",
       "variant_type": "paraphrase",
       "variant_of": "s-privacy-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "6c1bd031-4b93-42c1-97f7-9c093b1d56c7"
+      ],
+      "status": "active"
     },
     {
       "id": "s-privacy-008-m",
@@ -2755,8 +3120,10 @@
       "difficulty": "hard",
       "variant_type": "messy",
       "variant_of": "s-privacy-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "6c1bd031-4b93-42c1-97f7-9c093b1d56c7"
+      ],
+      "status": "active"
     },
     {
       "id": "s-data-deletion-001-p1",
@@ -2792,8 +3159,10 @@
       "difficulty": "keyword",
       "variant_type": "messy",
       "variant_of": "s-data-deletion-001",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "627e90ad-dbaa-4373-ab37-60033d62fc92"
+      ],
+      "status": "active"
     },
     {
       "id": "s-data-deletion-002-p1",
@@ -2803,8 +3172,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-data-deletion-002",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "627e90ad-dbaa-4373-ab37-60033d62fc92"
+      ],
+      "status": "active"
     },
     {
       "id": "s-data-deletion-002-p2",
@@ -2814,8 +3185,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-data-deletion-002",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "627e90ad-dbaa-4373-ab37-60033d62fc92"
+      ],
+      "status": "active"
     },
     {
       "id": "s-data-deletion-002-m",
@@ -2825,8 +3198,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-data-deletion-002",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "627e90ad-dbaa-4373-ab37-60033d62fc92"
+      ],
+      "status": "active"
     },
     {
       "id": "s-data-deletion-003-p1",
@@ -2836,8 +3211,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-data-deletion-003",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "612bb6c5-6762-46a8-b953-3b135c8ac121"
+      ],
+      "status": "active"
     },
     {
       "id": "s-data-deletion-003-p2",
@@ -2847,8 +3224,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-data-deletion-003",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "612bb6c5-6762-46a8-b953-3b135c8ac121"
+      ],
+      "status": "active"
     },
     {
       "id": "s-data-deletion-003-m",
@@ -2858,8 +3237,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-data-deletion-003",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "612bb6c5-6762-46a8-b953-3b135c8ac121"
+      ],
+      "status": "active"
     },
     {
       "id": "s-data-deletion-004-p1",
@@ -2869,8 +3250,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-data-deletion-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "b5f09fd1-ce6f-467f-b932-a6ca5782ab14"
+      ],
+      "status": "active"
     },
     {
       "id": "s-data-deletion-004-p2",
@@ -2880,8 +3263,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-data-deletion-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "b5f09fd1-ce6f-467f-b932-a6ca5782ab14"
+      ],
+      "status": "active"
     },
     {
       "id": "s-data-deletion-004-m",
@@ -2891,8 +3276,10 @@
       "difficulty": "keyword",
       "variant_type": "messy",
       "variant_of": "s-data-deletion-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "b5f09fd1-ce6f-467f-b932-a6ca5782ab14"
+      ],
+      "status": "active"
     },
     {
       "id": "s-data-deletion-005-p1",
@@ -2915,8 +3302,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-data-deletion-005",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "c489d060-0af6-4945-b695-fcc4dff56f97"
+      ],
+      "status": "active"
     },
     {
       "id": "s-data-deletion-005-m",
@@ -2926,8 +3315,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-data-deletion-005",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "c489d060-0af6-4945-b695-fcc4dff56f97"
+      ],
+      "status": "active"
     },
     {
       "id": "s-data-deletion-006-p1",
@@ -2937,8 +3328,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-data-deletion-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "e69d00ce-be5e-4a85-b941-49b3d40274ba"
+      ],
+      "status": "active"
     },
     {
       "id": "s-data-deletion-006-p2",
@@ -2948,8 +3341,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-data-deletion-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "e69d00ce-be5e-4a85-b941-49b3d40274ba"
+      ],
+      "status": "active"
     },
     {
       "id": "s-data-deletion-006-m",
@@ -2959,8 +3354,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-data-deletion-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "e69d00ce-be5e-4a85-b941-49b3d40274ba"
+      ],
+      "status": "active"
     },
     {
       "id": "s-data-deletion-007-p1",
@@ -3011,8 +3408,10 @@
       "difficulty": "hard",
       "variant_type": "paraphrase",
       "variant_of": "s-data-deletion-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "612bb6c5-6762-46a8-b953-3b135c8ac121"
+      ],
+      "status": "active"
     },
     {
       "id": "s-data-deletion-008-p2",
@@ -3022,8 +3421,10 @@
       "difficulty": "hard",
       "variant_type": "paraphrase",
       "variant_of": "s-data-deletion-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "612bb6c5-6762-46a8-b953-3b135c8ac121"
+      ],
+      "status": "active"
     },
     {
       "id": "s-data-deletion-008-m",
@@ -3033,8 +3434,10 @@
       "difficulty": "hard",
       "variant_type": "messy",
       "variant_of": "s-data-deletion-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "612bb6c5-6762-46a8-b953-3b135c8ac121"
+      ],
+      "status": "active"
     },
     {
       "id": "s-notifications-001-p1",
@@ -3044,8 +3447,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-notifications-001",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "53137309-82ce-4b17-a30e-11b62ccc5f4b"
+      ],
+      "status": "active"
     },
     {
       "id": "s-notifications-001-p2",
@@ -3055,8 +3460,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-notifications-001",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "53137309-82ce-4b17-a30e-11b62ccc5f4b"
+      ],
+      "status": "active"
     },
     {
       "id": "s-notifications-001-m",
@@ -3066,8 +3473,10 @@
       "difficulty": "keyword",
       "variant_type": "messy",
       "variant_of": "s-notifications-001",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "53137309-82ce-4b17-a30e-11b62ccc5f4b"
+      ],
+      "status": "active"
     },
     {
       "id": "s-notifications-002-p1",
@@ -3077,8 +3486,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-notifications-002",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "53137309-82ce-4b17-a30e-11b62ccc5f4b"
+      ],
+      "status": "active"
     },
     {
       "id": "s-notifications-002-p2",
@@ -3088,8 +3499,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-notifications-002",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "53137309-82ce-4b17-a30e-11b62ccc5f4b"
+      ],
+      "status": "active"
     },
     {
       "id": "s-notifications-002-m",
@@ -3099,8 +3512,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-notifications-002",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "53137309-82ce-4b17-a30e-11b62ccc5f4b"
+      ],
+      "status": "active"
     },
     {
       "id": "s-notifications-003-p1",
@@ -3123,8 +3538,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-notifications-003",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "01de3d20-2d6c-4e0b-a979-394bea1c6eed"
+      ],
+      "status": "active"
     },
     {
       "id": "s-notifications-003-m",
@@ -3134,8 +3551,10 @@
       "difficulty": "keyword",
       "variant_type": "messy",
       "variant_of": "s-notifications-003",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "01de3d20-2d6c-4e0b-a979-394bea1c6eed"
+      ],
+      "status": "active"
     },
     {
       "id": "s-notifications-004-p1",
@@ -3145,8 +3564,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-notifications-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "0c1e5f4e-db07-4773-9fee-65de300c65c4"
+      ],
+      "status": "active"
     },
     {
       "id": "s-notifications-004-p2",
@@ -3156,8 +3577,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-notifications-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "0c1e5f4e-db07-4773-9fee-65de300c65c4"
+      ],
+      "status": "active"
     },
     {
       "id": "s-notifications-004-m",
@@ -3167,8 +3590,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-notifications-004",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "0c1e5f4e-db07-4773-9fee-65de300c65c4"
+      ],
+      "status": "active"
     },
     {
       "id": "s-notifications-005-p1",
@@ -3178,8 +3603,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-notifications-005",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "19df7150-4976-4567-b00c-3e289a3c153e"
+      ],
+      "status": "active"
     },
     {
       "id": "s-notifications-005-p2",
@@ -3202,8 +3629,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-notifications-005",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "19df7150-4976-4567-b00c-3e289a3c153e"
+      ],
+      "status": "active"
     },
     {
       "id": "s-notifications-006-p1",
@@ -3213,8 +3642,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-notifications-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "8c7fc0ed-e69e-4a22-a2e4-3ef982326f8a"
+      ],
+      "status": "active"
     },
     {
       "id": "s-notifications-006-p2",
@@ -3224,8 +3655,10 @@
       "difficulty": "keyword",
       "variant_type": "paraphrase",
       "variant_of": "s-notifications-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "8c7fc0ed-e69e-4a22-a2e4-3ef982326f8a"
+      ],
+      "status": "active"
     },
     {
       "id": "s-notifications-006-m",
@@ -3235,8 +3668,10 @@
       "difficulty": "keyword",
       "variant_type": "messy",
       "variant_of": "s-notifications-006",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "8c7fc0ed-e69e-4a22-a2e4-3ef982326f8a"
+      ],
+      "status": "active"
     },
     {
       "id": "s-notifications-007-p1",
@@ -3246,8 +3681,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-notifications-007",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "19df7150-4976-4567-b00c-3e289a3c153e"
+      ],
+      "status": "active"
     },
     {
       "id": "s-notifications-007-p2",
@@ -3257,8 +3694,10 @@
       "difficulty": "paraphrase",
       "variant_type": "paraphrase",
       "variant_of": "s-notifications-007",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "19df7150-4976-4567-b00c-3e289a3c153e"
+      ],
+      "status": "active"
     },
     {
       "id": "s-notifications-007-m",
@@ -3268,8 +3707,10 @@
       "difficulty": "paraphrase",
       "variant_type": "messy",
       "variant_of": "s-notifications-007",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "19df7150-4976-4567-b00c-3e289a3c153e"
+      ],
+      "status": "active"
     },
     {
       "id": "s-notifications-008-p1",
@@ -3279,8 +3720,10 @@
       "difficulty": "hard",
       "variant_type": "paraphrase",
       "variant_of": "s-notifications-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "8c7fc0ed-e69e-4a22-a2e4-3ef982326f8a"
+      ],
+      "status": "active"
     },
     {
       "id": "s-notifications-008-p2",
@@ -3303,8 +3746,10 @@
       "difficulty": "hard",
       "variant_type": "messy",
       "variant_of": "s-notifications-008",
-      "gold_chunk_ids": [],
-      "status": "pending_pilot_scale"
+      "gold_chunk_ids": [
+        "8c7fc0ed-e69e-4a22-a2e4-3ef982326f8a"
+      ],
+      "status": "active"
     },
     {
       "id": "absent-crypto-payments",

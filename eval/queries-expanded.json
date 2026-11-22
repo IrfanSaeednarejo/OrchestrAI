@@ -673,7 +673,9 @@
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
     "variant_of": "s-payments-007",
-    "status": "active"
+    "status": "excluded",
+    "exclusion_tier": 1,
+    "exclusion_reason": "mislabel_subscription_retry_resolved_to_failed_payment_section"
   },
   {
     "id": "s-payments-007-p2",
@@ -683,7 +685,9 @@
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
     "variant_of": "s-payments-007",
-    "status": "active"
+    "status": "excluded",
+    "exclusion_tier": 1,
+    "exclusion_reason": "mislabel_subscription_retry_resolved_to_failed_payment_section"
   },
   {
     "id": "s-payments-007-m",
@@ -693,7 +697,9 @@
     "difficulty": "paraphrase",
     "variant_type": "messy",
     "variant_of": "s-payments-007",
-    "status": "active"
+    "status": "excluded",
+    "exclusion_tier": 1,
+    "exclusion_reason": "mislabel_subscription_retry_resolved_to_failed_payment_section"
   },
   {
     "id": "s-payments-008-p1",

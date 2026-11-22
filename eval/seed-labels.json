@@ -168,10 +168,75 @@
     "multi_gold_snippets": []
   },
   {
+    "seed_id": "s-data-deletion-007",
+    "doc": "faq-account-data-deletion-001",
+    "page": 1,
+    "snippet": "recover and reactivate your deleted account exclusively while the account remains within the initial 30-day grace period",
+    "multi_gold_snippets": [
+      "All stored payment methods, including tokenized credit card profiles and billing configurations, are completely expunged"
+    ]
+  },
+  {
+    "seed_id": "s-refunds-001",
+    "doc": "pol-payments-refunds-001",
+    "page": 1,
+    "snippet": "receives a formal refund approval decision within 48 hours of warehouse intake",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-refunds-002",
+    "doc": "pol-payments-refunds-001",
+    "page": 1,
+    "snippet": "credited back to the original funding source within 5 to 7 business days following approval",
+    "multi_gold_snippets": []
+  },
+  {
     "seed_id": "s-refunds-003",
     "doc": "pol-payments-refunds-001",
     "page": 1,
     "snippet": "missing components or unreturned accessories incurs a deduction of up to 25%",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-refunds-004",
+    "doc": "pol-payments-refunds-001",
+    "page": 1,
+    "snippet": "Purchases made using a gift card are refunded exclusively as store credit credited back to the customer's gift card balance",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-refunds-005",
+    "doc": "pol-payments-refunds-001",
+    "page": 1,
+    "snippet": "For orders placed through Klarna, issuing a refund automatically cancels remaining unpaid installments",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-refunds-006",
+    "doc": "pol-payments-refunds-001",
+    "page": 1,
+    "snippet": "all return shipping postage costs are fully refunded to the customer whenever the underlying return was necessitated by Northvale's operational error",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-refunds-007",
+    "doc": "pol-payments-refunds-001",
+    "page": 1,
+    "snippet": "Transactions completed using split payment methods have their refund amounts allocated proportionally across each respective payment method",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-refunds-008",
+    "doc": "pol-payments-refunds-001",
+    "page": 1,
+    "snippet": "missing components or unreturned accessories incurs a deduction of up to 25%",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-account-security-001",
+    "doc": "faq-account-security-001",
+    "page": 1,
+    "snippet": "passwords must contain a minimum of 12 characters and cannot exceed a maximum length of 128 characters",
     "multi_gold_snippets": []
   },
   {
@@ -182,10 +247,255 @@
     "multi_gold_snippets": []
   },
   {
+    "seed_id": "s-account-security-003",
+    "doc": "faq-account-security-001",
+    "page": 1,
+    "snippet": "Enabling 2FA is mandatory for all customer accounts that store saved payment methods on file",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-account-security-004",
+    "doc": "faq-account-security-001",
+    "page": 1,
+    "snippet": "you are issued 10 single-use emergency backup codes to retain for emergency access",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-account-security-005",
+    "doc": "faq-account-security-001",
+    "page": 1,
+    "snippet": "permits a maximum of 5 failed OTP attempts before imposing a mandatory 15-minute verification lockout",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-account-security-006",
+    "doc": "faq-account-security-001",
+    "page": 1,
+    "snippet": "Entering 5 consecutive incorrect passwords automatically locks your account for a duration of 30 minutes",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-account-security-007",
+    "doc": "faq-account-security-001",
+    "page": 1,
+    "snippet": "Automated security login alerts are triggered and delivered to your registered email address whenever a login occurs from an unrecognized device",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-account-security-008",
+    "doc": "faq-account-security-001",
+    "page": 1,
+    "snippet": "standard lockout conditions allow self-service unlock using an emailed OTP once the initial 30-minute lockout expires",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-cancellations-001",
+    "doc": "pol-orders-cancellation-001",
+    "page": 1,
+    "snippet": "free cancellation on standard orders up until the order fulfillment status officially transitions to \"Shipped\"",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-cancellations-002",
+    "doc": "pol-orders-cancellation-001",
+    "page": 1,
+    "snippet": "Once an order is marked as shipped, cancellation is strictly disallowed; customers must instead follow the standard return process after delivery",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-cancellations-003",
+    "doc": "pol-orders-cancellation-001",
+    "page": 1,
+    "snippet": "cancel their pre-ordered items up to 48 hours prior to the scheduled official product release date",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-cancellations-004",
+    "doc": "pol-orders-cancellation-001",
+    "page": 1,
+    "snippet": "Purchases categorized as bulk orders comprising 10 or more units require formal written notice submitted at least 24 hours prior to cancellation",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-cancellations-005",
+    "doc": "pol-orders-cancellation-001",
+    "page": 1,
+    "snippet": "customers wishing to cancel a package already in transit may choose to refuse delivery at the door",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-cancellations-006",
+    "doc": "pol-orders-cancellation-001",
+    "page": 1,
+    "snippet": "electronic refund transaction is initiated within 2 hours of confirmed cancellation",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-cancellations-007",
+    "doc": "pol-orders-cancellation-001",
+    "page": 1,
+    "snippet": "custom-manufactured or made-to-order goods and cancellation occurs after production has started, the transaction incurs a 15% cancellation fee",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-cancellations-008",
+    "doc": "pol-orders-cancellation-001",
+    "page": 1,
+    "snippet": "reserves the right to reprice all remaining items according to single-unit retail rates",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-exchanges-001",
+    "doc": "faq-orders-exchanges-001",
+    "page": 1,
+    "snippet": "request an exchange on eligible items within 30 days of carrier delivery confirmation",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-exchanges-002",
+    "doc": "faq-orders-exchanges-001",
+    "page": 1,
+    "snippet": "Size exchanges are permitted for any corresponding size option currently in stock",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-exchanges-003",
+    "doc": "faq-orders-exchanges-001",
+    "page": 1,
+    "snippet": "desired size or color is completely sold out, an exchange cannot be fulfilled",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-exchanges-004",
+    "doc": "faq-orders-exchanges-001",
+    "page": 1,
+    "snippet": "Under standard fulfillment, replacement orders are dispatched within 2 to 3 business days following verified carrier scanning",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-exchanges-005",
+    "doc": "faq-orders-exchanges-001",
+    "page": 1,
+    "snippet": "replacement shipment is dispatched automatically as soon as the returned merchandise receives its initial carrier intake scan",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-exchanges-006",
+    "doc": "faq-orders-exchanges-001",
+    "page": 1,
+    "snippet": "The return transit leg is provided free of charge whenever you are exchanging an item that arrived defective or was shipped incorrectly",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-exchanges-007",
+    "doc": "faq-orders-exchanges-001",
+    "page": 1,
+    "snippet": "exchange an item for a higher-priced variation, you are required to pay the price difference",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-exchanges-008",
+    "doc": "faq-orders-exchanges-001",
+    "page": 1,
+    "snippet": "exchanging an item previously purchased on sale for a regular-priced item, you will be charged the current regular price difference",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-disputes-001",
+    "doc": "pol-payments-disputes-001",
+    "page": 1,
+    "snippet": "within the card issuer's mandated response deadline, which typically ranges from 20 to 45 days",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-disputes-002",
+    "doc": "pol-payments-disputes-001",
+    "page": 1,
+    "snippet": "file a formal payment dispute to investigate unauthorized transactions, confirmed duplicate charges",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-disputes-003",
+    "doc": "pol-payments-disputes-001",
+    "page": 1,
+    "snippet": "initiates an internal billing review within 2 business days of receiving an official dispute inquiry ticket",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-disputes-004",
+    "doc": "pol-payments-disputes-001",
+    "page": 1,
+    "snippet": "filing a formal police report is strictly mandatory for any dispute exceeding $500",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-disputes-005",
+    "doc": "pol-payments-disputes-001",
+    "page": 1,
+    "snippet": "billing department sends a formal dispute receipt acknowledgment within 24 hours of ticket submission",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-disputes-006",
+    "doc": "pol-payments-disputes-001",
+    "page": 1,
+    "snippet": "submission must include an official bank or credit card statement clearly demonstrating the disputed charge",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-disputes-007",
+    "doc": "pol-payments-disputes-001",
+    "page": 1,
+    "snippet": "closed dispute that a customer seeks to re-open after 30 days have elapsed requires submitting an entirely fresh dispute filing",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-disputes-008",
+    "doc": "pol-payments-disputes-001",
+    "page": 1,
+    "snippet": "Submitting a payment dispute immediately reverses and suspends any ongoing return or refund processing",
+    "multi_gold_snippets": []
+  },
+  {
     "seed_id": "s-methods-001",
     "doc": "faq-payments-methods-001",
     "page": 1,
     "snippet": "Visa, Mastercard, American Express, and Discover",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-methods-002",
+    "doc": "faq-payments-methods-001",
+    "page": 1,
+    "snippet": "using popular digital wallets including Apple Pay, Google Pay, and PayPal",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-methods-003",
+    "doc": "faq-payments-methods-001",
+    "page": 1,
+    "snippet": "all approved refund amounts are returned directly to the wallet balance rather than the underlying linked card",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-methods-004",
+    "doc": "faq-payments-methods-001",
+    "page": 1,
+    "snippet": "refund on an order financed through Klarna, your remaining unpaid installments are cancelled",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-methods-005",
+    "doc": "faq-payments-methods-001",
+    "page": 1,
+    "snippet": "commercial purchases totaling over $5,000, Northvale accepts direct domestic wire transfers",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-methods-006",
+    "doc": "faq-payments-methods-001",
+    "page": 1,
+    "snippet": "recurring subscription services, you can update your stored payment method at any time through the billing dashboard",
     "multi_gold_snippets": []
   },
   {
@@ -196,12 +506,171 @@
     "multi_gold_snippets": []
   },
   {
-    "seed_id": "s-data-deletion-007",
+    "seed_id": "s-methods-008",
+    "doc": "faq-payments-methods-001",
+    "page": 1,
+    "snippet": "refund on an order financed through Klarna, your remaining unpaid installments are cancelled",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-privacy-001",
+    "doc": "pol-account-privacy-001",
+    "page": 1,
+    "snippet": "Northvale collects necessary account data during profile creation and checkout, including your full name",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-privacy-002",
+    "doc": "pol-account-privacy-001",
+    "page": 1,
+    "snippet": "Northvale never sells personal customer information to independent third parties for their own commercial advertising",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-privacy-003",
+    "doc": "pol-account-privacy-001",
+    "page": 1,
+    "snippet": "Transactional order data, including itemized receipts and billing histories, is retained for a period of 7 years",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-privacy-004",
+    "doc": "pol-account-privacy-001",
+    "page": 1,
+    "snippet": "Customer service records, chat transcripts, and recorded support tickets are retained for 3 years to ensure support quality",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-privacy-005",
+    "doc": "pol-account-privacy-001",
+    "page": 1,
+    "snippet": "requesting an export of their personal profile and transaction history delivered in standardized CSV or JSON formats",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-privacy-006",
+    "doc": "pol-account-privacy-001",
+    "page": 1,
+    "snippet": "Residents of California enjoy comprehensive protections under the California Consumer Privacy Act (CCPA)",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-privacy-007",
+    "doc": "pol-account-privacy-001",
+    "page": 1,
+    "snippet": "discovers an account registered to a minor under 13, the account profile and associated personal data are permanently deleted within 5 business days",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-privacy-008",
+    "doc": "pol-account-privacy-001",
+    "page": 1,
+    "snippet": "We disclose confidential account records to government agencies or law enforcement authorities only when compelled by valid legal process",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-data-deletion-001",
     "doc": "faq-account-data-deletion-001",
     "page": 1,
-    "snippet": "recover and reactivate your deleted account exclusively while the account remains within the initial 30-day grace period",
-    "multi_gold_snippets": [
-      "All stored payment methods, including tokenized credit card profiles and billing configurations, are completely expunged"
-    ]
+    "snippet": "Your account immediately enters a mandatory 30-day grace period before permanent erasure is executed",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-data-deletion-002",
+    "doc": "faq-account-data-deletion-001",
+    "page": 1,
+    "snippet": "If you change your mind during this window, cancelling the deletion request restores your account to full standing",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-data-deletion-003",
+    "doc": "faq-account-data-deletion-001",
+    "page": 1,
+    "snippet": "systems permanently remove your account profile, login credentials, and all saved shipping addresses",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-data-deletion-004",
+    "doc": "faq-account-data-deletion-001",
+    "page": 1,
+    "snippet": "itemized order records and associated payment transaction logs are retained for 7 years to ensure compliance",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-data-deletion-005",
+    "doc": "faq-account-data-deletion-001",
+    "page": 1,
+    "snippet": "Secure system backup archives that contain snapshot data are cycled and permanently purged within 30 days of production deletion execution",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-data-deletion-006",
+    "doc": "faq-account-data-deletion-001",
+    "page": 1,
+    "snippet": "permitted to register an entirely new Northvale account in the future using the same email address",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-data-deletion-008",
+    "doc": "faq-account-data-deletion-001",
+    "page": 1,
+    "snippet": "Your customer-facing order history is removed from active platform databases, except for specific records that Northvale is legally obligated to maintain",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-notifications-001",
+    "doc": "faq-account-notifications-001",
+    "page": 1,
+    "snippet": "Northvale delivers account and order communications across several convenient digital channels designed to keep you informed",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-notifications-002",
+    "doc": "faq-account-notifications-001",
+    "page": 1,
+    "snippet": "opt in to receive real-time SMS text messages for important account security verification and urgent carrier delivery updates",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-notifications-003",
+    "doc": "faq-account-notifications-001",
+    "page": 1,
+    "snippet": "If a transit delay or exception occurs, delivery exception alerts are sent to you within 2 hours of the carrier flag being posted",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-notifications-004",
+    "doc": "faq-account-notifications-001",
+    "page": 1,
+    "snippet": "dispatches immediate automated security alerts whenever a login is detected originating from an unrecognized device hardware profile or new geographic location",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-notifications-005",
+    "doc": "faq-account-notifications-001",
+    "page": 1,
+    "snippet": "full control over promotional communications and can choose to opt in to marketing emails during checkout or at any time via your account settings",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-notifications-006",
+    "doc": "faq-account-notifications-001",
+    "page": 1,
+    "snippet": "When you submit an unsubscribe request for marketing communications, the modification takes operational effect within 24 hours of submission",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-notifications-007",
+    "doc": "faq-account-notifications-001",
+    "page": 1,
+    "snippet": "Enrolling in promotional marketing SMS text messages requires a separate explicit opt-in distinct from transactional security and delivery SMS alerts",
+    "multi_gold_snippets": []
+  },
+  {
+    "seed_id": "s-notifications-008",
+    "doc": "faq-account-notifications-001",
+    "page": 1,
+    "snippet": "Unsubscribing from all promotional marketing materials has no impact on the delivery of vital transactional emails, receipts, or account notices",
+    "multi_gold_snippets": []
   }
 ]
