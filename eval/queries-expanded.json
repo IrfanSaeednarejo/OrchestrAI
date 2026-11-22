@@ -6,7 +6,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-returns-001"
+    "variant_of": "s-returns-001",
+    "status": "active"
   },
   {
     "id": "s-returns-001-p2",
@@ -15,7 +16,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-returns-001"
+    "variant_of": "s-returns-001",
+    "status": "active"
   },
   {
     "id": "s-returns-001-m",
@@ -24,7 +26,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-returns-001"
+    "variant_of": "s-returns-001",
+    "status": "active"
   },
   {
     "id": "s-returns-002-p1",
@@ -33,7 +36,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-returns-002"
+    "variant_of": "s-returns-002",
+    "status": "active"
   },
   {
     "id": "s-returns-002-p2",
@@ -42,7 +46,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-returns-002"
+    "variant_of": "s-returns-002",
+    "status": "active"
   },
   {
     "id": "s-returns-002-m",
@@ -51,7 +56,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-returns-002"
+    "variant_of": "s-returns-002",
+    "status": "active"
   },
   {
     "id": "s-returns-003-p1",
@@ -60,7 +66,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-returns-003"
+    "variant_of": "s-returns-003",
+    "status": "active"
   },
   {
     "id": "s-returns-003-p2",
@@ -69,7 +76,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-returns-003"
+    "variant_of": "s-returns-003",
+    "status": "active"
   },
   {
     "id": "s-returns-003-m",
@@ -78,7 +86,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-returns-003"
+    "variant_of": "s-returns-003",
+    "status": "active"
   },
   {
     "id": "s-returns-004-p1",
@@ -87,7 +96,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-returns-004"
+    "variant_of": "s-returns-004",
+    "status": "active"
   },
   {
     "id": "s-returns-004-p2",
@@ -96,7 +106,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-returns-004"
+    "variant_of": "s-returns-004",
+    "status": "active"
   },
   {
     "id": "s-returns-004-m",
@@ -105,7 +116,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-returns-004"
+    "variant_of": "s-returns-004",
+    "status": "active"
   },
   {
     "id": "s-returns-005-p1",
@@ -114,7 +126,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-returns-005"
+    "variant_of": "s-returns-005",
+    "status": "active"
   },
   {
     "id": "s-returns-005-p2",
@@ -123,7 +136,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-returns-005"
+    "variant_of": "s-returns-005",
+    "status": "active"
   },
   {
     "id": "s-returns-005-m",
@@ -132,7 +146,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-returns-005"
+    "variant_of": "s-returns-005",
+    "status": "active"
   },
   {
     "id": "s-returns-006-p1",
@@ -141,7 +156,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-returns-006"
+    "variant_of": "s-returns-006",
+    "status": "active"
   },
   {
     "id": "s-returns-006-p2",
@@ -150,7 +166,10 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-returns-006"
+    "variant_of": "s-returns-006",
+    "status": "excluded",
+    "exclusion_tier": 1,
+    "exclusion_reason": "pattern_a_answer_leakage_business_days"
   },
   {
     "id": "s-returns-006-m",
@@ -159,7 +178,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-returns-006"
+    "variant_of": "s-returns-006",
+    "status": "active"
   },
   {
     "id": "s-returns-007-p1",
@@ -168,7 +188,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-returns-007"
+    "variant_of": "s-returns-007",
+    "status": "active"
   },
   {
     "id": "s-returns-007-p2",
@@ -177,7 +198,10 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-returns-007"
+    "variant_of": "s-returns-007",
+    "status": "excluded",
+    "exclusion_tier": 2,
+    "exclusion_reason": "unnatural_freight_costs_register"
   },
   {
     "id": "s-returns-007-m",
@@ -186,7 +210,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "messy",
-    "variant_of": "s-returns-007"
+    "variant_of": "s-returns-007",
+    "status": "active"
   },
   {
     "id": "s-returns-008-p1",
@@ -195,7 +220,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-returns-008"
+    "variant_of": "s-returns-008",
+    "status": "active"
   },
   {
     "id": "s-returns-008-p2",
@@ -204,7 +230,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-returns-008"
+    "variant_of": "s-returns-008",
+    "status": "active"
   },
   {
     "id": "s-returns-008-m",
@@ -213,7 +240,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "messy",
-    "variant_of": "s-returns-008"
+    "variant_of": "s-returns-008",
+    "status": "active"
   },
   {
     "id": "s-shipping-001-p1",
@@ -222,7 +250,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-shipping-001"
+    "variant_of": "s-shipping-001",
+    "status": "active"
   },
   {
     "id": "s-shipping-001-p2",
@@ -231,7 +260,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-shipping-001"
+    "variant_of": "s-shipping-001",
+    "status": "active"
   },
   {
     "id": "s-shipping-001-m",
@@ -240,7 +270,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-shipping-001"
+    "variant_of": "s-shipping-001",
+    "status": "active"
   },
   {
     "id": "s-shipping-002-p1",
@@ -249,7 +280,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-shipping-002"
+    "variant_of": "s-shipping-002",
+    "status": "active"
   },
   {
     "id": "s-shipping-002-p2",
@@ -258,7 +290,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-shipping-002"
+    "variant_of": "s-shipping-002",
+    "status": "active"
   },
   {
     "id": "s-shipping-002-m",
@@ -267,7 +300,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-shipping-002"
+    "variant_of": "s-shipping-002",
+    "status": "active"
   },
   {
     "id": "s-shipping-003-p1",
@@ -276,7 +310,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-shipping-003"
+    "variant_of": "s-shipping-003",
+    "status": "active"
   },
   {
     "id": "s-shipping-003-p2",
@@ -285,7 +320,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-shipping-003"
+    "variant_of": "s-shipping-003",
+    "status": "active"
   },
   {
     "id": "s-shipping-003-m",
@@ -294,7 +330,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-shipping-003"
+    "variant_of": "s-shipping-003",
+    "status": "active"
   },
   {
     "id": "s-shipping-004-p1",
@@ -303,7 +340,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-shipping-004"
+    "variant_of": "s-shipping-004",
+    "status": "active"
   },
   {
     "id": "s-shipping-004-p2",
@@ -312,7 +350,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-shipping-004"
+    "variant_of": "s-shipping-004",
+    "status": "active"
   },
   {
     "id": "s-shipping-004-m",
@@ -321,7 +360,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-shipping-004"
+    "variant_of": "s-shipping-004",
+    "status": "active"
   },
   {
     "id": "s-shipping-005-p1",
@@ -330,7 +370,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-shipping-005"
+    "variant_of": "s-shipping-005",
+    "status": "active"
   },
   {
     "id": "s-shipping-005-p2",
@@ -339,7 +380,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-shipping-005"
+    "variant_of": "s-shipping-005",
+    "status": "active"
   },
   {
     "id": "s-shipping-005-m",
@@ -348,7 +390,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-shipping-005"
+    "variant_of": "s-shipping-005",
+    "status": "active"
   },
   {
     "id": "s-shipping-006-p1",
@@ -357,7 +400,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-shipping-006"
+    "variant_of": "s-shipping-006",
+    "status": "active"
   },
   {
     "id": "s-shipping-006-p2",
@@ -366,7 +410,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-shipping-006"
+    "variant_of": "s-shipping-006",
+    "status": "active"
   },
   {
     "id": "s-shipping-006-m",
@@ -375,7 +420,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-shipping-006"
+    "variant_of": "s-shipping-006",
+    "status": "active"
   },
   {
     "id": "s-shipping-007-p1",
@@ -384,7 +430,10 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-shipping-007"
+    "variant_of": "s-shipping-007",
+    "status": "excluded",
+    "exclusion_tier": 1,
+    "exclusion_reason": "pattern_b_fact_drift_european_export"
   },
   {
     "id": "s-shipping-007-p2",
@@ -393,7 +442,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-shipping-007"
+    "variant_of": "s-shipping-007",
+    "status": "active"
   },
   {
     "id": "s-shipping-007-m",
@@ -402,7 +452,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "messy",
-    "variant_of": "s-shipping-007"
+    "variant_of": "s-shipping-007",
+    "status": "active"
   },
   {
     "id": "s-shipping-008-p1",
@@ -411,7 +462,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-shipping-008"
+    "variant_of": "s-shipping-008",
+    "status": "active"
   },
   {
     "id": "s-shipping-008-p2",
@@ -420,7 +472,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-shipping-008"
+    "variant_of": "s-shipping-008",
+    "status": "active"
   },
   {
     "id": "s-shipping-008-m",
@@ -429,7 +482,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "messy",
-    "variant_of": "s-shipping-008"
+    "variant_of": "s-shipping-008",
+    "status": "active"
   },
   {
     "id": "s-payments-001-p1",
@@ -438,7 +492,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-payments-001"
+    "variant_of": "s-payments-001",
+    "status": "active"
   },
   {
     "id": "s-payments-001-p2",
@@ -447,7 +502,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-payments-001"
+    "variant_of": "s-payments-001",
+    "status": "active"
   },
   {
     "id": "s-payments-001-m",
@@ -456,7 +512,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-payments-001"
+    "variant_of": "s-payments-001",
+    "status": "active"
   },
   {
     "id": "s-payments-002-p1",
@@ -465,7 +522,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-payments-002"
+    "variant_of": "s-payments-002",
+    "status": "active"
   },
   {
     "id": "s-payments-002-p2",
@@ -474,7 +532,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-payments-002"
+    "variant_of": "s-payments-002",
+    "status": "active"
   },
   {
     "id": "s-payments-002-m",
@@ -483,7 +542,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-payments-002"
+    "variant_of": "s-payments-002",
+    "status": "active"
   },
   {
     "id": "s-payments-003-p1",
@@ -492,7 +552,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-payments-003"
+    "variant_of": "s-payments-003",
+    "status": "active"
   },
   {
     "id": "s-payments-003-p2",
@@ -501,7 +562,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-payments-003"
+    "variant_of": "s-payments-003",
+    "status": "active"
   },
   {
     "id": "s-payments-003-m",
@@ -510,7 +572,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-payments-003"
+    "variant_of": "s-payments-003",
+    "status": "active"
   },
   {
     "id": "s-payments-004-p1",
@@ -519,7 +582,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-payments-004"
+    "variant_of": "s-payments-004",
+    "status": "active"
   },
   {
     "id": "s-payments-004-p2",
@@ -528,7 +592,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-payments-004"
+    "variant_of": "s-payments-004",
+    "status": "active"
   },
   {
     "id": "s-payments-004-m",
@@ -537,7 +602,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-payments-004"
+    "variant_of": "s-payments-004",
+    "status": "active"
   },
   {
     "id": "s-payments-005-p1",
@@ -546,7 +612,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-payments-005"
+    "variant_of": "s-payments-005",
+    "status": "active"
   },
   {
     "id": "s-payments-005-p2",
@@ -555,7 +622,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-payments-005"
+    "variant_of": "s-payments-005",
+    "status": "active"
   },
   {
     "id": "s-payments-005-m",
@@ -564,7 +632,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-payments-005"
+    "variant_of": "s-payments-005",
+    "status": "active"
   },
   {
     "id": "s-payments-006-p1",
@@ -573,7 +642,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-payments-006"
+    "variant_of": "s-payments-006",
+    "status": "active"
   },
   {
     "id": "s-payments-006-p2",
@@ -582,7 +652,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-payments-006"
+    "variant_of": "s-payments-006",
+    "status": "active"
   },
   {
     "id": "s-payments-006-m",
@@ -591,7 +662,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-payments-006"
+    "variant_of": "s-payments-006",
+    "status": "active"
   },
   {
     "id": "s-payments-007-p1",
@@ -600,7 +672,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-payments-007"
+    "variant_of": "s-payments-007",
+    "status": "active"
   },
   {
     "id": "s-payments-007-p2",
@@ -609,7 +682,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-payments-007"
+    "variant_of": "s-payments-007",
+    "status": "active"
   },
   {
     "id": "s-payments-007-m",
@@ -618,7 +692,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-payments-007"
+    "variant_of": "s-payments-007",
+    "status": "active"
   },
   {
     "id": "s-payments-008-p1",
@@ -627,7 +702,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-payments-008"
+    "variant_of": "s-payments-008",
+    "status": "active"
   },
   {
     "id": "s-payments-008-p2",
@@ -636,7 +712,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-payments-008"
+    "variant_of": "s-payments-008",
+    "status": "active"
   },
   {
     "id": "s-payments-008-m",
@@ -645,7 +722,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "messy",
-    "variant_of": "s-payments-008"
+    "variant_of": "s-payments-008",
+    "status": "active"
   },
   {
     "id": "s-refunds-001-p1",
@@ -654,7 +732,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-refunds-001"
+    "variant_of": "s-refunds-001",
+    "status": "active"
   },
   {
     "id": "s-refunds-001-p2",
@@ -663,7 +742,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-refunds-001"
+    "variant_of": "s-refunds-001",
+    "status": "active"
   },
   {
     "id": "s-refunds-001-m",
@@ -672,7 +752,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-refunds-001"
+    "variant_of": "s-refunds-001",
+    "status": "active"
   },
   {
     "id": "s-refunds-002-p1",
@@ -681,7 +762,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-refunds-002"
+    "variant_of": "s-refunds-002",
+    "status": "active"
   },
   {
     "id": "s-refunds-002-p2",
@@ -690,7 +772,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-refunds-002"
+    "variant_of": "s-refunds-002",
+    "status": "active"
   },
   {
     "id": "s-refunds-002-m",
@@ -699,7 +782,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-refunds-002"
+    "variant_of": "s-refunds-002",
+    "status": "active"
   },
   {
     "id": "s-refunds-003-p1",
@@ -708,7 +792,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-refunds-003"
+    "variant_of": "s-refunds-003",
+    "status": "active"
   },
   {
     "id": "s-refunds-003-p2",
@@ -717,7 +802,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-refunds-003"
+    "variant_of": "s-refunds-003",
+    "status": "active"
   },
   {
     "id": "s-refunds-003-m",
@@ -726,7 +812,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-refunds-003"
+    "variant_of": "s-refunds-003",
+    "status": "active"
   },
   {
     "id": "s-refunds-004-p1",
@@ -735,7 +822,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-refunds-004"
+    "variant_of": "s-refunds-004",
+    "status": "active"
   },
   {
     "id": "s-refunds-004-p2",
@@ -744,7 +832,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-refunds-004"
+    "variant_of": "s-refunds-004",
+    "status": "active"
   },
   {
     "id": "s-refunds-004-m",
@@ -753,7 +842,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-refunds-004"
+    "variant_of": "s-refunds-004",
+    "status": "active"
   },
   {
     "id": "s-refunds-005-p1",
@@ -762,7 +852,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-refunds-005"
+    "variant_of": "s-refunds-005",
+    "status": "active"
   },
   {
     "id": "s-refunds-005-p2",
@@ -771,7 +862,10 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-refunds-005"
+    "variant_of": "s-refunds-005",
+    "status": "excluded",
+    "exclusion_tier": 1,
+    "exclusion_reason": "pattern_b_fact_drift_loan_cancellation"
   },
   {
     "id": "s-refunds-005-m",
@@ -780,7 +874,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-refunds-005"
+    "variant_of": "s-refunds-005",
+    "status": "active"
   },
   {
     "id": "s-refunds-006-p1",
@@ -789,7 +884,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-refunds-006"
+    "variant_of": "s-refunds-006",
+    "status": "active"
   },
   {
     "id": "s-refunds-006-p2",
@@ -798,7 +894,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-refunds-006"
+    "variant_of": "s-refunds-006",
+    "status": "active"
   },
   {
     "id": "s-refunds-006-m",
@@ -807,7 +904,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-refunds-006"
+    "variant_of": "s-refunds-006",
+    "status": "active"
   },
   {
     "id": "s-refunds-007-p1",
@@ -816,7 +914,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-refunds-007"
+    "variant_of": "s-refunds-007",
+    "status": "active"
   },
   {
     "id": "s-refunds-007-p2",
@@ -825,7 +924,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-refunds-007"
+    "variant_of": "s-refunds-007",
+    "status": "active"
   },
   {
     "id": "s-refunds-007-m",
@@ -834,7 +934,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "messy",
-    "variant_of": "s-refunds-007"
+    "variant_of": "s-refunds-007",
+    "status": "active"
   },
   {
     "id": "s-refunds-008-p1",
@@ -843,7 +944,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-refunds-008"
+    "variant_of": "s-refunds-008",
+    "status": "active"
   },
   {
     "id": "s-refunds-008-p2",
@@ -852,7 +954,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-refunds-008"
+    "variant_of": "s-refunds-008",
+    "status": "active"
   },
   {
     "id": "s-refunds-008-m",
@@ -861,7 +964,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "messy",
-    "variant_of": "s-refunds-008"
+    "variant_of": "s-refunds-008",
+    "status": "active"
   },
   {
     "id": "s-account-security-001-p1",
@@ -870,7 +974,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-account-security-001"
+    "variant_of": "s-account-security-001",
+    "status": "active"
   },
   {
     "id": "s-account-security-001-p2",
@@ -879,7 +984,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-account-security-001"
+    "variant_of": "s-account-security-001",
+    "status": "active"
   },
   {
     "id": "s-account-security-001-m",
@@ -888,7 +994,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-account-security-001"
+    "variant_of": "s-account-security-001",
+    "status": "active"
   },
   {
     "id": "s-account-security-002-p1",
@@ -897,7 +1004,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-account-security-002"
+    "variant_of": "s-account-security-002",
+    "status": "active"
   },
   {
     "id": "s-account-security-002-p2",
@@ -906,7 +1014,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-account-security-002"
+    "variant_of": "s-account-security-002",
+    "status": "active"
   },
   {
     "id": "s-account-security-002-m",
@@ -915,7 +1024,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-account-security-002"
+    "variant_of": "s-account-security-002",
+    "status": "active"
   },
   {
     "id": "s-account-security-003-p1",
@@ -924,7 +1034,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-account-security-003"
+    "variant_of": "s-account-security-003",
+    "status": "active"
   },
   {
     "id": "s-account-security-003-p2",
@@ -933,7 +1044,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-account-security-003"
+    "variant_of": "s-account-security-003",
+    "status": "active"
   },
   {
     "id": "s-account-security-003-m",
@@ -942,7 +1054,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-account-security-003"
+    "variant_of": "s-account-security-003",
+    "status": "active"
   },
   {
     "id": "s-account-security-004-p1",
@@ -951,7 +1064,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-account-security-004"
+    "variant_of": "s-account-security-004",
+    "status": "active"
   },
   {
     "id": "s-account-security-004-p2",
@@ -960,7 +1074,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-account-security-004"
+    "variant_of": "s-account-security-004",
+    "status": "active"
   },
   {
     "id": "s-account-security-004-m",
@@ -969,7 +1084,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-account-security-004"
+    "variant_of": "s-account-security-004",
+    "status": "active"
   },
   {
     "id": "s-account-security-005-p1",
@@ -978,7 +1094,10 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-account-security-005"
+    "variant_of": "s-account-security-005",
+    "status": "excluded",
+    "exclusion_tier": 1,
+    "exclusion_reason": "pattern_a_answer_leakage"
   },
   {
     "id": "s-account-security-005-p2",
@@ -987,7 +1106,10 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-account-security-005"
+    "variant_of": "s-account-security-005",
+    "status": "excluded",
+    "exclusion_tier": 1,
+    "exclusion_reason": "pattern_a_answer_leakage"
   },
   {
     "id": "s-account-security-005-m",
@@ -996,7 +1118,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-account-security-005"
+    "variant_of": "s-account-security-005",
+    "status": "active"
   },
   {
     "id": "s-account-security-006-p1",
@@ -1005,7 +1128,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-account-security-006"
+    "variant_of": "s-account-security-006",
+    "status": "active"
   },
   {
     "id": "s-account-security-006-p2",
@@ -1014,7 +1138,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-account-security-006"
+    "variant_of": "s-account-security-006",
+    "status": "active"
   },
   {
     "id": "s-account-security-006-m",
@@ -1023,7 +1148,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-account-security-006"
+    "variant_of": "s-account-security-006",
+    "status": "active"
   },
   {
     "id": "s-account-security-007-p1",
@@ -1032,7 +1158,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-account-security-007"
+    "variant_of": "s-account-security-007",
+    "status": "active"
   },
   {
     "id": "s-account-security-007-p2",
@@ -1041,7 +1168,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-account-security-007"
+    "variant_of": "s-account-security-007",
+    "status": "active"
   },
   {
     "id": "s-account-security-007-m",
@@ -1050,7 +1178,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-account-security-007"
+    "variant_of": "s-account-security-007",
+    "status": "active"
   },
   {
     "id": "s-account-security-008-p1",
@@ -1059,7 +1188,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-account-security-008"
+    "variant_of": "s-account-security-008",
+    "status": "active"
   },
   {
     "id": "s-account-security-008-p2",
@@ -1068,7 +1198,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-account-security-008"
+    "variant_of": "s-account-security-008",
+    "status": "active"
   },
   {
     "id": "s-account-security-008-m",
@@ -1077,7 +1208,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "messy",
-    "variant_of": "s-account-security-008"
+    "variant_of": "s-account-security-008",
+    "status": "active"
   },
   {
     "id": "s-cancellations-001-p1",
@@ -1086,7 +1218,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-cancellations-001"
+    "variant_of": "s-cancellations-001",
+    "status": "active"
   },
   {
     "id": "s-cancellations-001-p2",
@@ -1095,7 +1228,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-cancellations-001"
+    "variant_of": "s-cancellations-001",
+    "status": "active"
   },
   {
     "id": "s-cancellations-001-m",
@@ -1104,7 +1238,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-cancellations-001"
+    "variant_of": "s-cancellations-001",
+    "status": "active"
   },
   {
     "id": "s-cancellations-002-p1",
@@ -1113,7 +1248,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-cancellations-002"
+    "variant_of": "s-cancellations-002",
+    "status": "active"
   },
   {
     "id": "s-cancellations-002-p2",
@@ -1122,7 +1258,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-cancellations-002"
+    "variant_of": "s-cancellations-002",
+    "status": "active"
   },
   {
     "id": "s-cancellations-002-m",
@@ -1131,7 +1268,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-cancellations-002"
+    "variant_of": "s-cancellations-002",
+    "status": "active"
   },
   {
     "id": "s-cancellations-003-p1",
@@ -1140,7 +1278,10 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-cancellations-003"
+    "variant_of": "s-cancellations-003",
+    "status": "excluded",
+    "exclusion_tier": 2,
+    "exclusion_reason": "bureaucratic_product_reservation"
   },
   {
     "id": "s-cancellations-003-p2",
@@ -1149,7 +1290,10 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-cancellations-003"
+    "variant_of": "s-cancellations-003",
+    "status": "excluded",
+    "exclusion_tier": 2,
+    "exclusion_reason": "bureaucratic_street_date"
   },
   {
     "id": "s-cancellations-003-m",
@@ -1158,7 +1302,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-cancellations-003"
+    "variant_of": "s-cancellations-003",
+    "status": "active"
   },
   {
     "id": "s-cancellations-004-p1",
@@ -1167,7 +1312,10 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-cancellations-004"
+    "variant_of": "s-cancellations-004",
+    "status": "excluded",
+    "exclusion_tier": 2,
+    "exclusion_reason": "bureaucratic_corporate_order"
   },
   {
     "id": "s-cancellations-004-p2",
@@ -1176,7 +1324,10 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-cancellations-004"
+    "variant_of": "s-cancellations-004",
+    "status": "excluded",
+    "exclusion_tier": 2,
+    "exclusion_reason": "bureaucratic_high_volume"
   },
   {
     "id": "s-cancellations-004-m",
@@ -1185,7 +1336,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-cancellations-004"
+    "variant_of": "s-cancellations-004",
+    "status": "active"
   },
   {
     "id": "s-cancellations-005-p1",
@@ -1194,7 +1346,10 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-cancellations-005"
+    "variant_of": "s-cancellations-005",
+    "status": "excluded",
+    "exclusion_tier": 2,
+    "exclusion_reason": "unnatural_doorstep_phrasing"
   },
   {
     "id": "s-cancellations-005-p2",
@@ -1203,7 +1358,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-cancellations-005"
+    "variant_of": "s-cancellations-005",
+    "status": "active"
   },
   {
     "id": "s-cancellations-005-m",
@@ -1212,7 +1368,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-cancellations-005"
+    "variant_of": "s-cancellations-005",
+    "status": "active"
   },
   {
     "id": "s-cancellations-006-p1",
@@ -1221,7 +1378,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-cancellations-006"
+    "variant_of": "s-cancellations-006",
+    "status": "active"
   },
   {
     "id": "s-cancellations-006-p2",
@@ -1230,7 +1388,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-cancellations-006"
+    "variant_of": "s-cancellations-006",
+    "status": "active"
   },
   {
     "id": "s-cancellations-006-m",
@@ -1239,7 +1398,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-cancellations-006"
+    "variant_of": "s-cancellations-006",
+    "status": "active"
   },
   {
     "id": "s-cancellations-007-p1",
@@ -1248,7 +1408,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-cancellations-007"
+    "variant_of": "s-cancellations-007",
+    "status": "active"
   },
   {
     "id": "s-cancellations-007-p2",
@@ -1257,7 +1418,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-cancellations-007"
+    "variant_of": "s-cancellations-007",
+    "status": "active"
   },
   {
     "id": "s-cancellations-007-m",
@@ -1266,7 +1428,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "messy",
-    "variant_of": "s-cancellations-007"
+    "variant_of": "s-cancellations-007",
+    "status": "active"
   },
   {
     "id": "s-cancellations-008-p1",
@@ -1275,7 +1438,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-cancellations-008"
+    "variant_of": "s-cancellations-008",
+    "status": "active"
   },
   {
     "id": "s-cancellations-008-p2",
@@ -1284,7 +1448,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-cancellations-008"
+    "variant_of": "s-cancellations-008",
+    "status": "active"
   },
   {
     "id": "s-cancellations-008-m",
@@ -1293,7 +1458,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "messy",
-    "variant_of": "s-cancellations-008"
+    "variant_of": "s-cancellations-008",
+    "status": "active"
   },
   {
     "id": "s-exchanges-001-p1",
@@ -1302,7 +1468,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-exchanges-001"
+    "variant_of": "s-exchanges-001",
+    "status": "active"
   },
   {
     "id": "s-exchanges-001-p2",
@@ -1311,7 +1478,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-exchanges-001"
+    "variant_of": "s-exchanges-001",
+    "status": "active"
   },
   {
     "id": "s-exchanges-001-m",
@@ -1320,7 +1488,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-exchanges-001"
+    "variant_of": "s-exchanges-001",
+    "status": "active"
   },
   {
     "id": "s-exchanges-002-p1",
@@ -1329,7 +1498,10 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-exchanges-002"
+    "variant_of": "s-exchanges-002",
+    "status": "excluded",
+    "exclusion_tier": 2,
+    "exclusion_reason": "unnatural_measurement_phrasing"
   },
   {
     "id": "s-exchanges-002-p2",
@@ -1338,7 +1510,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-exchanges-002"
+    "variant_of": "s-exchanges-002",
+    "status": "active"
   },
   {
     "id": "s-exchanges-002-m",
@@ -1347,7 +1520,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-exchanges-002"
+    "variant_of": "s-exchanges-002",
+    "status": "active"
   },
   {
     "id": "s-exchanges-003-p1",
@@ -1356,7 +1530,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-exchanges-003"
+    "variant_of": "s-exchanges-003",
+    "status": "active"
   },
   {
     "id": "s-exchanges-003-p2",
@@ -1365,7 +1540,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-exchanges-003"
+    "variant_of": "s-exchanges-003",
+    "status": "active"
   },
   {
     "id": "s-exchanges-003-m",
@@ -1374,7 +1550,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-exchanges-003"
+    "variant_of": "s-exchanges-003",
+    "status": "active"
   },
   {
     "id": "s-exchanges-004-p1",
@@ -1383,7 +1560,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-exchanges-004"
+    "variant_of": "s-exchanges-004",
+    "status": "active"
   },
   {
     "id": "s-exchanges-004-p2",
@@ -1392,7 +1570,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-exchanges-004"
+    "variant_of": "s-exchanges-004",
+    "status": "active"
   },
   {
     "id": "s-exchanges-004-m",
@@ -1401,7 +1580,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-exchanges-004"
+    "variant_of": "s-exchanges-004",
+    "status": "active"
   },
   {
     "id": "s-exchanges-005-p1",
@@ -1410,7 +1590,10 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-exchanges-005"
+    "variant_of": "s-exchanges-005",
+    "status": "excluded",
+    "exclusion_tier": 1,
+    "exclusion_reason": "pattern_a_answer_leakage_intake_scan"
   },
   {
     "id": "s-exchanges-005-p2",
@@ -1419,7 +1602,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-exchanges-005"
+    "variant_of": "s-exchanges-005",
+    "status": "active"
   },
   {
     "id": "s-exchanges-005-m",
@@ -1428,7 +1612,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-exchanges-005"
+    "variant_of": "s-exchanges-005",
+    "status": "active"
   },
   {
     "id": "s-exchanges-006-p1",
@@ -1437,7 +1622,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-exchanges-006"
+    "variant_of": "s-exchanges-006",
+    "status": "active"
   },
   {
     "id": "s-exchanges-006-p2",
@@ -1446,7 +1632,10 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-exchanges-006"
+    "variant_of": "s-exchanges-006",
+    "status": "excluded",
+    "exclusion_tier": 2,
+    "exclusion_reason": "bureaucratic_preference_based"
   },
   {
     "id": "s-exchanges-006-m",
@@ -1455,7 +1644,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-exchanges-006"
+    "variant_of": "s-exchanges-006",
+    "status": "active"
   },
   {
     "id": "s-exchanges-007-p1",
@@ -1464,7 +1654,10 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-exchanges-007"
+    "variant_of": "s-exchanges-007",
+    "status": "excluded",
+    "exclusion_tier": 2,
+    "exclusion_reason": "bureaucratic_price_variance"
   },
   {
     "id": "s-exchanges-007-p2",
@@ -1473,7 +1666,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-exchanges-007"
+    "variant_of": "s-exchanges-007",
+    "status": "active"
   },
   {
     "id": "s-exchanges-007-m",
@@ -1482,7 +1676,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-exchanges-007"
+    "variant_of": "s-exchanges-007",
+    "status": "active"
   },
   {
     "id": "s-exchanges-008-p1",
@@ -1491,7 +1686,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-exchanges-008"
+    "variant_of": "s-exchanges-008",
+    "status": "active"
   },
   {
     "id": "s-exchanges-008-p2",
@@ -1500,7 +1696,10 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-exchanges-008"
+    "variant_of": "s-exchanges-008",
+    "status": "excluded",
+    "exclusion_tier": 2,
+    "exclusion_reason": "bureaucratic_promotional_markdown"
   },
   {
     "id": "s-exchanges-008-m",
@@ -1509,7 +1708,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "messy",
-    "variant_of": "s-exchanges-008"
+    "variant_of": "s-exchanges-008",
+    "status": "active"
   },
   {
     "id": "s-disputes-001-p1",
@@ -1518,7 +1718,10 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-disputes-001"
+    "variant_of": "s-disputes-001",
+    "status": "excluded",
+    "exclusion_tier": 2,
+    "exclusion_reason": "legal_register_statutory_window"
   },
   {
     "id": "s-disputes-001-p2",
@@ -1527,7 +1730,10 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-disputes-001"
+    "variant_of": "s-disputes-001",
+    "status": "excluded",
+    "exclusion_tier": 2,
+    "exclusion_reason": "legal_register_adjudicate"
   },
   {
     "id": "s-disputes-001-m",
@@ -1536,7 +1742,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-disputes-001"
+    "variant_of": "s-disputes-001",
+    "status": "active"
   },
   {
     "id": "s-disputes-002-p1",
@@ -1545,7 +1752,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-disputes-002"
+    "variant_of": "s-disputes-002",
+    "status": "active"
   },
   {
     "id": "s-disputes-002-p2",
@@ -1554,7 +1762,10 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-disputes-002"
+    "variant_of": "s-disputes-002",
+    "status": "excluded",
+    "exclusion_tier": 2,
+    "exclusion_reason": "formal_account_holder_auth"
   },
   {
     "id": "s-disputes-002-m",
@@ -1563,7 +1774,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-disputes-002"
+    "variant_of": "s-disputes-002",
+    "status": "active"
   },
   {
     "id": "s-disputes-003-p1",
@@ -1572,7 +1784,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-disputes-003"
+    "variant_of": "s-disputes-003",
+    "status": "active"
   },
   {
     "id": "s-disputes-003-p2",
@@ -1581,7 +1794,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-disputes-003"
+    "variant_of": "s-disputes-003",
+    "status": "active"
   },
   {
     "id": "s-disputes-003-m",
@@ -1590,7 +1804,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-disputes-003"
+    "variant_of": "s-disputes-003",
+    "status": "active"
   },
   {
     "id": "s-disputes-004-p1",
@@ -1599,7 +1814,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-disputes-004"
+    "variant_of": "s-disputes-004",
+    "status": "active"
   },
   {
     "id": "s-disputes-004-p2",
@@ -1608,7 +1824,10 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-disputes-004"
+    "variant_of": "s-disputes-004",
+    "status": "excluded",
+    "exclusion_tier": 2,
+    "exclusion_reason": "legal_register_criminal_filing"
   },
   {
     "id": "s-disputes-004-m",
@@ -1617,7 +1836,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-disputes-004"
+    "variant_of": "s-disputes-004",
+    "status": "active"
   },
   {
     "id": "s-disputes-005-p1",
@@ -1626,7 +1846,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-disputes-005"
+    "variant_of": "s-disputes-005",
+    "status": "active"
   },
   {
     "id": "s-disputes-005-p2",
@@ -1635,7 +1856,10 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-disputes-005"
+    "variant_of": "s-disputes-005",
+    "status": "excluded",
+    "exclusion_tier": 2,
+    "exclusion_reason": "formal_payment_grievance"
   },
   {
     "id": "s-disputes-005-m",
@@ -1644,7 +1868,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-disputes-005"
+    "variant_of": "s-disputes-005",
+    "status": "active"
   },
   {
     "id": "s-disputes-006-p1",
@@ -1653,7 +1878,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-disputes-006"
+    "variant_of": "s-disputes-006",
+    "status": "active"
   },
   {
     "id": "s-disputes-006-p2",
@@ -1662,7 +1888,10 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-disputes-006"
+    "variant_of": "s-disputes-006",
+    "status": "excluded",
+    "exclusion_tier": 2,
+    "exclusion_reason": "formal_contesting_charge"
   },
   {
     "id": "s-disputes-006-m",
@@ -1671,7 +1900,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-disputes-006"
+    "variant_of": "s-disputes-006",
+    "status": "active"
   },
   {
     "id": "s-disputes-007-p1",
@@ -1680,7 +1910,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-disputes-007"
+    "variant_of": "s-disputes-007",
+    "status": "active"
   },
   {
     "id": "s-disputes-007-p2",
@@ -1689,7 +1920,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-disputes-007"
+    "variant_of": "s-disputes-007",
+    "status": "active"
   },
   {
     "id": "s-disputes-007-m",
@@ -1698,7 +1930,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-disputes-007"
+    "variant_of": "s-disputes-007",
+    "status": "active"
   },
   {
     "id": "s-disputes-008-p1",
@@ -1707,7 +1940,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-disputes-008"
+    "variant_of": "s-disputes-008",
+    "status": "active"
   },
   {
     "id": "s-disputes-008-p2",
@@ -1716,7 +1950,10 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-disputes-008"
+    "variant_of": "s-disputes-008",
+    "status": "excluded",
+    "exclusion_tier": 2,
+    "exclusion_reason": "formal_payment_contest"
   },
   {
     "id": "s-disputes-008-m",
@@ -1725,7 +1962,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "messy",
-    "variant_of": "s-disputes-008"
+    "variant_of": "s-disputes-008",
+    "status": "active"
   },
   {
     "id": "s-methods-001-p1",
@@ -1734,7 +1972,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-methods-001"
+    "variant_of": "s-methods-001",
+    "status": "active"
   },
   {
     "id": "s-methods-001-p2",
@@ -1743,7 +1982,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-methods-001"
+    "variant_of": "s-methods-001",
+    "status": "active"
   },
   {
     "id": "s-methods-001-m",
@@ -1752,7 +1992,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-methods-001"
+    "variant_of": "s-methods-001",
+    "status": "active"
   },
   {
     "id": "s-methods-002-p1",
@@ -1761,7 +2002,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-methods-002"
+    "variant_of": "s-methods-002",
+    "status": "active"
   },
   {
     "id": "s-methods-002-p2",
@@ -1770,7 +2012,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-methods-002"
+    "variant_of": "s-methods-002",
+    "status": "active"
   },
   {
     "id": "s-methods-002-m",
@@ -1779,7 +2022,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-methods-002"
+    "variant_of": "s-methods-002",
+    "status": "active"
   },
   {
     "id": "s-methods-003-p1",
@@ -1788,7 +2032,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-methods-003"
+    "variant_of": "s-methods-003",
+    "status": "active"
   },
   {
     "id": "s-methods-003-p2",
@@ -1797,7 +2042,10 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-methods-003"
+    "variant_of": "s-methods-003",
+    "status": "excluded",
+    "exclusion_tier": 2,
+    "exclusion_reason": "bureaucratic_reimbursement_routing"
   },
   {
     "id": "s-methods-003-m",
@@ -1806,7 +2054,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-methods-003"
+    "variant_of": "s-methods-003",
+    "status": "active"
   },
   {
     "id": "s-methods-004-p1",
@@ -1815,7 +2064,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-methods-004"
+    "variant_of": "s-methods-004",
+    "status": "active"
   },
   {
     "id": "s-methods-004-p2",
@@ -1824,7 +2074,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-methods-004"
+    "variant_of": "s-methods-004",
+    "status": "active"
   },
   {
     "id": "s-methods-004-m",
@@ -1833,7 +2084,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-methods-004"
+    "variant_of": "s-methods-004",
+    "status": "active"
   },
   {
     "id": "s-methods-005-p1",
@@ -1842,7 +2094,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-methods-005"
+    "variant_of": "s-methods-005",
+    "status": "active"
   },
   {
     "id": "s-methods-005-p2",
@@ -1851,7 +2104,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-methods-005"
+    "variant_of": "s-methods-005",
+    "status": "active"
   },
   {
     "id": "s-methods-005-m",
@@ -1860,7 +2114,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-methods-005"
+    "variant_of": "s-methods-005",
+    "status": "active"
   },
   {
     "id": "s-methods-006-p1",
@@ -1869,7 +2124,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-methods-006"
+    "variant_of": "s-methods-006",
+    "status": "active"
   },
   {
     "id": "s-methods-006-p2",
@@ -1878,7 +2134,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-methods-006"
+    "variant_of": "s-methods-006",
+    "status": "active"
   },
   {
     "id": "s-methods-006-m",
@@ -1887,7 +2144,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-methods-006"
+    "variant_of": "s-methods-006",
+    "status": "active"
   },
   {
     "id": "s-methods-007-p1",
@@ -1896,7 +2154,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-methods-007"
+    "variant_of": "s-methods-007",
+    "status": "active"
   },
   {
     "id": "s-methods-007-p2",
@@ -1905,7 +2164,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-methods-007"
+    "variant_of": "s-methods-007",
+    "status": "active"
   },
   {
     "id": "s-methods-007-m",
@@ -1914,7 +2174,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "messy",
-    "variant_of": "s-methods-007"
+    "variant_of": "s-methods-007",
+    "status": "active"
   },
   {
     "id": "s-methods-008-p1",
@@ -1923,7 +2184,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-methods-008"
+    "variant_of": "s-methods-008",
+    "status": "active"
   },
   {
     "id": "s-methods-008-p2",
@@ -1932,7 +2194,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-methods-008"
+    "variant_of": "s-methods-008",
+    "status": "active"
   },
   {
     "id": "s-methods-008-m",
@@ -1941,7 +2204,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "messy",
-    "variant_of": "s-methods-008"
+    "variant_of": "s-methods-008",
+    "status": "active"
   },
   {
     "id": "s-privacy-001-p1",
@@ -1950,7 +2214,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-privacy-001"
+    "variant_of": "s-privacy-001",
+    "status": "active"
   },
   {
     "id": "s-privacy-001-p2",
@@ -1959,7 +2224,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-privacy-001"
+    "variant_of": "s-privacy-001",
+    "status": "active"
   },
   {
     "id": "s-privacy-001-m",
@@ -1968,7 +2234,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-privacy-001"
+    "variant_of": "s-privacy-001",
+    "status": "active"
   },
   {
     "id": "s-privacy-002-p1",
@@ -1977,7 +2244,10 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-privacy-002"
+    "variant_of": "s-privacy-002",
+    "status": "excluded",
+    "exclusion_tier": 2,
+    "exclusion_reason": "llm_register_monetize"
   },
   {
     "id": "s-privacy-002-p2",
@@ -1986,7 +2256,10 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-privacy-002"
+    "variant_of": "s-privacy-002",
+    "status": "excluded",
+    "exclusion_tier": 1,
+    "exclusion_reason": "pattern_b_fact_drift_brokers"
   },
   {
     "id": "s-privacy-002-m",
@@ -1995,7 +2268,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-privacy-002"
+    "variant_of": "s-privacy-002",
+    "status": "active"
   },
   {
     "id": "s-privacy-003-p1",
@@ -2004,7 +2278,10 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-privacy-003"
+    "variant_of": "s-privacy-003",
+    "status": "excluded",
+    "exclusion_tier": 2,
+    "exclusion_reason": "legal_register_statutory_preservation"
   },
   {
     "id": "s-privacy-003-p2",
@@ -2013,7 +2290,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-privacy-003"
+    "variant_of": "s-privacy-003",
+    "status": "active"
   },
   {
     "id": "s-privacy-003-m",
@@ -2022,7 +2300,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-privacy-003"
+    "variant_of": "s-privacy-003",
+    "status": "active"
   },
   {
     "id": "s-privacy-004-p1",
@@ -2031,7 +2310,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-privacy-004"
+    "variant_of": "s-privacy-004",
+    "status": "active"
   },
   {
     "id": "s-privacy-004-p2",
@@ -2040,7 +2320,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-privacy-004"
+    "variant_of": "s-privacy-004",
+    "status": "active"
   },
   {
     "id": "s-privacy-004-m",
@@ -2049,7 +2330,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-privacy-004"
+    "variant_of": "s-privacy-004",
+    "status": "active"
   },
   {
     "id": "s-privacy-005-p1",
@@ -2058,7 +2340,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-privacy-005"
+    "variant_of": "s-privacy-005",
+    "status": "active"
   },
   {
     "id": "s-privacy-005-p2",
@@ -2067,7 +2350,10 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-privacy-005"
+    "variant_of": "s-privacy-005",
+    "status": "excluded",
+    "exclusion_tier": 2,
+    "exclusion_reason": "technical_register_machine_readable"
   },
   {
     "id": "s-privacy-005-m",
@@ -2076,7 +2362,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-privacy-005"
+    "variant_of": "s-privacy-005",
+    "status": "active"
   },
   {
     "id": "s-privacy-006-p1",
@@ -2085,7 +2372,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-privacy-006"
+    "variant_of": "s-privacy-006",
+    "status": "active"
   },
   {
     "id": "s-privacy-006-p2",
@@ -2094,7 +2382,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-privacy-006"
+    "variant_of": "s-privacy-006",
+    "status": "active"
   },
   {
     "id": "s-privacy-006-m",
@@ -2103,7 +2392,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-privacy-006"
+    "variant_of": "s-privacy-006",
+    "status": "active"
   },
   {
     "id": "s-privacy-007-p1",
@@ -2112,7 +2402,10 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-privacy-007"
+    "variant_of": "s-privacy-007",
+    "status": "excluded",
+    "exclusion_tier": 2,
+    "exclusion_reason": "bureaucratic_protocol_termination"
   },
   {
     "id": "s-privacy-007-p2",
@@ -2121,7 +2414,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-privacy-007"
+    "variant_of": "s-privacy-007",
+    "status": "active"
   },
   {
     "id": "s-privacy-007-m",
@@ -2130,7 +2424,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-privacy-007"
+    "variant_of": "s-privacy-007",
+    "status": "active"
   },
   {
     "id": "s-privacy-008-p1",
@@ -2139,7 +2434,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-privacy-008"
+    "variant_of": "s-privacy-008",
+    "status": "active"
   },
   {
     "id": "s-privacy-008-p2",
@@ -2148,7 +2444,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-privacy-008"
+    "variant_of": "s-privacy-008",
+    "status": "active"
   },
   {
     "id": "s-privacy-008-m",
@@ -2157,7 +2454,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "messy",
-    "variant_of": "s-privacy-008"
+    "variant_of": "s-privacy-008",
+    "status": "active"
   },
   {
     "id": "s-data-deletion-001-p1",
@@ -2166,7 +2464,10 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-data-deletion-001"
+    "variant_of": "s-data-deletion-001",
+    "status": "excluded",
+    "exclusion_tier": 2,
+    "exclusion_reason": "bureaucratic_profile_erasure"
   },
   {
     "id": "s-data-deletion-001-p2",
@@ -2175,7 +2476,10 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-data-deletion-001"
+    "variant_of": "s-data-deletion-001",
+    "status": "excluded",
+    "exclusion_tier": 2,
+    "exclusion_reason": "legal_register_cooling_off"
   },
   {
     "id": "s-data-deletion-001-m",
@@ -2184,7 +2488,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-data-deletion-001"
+    "variant_of": "s-data-deletion-001",
+    "status": "active"
   },
   {
     "id": "s-data-deletion-002-p1",
@@ -2193,7 +2498,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-data-deletion-002"
+    "variant_of": "s-data-deletion-002",
+    "status": "active"
   },
   {
     "id": "s-data-deletion-002-p2",
@@ -2202,7 +2508,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-data-deletion-002"
+    "variant_of": "s-data-deletion-002",
+    "status": "active"
   },
   {
     "id": "s-data-deletion-002-m",
@@ -2211,7 +2518,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-data-deletion-002"
+    "variant_of": "s-data-deletion-002",
+    "status": "active"
   },
   {
     "id": "s-data-deletion-003-p1",
@@ -2220,7 +2528,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-data-deletion-003"
+    "variant_of": "s-data-deletion-003",
+    "status": "active"
   },
   {
     "id": "s-data-deletion-003-p2",
@@ -2229,7 +2538,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-data-deletion-003"
+    "variant_of": "s-data-deletion-003",
+    "status": "active"
   },
   {
     "id": "s-data-deletion-003-m",
@@ -2238,7 +2548,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-data-deletion-003"
+    "variant_of": "s-data-deletion-003",
+    "status": "active"
   },
   {
     "id": "s-data-deletion-004-p1",
@@ -2247,7 +2558,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-data-deletion-004"
+    "variant_of": "s-data-deletion-004",
+    "status": "active"
   },
   {
     "id": "s-data-deletion-004-p2",
@@ -2256,7 +2568,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-data-deletion-004"
+    "variant_of": "s-data-deletion-004",
+    "status": "active"
   },
   {
     "id": "s-data-deletion-004-m",
@@ -2265,7 +2578,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-data-deletion-004"
+    "variant_of": "s-data-deletion-004",
+    "status": "active"
   },
   {
     "id": "s-data-deletion-005-p1",
@@ -2274,7 +2588,10 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-data-deletion-005"
+    "variant_of": "s-data-deletion-005",
+    "status": "excluded",
+    "exclusion_tier": 2,
+    "exclusion_reason": "technical_register_disaster_recovery"
   },
   {
     "id": "s-data-deletion-005-p2",
@@ -2283,7 +2600,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-data-deletion-005"
+    "variant_of": "s-data-deletion-005",
+    "status": "active"
   },
   {
     "id": "s-data-deletion-005-m",
@@ -2292,7 +2610,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-data-deletion-005"
+    "variant_of": "s-data-deletion-005",
+    "status": "active"
   },
   {
     "id": "s-data-deletion-006-p1",
@@ -2301,7 +2620,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-data-deletion-006"
+    "variant_of": "s-data-deletion-006",
+    "status": "active"
   },
   {
     "id": "s-data-deletion-006-p2",
@@ -2310,7 +2630,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-data-deletion-006"
+    "variant_of": "s-data-deletion-006",
+    "status": "active"
   },
   {
     "id": "s-data-deletion-006-m",
@@ -2319,7 +2640,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-data-deletion-006"
+    "variant_of": "s-data-deletion-006",
+    "status": "active"
   },
   {
     "id": "s-data-deletion-007-p1",
@@ -2328,7 +2650,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-data-deletion-007"
+    "variant_of": "s-data-deletion-007",
+    "status": "active"
   },
   {
     "id": "s-data-deletion-007-p2",
@@ -2337,7 +2660,10 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-data-deletion-007"
+    "variant_of": "s-data-deletion-007",
+    "status": "excluded",
+    "exclusion_tier": 1,
+    "exclusion_reason": "pattern_b_fact_drift_timeline"
   },
   {
     "id": "s-data-deletion-007-m",
@@ -2346,7 +2672,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "messy",
-    "variant_of": "s-data-deletion-007"
+    "variant_of": "s-data-deletion-007",
+    "status": "active"
   },
   {
     "id": "s-data-deletion-008-p1",
@@ -2355,7 +2682,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-data-deletion-008"
+    "variant_of": "s-data-deletion-008",
+    "status": "active"
   },
   {
     "id": "s-data-deletion-008-p2",
@@ -2364,7 +2692,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-data-deletion-008"
+    "variant_of": "s-data-deletion-008",
+    "status": "active"
   },
   {
     "id": "s-data-deletion-008-m",
@@ -2373,7 +2702,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "messy",
-    "variant_of": "s-data-deletion-008"
+    "variant_of": "s-data-deletion-008",
+    "status": "active"
   },
   {
     "id": "s-notifications-001-p1",
@@ -2382,7 +2712,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-notifications-001"
+    "variant_of": "s-notifications-001",
+    "status": "active"
   },
   {
     "id": "s-notifications-001-p2",
@@ -2391,7 +2722,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-notifications-001"
+    "variant_of": "s-notifications-001",
+    "status": "active"
   },
   {
     "id": "s-notifications-001-m",
@@ -2400,7 +2732,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-notifications-001"
+    "variant_of": "s-notifications-001",
+    "status": "active"
   },
   {
     "id": "s-notifications-002-p1",
@@ -2409,7 +2742,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-notifications-002"
+    "variant_of": "s-notifications-002",
+    "status": "active"
   },
   {
     "id": "s-notifications-002-p2",
@@ -2418,7 +2752,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-notifications-002"
+    "variant_of": "s-notifications-002",
+    "status": "active"
   },
   {
     "id": "s-notifications-002-m",
@@ -2427,7 +2762,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-notifications-002"
+    "variant_of": "s-notifications-002",
+    "status": "active"
   },
   {
     "id": "s-notifications-003-p1",
@@ -2436,7 +2772,10 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-notifications-003"
+    "variant_of": "s-notifications-003",
+    "status": "excluded",
+    "exclusion_tier": 1,
+    "exclusion_reason": "pattern_a_answer_leakage_hours"
   },
   {
     "id": "s-notifications-003-p2",
@@ -2445,7 +2784,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-notifications-003"
+    "variant_of": "s-notifications-003",
+    "status": "active"
   },
   {
     "id": "s-notifications-003-m",
@@ -2454,7 +2794,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-notifications-003"
+    "variant_of": "s-notifications-003",
+    "status": "active"
   },
   {
     "id": "s-notifications-004-p1",
@@ -2463,7 +2804,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-notifications-004"
+    "variant_of": "s-notifications-004",
+    "status": "active"
   },
   {
     "id": "s-notifications-004-p2",
@@ -2472,7 +2814,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-notifications-004"
+    "variant_of": "s-notifications-004",
+    "status": "active"
   },
   {
     "id": "s-notifications-004-m",
@@ -2481,7 +2824,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-notifications-004"
+    "variant_of": "s-notifications-004",
+    "status": "active"
   },
   {
     "id": "s-notifications-005-p1",
@@ -2490,7 +2834,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-notifications-005"
+    "variant_of": "s-notifications-005",
+    "status": "active"
   },
   {
     "id": "s-notifications-005-p2",
@@ -2499,7 +2844,10 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-notifications-005"
+    "variant_of": "s-notifications-005",
+    "status": "excluded",
+    "exclusion_tier": 2,
+    "exclusion_reason": "legal_register_remedy_correspondence"
   },
   {
     "id": "s-notifications-005-m",
@@ -2508,7 +2856,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-notifications-005"
+    "variant_of": "s-notifications-005",
+    "status": "active"
   },
   {
     "id": "s-notifications-006-p1",
@@ -2517,7 +2866,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-notifications-006"
+    "variant_of": "s-notifications-006",
+    "status": "active"
   },
   {
     "id": "s-notifications-006-p2",
@@ -2526,7 +2876,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "paraphrase",
-    "variant_of": "s-notifications-006"
+    "variant_of": "s-notifications-006",
+    "status": "active"
   },
   {
     "id": "s-notifications-006-m",
@@ -2535,7 +2886,8 @@
     "answerable": true,
     "difficulty": "keyword",
     "variant_type": "messy",
-    "variant_of": "s-notifications-006"
+    "variant_of": "s-notifications-006",
+    "status": "active"
   },
   {
     "id": "s-notifications-007-p1",
@@ -2544,7 +2896,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-notifications-007"
+    "variant_of": "s-notifications-007",
+    "status": "active"
   },
   {
     "id": "s-notifications-007-p2",
@@ -2553,7 +2906,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "paraphrase",
-    "variant_of": "s-notifications-007"
+    "variant_of": "s-notifications-007",
+    "status": "active"
   },
   {
     "id": "s-notifications-007-m",
@@ -2562,7 +2916,8 @@
     "answerable": true,
     "difficulty": "paraphrase",
     "variant_type": "messy",
-    "variant_of": "s-notifications-007"
+    "variant_of": "s-notifications-007",
+    "status": "active"
   },
   {
     "id": "s-notifications-008-p1",
@@ -2571,7 +2926,8 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-notifications-008"
+    "variant_of": "s-notifications-008",
+    "status": "active"
   },
   {
     "id": "s-notifications-008-p2",
@@ -2580,7 +2936,10 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "paraphrase",
-    "variant_of": "s-notifications-008"
+    "variant_of": "s-notifications-008",
+    "status": "excluded",
+    "exclusion_tier": 2,
+    "exclusion_reason": "unnatural_delivery_receipts"
   },
   {
     "id": "s-notifications-008-m",
@@ -2589,6 +2948,7 @@
     "answerable": true,
     "difficulty": "hard",
     "variant_type": "messy",
-    "variant_of": "s-notifications-008"
+    "variant_of": "s-notifications-008",
+    "status": "active"
   }
 ]
