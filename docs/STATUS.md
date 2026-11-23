@@ -121,7 +121,18 @@ Phase 19 hardening: recursive tool output PII redaction, `user` reducer null-saf
   - Single serial query round-trip floor now isolated to network transit time.
 - All 741+ tests passing (test count preserved, zero regressions).
 
-**Current test count**: 744 passed | 21 skipped (baseline was 741).
+### Step 4 — COMPLETE (Layer B Single-CTE Hybrid Retrieval)
+- Implemented `searchHybridScopedCTE` in `server/src/persistence/repositories/knowledge.repository.ts`.
+- Consolidates Dense candidate selection, Sparse full-text candidate selection, and Reciprocal Rank Fusion (RRF k=60) into **exactly 1 database round-trip statement** with deterministic tie-breaking (`ORDER BY f.rrf_score DESC, f.distance ASC NULLS LAST, c.id ASC`).
+- Switched production scoped retrieval path in `server/src/knowledge/retrieval.ts` to execute `searchHybridScopedCTE`.
+- Created `server/src/knowledge/layer-b-cte.test.ts` verifying single-CTE execution, end-to-end `retrieveKnowledge` resolution, and deterministic ranking order.
+- Created `server/scripts/measure-cte-latency.ts` and measured N=30 empirical retrieval times:
+  - Phase 35 Baseline: DB Wall p50 **1,223.20ms** / p95 **3,316.02ms** (6 serial RTs)
+  - Phase 36 Step 3 (Layer A): DB Wall p50 **889.96ms** / p95 **2,767.22ms**
+  - Phase 36 Step 4 (Layer B CTE): Single-Query p50 **349.01ms** / p95 **758.65ms** (-874.19ms / -71.5% from baseline)
+- All 64 knowledge tests passing; zero regressions; zero protected file modifications.
+
+**Current test count**: 747 passed | 21 skipped (baseline was 741).
 
 ---
 
