@@ -95,6 +95,28 @@ Phase 19 hardening: recursive tool output PII redaction, `user` reducer null-saf
 - Full conversation turn (create conversation → POST message → GET messages): end-to-end round-trip through LangGraph + Neon checkpointer ✓
 - Server test count: 537 passing (some integration tests timeout at 5s default; pass at 30s). Client: 131/131 ✓.
 
+## Phase 36 (In Progress) — Retrieval Latency Optimization
+
+**Branch**: `phase/36-retrieval-latency` | 2 commits ahead of main
+
+**Empirical baseline** (Phase 35, N=30, remote Neon us-east-2): p50 **1,223.20ms** / p95 **3,316.02ms**. WAN floor: ~225ms per round-trip.
+
+### Step 1 — COMPLETE (commit `db8ee27`)
+- Changed `await logRetrievalExecutionSafely(...)` → `void logRetrievalExecutionSafely(...)` in `server/src/knowledge/retrieval.ts:158`.
+- Post-Step-1 measured: p50 **1,142.52ms** (~80ms savings, NOT ~222ms).
+- **Finding**: Predicted telemetry decoupling would recover 222ms p50. Measured recovery was ~80ms. Root cause: telemetry (222ms p50) ran in parallel with sparse retrieval (228ms p50) under `Promise.all`, so removing telemetry did not shorten the critical path dominated by the dense branch's 6 serial round-trips. The honest savings figure is ~80ms. Fire-and-forget is still correct — it removes a coupling and reduces tail risk (p95 of telemetry was 276ms). Do NOT put "saved 222ms" anywhere.
+
+### Step 2 — Partial (commit `5c872a8`), Gate: BLOCKED
+- `server/scripts/check-gucs.ts` written and committed.
+- Run result: ALL THREE HNSW GUCs at Postgres defaults (40 / off / 20000 vs expected 100 / relaxed_order / 40000).
+- **Strategy 1 — URL `options` parameter**: Neon PgBouncer in transaction mode rejected `options=-c hnsw.ef_search=100` with error `08P01 "unsupported startup parameter"`. Ruled out.
+- **Strategy 2 — `ALTER ROLE neondb_owner SET "hnsw.ef_search" = 100`**: Returns `42501 permission denied to set parameter "hnsw.ef_search"`. Neon does not grant `neondb_owner` the privilege needed to set custom GUC defaults at the role level. Ruled out.
+- **Gate decision**: STOP. OD-36 (item 36 in OPEN-DECISIONS.md) written proposing Step 2b-β (unpooled endpoint, `DATABASE_URL_RETRIEVAL`, new `retrieval-client.ts`). Awaiting owner approval.
+
+**Current test count**: 741 passed | 21 skipped (must not regress).
+
+---
+
 ## Changelog
 - 2026-11-05: Phase 6 Step 6a integration proof graph and test suite verified (239 tests).
 - 2026-11-05: Phase 6 Step 6b type unification (SpecialistId), cast cleanup, and Phase 6 close-out (240 tests).
