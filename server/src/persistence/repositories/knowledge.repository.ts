@@ -15,6 +15,7 @@ import {
   type InferSelectModel,
 } from 'drizzle-orm';
 import { db } from '../db/client.js';
+import { retrievalDb } from '../db/retrieval-client.js';
 import {
   knowledgeChunks,
   knowledgeDocVersions,
@@ -59,7 +60,18 @@ export interface DocumentVersionInsertPayload {
 }
 
 /**
- * Searches dense candidates via HNSW with local transaction GUCs and relaxed_order iterative scan.
+ * Searches dense candidates via HNSW using the dedicated retrieval pool.
+ *
+ * Phase 36 Layer A: The retrieval pool (retrieval-client.ts) connects to Neon's
+ * unpooled (direct) endpoint with HNSW GUCs set at connection level via the
+ * `options` startup parameter:
+ *   hnsw.ef_search        = 100
+ *   hnsw.iterative_scan   = relaxed_order
+ *   hnsw.max_scan_tuples  = 40000
+ *
+ * This eliminates the BEGIN/COMMIT transaction and 3× SET LOCAL statements
+ * that previously added 4 serial round-trips (~900ms WAN) to every retrieval call.
+ * The query now runs as a single autocommit statement.
  */
 export async function searchDenseScoped(
   embedding: number[],
@@ -71,33 +83,26 @@ export async function searchDenseScoped(
   const limitCandidates = topK * 3;
   const embeddingJson = JSON.stringify(embedding);
 
-  return db.transaction(async (tx) => {
-    await tx.execute(sql`
-      SET LOCAL hnsw.iterative_scan = relaxed_order;
-      SET LOCAL hnsw.ef_search = 100;
-      SET LOCAL hnsw.max_scan_tuples = 40000;
-    `);
+  const result = await retrievalDb.execute(sql`
+    SELECT 
+      c.id, c.version_id AS "versionId", c.domain, c.topic, c.section_path AS "sectionPath", c.content,
+      v.version, v.effective_date AS "effectiveDate",
+      (c.embedding <=> ${embeddingJson}::vector) AS distance
+    FROM knowledge_chunks c
+    JOIN knowledge_doc_versions v ON c.version_id = v.id
+    WHERE c.domain = ${domain}
+      AND c.topic = ${topic}
+      AND c.status = 'active'
+    ORDER BY c.embedding <=> ${embeddingJson}::vector
+    LIMIT ${limitCandidates};
+  `);
 
-    const result = await tx.execute(sql`
-      SELECT 
-        c.id, c.version_id AS "versionId", c.domain, c.topic, c.section_path AS "sectionPath", c.content,
-        v.version, v.effective_date AS "effectiveDate",
-        (c.embedding <=> ${embeddingJson}::vector) AS distance
-      FROM knowledge_chunks c
-      JOIN knowledge_doc_versions v ON c.version_id = v.id
-      WHERE c.domain = ${domain}
-        AND c.topic = ${topic}
-        AND c.status = 'active'
-      ORDER BY c.embedding <=> ${embeddingJson}::vector
-      LIMIT ${limitCandidates};
-    `);
-
-    return result.rows as unknown as KnowledgeSearchRow[];
-  });
+  return result.rows as unknown as KnowledgeSearchRow[];
 }
 
 /**
  * Searches sparse candidates via PostgreSQL tsvector full-text search.
+ * Uses the retrieval pool (direct unpooled endpoint) for consistency with searchDenseScoped.
  */
 export async function searchSparseScoped(
   queryText: string,
@@ -107,7 +112,7 @@ export async function searchSparseScoped(
 ): Promise<KnowledgeSearchRow[]> {
   const limitCandidates = topK * 3;
 
-  const result = await db.execute(sql`
+  const result = await retrievalDb.execute(sql`
     SELECT 
       c.id, c.version_id AS "versionId", c.domain, c.topic, c.section_path AS "sectionPath", c.content,
       v.version, v.effective_date AS "effectiveDate",

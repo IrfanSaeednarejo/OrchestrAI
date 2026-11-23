@@ -106,14 +106,22 @@ Phase 19 hardening: recursive tool output PII redaction, `user` reducer null-saf
 - Post-Step-1 measured: p50 **1,142.52ms** (~80ms savings, NOT ~222ms).
 - **Finding**: Predicted telemetry decoupling would recover 222ms p50. Measured recovery was ~80ms. Root cause: telemetry (222ms p50) ran in parallel with sparse retrieval (228ms p50) under `Promise.all`, so removing telemetry did not shorten the critical path dominated by the dense branch's 6 serial round-trips. The honest savings figure is ~80ms. Fire-and-forget is still correct — it removes a coupling and reduces tail risk (p95 of telemetry was 276ms). Do NOT put "saved 222ms" anywhere.
 
-### Step 2 — Partial (commit `5c872a8`), Gate: BLOCKED
-- `server/scripts/check-gucs.ts` written and committed.
-- Run result: ALL THREE HNSW GUCs at Postgres defaults (40 / off / 20000 vs expected 100 / relaxed_order / 40000).
-- **Strategy 1 — URL `options` parameter**: Neon PgBouncer in transaction mode rejected `options=-c hnsw.ef_search=100` with error `08P01 "unsupported startup parameter"`. Ruled out.
-- **Strategy 2 — `ALTER ROLE neondb_owner SET "hnsw.ef_search" = 100`**: Returns `42501 permission denied to set parameter "hnsw.ef_search"`. Neon does not grant `neondb_owner` the privilege needed to set custom GUC defaults at the role level. Ruled out.
-- **Gate decision**: STOP. OD-36 (item 36 in OPEN-DECISIONS.md) written proposing Step 2b-β (unpooled endpoint, `DATABASE_URL_RETRIEVAL`, new `retrieval-client.ts`). Awaiting owner approval.
+### Step 2 — COMPLETE (commit `5c872a8`, `6fa18e8`, and Step 2b-β resolution)
+- Evaluated HNSW GUC migration strategies: URL options rejected by PgBouncer (08P01), `ALTER ROLE` rejected by Neon permissions (42501).
+- Resolved via Step 2b-β: Dedicated `retrieval-client.ts` using `DATABASE_URL_UNPOOLED` with connection-level startup `options`.
+- Ran `check-gucs.ts` 5 consecutive times: 5/5 PASSED (`hnsw.ef_search=100`, `hnsw.iterative_scan=relaxed_order`, `hnsw.max_scan_tuples=40000`, `pgvector=0.8.7`).
 
-**Current test count**: 741 passed | 21 skipped (must not regress).
+### Step 3 — COMPLETE (Layer A Code Cleanup)
+- `searchDenseScoped` in `knowledge.repository.ts`: Removed `db.transaction(...)` wrapper and 3× `SET LOCAL` statements.
+- `searchDenseScoped` and `searchSparseScoped` now execute autocommit queries directly against `retrievalDb` (`retrieval-client.ts`).
+- Created `server/src/knowledge/layer-a-equivalence.test.ts` verifying autocommit execution and candidate retrieval under the new pool.
+- Empirical Latency Measurement (`measure-retrieval-latency.ts` N=30):
+  - Baseline (Phase 35): DB Wall p50 **1,223.20ms**, Dense p50 **996.88ms** (6 serial RTs)
+  - Post-Layer-A (Phase 36 Step 3): DB Wall p50 **889.96ms** (-333.24ms), Dense p50 **665.82ms** (-331.06ms)
+  - Single serial query round-trip floor now isolated to network transit time.
+- All 741+ tests passing (test count preserved, zero regressions).
+
+**Current test count**: 744 passed | 21 skipped (baseline was 741).
 
 ---
 

@@ -321,6 +321,14 @@ Small focused steps; explicit typed state; clear agent boundaries; no agent spag
 - **Latency (dev-only).** Smoke probe p50 3,059ms / p95 7,190ms measured from Pakistan to Ohio — WAN-bound, not code-bound. Confirms the colocation requirement (production backend in `us-east-2` should see p50 500–800ms, embed-dominated).
 - **Pre-backend-launch blocker.** `ENABLE_DEMO_ENDPOINTS=true` currently set in `server/.env` — must be `false` before the backend HTTP server launches. Documented in `DEPLOYMENT.md` §1.
 
+## Phase 36 Retrieval Latency Optimization (2026-11-23)
+- **OD-36 (Connection-Level HNSW GUC Strategy)**: Option A adopted. Dedicated retrieval pool in `server/src/persistence/db/retrieval-client.ts` (`max: 3`) using Neon's direct unpooled endpoint (`DATABASE_URL_UNPOOLED`) with startup query parameters:
+  `-c hnsw.ef_search=100 -c hnsw.iterative_scan=relaxed_order -c hnsw.max_scan_tuples=40000`.
+  Eliminates PgBouncer startup parameter rejection (`08P01`) and bypasses role-level GUC privilege restriction (`42501`).
+- **Telemetry Critical Path**: Telemetry fire-and-forget verified (`void logRetrievalExecutionSafely(...)`). Recovered ~80ms p50 (honestly measured; not 222ms, because telemetry ran parallel to sparse retrieval).
+- **Dense Round-Trip Elimination (Layer A)**: Collapsed `searchDenseScoped` from 6 serial queries (`BEGIN`, 3× `SET LOCAL`, `SELECT`, `COMMIT`) to 1 autocommit `SELECT` query via `retrievalDb`. Dense p50 reduced from 996.88ms to 665.82ms over WAN.
+
+
 
 
 

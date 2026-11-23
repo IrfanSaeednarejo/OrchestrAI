@@ -81,7 +81,7 @@ Approved items move to DECISIONS.md. Items marked [CONFLICT] are inconsistencies
         - OD-30c [RESOLVED 2026-11-20]: 0014 Backup Policy — Cold `pg_dump` of `knowledge_documents` taken immediately before drop, **verified via restore into throwaway DB** (schema-only minimum, full restore preferred), stored off-Neon. Second independent copy from prior day as belt-and-suspenders. PITR is a bonus check, **not relied upon as contractual recovery** — cold dump remains the sole contractual recovery mechanism regardless of Neon tier. If on a paid plan with retention >7 days, PITR adds coverage but does not change the contractual mechanism.
         - OD-30d [RESOLVED 2026-11-20]: CI Gate 2 Parallelism — Accept sequential Gate 2 (137–159s observed; ~2.5 min per RAG PR). Parallelism deferred until PR-velocity friction or CI timeouts emerge empirically. Parallelism risk (test-isolation flake, Gemini rate-limit contention during live-embedding Gate 2) outweighs speed benefit at current PR volume. Revisit trigger tracked in ROADMAP.
 
-36. [OPEN 2026-11-23] Phase 36 Step 2b-β: HNSW GUC Strategy — Unpooled Retrieval Endpoint
+36. [RESOLVED 2026-11-23] Phase 36 Step 2b-β: HNSW GUC Strategy — Unpooled Retrieval Endpoint (Option A adopted and locked in DECISIONS.md)
 
    **Background**: The goal of Layer A (Phase 36 Step 3) is to remove the `BEGIN`/`COMMIT` transaction and three `SET LOCAL` statements from `searchDenseScoped` in `knowledge.repository.ts:74-97`, each of which costs one round-trip (~225ms WAN). This saves 4 of the 6 round-trips in the dense branch (RT 1–4: BEGIN + 3×SET LOCAL).
 
