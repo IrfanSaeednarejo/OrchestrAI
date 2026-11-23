@@ -94,12 +94,27 @@ jobs:
       - name: Run Database Migrations
         env:
           DATABASE_URL: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
+          DATABASE_URL_UNPOOLED: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
+          TEST_DATABASE_URL: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
+          TEST_DATABASE_URL_UNPOOLED: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || 'mock-ci-key' }}
         run: npm run db:migrate
+
+      - name: Ingest Knowledge Base
+        env:
+          DATABASE_URL: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
+          DATABASE_URL_UNPOOLED: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
+          TEST_DATABASE_URL: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
+          TEST_DATABASE_URL_UNPOOLED: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: npm run knowledge:ingest -- --dir ../docs/knowledge-base
 
       - name: Run Mocked Ingestion & Retrieval Suite
         env:
           DATABASE_URL: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
+          DATABASE_URL_UNPOOLED: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
+          TEST_DATABASE_URL: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
+          TEST_DATABASE_URL_UNPOOLED: postgresql://orchestrai:orchestrai-test-password@localhost:5432/orchestrai_test
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || 'mock-ci-key' }}
         run: |
           # NOTE: Gate 2 wall-clock ≈90 s — rate-limit risk if >100 s. See MIGRATION.md CI Duration Note.
