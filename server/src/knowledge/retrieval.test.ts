@@ -293,4 +293,20 @@ describe('retrieveKnowledge', () => {
     expect(ids).toContain(idD);
     expect(ids).not.toContain(idE);
   });
+
+  // n. Telemetry fire-and-forget: failure does not alter or delay retrieval result
+  it('n. telemetry write failure or delay does not alter retrieval outcome', async () => {
+    mockedEmbedQuery.mockResolvedValueOnce(unitVec(0));
+    // Import orchestration repository to spy on logRetrievalExecutionSafely
+    const orchRepo = await import('../persistence/repositories/orchestration.repository.js');
+    const spy = vi.spyOn(orchRepo, 'logRetrievalExecutionSafely').mockImplementationOnce(() => {
+      // Simulate asynchronous error in telemetry write
+      return Promise.reject(new Error('Telemetry database down'));
+    });
+
+    const result = await retrieveKnowledge({ query: 'test', domains: ['orders'], topK: 1 });
+    expect(result.success).toBe(true);
+    expect(spy).toHaveBeenCalled();
+    spy.mockRestore();
+  });
 });

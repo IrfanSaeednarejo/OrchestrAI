@@ -151,11 +151,11 @@ export async function retrieveKnowledge(rawInput: unknown): Promise<ToolResult<K
 
     const totalDurationMs = Math.round(performance.now() - startTime);
 
-    // Turn context logging & telemetry
+    // Turn context logging & telemetry (fire-and-forget, non-blocking)
     const convId = parsed.data.conversationId ?? getTurnContext()?.conversationId;
     const agentExecId = parsed.data.agentExecutionId;
 
-    await logRetrievalExecutionSafely({
+    void logRetrievalExecutionSafely({
       conversationId: convId,
       agentExecutionId: agentExecId,
       domain,
