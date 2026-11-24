@@ -143,12 +143,12 @@ Phase 19 hardening: recursive tool output PII redaction, `user` reducer null-saf
 - **Task B (p95 Diagnosis via EXPLAIN ANALYZE BUFFERS 10x)**:
   - Measured plan time (0.45ms – 1.76ms) and execution time (0.21ms – 0.51ms) across 10 iterations.
   - DB-side time is tiny: ~0.66ms – 2.28ms total. The plan is 100% stable across all runs (`IndexScan+BitmapScan+SeqScan / HashJoin+NestedLoop`).
-  - Proves empirical p95 variance is **100% cross-region WAN packet transit jitter** (Pakistan <-> AWS Ohio us-east-2), not query planner instability or sequential table scans.
+  - Proves empirical p95 variance is driven by cold-start warmup (Neon compute autosuspend unfreeze at ~897ms on cold start, pgvector HNSW in-memory graph load, and V8 JIT compilation at ~445ms on Run 2), followed by a rock-solid 229ms–238ms steady-state WAN transit floor across Runs 3–10 on an established connection. It is not query planner instability or sequential table scans.
 - **Task C (Deployment Hardening)**:
   - Verified `retrieval-client.ts` enforces `DATABASE_URL_RETRIEVAL` presence and throws a clear, actionable error if missing.
   - Strictly prevents silent fallback to `DATABASE_URL` (which would run with wrong GUC defaults). Verified via unit tests in `server/src/persistence/db/retrieval-client.test.ts`.
 
-**Current test count**: 750 passed | 21 skipped (baseline was 741).
+**Current test count**: 751 passed | 21 skipped (baseline was 741).
 
 ---
 
