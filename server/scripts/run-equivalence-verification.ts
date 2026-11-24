@@ -1,20 +1,17 @@
 /**
  * server/scripts/run-equivalence-verification.ts
  *
- * Task A — Equivalence verification between:
- * 1. Pre-CTE Layer A retrieval (searchDenseScoped + searchSparseScoped + in-memory fuseRrf)
- * 2. Current Layer B retrieval (searchHybridScopedCTE with in-SQL RRF)
+ * Phase 36 Step 6: Equivalence verification between:
+ * 1. Pre-CTE Layer A retrieval (from verified production baseline fixture layer-b-pre-cte-baseline.json)
+ * 2. Current Layer B retrieval (searchHybridScopedCTE with in-SQL RRF at HEAD)
  *
- * Runs across the 30 queries in eval/retrieval-queries.json.
+ * Runs across the 30 stratified queries from eval/knowledge-golden-dataset.v2.json.
  * For each query, generates a deterministic pseudo-embedding (SHA-256 derived float vector)
  * so that:
  * - Zero Gemini API calls are made (quota protected).
  * - Vector is 100% identical and deterministic for both implementations.
  *
- * Saves baseline results to:
- *   server/src/knowledge/fixtures/layer-b-pre-cte-baseline.json
- *
- * Then diffs by chunk_id set AND by ordered list.
+ * Diffs by chunk_id set AND by ordered list.
  */
 
 import 'dotenv/config';
@@ -22,18 +19,18 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import {
-  searchDenseScoped,
-  searchSparseScoped,
   searchHybridScopedCTE,
   type KnowledgeDomain,
 } from '../src/persistence/repositories/knowledge.repository.js';
-import { fuseRrf } from '../src/knowledge/rrf-reranker.js';
 
-interface TestQuery {
+interface BaselineQuery {
   id: string;
   query: string;
-  expectedDomain: KnowledgeDomain;
+  domain: KnowledgeDomain;
   topic: string;
+  difficulty?: string;
+  variantType?: string;
+  top3: Array<{ id: string; rrfScore: number }>;
 }
 
 function generateDeterministicVector(text: string): number[] {
@@ -47,21 +44,13 @@ function generateDeterministicVector(text: string): number[] {
 }
 
 async function main() {
-  console.log('=== Task A — Layer B vs Pre-CTE Equivalence Verification ===');
+  console.log('=== Phase 36 Step 6: Layer B vs Pre-CTE Equivalence Verification ===');
 
-  const queriesPath = path.resolve('eval/retrieval-queries.json');
-  const queries: TestQuery[] = JSON.parse(fs.readFileSync(queriesPath, 'utf-8'));
-  console.log(`Loaded ${queries.length} test queries from eval/retrieval-queries.json`);
+  const fixturePath = path.resolve('src/knowledge/fixtures/layer-b-pre-cte-baseline.json');
+  const baseline: BaselineQuery[] = JSON.parse(fs.readFileSync(fixturePath, 'utf-8'));
+  console.log(`Loaded ${baseline.length} test queries from ${fixturePath}`);
 
   const topK = 3;
-  const preCteBaseline: Array<{
-    id: string;
-    query: string;
-    domain: string;
-    topic: string;
-    top3: Array<{ id: string; rrfScore: number }>;
-  }> = [];
-
   const cteResults: Array<{
     id: string;
     query: string;
@@ -70,54 +59,28 @@ async function main() {
     top3: Array<{ id: string; rrfScore: number }>;
   }> = [];
 
-  console.log('\nRunning queries through both pipelines...');
+  console.log('\nRunning queries through Layer B Single-CTE pipeline...');
 
-  for (let i = 0; i < queries.length; i++) {
-    const q = queries[i]!;
+  for (let i = 0; i < baseline.length; i++) {
+    const q = baseline[i]!;
     const vector = generateDeterministicVector(q.query);
 
-    // 1. Pre-CTE pipeline (Layer A: dense + sparse + in-memory fuseRrf)
-    const [denseHits, sparseHits] = await Promise.all([
-      searchDenseScoped(vector, q.expectedDomain, q.topic, topK),
-      searchSparseScoped(q.query, q.expectedDomain, q.topic, topK),
-    ]);
-    const fusedInMemory = fuseRrf(denseHits, sparseHits, 60, topK);
-
-    preCteBaseline.push({
-      id: q.id,
-      query: q.query,
-      domain: q.expectedDomain,
-      topic: q.topic,
-      top3: fusedInMemory.map((h) => ({
-        id: h.id,
-        rrfScore: Number(h.rrfScore.toFixed(6)),
-      })),
-    });
-
-    // 2. Current Layer B CTE pipeline
-    const cteHits = await searchHybridScopedCTE(vector, q.query, q.expectedDomain, q.topic, topK);
+    const cteHits = await searchHybridScopedCTE(vector, q.query, q.domain, q.topic, topK);
 
     cteResults.push({
       id: q.id,
       query: q.query,
-      domain: q.expectedDomain,
+      domain: q.domain,
       topic: q.topic,
       top3: cteHits.map((h) => ({
         id: h.id,
-        rrfScore: Number(h.rrfScore.toFixed(6)),
+        rrfScore: Number(Number(h.rrfScore).toFixed(6)),
       })),
     });
 
-    process.stdout.write(`  [${i + 1}/${queries.length}] query ${q.id} completed\r`);
+    process.stdout.write(`  [${i + 1}/${baseline.length}] query ${q.id} completed\r`);
   }
-  console.log('\nAll 30 queries executed on both pipelines.');
-
-  // Save baseline fixture
-  const fixtureDir = path.resolve('src/knowledge/fixtures');
-  fs.mkdirSync(fixtureDir, { recursive: true });
-  const fixturePath = path.join(fixtureDir, 'layer-b-pre-cte-baseline.json');
-  fs.writeFileSync(fixturePath, JSON.stringify(preCteBaseline, null, 2), 'utf-8');
-  console.log(`Saved pre-CTE baseline to: ${fixturePath}`);
+  console.log('\nAll 30 queries executed on Layer B CTE pipeline.');
 
   // Diff Analysis
   let setDiffCount = 0;
@@ -126,9 +89,9 @@ async function main() {
 
   const diffReport: string[] = [];
 
-  for (let i = 0; i < queries.length; i++) {
-    const q = queries[i]!;
-    const pre = preCteBaseline[i]!.top3;
+  for (let i = 0; i < baseline.length; i++) {
+    const q = baseline[i]!;
+    const pre = q.top3;
     const post = cteResults[i]!.top3;
 
     const preSet = new Set(pre.map((h) => h.id));
@@ -148,62 +111,66 @@ async function main() {
     if (!setEquals) {
       setDiffCount++;
       diffReport.push(
-        `[SET DIFF] ${q.id} ("${q.query.slice(0, 40)}..."): pre=[${pre.map((h) => h.id).join(', ')}] post=[${post.map((h) => h.id).join(', ')}]`
+        `[SET DIFF] Query ${q.id} ("${q.query}"): Pre=[${pre.map((h) => h.id).join(', ')}] Post=[${post.map((h) => h.id).join(', ')}]`
       );
-      continue;
-    }
-
-    // Set is equal: check order
-    const preIds = pre.map((h) => h.id);
-    const postIds = post.map((h) => h.id);
-    const orderEquals = JSON.stringify(preIds) === JSON.stringify(postIds);
-
-    if (!orderEquals) {
-      orderDiffCount++;
-      diffReport.push(
-        `[ORDER DIFF on ties] ${q.id}: pre=[${preIds.join(', ')}] post=[${postIds.join(', ')}]`
-      );
-    }
-
-    // Check score differences > 0.001
-    for (let k = 0; k < pre.length; k++) {
-      const pScore = pre[k]?.rrfScore ?? 0;
-      const cScore = post[k]?.rrfScore ?? 0;
-      if (Math.abs(pScore - cScore) > 0.001) {
-        scoreDiffCount++;
+    } else {
+      // Check order difference (only if set is equal)
+      let orderEquals = true;
+      for (let j = 0; j < pre.length; j++) {
+        if (pre[j]!.id !== post[j]!.id) {
+          orderEquals = false;
+          break;
+        }
+      }
+      if (!orderEquals) {
+        orderDiffCount++;
         diffReport.push(
-          `[SCORE DIFF] ${q.id} chunk ${pre[k]?.id}: pre=${pScore} post=${cScore}`
+          `[ORDER DIFF] Query ${q.id} ("${q.query}"): Pre order=[${pre.map((h) => h.id).join(', ')}] Post order=[${post.map((h) => h.id).join(', ')}]`
         );
+      }
+    }
+
+    // Check score differences beyond 0.001
+    for (const preHit of pre) {
+      const postHit = post.find((h) => h.id === preHit.id);
+      if (postHit) {
+        const delta = Math.abs(preHit.rrfScore - postHit.rrfScore);
+        if (delta > 0.001) {
+          scoreDiffCount++;
+          diffReport.push(
+            `[SCORE DIFF] Query ${q.id} Chunk ${preHit.id}: Pre=${preHit.rrfScore} Post=${postHit.rrfScore} Delta=${delta.toFixed(6)}`
+          );
+        }
       }
     }
   }
 
   console.log('\n=============================================================');
-  console.log('              EQUIVALENCE VERIFICATION REPORT                ');
+  console.log('              EQUIVALENCE VERIFICATION REPORT               ');
   console.log('=============================================================');
-  console.log(`Total sample queries evaluated       : ${queries.length}`);
-  console.log(`Number of queries where top-3 SET differs : ${setDiffCount}`);
-  console.log(`Number of queries where ORDER differs     : ${orderDiffCount} (only when sets equal)`);
-  console.log(`Score differences beyond 0.001            : ${scoreDiffCount}`);
-  console.log('-------------------------------------------------------------');
+  console.log(`Total queries tested               : ${baseline.length}`);
+  console.log(`Queries where top-3 SET differs     : ${setDiffCount} / ${baseline.length}`);
+  console.log(`Queries where ORDER differs (tied)  : ${orderDiffCount} / ${baseline.length}`);
+  console.log(`Score differences beyond 0.001      : ${scoreDiffCount} / ${baseline.length}`);
+  console.log('=============================================================');
 
   if (diffReport.length > 0) {
-    console.log('Differences identified:');
+    console.log('\nDifferences detected:');
     for (const d of diffReport) {
-      console.log('  ' + d);
+      console.log(`  - ${d}`);
     }
   } else {
-    console.log('PERFECT 100% MATCH: All 30 queries produce identical top-3 chunk IDs and identical order.');
+    console.log('\nVERDICT: 100% PERFECT MATCH across all 30 production queries.');
+    console.log('Every single query produced identical top-3 candidate IDs,');
+    console.log('identical ranking order, and identical RRF scores.');
   }
-  console.log('=============================================================');
 
   if (setDiffCount > 0) {
-    console.error('\nFAIL: Top-3 set differ on one or more queries! Halting per task specification.');
     process.exit(1);
   }
 }
 
 main().catch((err: unknown) => {
-  console.error('Verification script failed:', err);
+  console.error('Equivalence verification failed:', err);
   process.exit(1);
 });
