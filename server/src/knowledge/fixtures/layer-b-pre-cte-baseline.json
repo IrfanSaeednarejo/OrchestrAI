@@ -1,169 +1,649 @@
 [
   {
-    "id": "q-01",
-    "query": "How many days do I have to return an item after it gets delivered?",
-    "domain": "orders",
-    "topic": "returns",
+    "id": "s-account-security-001-p1",
+    "query": "character count and symbol rules for creating an account password",
+    "domain": "account",
+    "topic": "account_security",
+    "difficulty": "keyword",
+    "variantType": "paraphrase",
     "top3": [
       {
-        "id": "1f81ecb6-1e75-44b5-aa1f-8d49d8ff8914",
+        "id": "940abee1-414e-4ad7-9fc8-62e13a32516f",
         "rrfScore": 0.016393
       },
       {
-        "id": "7dd1abc8-3c1c-4342-883d-4962aa11c6ba",
+        "id": "ca4fcf9e-ed66-4ac9-a169-0b6b7bbf7b8f",
         "rrfScore": 0.016129
+      },
+      {
+        "id": "0b296aa3-e7bb-4a10-9323-3e0b6703e9c8",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "s-cancellations-004-p1",
+    "query": "prior notice requirement to cancel corporate order of ten units or more",
+    "domain": "orders",
+    "topic": "cancellations",
+    "difficulty": "keyword",
+    "variantType": "paraphrase",
+    "top3": [
+      {
+        "id": "189ecddb-6cff-4a24-88d4-e114b79c7464",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "2c4b2f2b-0a47-4710-a3cb-f67a60cd54b0",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "90f9a4cd-867f-4a6c-9c90-9e584076dca0",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "s-disputes-004-p2",
+    "query": "when is formal criminal report filing mandatory for unauthorized transactions",
+    "domain": "payments",
+    "topic": "disputes",
+    "difficulty": "keyword",
+    "variantType": "paraphrase",
+    "top3": [
+      {
+        "id": "a4d894b9-7844-4576-a9ed-4c46b2951919",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "91aeb932-12bf-467c-b866-859e51719d3a",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "afa790a8-63df-4d4e-ac65-8f4a67b01c9b",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "s-exchanges-006-p2",
+    "query": "customer freight fee for standard preference based exchange return",
+    "domain": "orders",
+    "topic": "exchanges",
+    "difficulty": "keyword",
+    "variantType": "paraphrase",
+    "top3": [
+      {
+        "id": "64aafead-a454-4aab-a048-ac8e8a461c03",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "4c3e65a3-9dd3-4320-972e-b8c7bb606a43",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "9fbc24e7-6805-44a2-8e57-056b44a4b4c5",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "s-notifications-006-p1",
+    "query": "operational turnaround time for promotional email opt-out to take effect",
+    "domain": "account",
+    "topic": "notifications",
+    "difficulty": "keyword",
+    "variantType": "paraphrase",
+    "top3": [
+      {
+        "id": "8c7fc0ed-e69e-4a22-a2e4-3ef982326f8a",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "01de3d20-2d6c-4e0b-a979-394bea1c6eed",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "19df7150-4976-4567-b00c-3e289a3c153e",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "s-privacy-001-p1",
+    "query": "categories of personal records and technical telemetry gathered by website",
+    "domain": "account",
+    "topic": "privacy",
+    "difficulty": "keyword",
+    "variantType": "paraphrase",
+    "top3": [
+      {
+        "id": "27542bf2-ea6f-43aa-b02f-c85b9283222b",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "0e17d8a1-7d5d-4ed6-98d6-e41ae32b89b8",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "3f200126-5cb5-4d4f-8863-d61a085e589e",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "s-refunds-004-p2",
+    "query": "are gift voucher transactions eligible for bank account cash refund",
+    "domain": "payments",
+    "topic": "refunds",
+    "difficulty": "keyword",
+    "variantType": "paraphrase",
+    "top3": [
+      {
+        "id": "286dba61-be34-4baa-a36f-fe41ba2fb97b",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "86906f27-1bc4-4d4a-a773-9280d130b5a2",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "2bf2a706-bcd4-458a-9d5d-0eac97c21b79",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "s-account-security-001-m",
+    "query": "password rules length symbols numbers",
+    "domain": "account",
+    "topic": "account_security",
+    "difficulty": "keyword",
+    "variantType": "messy",
+    "top3": [
+      {
+        "id": "7959dd7a-8b4e-4836-bab4-8b8c1b7dedf6",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "ca4fcf9e-ed66-4ac9-a169-0b6b7bbf7b8f",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "03450274-9209-4b2a-b5e9-7d0f45546d9c",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "s-exchanges-001-m",
+    "query": "how long do i have to exchange an item",
+    "domain": "orders",
+    "topic": "exchanges",
+    "difficulty": "keyword",
+    "variantType": "messy",
+    "top3": [
+      {
+        "id": "106e03b3-df5d-4455-824c-713f5aca1dbd",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "0d5edf2a-bb5c-4efd-9940-641ffe78be4b",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "64aafead-a454-4aab-a048-ac8e8a461c03",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "s-payments-006-m",
+    "query": "failed payment retry days schedule",
+    "domain": "payments",
+    "topic": "payments",
+    "difficulty": "keyword",
+    "variantType": "messy",
+    "top3": [
+      {
+        "id": "e6143777-f9b4-46e5-963b-b1a691b2b299",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "1f440385-d30e-49fa-a385-bec701da2780",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "1d8aa03d-9c04-41a9-a9bc-9f318a34b6d9",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "s-account-security-002-p1",
+    "query": "mandatory credential rotation schedule and annual expiration rule",
+    "domain": "account",
+    "topic": "account_security",
+    "difficulty": "paraphrase",
+    "variantType": "paraphrase",
+    "top3": [
+      {
+        "id": "7959dd7a-8b4e-4836-bab4-8b8c1b7dedf6",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "03450274-9209-4b2a-b5e9-7d0f45546d9c",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "c3c15b62-a1e9-4242-bd21-e7824ebebb6f",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "s-cancellations-005-p2",
+    "query": "turning away carrier delivery at residence to prompt return to sender",
+    "domain": "orders",
+    "topic": "cancellations",
+    "difficulty": "paraphrase",
+    "variantType": "paraphrase",
+    "top3": [
+      {
+        "id": "2c4b2f2b-0a47-4710-a3cb-f67a60cd54b0",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "90f9a4cd-867f-4a6c-9c90-9e584076dca0",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "189ecddb-6cff-4a24-88d4-e114b79c7464",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "s-disputes-003-p2",
+    "query": "response speed of billing specialists after submitting dispute inquiry",
+    "domain": "payments",
+    "topic": "disputes",
+    "difficulty": "paraphrase",
+    "variantType": "paraphrase",
+    "top3": [
+      {
+        "id": "91aeb932-12bf-467c-b866-859e51719d3a",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "a4d894b9-7844-4576-a9ed-4c46b2951919",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "3a5617b4-a571-4dd6-a8ae-627d823dea9e",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "s-methods-002-p2",
+    "query": "using smartphone contactless wallet balances at digital checkout",
+    "domain": "payments",
+    "topic": "methods",
+    "difficulty": "paraphrase",
+    "variantType": "paraphrase",
+    "top3": [
+      {
+        "id": "ee8f11e8-7e96-4995-aa22-9130d52520ee",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "868f773c-fddf-42d5-9b0c-f66b855eff43",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "7f70036e-e17d-4e44-b5d3-076357b0ca0f",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "s-notifications-007-p1",
+    "query": "disabling promotional text advertisements while retaining carrier shipping notices",
+    "domain": "account",
+    "topic": "notifications",
+    "difficulty": "paraphrase",
+    "variantType": "paraphrase",
+    "top3": [
+      {
+        "id": "8c7fc0ed-e69e-4a22-a2e4-3ef982326f8a",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "19df7150-4976-4567-b00c-3e289a3c153e",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "53137309-82ce-4b17-a30e-11b62ccc5f4b",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "s-privacy-005-p1",
+    "query": "how to obtain exportable electronic package of all stored personal information",
+    "domain": "account",
+    "topic": "privacy",
+    "difficulty": "paraphrase",
+    "variantType": "paraphrase",
+    "top3": [
+      {
+        "id": "27542bf2-ea6f-43aa-b02f-c85b9283222b",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "6c1bd031-4b93-42c1-97f7-9c093b1d56c7",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "4d18b217-8468-44f1-b637-c30e3ba5d07b",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "s-returns-003-p1",
+    "query": "will you accept broken merchandise without original tags attached",
+    "domain": "orders",
+    "topic": "returns",
+    "difficulty": "paraphrase",
+    "variantType": "paraphrase",
+    "top3": [
+      {
+        "id": "db883c4f-04c1-479e-be39-0af5045f9dd6",
+        "rrfScore": 0.016393
       },
       {
         "id": "15d8a63c-74e8-43c7-a23c-077ecc5d087c",
-        "rrfScore": 0.015873
-      }
-    ]
-  },
-  {
-    "id": "q-02",
-    "query": "What should I do if my package arrived with broken or defective merchandise?",
-    "domain": "orders",
-    "topic": "returns",
-    "top3": [
-      {
-        "id": "1e726838-38ec-4cc2-84a2-ebffec3ab3de",
-        "rrfScore": 0.016393
-      },
-      {
-        "id": "db883c4f-04c1-479e-be39-0af5045f9dd6",
         "rrfScore": 0.016129
       },
-      {
-        "id": "15d8a63c-74e8-43c7-a23c-077ecc5d087c",
-        "rrfScore": 0.015873
-      }
-    ]
-  },
-  {
-    "id": "q-03",
-    "query": "Can I drop off my return at a store with a QR code instead of printing a label?",
-    "domain": "orders",
-    "topic": "returns",
-    "top3": [
-      {
-        "id": "1e726838-38ec-4cc2-84a2-ebffec3ab3de",
-        "rrfScore": 0.016393
-      },
-      {
-        "id": "7dd1abc8-3c1c-4342-883d-4962aa11c6ba",
-        "rrfScore": 0.016129
-      },
-      {
-        "id": "db883c4f-04c1-479e-be39-0af5045f9dd6",
-        "rrfScore": 0.015873
-      }
-    ]
-  },
-  {
-    "id": "q-04",
-    "query": "Are personalized products and final sale clearance items eligible for return?",
-    "domain": "orders",
-    "topic": "returns",
-    "top3": [
       {
         "id": "1f81ecb6-1e75-44b5-aa1f-8d49d8ff8914",
-        "rrfScore": 0.016393
-      },
-      {
-        "id": "db883c4f-04c1-479e-be39-0af5045f9dd6",
-        "rrfScore": 0.016129
-      },
-      {
-        "id": "1e726838-38ec-4cc2-84a2-ebffec3ab3de",
         "rrfScore": 0.015873
       }
     ]
   },
   {
-    "id": "q-05",
-    "query": "Can I return shoes if the original manufacturer shoebox is missing or damaged?",
-    "domain": "orders",
-    "topic": "returns",
+    "id": "s-account-security-002-m",
+    "query": "how often must change account password",
+    "domain": "account",
+    "topic": "account_security",
+    "difficulty": "paraphrase",
+    "variantType": "messy",
     "top3": [
       {
-        "id": "1f81ecb6-1e75-44b5-aa1f-8d49d8ff8914",
+        "id": "c3c15b62-a1e9-4242-bd21-e7824ebebb6f",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "03450274-9209-4b2a-b5e9-7d0f45546d9c",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "ca4fcf9e-ed66-4ac9-a169-0b6b7bbf7b8f",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "s-exchanges-002-m",
+    "query": "want to swap size on my order",
+    "domain": "orders",
+    "topic": "exchanges",
+    "difficulty": "paraphrase",
+    "variantType": "messy",
+    "top3": [
+      {
+        "id": "106e03b3-df5d-4455-824c-713f5aca1dbd",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "9fbc24e7-6805-44a2-8e57-056b44a4b4c5",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "4c3e65a3-9dd3-4320-972e-b8c7bb606a43",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "s-privacy-002-m",
+    "query": "do you sell my personal data to advertisers",
+    "domain": "account",
+    "topic": "privacy",
+    "difficulty": "paraphrase",
+    "variantType": "messy",
+    "top3": [
+      {
+        "id": "6c1bd031-4b93-42c1-97f7-9c093b1d56c7",
         "rrfScore": 0.032266
       },
       {
-        "id": "1e726838-38ec-4cc2-84a2-ebffec3ab3de",
+        "id": "3f200126-5cb5-4d4f-8863-d61a085e589e",
         "rrfScore": 0.016393
       },
       {
-        "id": "15d8a63c-74e8-43c7-a23c-077ecc5d087c",
+        "id": "4d18b217-8468-44f1-b637-c30e3ba5d07b",
         "rrfScore": 0.016129
       }
     ]
   },
   {
-    "id": "q-06",
-    "query": "What happens if the warehouse rejects my returned package and how do I appeal?",
-    "domain": "orders",
-    "topic": "returns",
+    "id": "s-account-security-008-p1",
+    "query": "can I use automated email link to restore access after repeated daily lockouts",
+    "domain": "account",
+    "topic": "account_security",
+    "difficulty": "hard",
+    "variantType": "paraphrase",
     "top3": [
       {
-        "id": "15d8a63c-74e8-43c7-a23c-077ecc5d087c",
+        "id": "c3c15b62-a1e9-4242-bd21-e7824ebebb6f",
         "rrfScore": 0.016393
       },
       {
-        "id": "1f81ecb6-1e75-44b5-aa1f-8d49d8ff8914",
+        "id": "03450274-9209-4b2a-b5e9-7d0f45546d9c",
         "rrfScore": 0.016129
+      },
+      {
+        "id": "ca4fcf9e-ed66-4ac9-a169-0b6b7bbf7b8f",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "s-data-deletion-007-p1",
+    "query": "will vaulted payment credentials be accessible if account is revived during grace period",
+    "domain": "account",
+    "topic": "data_deletion",
+    "difficulty": "hard",
+    "variantType": "paraphrase",
+    "top3": [
+      {
+        "id": "612bb6c5-6762-46a8-b953-3b135c8ac121",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "627e90ad-dbaa-4373-ab37-60033d62fc92",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "c489d060-0af6-4945-b695-fcc4dff56f97",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "s-exchanges-008-p1",
+    "query": "pricing calculation when swapping discounted clearance piece for full price item",
+    "domain": "orders",
+    "topic": "exchanges",
+    "difficulty": "hard",
+    "variantType": "paraphrase",
+    "top3": [
+      {
+        "id": "4c3e65a3-9dd3-4320-972e-b8c7bb606a43",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "0d5edf2a-bb5c-4efd-9940-641ffe78be4b",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "9fbc24e7-6805-44a2-8e57-056b44a4b4c5",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "s-notifications-008-p1",
+    "query": "why do warehouse dispatch notices continue arriving after replying to cancel texts",
+    "domain": "account",
+    "topic": "notifications",
+    "difficulty": "hard",
+    "variantType": "paraphrase",
+    "top3": [
+      {
+        "id": "8c7fc0ed-e69e-4a22-a2e4-3ef982326f8a",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "53137309-82ce-4b17-a30e-11b62ccc5f4b",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "01de3d20-2d6c-4e0b-a979-394bea1c6eed",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "s-refunds-007-p1",
+    "query": "reimbursement distribution for item paid using both voucher and credit card",
+    "domain": "payments",
+    "topic": "refunds",
+    "difficulty": "hard",
+    "variantType": "paraphrase",
+    "top3": [
+      {
+        "id": "4279aee9-d0db-4f43-844d-9b632b7f6bed",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "3dba2e6c-4869-4c10-9a1a-1d59a68530b7",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "f8dbfc06-872a-44cf-91a7-9d5b75cabc2a",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "s-returns-008-p1",
+    "query": "reimbursement method for expensive electronics bought using gift voucher",
+    "domain": "orders",
+    "topic": "returns",
+    "difficulty": "hard",
+    "variantType": "paraphrase",
+    "top3": [
+      {
+        "id": "7dd1abc8-3c1c-4342-883d-4962aa11c6ba",
+        "rrfScore": 0.016393
       },
       {
         "id": "db883c4f-04c1-479e-be39-0af5045f9dd6",
-        "rrfScore": 0.015873
-      }
-    ]
-  },
-  {
-    "id": "q-07",
-    "query": "How many business days does it take for a credit card refund to appear in my account?",
-    "domain": "payments",
-    "topic": "refunds",
-    "top3": [
-      {
-        "id": "4279aee9-d0db-4f43-844d-9b632b7f6bed",
-        "rrfScore": 0.016393
-      },
-      {
-        "id": "86906f27-1bc4-4d4a-a773-9280d130b5a2",
         "rrfScore": 0.016129
       },
       {
-        "id": "286dba61-be34-4baa-a36f-fe41ba2fb97b",
+        "id": "1f81ecb6-1e75-44b5-aa1f-8d49d8ff8914",
         "rrfScore": 0.015873
       }
     ]
   },
   {
-    "id": "q-08",
-    "query": "I was charged twice on my statement for the same order, how does the reversal work?",
-    "domain": "payments",
-    "topic": "refunds",
+    "id": "s-account-security-008-m",
+    "query": "locked out twice today can i self unlock with email",
+    "domain": "account",
+    "topic": "account_security",
+    "difficulty": "hard",
+    "variantType": "messy",
     "top3": [
       {
-        "id": "2bf2a706-bcd4-458a-9d5d-0eac97c21b79",
+        "id": "0b296aa3-e7bb-4a10-9323-3e0b6703e9c8",
         "rrfScore": 0.016393
       },
       {
-        "id": "f8dbfc06-872a-44cf-91a7-9d5b75cabc2a",
+        "id": "03450274-9209-4b2a-b5e9-7d0f45546d9c",
         "rrfScore": 0.016129
       },
       {
-        "id": "286dba61-be34-4baa-a36f-fe41ba2fb97b",
+        "id": "ca4fcf9e-ed66-4ac9-a169-0b6b7bbf7b8f",
         "rrfScore": 0.015873
       }
     ]
   },
   {
-    "id": "q-09",
-    "query": "Can I choose instant store credit with a 5% bonus instead of waiting for a bank refund?",
+    "id": "s-data-deletion-008-m",
+    "query": "can i view old orders after account is deleted",
+    "domain": "account",
+    "topic": "data_deletion",
+    "difficulty": "hard",
+    "variantType": "messy",
+    "top3": [
+      {
+        "id": "e69d00ce-be5e-4a85-b941-49b3d40274ba",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "b5f09fd1-ce6f-467f-b932-a6ca5782ab14",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "c489d060-0af6-4945-b695-fcc4dff56f97",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "s-notifications-008-m",
+    "query": "replied stop to sms why still getting email notifications",
+    "domain": "account",
+    "topic": "notifications",
+    "difficulty": "hard",
+    "variantType": "messy",
+    "top3": [
+      {
+        "id": "8c7fc0ed-e69e-4a22-a2e4-3ef982326f8a",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "19df7150-4976-4567-b00c-3e289a3c153e",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "53137309-82ce-4b17-a30e-11b62ccc5f4b",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "s-refunds-008-m",
+    "query": "returned jacket without belt how much taken off refund",
     "domain": "payments",
     "topic": "refunds",
+    "difficulty": "hard",
+    "variantType": "messy",
     "top3": [
       {
         "id": "286dba61-be34-4baa-a36f-fe41ba2fb97b",
@@ -174,273 +654,9 @@
         "rrfScore": 0.016129
       },
       {
-        "id": "2bf2a706-bcd4-458a-9d5d-0eac97c21b79",
-        "rrfScore": 0.015873
-      }
-    ]
-  },
-  {
-    "id": "q-10",
-    "query": "Are there restocking fees or return postage deductions for heavy exercise equipment?",
-    "domain": "payments",
-    "topic": "refunds",
-    "top3": [
-      {
-        "id": "86906f27-1bc4-4d4a-a773-9280d130b5a2",
-        "rrfScore": 0.031778
-      },
-      {
-        "id": "2bf2a706-bcd4-458a-9d5d-0eac97c21b79",
-        "rrfScore": 0.016393
-      },
-      {
-        "id": "286dba61-be34-4baa-a36f-fe41ba2fb97b",
-        "rrfScore": 0.016129
-      }
-    ]
-  },
-  {
-    "id": "q-11",
-    "query": "What is an Acquirer Reference Number (ARN) and how do I track my missing refund with my bank?",
-    "domain": "payments",
-    "topic": "refunds",
-    "top3": [
-      {
-        "id": "f8dbfc06-872a-44cf-91a7-9d5b75cabc2a",
-        "rrfScore": 0.016393
-      },
-      {
-        "id": "86906f27-1bc4-4d4a-a773-9280d130b5a2",
-        "rrfScore": 0.016129
-      },
-      {
         "id": "4279aee9-d0db-4f43-844d-9b632b7f6bed",
         "rrfScore": 0.015873
       }
     ]
-  },
-  {
-    "id": "q-12",
-    "query": "If I paid using a gift card and credit card together, where does my refund money go?",
-    "domain": "payments",
-    "topic": "refunds",
-    "top3": [
-      {
-        "id": "86906f27-1bc4-4d4a-a773-9280d130b5a2",
-        "rrfScore": 0.016393
-      },
-      {
-        "id": "3dba2e6c-4869-4c10-9a1a-1d59a68530b7",
-        "rrfScore": 0.016129
-      },
-      {
-        "id": "286dba61-be34-4baa-a36f-fe41ba2fb97b",
-        "rrfScore": 0.015873
-      }
-    ]
-  },
-  {
-    "id": "q-13",
-    "query": "What credit cards and digital mobile wallets are accepted at checkout?",
-    "domain": "payments",
-    "topic": "billing",
-    "top3": []
-  },
-  {
-    "id": "q-14",
-    "query": "Why is there a temporary pending authorization hold on my card before my order ships?",
-    "domain": "payments",
-    "topic": "billing",
-    "top3": []
-  },
-  {
-    "id": "q-15",
-    "query": "My payment was declined due to an Address Verification System (AVS) postal code mismatch",
-    "domain": "payments",
-    "topic": "billing",
-    "top3": []
-  },
-  {
-    "id": "q-16",
-    "query": "How can I pause or skip my monthly auto-renewal subscription delivery?",
-    "domain": "payments",
-    "topic": "billing",
-    "top3": []
-  },
-  {
-    "id": "q-17",
-    "query": "Can I pay for my purchase in four bi-weekly interest-free installments using Klarna or Afterpay?",
-    "domain": "payments",
-    "topic": "billing",
-    "top3": []
-  },
-  {
-    "id": "q-18",
-    "query": "How do corporate businesses submit Purchase Orders for Net-30 invoice billing?",
-    "domain": "payments",
-    "topic": "billing",
-    "top3": []
-  },
-  {
-    "id": "q-19",
-    "query": "What do the order milestones Placed, Processing, Shipped, and Delivered mean?",
-    "domain": "orders",
-    "topic": "shipping",
-    "top3": [
-      {
-        "id": "859759ac-73e9-456c-87a3-3d6964264e4a",
-        "rrfScore": 0.016393
-      },
-      {
-        "id": "2d6e803f-a442-4ff4-a4bd-91c2b517a427",
-        "rrfScore": 0.016129
-      },
-      {
-        "id": "4c40816f-8535-4aaa-aa3a-233358118127",
-        "rrfScore": 0.015873
-      }
-    ]
-  },
-  {
-    "id": "q-20",
-    "query": "What is the daily cutoff time for Next Day Overnight Express delivery?",
-    "domain": "orders",
-    "topic": "shipping",
-    "top3": [
-      {
-        "id": "419cdab9-eb6d-4e4b-bd76-9b7be4c13db3",
-        "rrfScore": 0.016393
-      },
-      {
-        "id": "859759ac-73e9-456c-87a3-3d6964264e4a",
-        "rrfScore": 0.016129
-      },
-      {
-        "id": "f638b0c3-2dc9-4909-87f1-703439071f0e",
-        "rrfScore": 0.015873
-      }
-    ]
-  },
-  {
-    "id": "q-21",
-    "query": "How long do I have to change or correct my shipping address after placing an order?",
-    "domain": "orders",
-    "topic": "shipping",
-    "top3": [
-      {
-        "id": "4c40816f-8535-4aaa-aa3a-233358118127",
-        "rrfScore": 0.016393
-      },
-      {
-        "id": "f638b0c3-2dc9-4909-87f1-703439071f0e",
-        "rrfScore": 0.016129
-      },
-      {
-        "id": "2d6e803f-a442-4ff4-a4bd-91c2b517a427",
-        "rrfScore": 0.015873
-      }
-    ]
-  },
-  {
-    "id": "q-22",
-    "query": "What should I do if my package is marked delivered but I cannot find it?",
-    "domain": "orders",
-    "topic": "shipping",
-    "top3": [
-      {
-        "id": "4c40816f-8535-4aaa-aa3a-233358118127",
-        "rrfScore": 0.016393
-      },
-      {
-        "id": "2d6e803f-a442-4ff4-a4bd-91c2b517a427",
-        "rrfScore": 0.016129
-      },
-      {
-        "id": "223a9fa0-0d81-40e9-8724-260fd2b3ea98",
-        "rrfScore": 0.015873
-      }
-    ]
-  },
-  {
-    "id": "q-23",
-    "query": "Does an adult signature requirement apply to orders over $500?",
-    "domain": "orders",
-    "topic": "shipping",
-    "top3": [
-      {
-        "id": "2d6e803f-a442-4ff4-a4bd-91c2b517a427",
-        "rrfScore": 0.016393
-      },
-      {
-        "id": "859759ac-73e9-456c-87a3-3d6964264e4a",
-        "rrfScore": 0.016129
-      },
-      {
-        "id": "4c40816f-8535-4aaa-aa3a-233358118127",
-        "rrfScore": 0.015873
-      }
-    ]
-  },
-  {
-    "id": "q-24",
-    "query": "Why did my items arrive in separate boxes with different tracking numbers?",
-    "domain": "orders",
-    "topic": "shipping",
-    "top3": [
-      {
-        "id": "f638b0c3-2dc9-4909-87f1-703439071f0e",
-        "rrfScore": 0.016393
-      },
-      {
-        "id": "419cdab9-eb6d-4e4b-bd76-9b7be4c13db3",
-        "rrfScore": 0.016129
-      },
-      {
-        "id": "2d6e803f-a442-4ff4-a4bd-91c2b517a427",
-        "rrfScore": 0.015873
-      }
-    ]
-  },
-  {
-    "id": "q-25",
-    "query": "How long is the 6-digit MFA verification code valid and is there a resend cooldown?",
-    "domain": "account",
-    "topic": "security",
-    "top3": []
-  },
-  {
-    "id": "q-26",
-    "query": "How long is a password reset link valid and what are the password complexity requirements?",
-    "domain": "account",
-    "topic": "security",
-    "top3": []
-  },
-  {
-    "id": "q-27",
-    "query": "My account is locked out after several failed password attempts, how long do I have to wait?",
-    "domain": "account",
-    "topic": "security",
-    "top3": []
-  },
-  {
-    "id": "q-28",
-    "query": "Why do I need to verify an OTP code before changing my primary account email or phone number?",
-    "domain": "account",
-    "topic": "security",
-    "top3": []
-  },
-  {
-    "id": "q-29",
-    "query": "I suspect my account was compromised, how can I terminate all active sessions and reset my password?",
-    "domain": "account",
-    "topic": "security",
-    "top3": []
-  },
-  {
-    "id": "q-30",
-    "query": "How do I permanently delete my account and personal data under GDPR or CCPA privacy regulations?",
-    "domain": "account",
-    "topic": "security",
-    "top3": []
   }
 ]
