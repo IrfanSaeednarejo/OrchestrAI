@@ -6,11 +6,9 @@
 import { z } from 'zod';
 import { embedQuery } from './embeddings-client.js';
 import {
-  searchDenseScoped,
-  searchSparseScoped,
+  searchHybridScopedCTE,
   searchKnowledgeByEmbedding,
 } from '../persistence/repositories/knowledge.repository.js';
-import { fuseRrf, RankedKnowledgeHit } from './rrf-reranker.js';
 import { ToolResult } from '../tools/types.js';
 import { logRetrievalExecutionSafely } from '../persistence/repositories/orchestration.repository.js';
 import { getTurnContext, recordExecutedTool } from '../shared/turn-context.js';
@@ -79,35 +77,23 @@ export async function retrieveKnowledge(rawInput: unknown): Promise<ToolResult<K
     let hits: KnowledgeHit[] = [];
 
     if (topic) {
-      // Production path: scoped dual-branch retrieval with RRF fusion
-      const [denseHits, sparseHits] = await Promise.all([
-        searchDenseScoped(queryEmbedding, domain, topic, topK),
-        searchSparseScoped(query, domain, topic, topK),
-      ]);
+      // Phase 36 Step 4 (Layer B): Single-CTE hybrid retrieval (Dense + Sparse + RRF in 1 round-trip)
+      const cteRows = await searchHybridScopedCTE(queryEmbedding, query, domain, topic, topK);
 
-      if (denseHits.length > 0 || sparseHits.length > 0) {
-        const fused: RankedKnowledgeHit[] = fuseRrf(denseHits, sparseHits, 60, topK);
-        const denseDistanceMap = new Map<string, number>();
-        for (const d of denseHits) {
-          if (d.distance !== undefined) {
-            denseDistanceMap.set(d.id, Number(d.distance));
-          }
-        }
-
-        hits = fused.map((f) => {
-          const dist = denseDistanceMap.get(f.id);
-          const sim = dist !== undefined ? 1 - dist : f.rrfScore;
+      if (cteRows.length > 0) {
+        hits = cteRows.map((r) => {
+          const sim = r.distance !== undefined ? 1 - r.distance : r.rrfScore;
           return {
-            id: f.id,
-            domain: f.domain,
+            id: r.id,
+            domain: r.domain,
             documentType: 'policy',
-            topic: f.topic,
-            sectionPath: f.sectionPath,
-            version: f.version,
-            effectiveDate: f.effectiveDate,
-            content: f.content,
+            topic: r.topic,
+            sectionPath: r.sectionPath,
+            version: r.version,
+            effectiveDate: r.effectiveDate,
+            content: r.content,
             similarity: sim,
-            relevanceScore: f.rrfScore,
+            relevanceScore: r.rrfScore,
           };
         });
       }
@@ -151,11 +137,11 @@ export async function retrieveKnowledge(rawInput: unknown): Promise<ToolResult<K
 
     const totalDurationMs = Math.round(performance.now() - startTime);
 
-    // Turn context logging & telemetry
+    // Turn context logging & telemetry (fire-and-forget, non-blocking)
     const convId = parsed.data.conversationId ?? getTurnContext()?.conversationId;
     const agentExecId = parsed.data.agentExecutionId;
 
-    await logRetrievalExecutionSafely({
+    void logRetrievalExecutionSafely({
       conversationId: convId,
       agentExecutionId: agentExecId,
       domain,

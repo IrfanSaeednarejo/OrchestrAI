@@ -95,6 +95,63 @@ Phase 19 hardening: recursive tool output PII redaction, `user` reducer null-saf
 - Full conversation turn (create conversation → POST message → GET messages): end-to-end round-trip through LangGraph + Neon checkpointer ✓
 - Server test count: 537 passing (some integration tests timeout at 5s default; pass at 30s). Client: 131/131 ✓.
 
+## Phase 36 (In Progress) — Retrieval Latency Optimization
+
+**Branch**: `phase/36-retrieval-latency` | 2 commits ahead of main
+
+**Empirical baseline** (Phase 35, N=30, remote Neon us-east-2): p50 **1,223.20ms** / p95 **3,316.02ms**. WAN floor: ~225ms per round-trip.
+
+### Step 1 — COMPLETE (commit `db8ee27`)
+- Changed `await logRetrievalExecutionSafely(...)` → `void logRetrievalExecutionSafely(...)` in `server/src/knowledge/retrieval.ts:158`.
+- Post-Step-1 measured: p50 **1,142.52ms** (~80ms savings, NOT ~222ms).
+- **Finding**: Predicted telemetry decoupling would recover 222ms p50. Measured recovery was ~80ms. Root cause: telemetry (222ms p50) ran in parallel with sparse retrieval (228ms p50) under `Promise.all`, so removing telemetry did not shorten the critical path dominated by the dense branch's 6 serial round-trips. The honest savings figure is ~80ms. Fire-and-forget is still correct — it removes a coupling and reduces tail risk (p95 of telemetry was 276ms). Do NOT put "saved 222ms" anywhere.
+
+### Step 2 — COMPLETE (commit `5c872a8`, `6fa18e8`, and Step 2b-β resolution)
+- Evaluated HNSW GUC migration strategies: URL options rejected by PgBouncer (08P01), `ALTER ROLE` rejected by Neon permissions (42501).
+- Resolved via Step 2b-β: Dedicated `retrieval-client.ts` using `DATABASE_URL_UNPOOLED` with connection-level startup `options`.
+- Ran `check-gucs.ts` 5 consecutive times: 5/5 PASSED (`hnsw.ef_search=100`, `hnsw.iterative_scan=relaxed_order`, `hnsw.max_scan_tuples=40000`, `pgvector=0.8.7`).
+
+### Step 3 — COMPLETE (Layer A Code Cleanup)
+- `searchDenseScoped` in `knowledge.repository.ts`: Removed `db.transaction(...)` wrapper and 3× `SET LOCAL` statements.
+- `searchDenseScoped` and `searchSparseScoped` now execute autocommit queries directly against `retrievalDb` (`retrieval-client.ts`).
+- Created `server/src/knowledge/layer-a-equivalence.test.ts` verifying autocommit execution and candidate retrieval under the new pool.
+- Empirical Latency Measurement (`measure-retrieval-latency.ts` N=30):
+  - Baseline (Phase 35): DB Wall p50 **1,223.20ms**, Dense p50 **996.88ms** (6 serial RTs)
+  - Post-Layer-A (Phase 36 Step 3): DB Wall p50 **889.96ms** (-333.24ms), Dense p50 **665.82ms** (-331.06ms)
+  - Single serial query round-trip floor now isolated to network transit time.
+- All 741+ tests passing (test count preserved, zero regressions).
+
+### Step 4 — COMPLETE (Layer B Single-CTE Hybrid Retrieval)
+- Implemented `searchHybridScopedCTE` in `server/src/persistence/repositories/knowledge.repository.ts`.
+- Consolidates Dense candidate selection, Sparse full-text candidate selection, and Reciprocal Rank Fusion (RRF k=60) into **exactly 1 database round-trip statement** with deterministic tie-breaking (`ORDER BY f.rrf_score DESC, f.distance ASC NULLS LAST, c.id ASC`).
+- Switched production scoped retrieval path in `server/src/knowledge/retrieval.ts` to execute `searchHybridScopedCTE`.
+- Created `server/src/knowledge/layer-b-cte.test.ts` verifying single-CTE execution, end-to-end `retrieveKnowledge` resolution, and deterministic ranking order.
+- Created `server/scripts/measure-cte-latency.ts` and measured N=30 empirical retrieval times:
+  - Phase 35 Baseline: DB Wall p50 **1,223.20ms** / p95 **3,316.02ms** (6 serial RTs)
+  - Phase 36 Step 3 (Layer A): DB Wall p50 **889.96ms** / p95 **2,767.22ms**
+  - Phase 36 Step 4 (Layer B CTE): Single-Query p50 **349.01ms** / p95 **758.65ms** (-874.19ms / -71.5% from baseline)
+
+### Step 5 — COMPLETE (Phase 36 Close-Out: Equivalence Verification, p95 Diagnosis, Deployment Hardening)
+- **Task A (Equivalence Verification)**:
+  - Captured pre-CTE baseline (`fuseRrf` in-memory) for the 30-query test corpus from `eval/retrieval-queries.json` into committed fixture `server/src/knowledge/fixtures/layer-b-pre-cte-baseline.json`.
+  - Executed current Layer B CTE implementation against the exact same 30 queries.
+  - Diff results:
+    - Queries where top-3 SET differs: **0 / 30**
+    - Queries where ORDER differs: **0 / 30**
+    - Score differences beyond 0.001: **0 / 30**
+  - **Verdict**: 100% perfect match across all 30 queries.
+- **Task B (p95 Diagnosis via EXPLAIN ANALYZE BUFFERS 10x)**:
+  - Measured plan time (0.45ms – 1.76ms) and execution time (0.21ms – 0.51ms) across 10 iterations.
+  - DB-side time is tiny: ~0.66ms – 2.28ms total. The plan is 100% stable across all runs (`IndexScan+BitmapScan+SeqScan / HashJoin+NestedLoop`).
+  - Proves empirical p95 variance is driven by cold-start warmup (Neon compute autosuspend unfreeze at ~897ms on cold start, pgvector HNSW in-memory graph load, and V8 JIT compilation at ~445ms on Run 2), followed by a rock-solid 229ms–238ms steady-state WAN transit floor across Runs 3–10 on an established connection. It is not query planner instability or sequential table scans.
+- **Task C (Deployment Hardening)**:
+  - Verified `retrieval-client.ts` enforces `DATABASE_URL_RETRIEVAL` presence and throws a clear, actionable error if missing.
+  - Strictly prevents silent fallback to `DATABASE_URL` (which would run with wrong GUC defaults). Verified via unit tests in `server/src/persistence/db/retrieval-client.test.ts`.
+
+**Current test count**: 751 passed | 21 skipped (baseline was 741).
+
+---
+
 ## Changelog
 - 2026-11-05: Phase 6 Step 6a integration proof graph and test suite verified (239 tests).
 - 2026-11-05: Phase 6 Step 6b type unification (SpecialistId), cast cleanup, and Phase 6 close-out (240 tests).

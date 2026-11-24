@@ -11,6 +11,9 @@ export function setup() {
     if (process.env.TEST_DATABASE_URL_UNPOOLED) {
       process.env.DATABASE_URL_UNPOOLED = process.env.TEST_DATABASE_URL_UNPOOLED;
     }
+    if (process.env.TEST_DATABASE_URL_RETRIEVAL) {
+      process.env.DATABASE_URL_RETRIEVAL = process.env.TEST_DATABASE_URL_RETRIEVAL;
+    }
     console.log('[test-global-setup] Using TEST_DATABASE_URL (isolated test DB)');
   } else {
     console.log('[test-global-setup] TEST_DATABASE_URL not set — using DATABASE_URL (CAUTION: likely prod)');

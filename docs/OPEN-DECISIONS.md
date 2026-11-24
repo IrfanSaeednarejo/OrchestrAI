@@ -81,7 +81,52 @@ Approved items move to DECISIONS.md. Items marked [CONFLICT] are inconsistencies
         - OD-30c [RESOLVED 2026-11-20]: 0014 Backup Policy — Cold `pg_dump` of `knowledge_documents` taken immediately before drop, **verified via restore into throwaway DB** (schema-only minimum, full restore preferred), stored off-Neon. Second independent copy from prior day as belt-and-suspenders. PITR is a bonus check, **not relied upon as contractual recovery** — cold dump remains the sole contractual recovery mechanism regardless of Neon tier. If on a paid plan with retention >7 days, PITR adds coverage but does not change the contractual mechanism.
         - OD-30d [RESOLVED 2026-11-20]: CI Gate 2 Parallelism — Accept sequential Gate 2 (137–159s observed; ~2.5 min per RAG PR). Parallelism deferred until PR-velocity friction or CI timeouts emerge empirically. Parallelism risk (test-isolation flake, Gemini rate-limit contention during live-embedding Gate 2) outweighs speed benefit at current PR volume. Revisit trigger tracked in ROADMAP.
 
+36. [RESOLVED 2026-11-23] Phase 36 Step 2b-β: HNSW GUC Strategy — Unpooled Retrieval Endpoint (DECIDED & LOCKED in DECISIONS.md)
 
+   **Background**: The goal of Layer A (Phase 36 Step 3) is to remove the `BEGIN`/`COMMIT` transaction and three `SET LOCAL` statements from `searchDenseScoped` in `knowledge.repository.ts:74-97`, each of which costs one round-trip (~225ms WAN). This saves 4 of the 6 round-trips in the dense branch (RT 1–4: BEGIN + 3×SET LOCAL).
+
+   **Blocker**: The GUC values set by those `SET LOCAL` statements (`hnsw.ef_search=100`, `hnsw.iterative_scan=relaxed_order`, `hnsw.max_scan_tuples=40000`) must be re-established at connection level before the transaction can be safely removed. Two strategies were attempted and both failed on 2026-11-23:
+
+   - **URL `options` parameter** (`options=-c hnsw.ef_search=100`): Neon PgBouncer in transaction mode rejects custom startup parameters with error `08P01 "unsupported startup parameter in options: hnsw.ef_search"`. **Ruled out.**
+   - **`ALTER ROLE neondb_owner SET "hnsw.ef_search" = 100`**: Returns `42501 permission denied to set parameter "hnsw.ef_search"`. Neon does not grant `neondb_owner` the privilege needed to alter custom GUC defaults at the role level. **Ruled out.**
+   - **Session-level `SET` via `pool.on('connect')` callback**: On Neon PgBouncer in transaction mode, session-scoped `SET` persists for the lifetime of the **backend** (not the client transaction). The same backend is shared by multiple pooler clients — leaks GUC state across unrelated connections. **Ruled out as unsafe.**
+
+   **Options**:
+
+   **Option A — Unpooled endpoint for retrieval (Recommended)**
+   - Neon provides a direct (non-pooled) connection string: `DATABASE_URL_UNPOOLED` (already configured in `server/.env` per STATUS.md, Neon deployment section).
+   - On direct connections (not PgBouncer), custom GUC startup parameters ARE accepted in the `options` query param: `...&options=-c hnsw.ef_search%3D100 -c hnsw.iterative_scan%3Drelaxed_order -c hnsw.max_scan_tuples%3D40000`.
+   - New env var: `DATABASE_URL_RETRIEVAL` = `DATABASE_URL_UNPOOLED` + GUC options string (operator sets this in `.env`, Railway, etc.).
+   - New file: `server/src/persistence/db/retrieval-client.ts` — a small `pg.Pool` with `max: 3` reading `DATABASE_URL_RETRIEVAL`. Fails fast (throws at startup) if `DATABASE_URL_RETRIEVAL` is not set.
+   - `knowledge.repository.ts` imports from `retrieval-client.ts` instead of the main `client.ts`.
+   - `client.ts` (protected file): **not touched**.
+   - Tradeoffs:
+     - Pro: Eliminates transaction + 3×SET LOCAL; dense branch drops from 6 serial round-trips to 1.
+     - Pro: Direct connection has lower latency variance (no PgBouncer queueing).
+     - Pro: `retrieval-client.ts` is a new file; does not modify any protected file.
+     - Con: Consumes Neon direct connection quota. `max: 3` pool is safe on Neon free tier (100 direct connection limit).
+     - Con: `DATABASE_URL_RETRIEVAL` must be set in all environments (local, CI, production). Missing var must fail fast.
+     - Con: Operator must add env var before deploying; minor ops complexity.
+
+   **Option B — Accept defaults, pursue Layer B only (single CTE inside transaction)**
+   - Keep the transaction and 3×SET LOCAL in `searchDenseScoped`. Do not attempt GUC migration.
+   - Pursue Layer B (single CTE) only. CTE runs inside the existing transaction; SET LOCAL values still apply. Round-trip count drops from 7 total (BEGIN + 3×SET LOCAL + dense SELECT + COMMIT + sparse SELECT) to 5 (BEGIN + 3×SET LOCAL + 1 CTE SELECT + COMMIT). Net savings: 2 round-trips (~450ms WAN).
+   - Tradeoffs:
+     - Pro: No new env var, no new pool, no connection quota impact.
+     - Pro: Simpler. No deployment change needed.
+     - Con: Still pays for BEGIN + COMMIT + 3×SET LOCAL on every retrieval call. At 5 round-trips × ~225ms WAN = ~1,125ms just for overhead, well above the ~250ms WAN target.
+     - Con: Co-located target (≤15ms) is unreachable with 5 serial round-trips.
+
+   **Recommendation**: Option A. The unpooled endpoint is already provisioned. Adding `retrieval-client.ts` is a contained new file that does not modify any protected file. The GUC settings become deterministic and verifiable. Connection quota impact (`max: 3`) is negligible. This is the architecturally cleanest path to the stated latency target.
+
+   **Implementation steps if approved**:
+   1. Operator sets `DATABASE_URL_RETRIEVAL` = `<DATABASE_URL_UNPOOLED>&options=-c hnsw.ef_search%3D100 -c hnsw.iterative_scan%3Drelaxed_order -c hnsw.max_scan_tuples%3D40000` in `server/.env`.
+   2. Create `server/src/persistence/db/retrieval-client.ts` (new `pg.Pool`, `max: 3`).
+   3. Update `check-gucs.ts` to use the retrieval pool for verification.
+   4. Run `check-gucs.ts` 5 times against the retrieval pool. All 5 must return `100/relaxed_order/40000`.
+   5. Only then proceed to Step 3 (remove transaction + SET LOCAL from `searchDenseScoped`).
+
+   **Approval gate**: Do not proceed to Step 3 until this OD is approved by owner, `DATABASE_URL_RETRIEVAL` is set, and `check-gucs.ts` returns `100/relaxed_order/40000` on all 5 consecutive runs using the retrieval pool.
 
 
 

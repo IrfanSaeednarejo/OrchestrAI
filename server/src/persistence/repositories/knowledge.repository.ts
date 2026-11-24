@@ -15,6 +15,7 @@ import {
   type InferSelectModel,
 } from 'drizzle-orm';
 import { db } from '../db/client.js';
+import { retrievalDb } from '../db/retrieval-client.js';
 import {
   knowledgeChunks,
   knowledgeDocVersions,
@@ -40,6 +41,12 @@ export interface KnowledgeSearchRow {
   rank?: number;
 }
 
+export interface HybridCteSearchRow extends KnowledgeSearchRow {
+  rrfScore: number;
+  denseRank: number | null;
+  sparseRank: number | null;
+}
+
 export interface ChunkInsertPayload {
   sectionPath: string;
   chunkIndex: number;
@@ -59,7 +66,18 @@ export interface DocumentVersionInsertPayload {
 }
 
 /**
- * Searches dense candidates via HNSW with local transaction GUCs and relaxed_order iterative scan.
+ * Searches dense candidates via HNSW using the dedicated retrieval pool.
+ *
+ * Phase 36 Layer A: The retrieval pool (retrieval-client.ts) connects to Neon's
+ * unpooled (direct) endpoint with HNSW GUCs set at connection level via the
+ * `options` startup parameter:
+ *   hnsw.ef_search        = 100
+ *   hnsw.iterative_scan   = relaxed_order
+ *   hnsw.max_scan_tuples  = 40000
+ *
+ * This eliminates the BEGIN/COMMIT transaction and 3× SET LOCAL statements
+ * that previously added 4 serial round-trips (~900ms WAN) to every retrieval call.
+ * The query now runs as a single autocommit statement.
  */
 export async function searchDenseScoped(
   embedding: number[],
@@ -71,33 +89,26 @@ export async function searchDenseScoped(
   const limitCandidates = topK * 3;
   const embeddingJson = JSON.stringify(embedding);
 
-  return db.transaction(async (tx) => {
-    await tx.execute(sql`
-      SET LOCAL hnsw.iterative_scan = relaxed_order;
-      SET LOCAL hnsw.ef_search = 100;
-      SET LOCAL hnsw.max_scan_tuples = 40000;
-    `);
+  const result = await retrievalDb.execute(sql`
+    SELECT 
+      c.id, c.version_id AS "versionId", c.domain, c.topic, c.section_path AS "sectionPath", c.content,
+      v.version, v.effective_date AS "effectiveDate",
+      (c.embedding <=> ${embeddingJson}::vector) AS distance
+    FROM knowledge_chunks c
+    JOIN knowledge_doc_versions v ON c.version_id = v.id
+    WHERE c.domain = ${domain}
+      AND c.topic = ${topic}
+      AND c.status = 'active'
+    ORDER BY c.embedding <=> ${embeddingJson}::vector
+    LIMIT ${limitCandidates};
+  `);
 
-    const result = await tx.execute(sql`
-      SELECT 
-        c.id, c.version_id AS "versionId", c.domain, c.topic, c.section_path AS "sectionPath", c.content,
-        v.version, v.effective_date AS "effectiveDate",
-        (c.embedding <=> ${embeddingJson}::vector) AS distance
-      FROM knowledge_chunks c
-      JOIN knowledge_doc_versions v ON c.version_id = v.id
-      WHERE c.domain = ${domain}
-        AND c.topic = ${topic}
-        AND c.status = 'active'
-      ORDER BY c.embedding <=> ${embeddingJson}::vector
-      LIMIT ${limitCandidates};
-    `);
-
-    return result.rows as unknown as KnowledgeSearchRow[];
-  });
+  return result.rows as unknown as KnowledgeSearchRow[];
 }
 
 /**
  * Searches sparse candidates via PostgreSQL tsvector full-text search.
+ * Uses the retrieval pool (direct unpooled endpoint) for consistency with searchDenseScoped.
  */
 export async function searchSparseScoped(
   queryText: string,
@@ -107,7 +118,7 @@ export async function searchSparseScoped(
 ): Promise<KnowledgeSearchRow[]> {
   const limitCandidates = topK * 3;
 
-  const result = await db.execute(sql`
+  const result = await retrievalDb.execute(sql`
     SELECT 
       c.id, c.version_id AS "versionId", c.domain, c.topic, c.section_path AS "sectionPath", c.content,
       v.version, v.effective_date AS "effectiveDate",
@@ -123,6 +134,99 @@ export async function searchSparseScoped(
   `);
 
   return result.rows as unknown as KnowledgeSearchRow[];
+}
+
+/**
+ * Phase 36 Step 4 (Layer B): Single-CTE Hybrid Retrieval with in-SQL Reciprocal Rank Fusion (RRF k=60).
+ * Consolidates dense vector search, sparse full-text search, and rank-based fusion into
+ * exactly ONE database round-trip statement using the retrieval pool.
+ */
+export async function searchHybridScopedCTE(
+  embedding: number[],
+  queryText: string,
+  domain: KnowledgeDomain,
+  topic: string,
+  topK: number
+): Promise<HybridCteSearchRow[]> {
+  assertValidEmbedding(embedding);
+  const limitCandidates = topK * 3;
+  const embeddingJson = JSON.stringify(embedding);
+
+  const result = await retrievalDb.execute(sql`
+    WITH dense AS (
+      SELECT 
+        c.id, c.version_id, c.domain, c.topic, c.section_path, c.content,
+        v.version, v.effective_date,
+        (c.embedding <=> ${embeddingJson}::vector) AS distance,
+        ROW_NUMBER() OVER (ORDER BY c.embedding <=> ${embeddingJson}::vector) AS dense_rank
+      FROM knowledge_chunks c
+      JOIN knowledge_doc_versions v ON c.version_id = v.id
+      WHERE c.domain = ${domain} AND c.topic = ${topic} AND c.status = 'active'
+      ORDER BY c.embedding <=> ${embeddingJson}::vector
+      LIMIT ${limitCandidates}
+    ),
+    sparse AS (
+      SELECT 
+        c.id, c.version_id, c.domain, c.topic, c.section_path, c.content,
+        v.version, v.effective_date,
+        ts_rank_cd(c.search_vector, websearch_to_tsquery('english', ${queryText})) AS rank_score,
+        ROW_NUMBER() OVER (ORDER BY ts_rank_cd(c.search_vector, websearch_to_tsquery('english', ${queryText})) DESC) AS sparse_rank
+      FROM knowledge_chunks c
+      JOIN knowledge_doc_versions v ON c.version_id = v.id
+      WHERE c.domain = ${domain} AND c.topic = ${topic} AND c.status = 'active'
+        AND c.search_vector @@ websearch_to_tsquery('english', ${queryText})
+      ORDER BY rank_score DESC
+      LIMIT ${limitCandidates}
+    ),
+    combined AS (
+      SELECT id, 1.0 / (60 + dense_rank) AS rrf_contrib, dense_rank, NULL::bigint AS sparse_rank, distance FROM dense
+      UNION ALL
+      SELECT id, 1.0 / (60 + sparse_rank) AS rrf_contrib, NULL::bigint AS dense_rank, sparse_rank, NULL::double precision AS distance FROM sparse
+    ),
+    fused AS (
+      SELECT 
+        id,
+        SUM(rrf_contrib) AS rrf_score,
+        MIN(dense_rank) AS dense_rank,
+        MIN(sparse_rank) AS sparse_rank,
+        MIN(distance) AS distance
+      FROM combined
+      GROUP BY id
+    )
+    SELECT 
+      c.id, c.version_id AS "versionId", c.domain, c.topic, c.section_path AS "sectionPath", c.content,
+      v.version, v.effective_date AS "effectiveDate",
+      f.distance,
+      f.rrf_score AS "rrfScore",
+      f.dense_rank AS "denseRank",
+      f.sparse_rank AS "sparseRank"
+    FROM fused f
+    JOIN knowledge_chunks c ON f.id = c.id
+    JOIN knowledge_doc_versions v ON c.version_id = v.id
+    ORDER BY f.rrf_score DESC, f.distance ASC NULLS LAST, c.id ASC
+    LIMIT ${topK};
+  `);
+
+  return (result.rows as unknown as Array<{
+    id: string;
+    versionId: string;
+    domain: KnowledgeDomain;
+    topic: string;
+    sectionPath: string;
+    content: string;
+    version: string;
+    effectiveDate: Date;
+    distance?: number | string | null;
+    rrfScore: number | string;
+    denseRank: number | string | null;
+    sparseRank: number | string | null;
+  }>).map((row) => ({
+    ...row,
+    distance: row.distance != null ? Number(row.distance) : undefined,
+    rrfScore: Number(row.rrfScore),
+    denseRank: row.denseRank != null ? Number(row.denseRank) : null,
+    sparseRank: row.sparseRank != null ? Number(row.sparseRank) : null,
+  }));
 }
 
 /**

@@ -14,6 +14,7 @@ import { opsRouter } from './routes/ops.routes.js';
 import { authRouter } from './routes/auth.routes.js';
 import { orderRouter } from './routes/order.routes.js';
 import { profileUpdateRouter } from './routes/profile-update.routes.js';
+import { diagRouter } from './diag/retrieval-latency.js';
 import { errorHandler } from './middleware/error.middleware.js';
 import { NotFoundError } from './errors/app-error.js';
 import { config } from '../shared/config.js';
@@ -49,6 +50,10 @@ export function createApp(
 
   // Mount ops routes outside auth middleware (Phase 18 Step 1)
   app.use('/api/ops', opsRouter);
+
+  // Mount diagnostic routes (Phase 36 Task 3b)
+  app.use('/api/diag', diagRouter);
+  app.use('/diag', diagRouter);
 
   // Mount custom routes/handlers if provided
   if (configure) {
