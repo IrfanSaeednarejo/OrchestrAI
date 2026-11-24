@@ -56,41 +56,45 @@ async function main() {
     return Math.sin(i + 1) / Math.sqrt(768);
   });
 
-  console.log('\nWarming up connection pool & JIT (3 discardable iterations)...');
-  for (let i = 0; i < 3; i++) {
-    await searchHybridScopedCTE(syntheticEmbedding, query, domain, topic, topK);
-  }
-  console.log('Warm-up completed.');
+  const totalIterations = 35;
+  const warmupDiscardCount = 5;
+  console.log(`\nExecuting ${totalIterations} iterations (first ${warmupDiscardCount} discarded from stats)...`);
+  const allDurations: number[] = [];
 
-  const N = 30;
-  console.log(`\nExecuting N=${N} timed single-CTE calls...`);
-  const durations: number[] = [];
-
-  for (let i = 1; i <= N; i++) {
+  for (let i = 1; i <= totalIterations; i++) {
     const start = performance.now();
     const hits = await searchHybridScopedCTE(syntheticEmbedding, query, domain, topic, topK);
     const duration = performance.now() - start;
-    durations.push(duration);
+    allDurations.push(duration);
 
-    if (i % 5 === 0 || i === N) {
-      console.log(`  [Iteration ${String(i).padStart(2)}/${N}] CTE Query: ${duration.toFixed(1)}ms | Hits: ${hits.length}`);
-    }
+    const isWarmup = i <= warmupDiscardCount;
+    const tag = isWarmup ? `[Warmup ${i}/${warmupDiscardCount}]` : `[Measured ${String(i - warmupDiscardCount).padStart(2)}/30]`;
+    console.log(`  ${tag} CTE Query: ${duration.toFixed(2)}ms | Hits: ${hits.length}`);
   }
 
-  const stats = calculateStats(durations);
+  const warmDurations = allDurations.slice(warmupDiscardCount);
+  const sortedWarm = [...warmDurations].sort((a, b) => a - b);
+  const stats = calculateStats(warmDurations);
 
   console.log('\n=============================================================');
-  console.log('           LAYER B SINGLE-CTE RETRIEVAL LATENCY REPORT       ');
+  console.log('       WARMUP-EXCLUDED SINGLE-CTE RETRIEVAL LATENCY REPORT    ');
   console.log('=============================================================');
-  console.log(`Iterations (N) : ${N}`);
-  console.log('Endpoint       : Neon Direct (unpooled + GUC options)');
-  console.log('Round-Trips    : EXACTLY 1 database statement');
+  console.log(`Total Iterations (N) : ${totalIterations}`);
+  console.log(`Discarded Warmup (N) : ${warmupDiscardCount}`);
+  console.log(`Measured Steady (N)  : ${warmDurations.length}`);
+  console.log('Endpoint             : Neon Direct (unpooled + GUC options)');
+  console.log('Round-Trips          : EXACTLY 1 database statement');
   console.log('-------------------------------------------------------------');
   console.log('Metric               Min (ms)   Max (ms)   Mean (ms)  p50 (ms)   p95 (ms)');
   console.log('-------------------------------------------------------------');
   console.log(
     `Single-CTE Query     ${String(stats.min).padStart(8)}   ${String(stats.max).padStart(8)}   ${String(stats.mean).padStart(8)}  ${String(stats.p50).padStart(8)}   ${String(stats.p95).padStart(8)}`
   );
+  console.log('-------------------------------------------------------------');
+  console.log('Full Sorted List of 30 Warm Values (ms):');
+  sortedWarm.forEach((v, idx) => {
+    console.log(`  [${String(idx + 1).padStart(2)}] ${v.toFixed(2)}ms`);
+  });
   console.log('=============================================================');
 }
 
