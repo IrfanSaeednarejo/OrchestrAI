@@ -322,12 +322,17 @@ Small focused steps; explicit typed state; clear agent boundaries; no agent spag
 - **Pre-backend-launch blocker.** `ENABLE_DEMO_ENDPOINTS=true` currently set in `server/.env` — must be `false` before the backend HTTP server launches. Documented in `DEPLOYMENT.md` §1.
 
 ## Phase 36 Retrieval Latency Optimization (2026-11-23)
-- **OD-36 (Connection-Level HNSW GUC Strategy)**: Option A adopted. Dedicated retrieval pool in `server/src/persistence/db/retrieval-client.ts` (`max: 3`) using Neon's direct unpooled endpoint (`DATABASE_URL_UNPOOLED`) with startup query parameters:
-  `-c hnsw.ef_search=100 -c hnsw.iterative_scan=relaxed_order -c hnsw.max_scan_tuples=40000`.
-  Eliminates PgBouncer startup parameter rejection (`08P01`) and bypasses role-level GUC privilege restriction (`42501`).
+- **OD-36 (Connection-Level HNSW GUC Strategy)**: Option A adopted. Dedicated retrieval pool in `server/src/persistence/db/retrieval-client.ts` (`max: 3`) using Neon's direct unpooled endpoint with startup query parameters via `DATABASE_URL_RETRIEVAL`:
+  `&options=-c%20hnsw.ef_search%3D100%20-c%20hnsw.iterative_scan%3Drelaxed_order%20-c%20hnsw.max_scan_tuples%3D40000`.
+- **Four Rejected Approaches for HNSW GUC Management**:
+  1. *URL options parameter on pooled endpoint (`DATABASE_URL`)*: Rejected. Neon PgBouncer in transaction mode rejects custom startup parameters with error `08P01` ("unsupported startup parameter in options: hnsw.ef_search").
+  2. *Role-level GUC configuration (`ALTER ROLE neondb_owner SET ...`)*: Rejected. Failed with error `42501` ("permission denied to set parameter hnsw.ef_search"). Neon does not grant superuser privileges to `neondb_owner`.
+  3. *Session-level hook (`pool.on('connect') SET ...`)*: Rejected as unsafe. On pooled transaction-mode PgBouncer, backend connections are shared across distinct clients and persistent session `SET` leaks GUC states across transactions.
+  4. *Silent fallback to `DATABASE_URL` when `DATABASE_URL_RETRIEVAL` missing*: Rejected. Would silently revert `hnsw.ef_search` to default `40` without any warning or error, causing invisible recall degradation. `retrieval-client.ts` strictly throws a descriptive error if `DATABASE_URL_RETRIEVAL` is absent.
+- **Chosen Unpooled-Endpoint Approach**: `server/src/persistence/db/retrieval-client.ts` connects directly to Neon (bypassing PgBouncer) where custom startup GUC parameters are supported natively. Verified deterministically across 5/5 fresh connection allocations.
 - **Telemetry Critical Path**: Telemetry fire-and-forget verified (`void logRetrievalExecutionSafely(...)`). Recovered ~80ms p50 (honestly measured; not 222ms, because telemetry ran parallel to sparse retrieval).
 - **Dense Round-Trip Elimination (Layer A)**: Collapsed `searchDenseScoped` from 6 serial queries (`BEGIN`, 3× `SET LOCAL`, `SELECT`, `COMMIT`) to 1 autocommit `SELECT` query via `retrievalDb`. Dense p50 reduced from 996.88ms to 665.82ms over WAN.
-- **Single-CTE Hybrid Consolidation (Layer B)**: Implemented `searchHybridScopedCTE` in `knowledge.repository.ts`, consolidating dense vector search, sparse full-text search, and Reciprocal Rank Fusion (RRF k=60) into **exactly 1 database round-trip statement** with deterministic tie-breaking. Switched `retrieveKnowledge` in `retrieval.ts` to use `searchHybridScopedCTE`. Measured retrieval p50 dropped from 1,223.20ms (Phase 35 baseline) to **349.01ms** (71.5% reduction) over WAN.
+- **Single-CTE Hybrid Consolidation (Layer B)**: Implemented `searchHybridScopedCTE` in `knowledge.repository.ts`, consolidating dense vector search, sparse full-text search, and Reciprocal Rank Fusion (RRF k=60) into **exactly 1 database round-trip statement** with deterministic tie-breaking. Switched `retrieveKnowledge` in `retrieval.ts` to use `searchHybridScopedCTE`. Measured retrieval p50 dropped from 1,223.20ms (Phase 35 baseline) to **349.01ms** (71.5% reduction) over WAN. Equivalence verified with 0/30 set or order differences against pre-CTE baseline.
 
 
 

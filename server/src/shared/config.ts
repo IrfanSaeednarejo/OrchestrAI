@@ -6,6 +6,7 @@ export const envSchema = z
     APP_PORT: z.coerce.number().default(4000),
     DATABASE_URL: z.string().optional(),
     DATABASE_URL_UNPOOLED: z.string().optional(),
+    DATABASE_URL_RETRIEVAL: z.string().optional(),
     POSTGRES_USER: z.string().optional(),
     POSTGRES_PASSWORD: z.string().optional(),
     POSTGRES_DB: z.string().optional(),
@@ -98,6 +99,7 @@ export const config = Object.freeze({
     port: pgPort,
     connectionString,
     unpooledConnectionString: envVars.DATABASE_URL_UNPOOLED || connectionString,
+    retrievalConnectionString: envVars.DATABASE_URL_RETRIEVAL,
   },
   redis: {
     host: envVars.REDIS_HOST,

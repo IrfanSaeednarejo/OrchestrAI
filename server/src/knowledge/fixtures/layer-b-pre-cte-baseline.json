@@ -1,0 +1,446 @@
+[
+  {
+    "id": "q-01",
+    "query": "How many days do I have to return an item after it gets delivered?",
+    "domain": "orders",
+    "topic": "returns",
+    "top3": [
+      {
+        "id": "1f81ecb6-1e75-44b5-aa1f-8d49d8ff8914",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "7dd1abc8-3c1c-4342-883d-4962aa11c6ba",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "15d8a63c-74e8-43c7-a23c-077ecc5d087c",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "q-02",
+    "query": "What should I do if my package arrived with broken or defective merchandise?",
+    "domain": "orders",
+    "topic": "returns",
+    "top3": [
+      {
+        "id": "1e726838-38ec-4cc2-84a2-ebffec3ab3de",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "db883c4f-04c1-479e-be39-0af5045f9dd6",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "15d8a63c-74e8-43c7-a23c-077ecc5d087c",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "q-03",
+    "query": "Can I drop off my return at a store with a QR code instead of printing a label?",
+    "domain": "orders",
+    "topic": "returns",
+    "top3": [
+      {
+        "id": "1e726838-38ec-4cc2-84a2-ebffec3ab3de",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "7dd1abc8-3c1c-4342-883d-4962aa11c6ba",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "db883c4f-04c1-479e-be39-0af5045f9dd6",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "q-04",
+    "query": "Are personalized products and final sale clearance items eligible for return?",
+    "domain": "orders",
+    "topic": "returns",
+    "top3": [
+      {
+        "id": "1f81ecb6-1e75-44b5-aa1f-8d49d8ff8914",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "db883c4f-04c1-479e-be39-0af5045f9dd6",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "1e726838-38ec-4cc2-84a2-ebffec3ab3de",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "q-05",
+    "query": "Can I return shoes if the original manufacturer shoebox is missing or damaged?",
+    "domain": "orders",
+    "topic": "returns",
+    "top3": [
+      {
+        "id": "1f81ecb6-1e75-44b5-aa1f-8d49d8ff8914",
+        "rrfScore": 0.032266
+      },
+      {
+        "id": "1e726838-38ec-4cc2-84a2-ebffec3ab3de",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "15d8a63c-74e8-43c7-a23c-077ecc5d087c",
+        "rrfScore": 0.016129
+      }
+    ]
+  },
+  {
+    "id": "q-06",
+    "query": "What happens if the warehouse rejects my returned package and how do I appeal?",
+    "domain": "orders",
+    "topic": "returns",
+    "top3": [
+      {
+        "id": "15d8a63c-74e8-43c7-a23c-077ecc5d087c",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "1f81ecb6-1e75-44b5-aa1f-8d49d8ff8914",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "db883c4f-04c1-479e-be39-0af5045f9dd6",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "q-07",
+    "query": "How many business days does it take for a credit card refund to appear in my account?",
+    "domain": "payments",
+    "topic": "refunds",
+    "top3": [
+      {
+        "id": "4279aee9-d0db-4f43-844d-9b632b7f6bed",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "86906f27-1bc4-4d4a-a773-9280d130b5a2",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "286dba61-be34-4baa-a36f-fe41ba2fb97b",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "q-08",
+    "query": "I was charged twice on my statement for the same order, how does the reversal work?",
+    "domain": "payments",
+    "topic": "refunds",
+    "top3": [
+      {
+        "id": "2bf2a706-bcd4-458a-9d5d-0eac97c21b79",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "f8dbfc06-872a-44cf-91a7-9d5b75cabc2a",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "286dba61-be34-4baa-a36f-fe41ba2fb97b",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "q-09",
+    "query": "Can I choose instant store credit with a 5% bonus instead of waiting for a bank refund?",
+    "domain": "payments",
+    "topic": "refunds",
+    "top3": [
+      {
+        "id": "286dba61-be34-4baa-a36f-fe41ba2fb97b",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "3dba2e6c-4869-4c10-9a1a-1d59a68530b7",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "2bf2a706-bcd4-458a-9d5d-0eac97c21b79",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "q-10",
+    "query": "Are there restocking fees or return postage deductions for heavy exercise equipment?",
+    "domain": "payments",
+    "topic": "refunds",
+    "top3": [
+      {
+        "id": "86906f27-1bc4-4d4a-a773-9280d130b5a2",
+        "rrfScore": 0.031778
+      },
+      {
+        "id": "2bf2a706-bcd4-458a-9d5d-0eac97c21b79",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "286dba61-be34-4baa-a36f-fe41ba2fb97b",
+        "rrfScore": 0.016129
+      }
+    ]
+  },
+  {
+    "id": "q-11",
+    "query": "What is an Acquirer Reference Number (ARN) and how do I track my missing refund with my bank?",
+    "domain": "payments",
+    "topic": "refunds",
+    "top3": [
+      {
+        "id": "f8dbfc06-872a-44cf-91a7-9d5b75cabc2a",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "86906f27-1bc4-4d4a-a773-9280d130b5a2",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "4279aee9-d0db-4f43-844d-9b632b7f6bed",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "q-12",
+    "query": "If I paid using a gift card and credit card together, where does my refund money go?",
+    "domain": "payments",
+    "topic": "refunds",
+    "top3": [
+      {
+        "id": "86906f27-1bc4-4d4a-a773-9280d130b5a2",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "3dba2e6c-4869-4c10-9a1a-1d59a68530b7",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "286dba61-be34-4baa-a36f-fe41ba2fb97b",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "q-13",
+    "query": "What credit cards and digital mobile wallets are accepted at checkout?",
+    "domain": "payments",
+    "topic": "billing",
+    "top3": []
+  },
+  {
+    "id": "q-14",
+    "query": "Why is there a temporary pending authorization hold on my card before my order ships?",
+    "domain": "payments",
+    "topic": "billing",
+    "top3": []
+  },
+  {
+    "id": "q-15",
+    "query": "My payment was declined due to an Address Verification System (AVS) postal code mismatch",
+    "domain": "payments",
+    "topic": "billing",
+    "top3": []
+  },
+  {
+    "id": "q-16",
+    "query": "How can I pause or skip my monthly auto-renewal subscription delivery?",
+    "domain": "payments",
+    "topic": "billing",
+    "top3": []
+  },
+  {
+    "id": "q-17",
+    "query": "Can I pay for my purchase in four bi-weekly interest-free installments using Klarna or Afterpay?",
+    "domain": "payments",
+    "topic": "billing",
+    "top3": []
+  },
+  {
+    "id": "q-18",
+    "query": "How do corporate businesses submit Purchase Orders for Net-30 invoice billing?",
+    "domain": "payments",
+    "topic": "billing",
+    "top3": []
+  },
+  {
+    "id": "q-19",
+    "query": "What do the order milestones Placed, Processing, Shipped, and Delivered mean?",
+    "domain": "orders",
+    "topic": "shipping",
+    "top3": [
+      {
+        "id": "859759ac-73e9-456c-87a3-3d6964264e4a",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "2d6e803f-a442-4ff4-a4bd-91c2b517a427",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "4c40816f-8535-4aaa-aa3a-233358118127",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "q-20",
+    "query": "What is the daily cutoff time for Next Day Overnight Express delivery?",
+    "domain": "orders",
+    "topic": "shipping",
+    "top3": [
+      {
+        "id": "419cdab9-eb6d-4e4b-bd76-9b7be4c13db3",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "859759ac-73e9-456c-87a3-3d6964264e4a",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "f638b0c3-2dc9-4909-87f1-703439071f0e",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "q-21",
+    "query": "How long do I have to change or correct my shipping address after placing an order?",
+    "domain": "orders",
+    "topic": "shipping",
+    "top3": [
+      {
+        "id": "4c40816f-8535-4aaa-aa3a-233358118127",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "f638b0c3-2dc9-4909-87f1-703439071f0e",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "2d6e803f-a442-4ff4-a4bd-91c2b517a427",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "q-22",
+    "query": "What should I do if my package is marked delivered but I cannot find it?",
+    "domain": "orders",
+    "topic": "shipping",
+    "top3": [
+      {
+        "id": "4c40816f-8535-4aaa-aa3a-233358118127",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "2d6e803f-a442-4ff4-a4bd-91c2b517a427",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "223a9fa0-0d81-40e9-8724-260fd2b3ea98",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "q-23",
+    "query": "Does an adult signature requirement apply to orders over $500?",
+    "domain": "orders",
+    "topic": "shipping",
+    "top3": [
+      {
+        "id": "2d6e803f-a442-4ff4-a4bd-91c2b517a427",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "859759ac-73e9-456c-87a3-3d6964264e4a",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "4c40816f-8535-4aaa-aa3a-233358118127",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "q-24",
+    "query": "Why did my items arrive in separate boxes with different tracking numbers?",
+    "domain": "orders",
+    "topic": "shipping",
+    "top3": [
+      {
+        "id": "f638b0c3-2dc9-4909-87f1-703439071f0e",
+        "rrfScore": 0.016393
+      },
+      {
+        "id": "419cdab9-eb6d-4e4b-bd76-9b7be4c13db3",
+        "rrfScore": 0.016129
+      },
+      {
+        "id": "2d6e803f-a442-4ff4-a4bd-91c2b517a427",
+        "rrfScore": 0.015873
+      }
+    ]
+  },
+  {
+    "id": "q-25",
+    "query": "How long is the 6-digit MFA verification code valid and is there a resend cooldown?",
+    "domain": "account",
+    "topic": "security",
+    "top3": []
+  },
+  {
+    "id": "q-26",
+    "query": "How long is a password reset link valid and what are the password complexity requirements?",
+    "domain": "account",
+    "topic": "security",
+    "top3": []
+  },
+  {
+    "id": "q-27",
+    "query": "My account is locked out after several failed password attempts, how long do I have to wait?",
+    "domain": "account",
+    "topic": "security",
+    "top3": []
+  },
+  {
+    "id": "q-28",
+    "query": "Why do I need to verify an OTP code before changing my primary account email or phone number?",
+    "domain": "account",
+    "topic": "security",
+    "top3": []
+  },
+  {
+    "id": "q-29",
+    "query": "I suspect my account was compromised, how can I terminate all active sessions and reset my password?",
+    "domain": "account",
+    "topic": "security",
+    "top3": []
+  },
+  {
+    "id": "q-30",
+    "query": "How do I permanently delete my account and personal data under GDPR or CCPA privacy regulations?",
+    "domain": "account",
+    "topic": "security",
+    "top3": []
+  }
+]
