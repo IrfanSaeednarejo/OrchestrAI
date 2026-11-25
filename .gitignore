@@ -146,4 +146,5 @@ vite.config.ts.timestamp-*
 # Evaluation & Benchmark local caches
 .embed-cache/
 .ablation-query-cache.json
+.chunk-staging.json
 

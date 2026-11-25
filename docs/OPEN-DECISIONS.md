@@ -128,5 +128,29 @@ Approved items move to DECISIONS.md. Items marked [CONFLICT] are inconsistencies
 
    **Approval gate**: Do not proceed to Step 3 until this OD is approved by owner, `DATABASE_URL_RETRIEVAL` is set, and `check-gucs.ts` returns `100/relaxed_order/40000` on all 5 consecutive runs using the retrieval pool.
 
+37. [OPEN — Awaiting Owner Approval] Phase 37 Corpus Scale Decisions:
+
+   - **OD-37a [RESOLVED 2026-11-25] `upsertKnowledgeVersion` Superseding Scope**:
+     Option A approved — scope version superseding by `docId` instead of `(domain, topic)` so multiple documents can coexist within the same `(domain, topic)` retrieval bucket. Regression test required proving `upsertKnowledgeVersion(docB)` leaves `docA` `active` when both share `(orders, returns)`. `topic` semantics shift from "one doc per topic" to "retrieval bucket containing N docs".
+
+   - **OD-37b [RESOLVED 2026-11-25] `knowledge_chunks.chunk_key` Column & Partial Unique Index**:
+     - **Problem**: `knowledge_chunks` currently has `id` (random `uuid`) with no deterministic positional key or unique constraint to support idempotent `ON CONFLICT DO UPDATE` across re-ingests.
+     - **Options**:
+       - *Option A (Rejected)*: Deterministic UUIDv5 on `id`. Hides ID-formation contract and breaks cleanly across version bumps (`v1.0.0 -> v1.0.1`).
+       - *Option B (Recommended)*: Add `chunk_key text NOT NULL` (zero-padded 2-digit section position `'01'`, `'02'`, ...) to `knowledge_chunks` in `server/src/persistence/db/schema.ts` with a partial unique index `knowledge_chunks_version_chunk_key_active_unique ON knowledge_chunks (version_id, chunk_key) WHERE status = 'active'`.
+     - **Migration**:
+       1. `ALTER TABLE knowledge_chunks ADD COLUMN chunk_key text NOT NULL DEFAULT '';`
+       2. `UPDATE knowledge_chunks SET chunk_key = chunk_index::text WHERE chunk_key = '';`
+       3. `ALTER TABLE knowledge_chunks ALTER COLUMN chunk_key DROP DEFAULT;`
+       4. `CREATE UNIQUE INDEX knowledge_chunks_version_chunk_key_active_unique ON knowledge_chunks (version_id, chunk_key) WHERE status = 'active';`
+     - **Tradeoffs**: One small Drizzle migration (`db:generate` + `db:migrate`); preserves `search_vector` `GENERATED ALWAYS` column; allows historical `superseded` rows to coexist with `active` rows at the same `(version_id, chunk_key)`; plain SQL debuggability in `psql`.
+     - **Required Tests & Guards**:
+       - Same-version content-hash guard in ingest: if `existing.version === incoming.version && existing.content_hash !== incoming.content_hash`, throw/HALT.
+       - Coexistence test: `INSERT active (v1, '01')` -> `UPDATE status='superseded'` -> `INSERT active (v1, '01')` succeeds.
+     - **Approval gate**: Do not modify `schema.ts` or generate/run migration until owner explicitly approves OD-37b (`APPROVED: OD-37b`).
+
+   - **OD-37c [RESOLVED 2026-11-25] Topic Naming Convention**:
+     Use underscore naming (`account_security`, `data_deletion`) matching existing frontmatter and `specialist-scope.ts`.
+
 
 
