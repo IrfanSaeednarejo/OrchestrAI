@@ -95,9 +95,9 @@ Phase 19 hardening: recursive tool output PII redaction, `user` reducer null-saf
 - Full conversation turn (create conversation → POST message → GET messages): end-to-end round-trip through LangGraph + Neon checkpointer ✓
 - Server test count: 537 passing (some integration tests timeout at 5s default; pass at 30s). Client: 131/131 ✓.
 
-## Phase 36 (In Progress) — Retrieval Latency Optimization
+## Phase 36 (COMPLETE) — Retrieval Latency Optimization
 
-**Branch**: `phase/36-retrieval-latency` | 2 commits ahead of main
+**Branch**: `main` (tagged `phase-36-done`)
 
 **Empirical baseline** (Phase 35, N=30, remote Neon us-east-2): p50 **1,223.20ms** / p95 **3,316.02ms**. WAN floor: ~225ms per round-trip.
 
@@ -125,30 +125,36 @@ Phase 19 hardening: recursive tool output PII redaction, `user` reducer null-saf
 - Implemented `searchHybridScopedCTE` in `server/src/persistence/repositories/knowledge.repository.ts`.
 - Consolidates Dense candidate selection, Sparse full-text candidate selection, and Reciprocal Rank Fusion (RRF k=60) into **exactly 1 database round-trip statement** with deterministic tie-breaking (`ORDER BY f.rrf_score DESC, f.distance ASC NULLS LAST, c.id ASC`).
 - Switched production scoped retrieval path in `server/src/knowledge/retrieval.ts` to execute `searchHybridScopedCTE`.
-- Created `server/src/knowledge/layer-b-cte.test.ts` verifying single-CTE execution, end-to-end `retrieveKnowledge` resolution, and deterministic ranking order.
-- Created `server/scripts/measure-cte-latency.ts` and measured N=30 empirical retrieval times:
+- Created `server/scripts/measure-cte-latency.ts` and measured empirical retrieval times:
   - Phase 35 Baseline: DB Wall p50 **1,223.20ms** / p95 **3,316.02ms** (6 serial RTs)
   - Phase 36 Step 3 (Layer A): DB Wall p50 **889.96ms** / p95 **2,767.22ms**
-  - Phase 36 Step 4 (Layer B CTE): Single-Query p50 **349.01ms** / p95 **758.65ms** (-874.19ms / -71.5% from baseline)
+  - Phase 36 Step 4 (Layer B CTE, WAN): Single-Query p50 **349.01ms** / p95 **758.65ms** (-874.19ms / -71.5% from baseline)
+  - Warmup-Excluded Local WAN (N=30 warm of 35): p50 **253.73ms** (Min 227.91ms, Max 379.34ms, p95 303.20ms)
 
-### Step 5 — COMPLETE (Phase 36 Close-Out: Equivalence Verification, p95 Diagnosis, Deployment Hardening)
+### Step 5 — COMPLETE (Equivalence Verification, Production Measurement & Close-Out)
 - **Task A (Equivalence Verification)**:
-  - Captured pre-CTE baseline (`fuseRrf` in-memory) for the 30-query test corpus from `eval/retrieval-queries.json` into committed fixture `server/src/knowledge/fixtures/layer-b-pre-cte-baseline.json`.
-  - Executed current Layer B CTE implementation against the exact same 30 queries.
-  - Diff results:
+  - Reality check caught synthetic chunk ID mismatch in legacy fixture. Regenerated baseline against production corpus using stratified 30-query sample from golden dataset v2.
+  - Asserted 100% set and order equality in `layer-b-cte.test.ts`:
     - Queries where top-3 SET differs: **0 / 30**
     - Queries where ORDER differs: **0 / 30**
     - Score differences beyond 0.001: **0 / 30**
-  - **Verdict**: 100% perfect match across all 30 queries.
-- **Task B (p95 Diagnosis via EXPLAIN ANALYZE BUFFERS 10x)**:
-  - Measured plan time (0.45ms – 1.76ms) and execution time (0.21ms – 0.51ms) across 10 iterations.
-  - DB-side time is tiny: ~0.66ms – 2.28ms total. The plan is 100% stable across all runs (`IndexScan+BitmapScan+SeqScan / HashJoin+NestedLoop`).
-  - Proves empirical p95 variance is driven by cold-start warmup (Neon compute autosuspend unfreeze at ~897ms on cold start, pgvector HNSW in-memory graph load, and V8 JIT compilation at ~445ms on Run 2), followed by a rock-solid 229ms–238ms steady-state WAN transit floor across Runs 3–10 on an established connection. It is not query planner instability or sequential table scans.
+  - **Verdict**: 100% top-3 set, order, and score equivalence against production corpus.
+- **Task B (Production Measurement via Railway Diagnostic Route)**:
+  - Deployed header-gated diagnostic route (`x-diag-token === ADMIN_DIAG_TOKEN`) to Railway.
+  - Measured warmup-excluded retrieval latency directly from Railway (`measurement_origin: railway-us-east4` to Neon `us-east-2`, N=30 warm runs after 5 discarded warmup runs):
+    - **Min**: `20.95ms`
+    - **p50**: `21.42ms`
+    - **p95**: `22.23ms`
+    - **Max**: `22.37ms`
+    - **Mean**: `21.47ms`
+  - Reconciles earlier ~231ms–253ms local measurements as pure cross-continental network transit from Pakistan to US-East; in-region production retrieval latency executes in **~21ms**.
+  - Production smoke test verified with authenticated Bearer session token and returns query.
+  - Diagnostic route and test suite removed immediately after measurement in cleanup commit.
 - **Task C (Deployment Hardening)**:
   - Verified `retrieval-client.ts` enforces `DATABASE_URL_RETRIEVAL` presence and throws a clear, actionable error if missing.
   - Strictly prevents silent fallback to `DATABASE_URL` (which would run with wrong GUC defaults). Verified via unit tests in `server/src/persistence/db/retrieval-client.test.ts`.
 
-**Current test count**: 751 passed | 21 skipped (baseline was 741).
+**Current test count**: 752 passed | 21 skipped (baseline was 741; diag route removed -5 tests from 757 to 752).
 
 ---
 

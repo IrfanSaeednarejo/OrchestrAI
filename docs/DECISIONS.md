@@ -332,7 +332,14 @@ Small focused steps; explicit typed state; clear agent boundaries; no agent spag
 - **Chosen Unpooled-Endpoint Approach**: `server/src/persistence/db/retrieval-client.ts` connects directly to Neon (bypassing PgBouncer) where custom startup GUC parameters are supported natively. Verified deterministically across 5/5 fresh connection allocations.
 - **Telemetry Critical Path**: Telemetry fire-and-forget verified (`void logRetrievalExecutionSafely(...)`). Recovered ~80ms p50 (honestly measured; not 222ms, because telemetry ran parallel to sparse retrieval).
 - **Dense Round-Trip Elimination (Layer A)**: Collapsed `searchDenseScoped` from 6 serial queries (`BEGIN`, 3× `SET LOCAL`, `SELECT`, `COMMIT`) to 1 autocommit `SELECT` query via `retrievalDb`. Dense p50 reduced from 996.88ms to 665.82ms over WAN.
-- **Single-CTE Hybrid Consolidation (Layer B)**: Implemented `searchHybridScopedCTE` in `knowledge.repository.ts`, consolidating dense vector search, sparse full-text search, and Reciprocal Rank Fusion (RRF k=60) into **exactly 1 database round-trip statement** with deterministic tie-breaking. Switched `retrieveKnowledge` in `retrieval.ts` to use `searchHybridScopedCTE`. Measured retrieval p50 dropped from 1,223.20ms (Phase 35 baseline) to **349.01ms** (71.5% reduction) over WAN. Equivalence verified with 0/30 set or order differences against pre-CTE baseline.
+- **Single-CTE Hybrid Consolidation (Layer B)**: Implemented `searchHybridScopedCTE` in `knowledge.repository.ts`, consolidating dense vector search, sparse full-text search, and Reciprocal Rank Fusion (RRF k=60) into **exactly 1 database round-trip statement** with deterministic tie-breaking. Switched `retrieveKnowledge` in `retrieval.ts` to use `searchHybridScopedCTE`. Measured retrieval p50 dropped from 1,223.20ms (Phase 35 baseline) to **349.01ms** (71.5% reduction) over WAN. Equivalence verified with 0/30 set or order differences against pre-CTE baseline across 30 stratified queries from golden dataset v2.
+- **Production Retrieval Latency Measurement & Temporary Diag Route (Phase 36)**: A temporary header-gated diagnostic route (`server/src/api/diag/retrieval-latency.ts` gated by `x-diag-token === ADMIN_DIAG_TOKEN`, returning 404 on missing/wrong token) was deployed to Railway to capture true cross-region retrieval latency without client-side WAN packet jitter. Warmup-excluded measurement (N=30 runs after 5 discarded warmup runs) executed directly from Railway (`measurement_origin: railway-us-east4` to Neon `us-east-2`) yielded:
+  - **p50**: `21.42ms`
+  - **p95**: `22.23ms`
+  - **min**: `20.95ms`
+  - **max**: `22.37ms`
+  - **mean**: `21.47ms`
+  The diagnostic endpoint and its test file were removed immediately after capturing this production measurement; zero lingering references remain in code.
 
 
 
