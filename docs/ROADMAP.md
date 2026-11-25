@@ -33,6 +33,7 @@
 - [x] 26 Profile Update & Identity Verification Flow — Profile specialist-owned 4-step update state machine with zero lateral handoffs, Redis-backed atomic verification service (SHA-256 hashed codes, Lua script, 60s/15s cooldowns), dual-mounted REST endpoints (`/profile/update/request-code`, `/verify`, `/resend-code`) with conditional snapshot concurrency protection, client VerificationPrompt 7-state machine, and 23 acceptance integration tests. Needs: 25.
 - [x] 29 PDF RAG Pipeline & Scale Hardening — Scale hardening (concurrency, dry-run, RSS tracking, embed counter, page_number migration), hybrid RAG retrieval, 42P01 legacy fallback guard, retry logging verification, latency budget revision (p95 <2,000ms), and production deployment reconciliation. Phase D operator-ready.
 - [ ] 39+ Integration Test WAN Isolation — Region-aware test timeouts or test-side batching for `parent-graph-*.integration.test.ts` when executed in parallel from high-latency regions against remote `TEST_DATABASE_URL`.
+- [ ] 39+ Specialist-Scope Expansion — Map `orders/exchanges` -> `returns`, `orders/cancellations` -> `order_tracking`, `payments/disputes` -> `refund`, `payments/methods` -> `payment`, `account/privacy` / `account/data_deletion` / `account/notifications` -> `account_access` (requires OPEN-DECISIONS entry; activates 15 dormant docs).
 
 
 Explicitly out of core scope: parallel safety fanout (optional post-core), production alerting, Lyft-style config-driven self-serve agent registration.
