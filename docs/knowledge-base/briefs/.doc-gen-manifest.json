@@ -1,0 +1,212 @@
+{
+  "faq-account-del-erasure-002": {
+    "briefHash": "dc6c65af894ec3ec9c8d7b920e2e840eab880e33574da7238c89c67f0eb5d1ab",
+    "file": "docs/knowledge-base/src/account-data_deletion-erasure.md",
+    "chars": 10297,
+    "sections": 15,
+    "timestamp": "2026-11-25T20:57:12.472Z"
+  },
+  "faq-account-del-legal-holds-003": {
+    "briefHash": "fc54b45012e1fcdecbeb4006cd6aff6bfce1d1d4bc6b00618192d772f6da3422",
+    "file": "docs/knowledge-base/src/account-data_deletion-legal-holds.md",
+    "chars": 9169,
+    "sections": 15,
+    "timestamp": "2026-11-25T20:57:19.654Z"
+  },
+  "faq-account-notif-email-003": {
+    "briefHash": "8dd0c5c14249a272551089477a0e42896acc52a0c19c9ff707471380d1f19038",
+    "file": "docs/knowledge-base/src/account-notifications-email.md",
+    "chars": 9067,
+    "sections": 15,
+    "timestamp": "2026-11-25T20:57:46.602Z"
+  },
+  "faq-account-notif-sms-002": {
+    "briefHash": "925adbbf17ef7a89ab6639a0a6b7f05081e562b57c8747ee657fcc6fc4bfb854",
+    "file": "docs/knowledge-base/src/account-notifications-sms.md",
+    "chars": 8718,
+    "sections": 15,
+    "timestamp": "2026-11-25T20:57:52.893Z"
+  },
+  "faq-account-sec-mfa-otp-002": {
+    "briefHash": "ed88a91f0fe3ac5c7630d2a633b7df0dd31c59fed209ebfdc3bed3a9246a75ad",
+    "file": "docs/knowledge-base/src/account-account_security-mfa-otp.md",
+    "chars": 10020,
+    "sections": 15,
+    "timestamp": "2026-11-25T20:59:28.120Z"
+  },
+  "faq-account-sec-password-recovery-004": {
+    "briefHash": "86e549247d8c178c676afb9d3d71de2b85fd6faa66687293e24a1a5c7d8808de",
+    "file": "docs/knowledge-base/src/account-account_security-password-recovery.md",
+    "chars": 9759,
+    "sections": 15,
+    "timestamp": "2026-11-25T20:59:36.186Z"
+  },
+  "faq-account-sec-sessions-003": {
+    "briefHash": "a50ce68e8814d67ad030d1d5bf61776b5ea7598296fd79c0ea9f76fbd076f11e",
+    "file": "docs/knowledge-base/src/account-account_security-sessions.md",
+    "chars": 12210,
+    "sections": 15,
+    "timestamp": "2026-11-25T20:59:45.118Z"
+  },
+  "faq-orders-exchanges-instant-swap-002": {
+    "briefHash": "d6661f9140c44f554962cfeb8437742f8a98c3061f0e3d3cca0cbdc129e02188",
+    "file": "docs/knowledge-base/src/orders-exchanges-instant-swap.md",
+    "chars": 9512,
+    "sections": 15,
+    "timestamp": "2026-11-25T20:59:54.519Z"
+  },
+  "faq-orders-exchanges-warranty-003": {
+    "briefHash": "b6c3f5e971847896097165b9d94584a9cc31a8021c1ae095ad9633961b22ba1d",
+    "file": "docs/knowledge-base/src/orders-exchanges-warranty.md",
+    "chars": 10273,
+    "sections": 15,
+    "timestamp": "2026-11-25T21:00:06.331Z"
+  },
+  "faq-orders-shipping-international-002": {
+    "briefHash": "2e233c53674f6e37c2706f5cd4387939e604f2ea82083252609e02f8a1e477fd",
+    "file": "docs/knowledge-base/src/orders-shipping-international.md",
+    "chars": 9492,
+    "sections": 15,
+    "timestamp": "2026-11-25T21:00:42.187Z"
+  },
+  "faq-orders-shipping-lost-damaged-003": {
+    "briefHash": "f3dedf97b281a39f0d7dfb69b1ce35857a77679232bcf9b23db65fd55385b366",
+    "file": "docs/knowledge-base/src/orders-shipping-lost-damaged.md",
+    "chars": 8104,
+    "sections": 15,
+    "timestamp": "2026-11-25T21:00:57.062Z"
+  },
+  "faq-orders-shipping-po-box-freight-004": {
+    "briefHash": "be250bb4a1ba2b10c0617514d6337992db574a4aa756f2fcc8dcc47d6b39649a",
+    "file": "docs/knowledge-base/src/orders-shipping-po-box-freight.md",
+    "chars": 10497,
+    "sections": 15,
+    "timestamp": "2026-11-25T21:01:05.889Z"
+  },
+  "faq-payments-methods-ach-wire-003": {
+    "briefHash": "b124f29d67e5f0ff31e4e8fe62838bed2cb3870c857a4e7f485b16d51b195271",
+    "file": "docs/knowledge-base/src/payments-methods-ach-wire.md",
+    "chars": 9223,
+    "sections": 15,
+    "timestamp": "2026-11-25T21:01:14.140Z"
+  },
+  "faq-payments-methods-wallets-002": {
+    "briefHash": "21b422091515c35d1464f80fcba22287b7a5a40a644ce8d4a1e8aee9d3c711cc",
+    "file": "docs/knowledge-base/src/payments-methods-wallets.md",
+    "chars": 10312,
+    "sections": 15,
+    "timestamp": "2026-11-25T21:01:28.471Z"
+  },
+  "faq-payments-payments-3ds-fraud-004": {
+    "briefHash": "2012d1413a20dabe5203a439122af44ea51369c14397f2ec8b4b56cce8a63b2f",
+    "file": "docs/knowledge-base/src/payments-payments-3ds-fraud.md",
+    "chars": 10146,
+    "sections": 15,
+    "timestamp": "2026-11-25T21:01:38.409Z"
+  },
+  "faq-payments-payments-auth-holds-002": {
+    "briefHash": "ed0bd0c9cbd0708b57d5cd705ef6ed09b21d564d6c6b05eeb33ee40bfde40850",
+    "file": "docs/knowledge-base/src/payments-payments-auth-holds.md",
+    "chars": 9723,
+    "sections": 15,
+    "timestamp": "2026-11-25T21:01:56.350Z"
+  },
+  "faq-payments-payments-tax-fx-003": {
+    "briefHash": "fe7d1e9809aa281f9af2bb8197d5790725aa35ab8ea2f50f917ded07dd7b32ae",
+    "file": "docs/knowledge-base/src/payments-payments-tax-fx.md",
+    "chars": 9459,
+    "sections": 15,
+    "timestamp": "2026-11-25T21:02:16.708Z"
+  },
+  "pol-account-privacy-cookies-003": {
+    "briefHash": "9d90be503450b3570b2accd551054546714e8d6627ceb5a5010d645a915abd59",
+    "file": "docs/knowledge-base/src/account-privacy-cookies.md",
+    "chars": 11767,
+    "sections": 15,
+    "timestamp": "2026-11-25T21:03:38.666Z"
+  },
+  "pol-account-privacy-gdpr-ccpa-002": {
+    "briefHash": "0eab5cbfaadffa8a1f7035e778fac3361ae22b55be8e3efc5dd4136abaf54729",
+    "file": "docs/knowledge-base/src/account-privacy-gdpr-ccpa.md",
+    "chars": 12167,
+    "sections": 15,
+    "timestamp": "2026-11-25T21:03:46.809Z"
+  },
+  "pol-account-privacy-retention-004": {
+    "briefHash": "f9e3ff01acfa331fdfcbece7ab2efa472f6e8922a4526a08983ffd685ca376ea",
+    "file": "docs/knowledge-base/src/account-privacy-retention.md",
+    "chars": 9881,
+    "sections": 15,
+    "timestamp": "2026-11-25T21:04:03.911Z"
+  },
+  "pol-orders-cancellations-address-edits-003": {
+    "briefHash": "4f2037d9a6d06bbe2c047b6ec8252b4f08f192ca24e8b19be34972fd1c58b2d6",
+    "file": "docs/knowledge-base/src/orders-cancellations-address-edits.md",
+    "chars": 10032,
+    "sections": 15,
+    "timestamp": "2026-11-25T21:04:38.187Z"
+  },
+  "pol-orders-cancellations-preorder-002": {
+    "briefHash": "7cbe48e72d467a02306263961f35ec93556a36ea5e010d2e1990dca0239a2052",
+    "file": "docs/knowledge-base/src/orders-cancellations-preorder.md",
+    "chars": 9883,
+    "sections": 15,
+    "timestamp": "2026-11-25T21:05:40.918Z"
+  },
+  "pol-orders-returns-domestic-002": {
+    "briefHash": "6e89881b465dbc4b05f151bbe74c055196382ab8e9570a0e99f8286f3af99894",
+    "file": "docs/knowledge-base/src/orders-returns-domestic.md",
+    "chars": 8963,
+    "sections": 15,
+    "timestamp": "2026-11-25T21:06:03.810Z"
+  },
+  "pol-orders-returns-final-sale-004": {
+    "briefHash": "d98679bcf4257a4e11c5858823aede6e7e955cc0e9d8821bc8489311bc714b6b",
+    "file": "docs/knowledge-base/src/orders-returns-final-sale.md",
+    "chars": 9230,
+    "sections": 15,
+    "timestamp": "2026-11-25T21:06:11.655Z"
+  },
+  "pol-orders-returns-international-003": {
+    "briefHash": "61fdfff6648a377b8a744a334a054d11a994852e0e3601d2c1ab06a96cdb16a2",
+    "file": "docs/knowledge-base/src/orders-returns-international.md",
+    "chars": 9297,
+    "sections": 15,
+    "timestamp": "2026-11-25T21:06:24.940Z"
+  },
+  "pol-payments-disputes-bnpl-003": {
+    "briefHash": "f07149fa749153449ab97175218a798f38be1017b159f08242fb117c29a4b28b",
+    "file": "docs/knowledge-base/src/payments-disputes-bnpl.md",
+    "chars": 10875,
+    "sections": 15,
+    "timestamp": "2026-11-25T21:06:38.374Z"
+  },
+  "pol-payments-disputes-chargeback-002": {
+    "briefHash": "37d1e03270231daf96c297c3b1c5f119055010d9eacaf0b8fab5099c8d6d40ad",
+    "file": "docs/knowledge-base/src/payments-disputes-chargeback.md",
+    "chars": 12053,
+    "sections": 15,
+    "timestamp": "2026-11-25T21:07:20.815Z"
+  },
+  "pol-payments-refunds-partial-004": {
+    "briefHash": "aeea67d00cbe9d58b3898a38dbd3af252f068a4dd1fe704c3d3d3eed6bd30d9a",
+    "file": "docs/knowledge-base/src/payments-refunds-partial.md",
+    "chars": 11023,
+    "sections": 15,
+    "timestamp": "2026-11-25T21:07:48.071Z"
+  },
+  "pol-payments-refunds-rail-settlement-002": {
+    "briefHash": "f23e1a34421394c2f8962a3f6aafbd265c7c6b06ada6a85f6962d6beb9ca45bb",
+    "file": "docs/knowledge-base/src/payments-refunds-rail-settlement.md",
+    "chars": 11086,
+    "sections": 15,
+    "timestamp": "2026-11-25T21:08:03.570Z"
+  },
+  "pol-payments-refunds-store-credit-003": {
+    "briefHash": "268c1daebe1977413a3aa89bbedc6fa64e52cf75747a098c52cc9ed90680cbb1",
+    "file": "docs/knowledge-base/src/payments-refunds-store-credit.md",
+    "chars": 8861,
+    "sections": 15,
+    "timestamp": "2026-11-25T21:08:16.057Z"
+  }
+}
