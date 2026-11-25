@@ -128,9 +128,9 @@ Approved items move to DECISIONS.md. Items marked [CONFLICT] are inconsistencies
 
    **Approval gate**: Do not proceed to Step 3 until this OD is approved by owner, `DATABASE_URL_RETRIEVAL` is set, and `check-gucs.ts` returns `100/relaxed_order/40000` on all 5 consecutive runs using the retrieval pool.
 
-37. [OPEN — Awaiting Owner Approval] Phase 37 Corpus Scale Decisions:
+37. [RESOLVED 2026-11-25] Phase 37 Corpus Scale Decisions:
 
-   - **OD-37a [PROPOSED — Awaiting Owner Approval] `upsertKnowledgeVersion` Superseding Scope**:
+   - **OD-37a [RESOLVED 2026-11-25] `upsertKnowledgeVersion` Superseding Scope**:
      - **Problem**: `upsertKnowledgeVersion` in `server/src/persistence/repositories/knowledge.repository.ts:331-352` currently demotes all active `knowledge_doc_versions` and `knowledge_chunks` matching `(domain, topic)` to `'superseded'`. At 42 docs across 12 topics, upserting one doc would silently wipe sibling docs in the same `(domain, topic)`.
      - **Options**:
        - *Option A (Recommended)*: Scope version superseding by `docId` (`eq(knowledgeDocVersions.docId, versionMeta.docId)`) and demote `knowledgeChunks` by the superseded `versionId`s.
@@ -140,7 +140,7 @@ Approved items move to DECISIONS.md. Items marked [CONFLICT] are inconsistencies
        `upsertKnowledgeVersion(docB)` when `docA` and `docB` share `(domain='orders', topic='returns')` -> assert `docA`'s active version remains `status='active'` and only `docB`'s prior versions are demoted to `'superseded'`.
      - **Approval gate**: Awaiting explicit owner approval (`APPROVED: OD-37a`) before 37c implementation.
 
-   - **OD-37b [PROPOSED — Awaiting Owner Approval] `knowledge_chunks.chunk_key` Column & Partial Unique Index**:
+   - **OD-37b [RESOLVED 2026-11-25] `knowledge_chunks.chunk_key` Column & Partial Unique Index**:
      - **Problem**: `knowledge_chunks` currently has `id` (random `uuid`) with no deterministic positional key or unique constraint to support idempotent `ON CONFLICT DO UPDATE` across re-ingests.
      - **Options**:
        - *Option A (Rejected)*: Deterministic UUIDv5 on `id`. Hides ID-formation contract and breaks cleanly across version bumps (`v1.0.0 -> v1.0.1`).

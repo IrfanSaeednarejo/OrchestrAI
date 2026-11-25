@@ -341,6 +341,11 @@ Small focused steps; explicit typed state; clear agent boundaries; no agent spag
   - **mean**: `21.47ms`
   The diagnostic endpoint and its test file were removed immediately after capturing this production measurement; zero lingering references remain in code.
 
+## Phase 37 Corpus Scale, Chunker Fix & Re-Labeling (2026-11-25)
+- **OD-37a (`upsertKnowledgeVersion` Superseding Scope — Option A)**: Scoped version superseding in `knowledge.repository.ts` by `docId` (instead of `(domain, topic)`), with a required sibling-doc regression test. Semantic shift: `topic` transitions from *"one doc per topic"* to *"a retrieval bucket containing N documents"*, while specialist-to-topic scope remains 1:1. **Corpus scaling converts scoped retrieval from saturated to informative; the eval signal that was previously null becomes real.**
+- **OD-37b (`knowledge_chunks.chunk_key` & Partial Unique Index — Option B)**: Added `chunk_key text NOT NULL` (zero-padded 2-digit positional key `'01'`, `'02'`, ..., not derived from section headings) to `knowledge_chunks` with partial unique index `knowledge_chunks_version_chunk_key_active_unique ON knowledge_chunks (version_id, chunk_key) WHERE status = 'active'`. Preserves `search_vector` (`GENERATED ALWAYS AS (to_tsvector('english', coalesce(section_path, '') || ' ' || content)) STORED` per `0012_nice_groot.sql`), allows historical `superseded` rows to coexist with `active` rows at the same `(version_id, chunk_key)`, and enforces a same-version content-hash guard (halting if `existing.version === incoming.version && existing.content_hash !== incoming.content_hash`).
+- **OD-37c (Topic Naming Convention)**: Standardized on underscore topic identifiers (`account_security`, `data_deletion`) matching existing frontmatter and `specialist-scope.ts`.
+
 
 
 

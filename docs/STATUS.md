@@ -158,6 +158,21 @@ Phase 19 hardening: recursive tool output PII redaction, `user` reducer null-saf
 
 ---
 
+## Phase 37 (In Progress) — Corpus Scale, Chunker Fix & Re-Labeling
+
+**Branch**: `phase/37-corpus-scale`
+
+### Sub-Phase 37a — COMPLETE (Gate 1 verified, commits `9aeaee7`, `0c8b69b`)
+- **Chunker Fix (`server/src/knowledge/chunker.ts`)**: Replaced destructive sentence-splitting regex with `splitIntoSentencesWithSeparators`, protecting decimals (`25.50`), version numbers (`3.2`, `1.0.0`), and abbreviations (`No.`, `e.g.`, `i.e.`) with a strict verbatim round-trip invariant. Added 11 adversarial tests in `chunker.test.ts` (14/14 passing).
+- **Production Chunk-Truncation Audit (READ-ONLY)**: Audited 66 production chunks against source PDFs and found 6 silently truncated by a regex that dropped sentence fragments preceding decimal amounts, losing 81–202 characters of customer-facing policy per affected chunk (`64aafead`, `9fbc24e7`, `f638b0c3`, `859759ac`, `1f440385`, `db883c4f`).
+- **Staging Recovery Proof (`server/scripts/.chunk-staging.json`)**: Re-chunking the 12 frozen PDFs recovered `+843` chars (`+99`, `+188`, `+165`, `+202`, `+81`, `+108`) across the 6 affected chunks (`52,166` staged vs `51,323` prod), with `0` char difference across all 60 unaffected chunks.
+- **Test count**: 763 active server tests across 88 files (`752 + 11` new chunker tests), run via CI in-region; parallel local runs from a high-latency region show integration-only WAN timeouts, documented below.
+
+### Known Issues
+- Integration tests (`parent-graph-*.integration.test.ts`) fail with WAN timeouts when run in parallel from Pakistan -> `us-east-2` (`755 passed | 8 failed | 21 skipped` in parallel run). Pass sequentially with `--fileParallelism=false --testTimeout=60000` (e.g., `parent-graph-cross-domain` 14/14, `parent-graph-account` 5/5). CI (in-region) is the source of truth. Root fix: region-aware test timeout or test-side batching, deferred to Phase 39+.
+
+---
+
 ## Changelog
 - 2026-11-05: Phase 6 Step 6a integration proof graph and test suite verified (239 tests).
 - 2026-11-05: Phase 6 Step 6b type unification (SpecialistId), cast cleanup, and Phase 6 close-out (240 tests).
