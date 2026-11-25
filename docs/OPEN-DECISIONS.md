@@ -130,10 +130,17 @@ Approved items move to DECISIONS.md. Items marked [CONFLICT] are inconsistencies
 
 37. [OPEN — Awaiting Owner Approval] Phase 37 Corpus Scale Decisions:
 
-   - **OD-37a [RESOLVED 2026-11-25] `upsertKnowledgeVersion` Superseding Scope**:
-     Option A approved — scope version superseding by `docId` instead of `(domain, topic)` so multiple documents can coexist within the same `(domain, topic)` retrieval bucket. Regression test required proving `upsertKnowledgeVersion(docB)` leaves `docA` `active` when both share `(orders, returns)`. `topic` semantics shift from "one doc per topic" to "retrieval bucket containing N docs".
+   - **OD-37a [PROPOSED — Awaiting Owner Approval] `upsertKnowledgeVersion` Superseding Scope**:
+     - **Problem**: `upsertKnowledgeVersion` in `server/src/persistence/repositories/knowledge.repository.ts:331-352` currently demotes all active `knowledge_doc_versions` and `knowledge_chunks` matching `(domain, topic)` to `'superseded'`. At 42 docs across 12 topics, upserting one doc would silently wipe sibling docs in the same `(domain, topic)`.
+     - **Options**:
+       - *Option A (Recommended)*: Scope version superseding by `docId` (`eq(knowledgeDocVersions.docId, versionMeta.docId)`) and demote `knowledgeChunks` by the superseded `versionId`s.
+       - *Option B*: Create 30 new `(domain, topic)` pairs so each doc has a unique `(domain, topic)`. Rejected — violates the constraint to use existing topics only.
+     - **Tradeoffs**: Option A preserves sibling docs in the same `(domain, topic)` retrieval bucket with zero schema changes; shifts `topic` semantics from "one doc per topic" to "retrieval bucket containing N docs" while keeping specialist-to-topic scope 1:1.
+     - **Required Regression Test**:
+       `upsertKnowledgeVersion(docB)` when `docA` and `docB` share `(domain='orders', topic='returns')` -> assert `docA`'s active version remains `status='active'` and only `docB`'s prior versions are demoted to `'superseded'`.
+     - **Approval gate**: Awaiting explicit owner approval (`APPROVED: OD-37a`) before 37c implementation.
 
-   - **OD-37b [RESOLVED 2026-11-25] `knowledge_chunks.chunk_key` Column & Partial Unique Index**:
+   - **OD-37b [PROPOSED — Awaiting Owner Approval] `knowledge_chunks.chunk_key` Column & Partial Unique Index**:
      - **Problem**: `knowledge_chunks` currently has `id` (random `uuid`) with no deterministic positional key or unique constraint to support idempotent `ON CONFLICT DO UPDATE` across re-ingests.
      - **Options**:
        - *Option A (Rejected)*: Deterministic UUIDv5 on `id`. Hides ID-formation contract and breaks cleanly across version bumps (`v1.0.0 -> v1.0.1`).

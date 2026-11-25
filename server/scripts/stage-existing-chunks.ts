@@ -14,6 +14,10 @@ import path from 'node:path';
 import { parsePdfDocument } from '../src/knowledge/pdf-parser.js';
 import { chunkDocument, type DocumentChunk } from '../src/knowledge/chunker.js';
 
+interface StagedChunk extends DocumentChunk {
+  chunkKey: string;
+}
+
 interface StagedDoc {
   docId: string;
   file: string;
@@ -21,7 +25,7 @@ interface StagedDoc {
   topic: string;
   version: string;
   chunkCount: number;
-  chunks: DocumentChunk[];
+  chunks: StagedChunk[];
 }
 
 async function main(): Promise<void> {
@@ -39,7 +43,13 @@ async function main(): Promise<void> {
   for (const file of pdfFiles) {
     const buf = fs.readFileSync(path.join(kbDir, file));
     const parsed = await parsePdfDocument(buf);
-    const chunks = chunkDocument(parsed, { targetTokens: 350, overlapTokens: 50 });
+    const rawChunks = chunkDocument(parsed, { targetTokens: 350, overlapTokens: 50 });
+
+    // OD-37b: zero-padded 2-digit positional chunk_key ('01', '02', ...) per doc
+    const chunks: StagedChunk[] = rawChunks.map((c) => ({
+      ...c,
+      chunkKey: String(c.chunkIndex + 1).padStart(2, '0'),
+    }));
 
     docs.push({
       docId: parsed.metadata.docId,
