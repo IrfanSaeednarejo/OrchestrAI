@@ -100,15 +100,15 @@ Phase 37 is strictly scoped to corpus scaling, chunker correctness, ingestion ha
 5. **Step 37b.2 — Numeric Policy Fact-Sheet Extraction**:
    - **Files**: `server/scripts/extract-policy-facts.ts`, `docs/knowledge-base/fact-sheet.json`.
    - **Work**: Extract every numeric policy fact from the 12 frozen docs (`concept`, `value`, `source_doc`, `source_section`) as an immutable constraint for all 30 new docs.
-6. **Step 37b.3 — Brief Generator + 30 Brief Files**:
-   - **Files**: `server/scripts/generate-briefs.ts`, `docs/knowledge-base/briefs/{doc_id}.md` (30 files).
-   - **Work**: Generate 30 brief files from the approved Scope Map + Fact Sheet, each specifying domain, topic, owning specialist, `version: 1.0.0`, 14–16 H2 section headings (~700–800 chars per chunk), neutral policy prose tone, and immutable fact-sheet constraints.
+6. **Step 37b.3 — Fact-Subtopic-Relevance Matrix (37b.3a) + 30 Brief Files (37b.3b)**:
+   - **Files**: `docs/knowledge-base/fact-subtopic-relevance.md` (37b.3a), `server/scripts/generate-briefs.ts`, `docs/knowledge-base/briefs/{doc_id}.md` (30 files).
+   - **Work**: First produce and obtain owner approval of the 30-row Fact-Subtopic-Relevance Matrix (`37b.3a`). Then generate 30 brief files from the approved Scope Map + Fact Sheet + Relevance Matrix, each receiving its exact approved row of in-scope concepts verbatim.
 7. **Step 37b.4 — Resumable Doc Generator**:
    - **Files**: `server/scripts/generate-policy-docs.ts`, `docs/knowledge-base/src/{domain}-{topic}-{subtopic}.md` (30 new files).
    - **Work**: Draft each new doc using the existing Gemini LLM client, resumable by brief SHA-256 hash, logging `doc_id`, `chars`, `sections`, `timestamp`. Never run inside Vitest. Never touch the 12 frozen docs.
 8. **Step 37b.5 — Contradiction Audit (GATE 3)**:
    - **Files**: `server/scripts/audit-contradictions.ts`, `docs/knowledge-base/contradiction-audit.md`.
-   - **Work**: Re-parse all 42 docs, re-extract all numeric policy facts, group by concept, and cross-check every new doc against the immutable Fact Sheet. Any divergence is a hard fail.
+   - **Work**: Re-parse all 42 docs, re-extract all numeric policy facts, group by concept, and cross-check every new doc against the immutable Fact Sheet (plus verify docs only cite concepts from their approved relevance-matrix row). Range concepts (`bnpl_klarna_order_range`, `fx_issuer_fee_range`) require both min and max present whenever the concept is mentioned (absent-or-both rule). Any divergence is a hard fail.
    - **GATE 3 (STOP)**: Report full contradiction audit table. Zero contradictions required before proceeding.
 9. **Step 37b.6 — PDF Generation & XMP Injection**:
    - **Files**: `docs/knowledge-base/*.pdf` (30 new PDFs, reusing `generate-policy-pdfs.ts` and `inject-pdf-xmp.ts`).
