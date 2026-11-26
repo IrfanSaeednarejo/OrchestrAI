@@ -66,47 +66,9 @@ interface DocAuditResult {
   pass: boolean;
 }
 
-// ── Shared extraction logic (from extract-policy-facts.ts) ─────────────────
+// ── Shared extraction logic (imported from src/knowledge/policy-fact-extractor.ts) ──
 
-const NUMERIC_PATTERN =
-  /(?:\$\d+(?:,\d{3})*(?:\.\d{1,2})?|\d+(?:\.\d+)?\s*(?:%|percent\b)|\b\d+(?:\s*(?:to|-|–)\s*\d+)?\s*(?:calendar\s+days?|business\s+days?|days?|hours?|minutes?|seconds?|months?|years?|characters?|attempts?|tiers?|installments?|items?|digits?)\b|\b\d+\s*-\s*(?:business\s+days?|days?|hours?|minutes?|years?)\b)/gi;
-
-function normalizeExtractedValue(rawMatch: string): string {
-  let s = rawMatch.trim().replace(/\s+/g, ' ');
-
-  // Normalize "1.5 percent" -> "1.5%"
-  s = s.replace(/^(\d+(?:\.\d+)?)\s*percent$/i, '$1%');
-
-  // Normalize "$5000" -> "$5,000"
-  const usdMatch = /^\$(\d+)(\.\d{1,2})?$/.exec(s);
-  if (usdMatch?.[1] && usdMatch[1].length >= 4) {
-    const withCommas = Number(usdMatch[1]).toLocaleString('en-US');
-    s = `$${withCommas}${usdMatch[2] ?? ''}`;
-  }
-
-  // Normalize ranges with hyphens/en-dashes: "5-7 business days" -> "5 to 7 business days"
-  s = s.replace(/^(\d+)\s*(?:-|–)\s*(\d+)\s+(.+)$/, '$1 to $2 $3');
-
-  // Normalize hyphenated forms: "30-day" -> "30 days", "5-business-day" -> "5 business days"
-  const hyph = /^(\d+)\s*-\s*(business\s+days?|days?|hours?|minutes?|years?)$/i.exec(s);
-  if (hyph?.[1] && hyph[2]) {
-    const n = hyph[1];
-    const baseUnit = hyph[2].toLowerCase().replace(/\s+/g, ' ').replace(/s$/, '');
-    const pluralUnit = n === '1' ? baseUnit : `${baseUnit}s`;
-    return `${n} ${pluralUnit}`;
-  }
-
-  // Normalize singular unit when quantity > 1 (e.g. "365 day" -> "365 days", "24 hour" -> "24 hours", "5 business day" -> "5 business days")
-  const unitMatch = /^(\d+)\s+(business\s+days?|calendar\s+days?|days?|hours?|minutes?|seconds?|months?|years?|characters?|digits?)$/i.exec(s);
-  if (unitMatch?.[1] && unitMatch[2]) {
-    const n = unitMatch[1];
-    const baseUnit = unitMatch[2].toLowerCase().replace(/\s+/g, ' ').replace(/s$/, '');
-    const unit = n === '1' ? baseUnit : `${baseUnit}s`;
-    return `${n} ${unit}`;
-  }
-
-  return s;
-}
+import { NUMERIC_PATTERN, normalizeExtractedValue } from '../src/knowledge/policy-fact-extractor.js';
 
 function isProceduralExcluded(value: string, sentence: string): boolean {
   const s = sentence.toLowerCase();

@@ -60,10 +60,12 @@ export async function generatePolicyPdfs(): Promise<void> {
   }
 
   const newOnly = process.argv.includes('--new-only');
+  const onlyArg = process.argv.find((a) => a.startsWith('--file='))?.slice('--file='.length);
   const files = fs
     .readdirSync(SRC_DIR)
     .filter((f) => f.endsWith('.md'))
-    .filter((f) => !newOnly || !FROZEN_FILES.has(f));
+    .filter((f) => !newOnly || !FROZEN_FILES.has(f))
+    .filter((f) => !onlyArg || f === onlyArg);
   if (files.length === 0) {
     throw new Error(`No markdown files found in ${SRC_DIR}`);
   }

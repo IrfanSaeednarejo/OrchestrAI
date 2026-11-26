@@ -39,22 +39,7 @@ const FROZEN_FILES = [
   'shipping-faq.md',
 ];
 
-// Clean currency/percentage/duration pattern — supports hyphenated forms (30-day, 24-hour, 15-minute)
-// and never captures trailing commas.
-const NUMERIC_PATTERN =
-  /(?:\$\d+(?:,\d{3})*(?:\.\d{1,2})?|\d+(?:\.\d+)?%|\b\d+(?:\s*(?:to|-|–)\s*\d+)?\s*(?:calendar\s+days?|business\s+days?|days?|hours?|minutes?|seconds?|months?|years?|characters?|attempts?|tiers?|installments?|items?|digits?)\b|\b\d+\s*-\s*(?:days?|hours?|minutes?|years?)\b)/gi;
-
-function normalizeExtractedValue(rawMatch: string): string {
-  const trimmed = rawMatch.trim();
-  const hyph = /^(\d+)\s*-\s*(day|days|hour|hours|minute|minutes|year|years)$/i.exec(trimmed);
-  if (hyph?.[1] && hyph[2]) {
-    const n = hyph[1];
-    const baseUnit = hyph[2].toLowerCase().replace(/s$/, '');
-    const pluralUnit = n === '1' ? baseUnit : `${baseUnit}s`;
-    return `${n} ${pluralUnit}`;
-  }
-  return trimmed;
-}
+export { NUMERIC_PATTERN, normalizeExtractedValue } from '../src/knowledge/policy-fact-extractor.js';
 
 function inferConcept(sentence: string, value: string): string {
   const s = sentence.toLowerCase();
@@ -326,4 +311,6 @@ function main(): void {
   }
 }
 
-main();
+if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(import.meta.filename ?? '')) {
+  main();
+}

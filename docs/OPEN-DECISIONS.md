@@ -159,5 +159,12 @@ Approved items move to DECISIONS.md. Items marked [CONFLICT] are inconsistencies
    - **OD-37c [RESOLVED 2026-11-25] Topic Naming Convention**:
      Use underscore naming (`account_security`, `data_deletion`) matching existing frontmatter and `specialist-scope.ts`.
 
+38. [OPEN] **OD-38: PDF-Parser Heading Heuristic False-Positives on Short Numeric Sentences**:
+    - **Problem**: `pdf-parser.ts` heading-detection heuristics false-positive on short sentences starting with a number at a PDF line wrap.
+    - **Symptom**: `orders-exchanges-instant-swap.pdf` split into 16 chunks when its markdown source had 15 sections, producing a 245-char chunk (`08`) and a corrupted `sectionPath` starting with `12.95 dollars...`.
+    - **Mitigation (Phase 37)**: Mitigated in Phase 37c.2 by normalizing `"12.95 dollars"` to `"$12.95"` in `orders-exchanges-instant-swap.md`.
+    - **Root Fix (Phase 38+)**: Either tighten the heading regex (require sentence-case start + minimum length) or add a post-parse defensive guard in `ingest.ts` (if any chunk < 300 chars, HALT and report). Recommended: add the post-parse chunk-length check to `ingest.ts` as a defensive guard.
+
+
 
 

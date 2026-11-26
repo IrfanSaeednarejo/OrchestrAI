@@ -1,8 +1,8 @@
 # Phase 37b.5 — Contradiction Audit Report (Gate 3)
 
-**Generated**: 2026-11-26T17:29:44.955Z
+**Generated**: 2026-11-26T21:53:21.497Z
 **Total docs audited**: 42 (12 frozen + 30 new)
-**Total numeric facts extracted**: 393
+**Total numeric facts extracted**: 397
 **Fact-sheet concepts**: 97
 **Relevance-matrix entries**: 30
 
@@ -33,7 +33,7 @@
 | 17 | `faq-account-notifications-001` | `notifications.md` | FROZEN | 5 | 0 | 0 | 0 | 0 | 0 | ✅ |
 | 18 | `pol-orders-cancellations-address-edits-003` | `orders-cancellations-address-edits.md` | NEW | 10 | 0 | 0 | 0 | 0 | 0 | ✅ |
 | 19 | `pol-orders-cancellations-preorder-002` | `orders-cancellations-preorder.md` | NEW | 9 | 0 | 0 | 0 | 0 | 0 | ✅ |
-| 20 | `faq-orders-exchanges-instant-swap-002` | `orders-exchanges-instant-swap.md` | NEW | 3 | 0 | 0 | 0 | 0 | 0 | ✅ |
+| 20 | `faq-orders-exchanges-instant-swap-002` | `orders-exchanges-instant-swap.md` | NEW | 7 | 0 | 0 | 0 | 0 | 0 | ✅ |
 | 21 | `faq-orders-exchanges-warranty-003` | `orders-exchanges-warranty.md` | NEW | 5 | 0 | 0 | 0 | 0 | 0 | ✅ |
 | 22 | `pol-orders-returns-domestic-002` | `orders-returns-domestic.md` | NEW | 17 | 0 | 0 | 0 | 0 | 0 | ✅ |
 | 23 | `pol-orders-returns-final-sale-004` | `orders-returns-final-sale.md` | NEW | 9 | 0 | 0 | 0 | 0 | 0 | ✅ |

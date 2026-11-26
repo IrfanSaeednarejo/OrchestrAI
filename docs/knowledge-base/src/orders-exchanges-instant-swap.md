@@ -39,11 +39,11 @@ An exchange replacement order is dispatched within 2 to 3 business days after th
 
 ## How much does return or expedited shipping cost for an exchange?
 
-Change-of-mind return postage incurs a fee of 6.95 dollars for the first item, while an expedited replacement shipping option costs 12.95 dollars. Northvale provides completely free return shipping for defective or wrong items reported through the support system. Customers viewing the portal will see all applicable fees clearly itemized before confirming their request. The standard return postage fee is deducted from any applicable refund or charged during the exchange creation. Alaska and Hawaii destinations incur a regional surcharge for certain shipping methods.
+Change-of-mind return postage incurs a fee of $6.95 for the first item, while an expedited replacement shipping option costs $12.95. Northvale provides completely free return shipping for defective or wrong items reported through the support system. Customers viewing the portal will see all applicable fees clearly itemized before confirming their request. The standard return postage fee is deducted from any applicable refund or charged during the exchange creation. Alaska and Hawaii destinations incur a regional surcharge for certain shipping methods.
 
 ## Is outbound replacement shipping free on instant exchanges?
 
-Outbound replacement shipping is free on instant exchanges for qualifying orders meeting the standard minimum order threshold of 50 dollars. Northvale applies this free shipping benefit automatically to eligible customer accounts during the portal transaction. A regional surcharge of 12 dollars still applies to all shipments destined for Alaska and Hawaii. Customers must verify their delivery address to determine exact shipping qualifications before completing the exchange request. Standard delivery rules govern all outbound replacement transit times.
+Outbound replacement shipping is free on instant exchanges for qualifying orders meeting the standard minimum order threshold of $50. Northvale applies this free shipping benefit automatically to eligible customer accounts during the portal transaction. A regional surcharge of $12.00 still applies to all shipments destined for Alaska and Hawaii. Customers must verify their delivery address to determine exact shipping qualifications before completing the exchange request. Standard delivery rules govern all outbound replacement transit times.
 
 ## Can I exchange an item bought with a promotional discount?
 
