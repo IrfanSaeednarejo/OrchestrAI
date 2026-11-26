@@ -1,8 +1,8 @@
 {
   "generatedAt": "2026-11-25T20:33:13.648Z",
   "frozenDocCount": 12,
-  "factCount": 127,
-  "conceptCount": 96,
+  "factCount": 128,
+  "conceptCount": 97,
   "facts": [
     {
       "concept": "password_min_length",
@@ -11,7 +11,8 @@
       "source_doc": "faq-account-security-001",
       "source_file": "account-security-faq.md",
       "source_section": "What are the password complexity and rotation requirements?",
-      "raw_excerpt": "To safeguard your Northvale account, passwords must contain a minimum of 12 characters and cannot exceed a maximum length of 128 characters."
+      "raw_excerpt": "To safeguard your Northvale account, passwords must contain a minimum of 12 characters and cannot exceed a maximum length of 128 characters.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "password_max_length",
@@ -20,7 +21,8 @@
       "source_doc": "faq-account-security-001",
       "source_file": "account-security-faq.md",
       "source_section": "What are the password complexity and rotation requirements?",
-      "raw_excerpt": "To safeguard your Northvale account, passwords must contain a minimum of 12 characters and cannot exceed a maximum length of 128 characters."
+      "raw_excerpt": "To safeguard your Northvale account, passwords must contain a minimum of 12 characters and cannot exceed a maximum length of 128 characters.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "password_rotation_days",
@@ -29,7 +31,8 @@
       "source_doc": "faq-account-security-001",
       "source_file": "account-security-faq.md",
       "source_section": "What are the password complexity and rotation requirements?",
-      "raw_excerpt": "For enhanced account security, all passwords expire automatically after 365 days, at which time rotation is required."
+      "raw_excerpt": "For enhanced account security, all passwords expire automatically after 365 days, at which time rotation is required.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "otp_validity_minutes",
@@ -38,7 +41,8 @@
       "source_doc": "faq-account-security-001",
       "source_file": "account-security-faq.md",
       "source_section": "How do one-time verification codes (OTP) work?",
-      "raw_excerpt": "When performing sensitive account actions, a 6-digit one-time verification code (OTP) is generated and remains valid for exactly 10 minutes from issue."
+      "raw_excerpt": "When performing sensitive account actions, a 6-digit one-time verification code (OTP) is generated and remains valid for exactly 10 minutes from issue.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "otp_lockout_duration",
@@ -47,7 +51,8 @@
       "source_doc": "faq-account-security-001",
       "source_file": "account-security-faq.md",
       "source_section": "How do one-time verification codes (OTP) work?",
-      "raw_excerpt": "To prevent brute-force attacks, the authentication system permits a maximum of 5 failed OTP attempts before imposing a mandatory 15-minute verification lockout."
+      "raw_excerpt": "To prevent brute-force attacks, the authentication system permits a maximum of 5 failed OTP attempts before imposing a mandatory 15-minute verification lockout.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "security_velocity_window_hours",
@@ -56,7 +61,8 @@
       "source_doc": "faq-account-security-001",
       "source_file": "account-security-faq.md",
       "source_section": "How does Northvale detect and handle suspicious activity?",
-      "raw_excerpt": "If failed login attempts are detected originating from 3 distinct IP addresses within a 24-hour period, the system immediately flags the account for review."
+      "raw_excerpt": "If failed login attempts are detected originating from 3 distinct IP addresses within a 24-hour period, the system immediately flags the account for review.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "compromised_account_freeze_sla",
@@ -65,7 +71,8 @@
       "source_doc": "faq-account-security-001",
       "source_file": "account-security-faq.md",
       "source_section": "How does Northvale detect and handle suspicious activity?",
-      "raw_excerpt": "Once reported, compromised accounts are placed into a frozen state within 15 minutes of report receipt."
+      "raw_excerpt": "Once reported, compromised accounts are placed into a frozen state within 15 minutes of report receipt.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "password_lockout_duration",
@@ -74,7 +81,8 @@
       "source_doc": "faq-account-security-001",
       "source_file": "account-security-faq.md",
       "source_section": "What causes account lockouts and how are they unlocked?",
-      "raw_excerpt": "Entering 5 consecutive incorrect passwords automatically locks your account for a duration of 30 minutes to protect against credential stuffing."
+      "raw_excerpt": "Entering 5 consecutive incorrect passwords automatically locks your account for a duration of 30 minutes to protect against credential stuffing.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "password_recovery_link_ttl",
@@ -83,7 +91,8 @@
       "source_doc": "faq-account-security-001",
       "source_file": "account-security-faq.md",
       "source_section": "What causes account lockouts and how are they unlocked?",
-      "raw_excerpt": "When an account is locked due to password failures, you can initiate a secure reset via an emailed recovery link that remains valid for 1 hour."
+      "raw_excerpt": "When an account is locked due to password failures, you can initiate a secure reset via an emailed recovery link that remains valid for 1 hour.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "security_velocity_window_hours",
@@ -92,7 +101,8 @@
       "source_doc": "faq-account-security-001",
       "source_file": "account-security-faq.md",
       "source_section": "What causes account lockouts and how are they unlocked?",
-      "raw_excerpt": "Experiencing repeated lockouts, defined as 3 lockout events within a 24-hour window, escalates the security flag and requires contacting phone support to unlock."
+      "raw_excerpt": "Experiencing repeated lockouts, defined as 3 lockout events within a 24-hour window, escalates the security flag and requires contacting phone support to unlock.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "password_lockout_duration",
@@ -101,7 +111,8 @@
       "source_doc": "faq-account-security-001",
       "source_file": "account-security-faq.md",
       "source_section": "What causes account lockouts and how are they unlocked?",
-      "raw_excerpt": "However, standard lockout conditions allow self-service unlock using an emailed OTP once the initial 30-minute lockout expires."
+      "raw_excerpt": "However, standard lockout conditions allow self-service unlock using an emailed OTP once the initial 30-minute lockout expires.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "cancellation_cutoff_standard",
@@ -110,7 +121,8 @@
       "source_doc": "pol-orders-cancellation-001",
       "source_file": "cancellations.md",
       "source_section": "Cancellation Window",
-      "raw_excerpt": "In addition, orders cannot be cancelled while displaying an active \"Processing\" status if more than 24 hours have elapsed since initial order placement."
+      "raw_excerpt": "In addition, orders cannot be cancelled while displaying an active \"Processing\" status if more than 24 hours have elapsed since initial order placement.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "warehouse_processing_to_ship_window",
@@ -119,7 +131,8 @@
       "source_doc": "pol-orders-cancellation-001",
       "source_file": "cancellations.md",
       "source_section": "Cancellation Window",
-      "raw_excerpt": "Under normal warehouse operations, the standard window elapsed between initial processing and final shipping spans 24 to 48 hours."
+      "raw_excerpt": "Under normal warehouse operations, the standard window elapsed between initial processing and final shipping spans 24 to 48 hours.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "cancellation_cutoff_preorder",
@@ -128,7 +141,8 @@
       "source_doc": "pol-orders-cancellation-001",
       "source_file": "cancellations.md",
       "source_section": "Pre-Order Cancellation",
-      "raw_excerpt": "Customers placing advance pre-orders retain the flexibility to cancel their pre-ordered items up to 48 hours prior to the scheduled official product release date."
+      "raw_excerpt": "Customers placing advance pre-orders retain the flexibility to cancel their pre-ordered items up to 48 hours prior to the scheduled official product release date.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "cancellation_cutoff_preorder",
@@ -137,7 +151,8 @@
       "source_doc": "pol-orders-cancellation-001",
       "source_file": "cancellations.md",
       "source_section": "Pre-Order Cancellation",
-      "raw_excerpt": "Any cancellation requests submitted within 48 hours of the scheduled release date are strictly not permitted."
+      "raw_excerpt": "Any cancellation requests submitted within 48 hours of the scheduled release date are strictly not permitted.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "cancellation_notice_bulk",
@@ -146,7 +161,8 @@
       "source_doc": "pol-orders-cancellation-001",
       "source_file": "cancellations.md",
       "source_section": "Bulk Order Cancellation",
-      "raw_excerpt": "Purchases categorized as bulk orders comprising 10 or more units require formal written notice submitted at least 24 hours prior to cancellation."
+      "raw_excerpt": "Purchases categorized as bulk orders comprising 10 or more units require formal written notice submitted at least 24 hours prior to cancellation.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "cancellation_fee_bulk_custom",
@@ -155,7 +171,8 @@
       "source_doc": "pol-orders-cancellation-001",
       "source_file": "cancellations.md",
       "source_section": "Bulk Order Cancellation",
-      "raw_excerpt": "If a bulk order involves custom-manufactured or made-to-order goods and cancellation occurs after production has started, the transaction incurs a 15% cancellation fee."
+      "raw_excerpt": "If a bulk order involves custom-manufactured or made-to-order goods and cancellation occurs after production has started, the transaction incurs a 15% cancellation fee.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "return_window_standard",
@@ -164,7 +181,8 @@
       "source_doc": "pol-orders-cancellation-001",
       "source_file": "cancellations.md",
       "source_section": "Cancellation After Shipping",
-      "raw_excerpt": "Orders that have completed dispatch and entered shipped status cannot be cancelled under any circumstances; the recipient must initiate a standard return within 30 days."
+      "raw_excerpt": "Orders that have completed dispatch and entered shipped status cannot be cancelled under any circumstances; the recipient must initiate a standard return within 30 days.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "refund_initiation_after_cancel",
@@ -173,7 +191,8 @@
       "source_doc": "pol-orders-cancellation-001",
       "source_file": "cancellations.md",
       "source_section": "Refund on Cancellation",
-      "raw_excerpt": "The electronic refund transaction is initiated within 2 hours of confirmed cancellation by our automated billing systems."
+      "raw_excerpt": "The electronic refund transaction is initiated within 2 hours of confirmed cancellation by our automated billing systems.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "refund_processing_debit_card",
@@ -182,7 +201,8 @@
       "source_doc": "pol-orders-cancellation-001",
       "source_file": "cancellations.md",
       "source_section": "Refund on Cancellation",
-      "raw_excerpt": "For transactions originally charged to debit cards, financial institutions may require up to 10 business days for the funds to appear on account statements."
+      "raw_excerpt": "For transactions originally charged to debit cards, financial institutions may require up to 10 business days for the funds to appear on account statements.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "data_deletion_confirmation_sla",
@@ -191,7 +211,8 @@
       "source_doc": "faq-account-data-deletion-001",
       "source_file": "data-deletion.md",
       "source_section": "How do I request the deletion of my account?",
-      "raw_excerpt": "Once your deletion request is verified, a formal confirmation notice is emailed to your address within 24 hours."
+      "raw_excerpt": "Once your deletion request is verified, a formal confirmation notice is emailed to your address within 24 hours.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "data_deletion_grace_period",
@@ -200,7 +221,8 @@
       "source_doc": "faq-account-data-deletion-001",
       "source_file": "data-deletion.md",
       "source_section": "How do I request the deletion of my account?",
-      "raw_excerpt": "Your account immediately enters a mandatory 30-day grace period before permanent erasure is executed."
+      "raw_excerpt": "Your account immediately enters a mandatory 30-day grace period before permanent erasure is executed.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "data_retention_order_records",
@@ -209,7 +231,8 @@
       "source_doc": "faq-account-data-deletion-001",
       "source_file": "data-deletion.md",
       "source_section": "What data is retained after account deletion?",
-      "raw_excerpt": "In accordance with legal and statutory requirements, itemized order records and associated payment transaction logs are retained for 7 years to ensure compliance with federal tax and auditing regulations."
+      "raw_excerpt": "In accordance with legal and statutory requirements, itemized order records and associated payment transaction logs are retained for 7 years to ensure compliance with federal tax and auditing regulations.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "data_retention_security_records",
@@ -218,7 +241,8 @@
       "source_doc": "faq-account-data-deletion-001",
       "source_file": "data-deletion.md",
       "source_section": "What data is retained after account deletion?",
-      "raw_excerpt": "Security records, fraud-prevention flags, and unauthorized activity logs are retained for 5 years to safeguard payment networks and prevent repeat abuse."
+      "raw_excerpt": "Security records, fraud-prevention flags, and unauthorized activity logs are retained for 5 years to safeguard payment networks and prevent repeat abuse.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "data_deletion_grace_period",
@@ -227,7 +251,8 @@
       "source_doc": "faq-account-data-deletion-001",
       "source_file": "data-deletion.md",
       "source_section": "What is the timeline for data deletion?",
-      "raw_excerpt": "The account deletion process begins with a mandatory 30-day grace period during which your account remains inactive but fully recoverable."
+      "raw_excerpt": "The account deletion process begins with a mandatory 30-day grace period during which your account remains inactive but fully recoverable.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "data_deletion_grace_period",
@@ -236,7 +261,8 @@
       "source_doc": "faq-account-data-deletion-001",
       "source_file": "data-deletion.md",
       "source_section": "What is the timeline for data deletion?",
-      "raw_excerpt": "Once the 30-day grace period officially concludes, permanent database deletion executes across all operational systems within 48 hours."
+      "raw_excerpt": "Once the 30-day grace period officially concludes, permanent database deletion executes across all operational systems within 48 hours.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "data_deletion_purge_sla",
@@ -245,7 +271,8 @@
       "source_doc": "faq-account-data-deletion-001",
       "source_file": "data-deletion.md",
       "source_section": "What is the timeline for data deletion?",
-      "raw_excerpt": "Once the 30-day grace period officially concludes, permanent database deletion executes across all operational systems within 48 hours."
+      "raw_excerpt": "Once the 30-day grace period officially concludes, permanent database deletion executes across all operational systems within 48 hours.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "data_deletion_backup_purge_days",
@@ -254,7 +281,8 @@
       "source_doc": "faq-account-data-deletion-001",
       "source_file": "data-deletion.md",
       "source_section": "What is the timeline for data deletion?",
-      "raw_excerpt": "Secure system backup archives that contain snapshot data are cycled and permanently purged within 30 days of production deletion execution."
+      "raw_excerpt": "Secure system backup archives that contain snapshot data are cycled and permanently purged within 30 days of production deletion execution.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "data_deletion_grace_period",
@@ -263,7 +291,8 @@
       "source_doc": "faq-account-data-deletion-001",
       "source_file": "data-deletion.md",
       "source_section": "Can I recover a deleted account or create a new one?",
-      "raw_excerpt": "You can recover and reactivate your deleted account exclusively while the account remains within the initial 30-day grace period window."
+      "raw_excerpt": "You can recover and reactivate your deleted account exclusively while the account remains within the initial 30-day grace period window.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "data_deletion_grace_period",
@@ -272,7 +301,8 @@
       "source_doc": "faq-account-data-deletion-001",
       "source_file": "data-deletion.md",
       "source_section": "Can I recover a deleted account or create a new one?",
-      "raw_excerpt": "Once the 30-day grace period has elapsed and permanent deletion executes, your account cannot be restored or recovered under any circumstances."
+      "raw_excerpt": "Once the 30-day grace period has elapsed and permanent deletion executes, your account cannot be restored or recovered under any circumstances.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "dispute_filing_window",
@@ -281,7 +311,8 @@
       "source_doc": "pol-payments-disputes-001",
       "source_file": "disputes.md",
       "source_section": "When to File a Dispute",
-      "raw_excerpt": "All payment dispute claims must be submitted within 60 days of the original transaction charge date to be eligible for review."
+      "raw_excerpt": "All payment dispute claims must be submitted within 60 days of the original transaction charge date to be eligible for review.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "dispute_internal_review_start_sla",
@@ -290,7 +321,8 @@
       "source_doc": "pol-payments-disputes-001",
       "source_file": "disputes.md",
       "source_section": "Internal Review Process",
-      "raw_excerpt": "Northvale initiates an internal billing review within 2 business days of receiving an official dispute inquiry ticket."
+      "raw_excerpt": "Northvale initiates an internal billing review within 2 business days of receiving an official dispute inquiry ticket.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "dispute_internal_decision_sla",
@@ -299,7 +331,8 @@
       "source_doc": "pol-payments-disputes-001",
       "source_file": "disputes.md",
       "source_section": "Internal Review Process",
-      "raw_excerpt": "The billing department issues a formal internal dispute decision within 10 business days of ticket receipt."
+      "raw_excerpt": "The billing department issues a formal internal dispute decision within 10 business days of ticket receipt.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "dispute_refund_execution_sla",
@@ -308,7 +341,8 @@
       "source_doc": "pol-payments-disputes-001",
       "source_file": "disputes.md",
       "source_section": "Internal Review Process",
-      "raw_excerpt": "When a dispute is approved in the customer's favor, the corresponding refund is executed within 5 business days of the rendered decision."
+      "raw_excerpt": "When a dispute is approved in the customer's favor, the corresponding refund is executed within 5 business days of the rendered decision.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "chargeback_issuer_window",
@@ -317,7 +351,8 @@
       "source_doc": "pol-payments-disputes-001",
       "source_file": "disputes.md",
       "source_section": "Chargeback Handling",
-      "raw_excerpt": "Northvale compiles and submits evidence to the merchant bank within the card issuer's mandated response deadline, which typically ranges from 20 to 45 days."
+      "raw_excerpt": "Northvale compiles and submits evidence to the merchant bank within the card issuer's mandated response deadline, which typically ranges from 20 to 45 days.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "dispute_police_report_threshold",
@@ -326,7 +361,8 @@
       "source_doc": "pol-payments-disputes-001",
       "source_file": "disputes.md",
       "source_section": "Documentation Requirements",
-      "raw_excerpt": "For claims asserting unauthorized fraudulent charges, filing a formal police report is strictly mandatory for any dispute exceeding $500."
+      "raw_excerpt": "For claims asserting unauthorized fraudulent charges, filing a formal police report is strictly mandatory for any dispute exceeding $500.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "dispute_acknowledgment_sla",
@@ -335,7 +371,8 @@
       "source_doc": "pol-payments-disputes-001",
       "source_file": "disputes.md",
       "source_section": "Timeline and Resolution",
-      "raw_excerpt": "The billing department sends a formal dispute receipt acknowledgment within 24 hours of ticket submission."
+      "raw_excerpt": "The billing department sends a formal dispute receipt acknowledgment within 24 hours of ticket submission.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "dispute_internal_decision_sla",
@@ -344,7 +381,8 @@
       "source_doc": "pol-payments-disputes-001",
       "source_file": "disputes.md",
       "source_section": "Timeline and Resolution",
-      "raw_excerpt": "The full internal investigation is completed and a resolution determined within 10 business days."
+      "raw_excerpt": "The full internal investigation is completed and a resolution determined within 10 business days.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "chargeback_issuer_window",
@@ -353,7 +391,8 @@
       "source_doc": "pol-payments-disputes-001",
       "source_file": "disputes.md",
       "source_section": "Timeline and Resolution",
-      "raw_excerpt": "For disputes escalated through financial institutions, formal bank chargeback timelines are established by the card issuer and typically span 20 to 45 days."
+      "raw_excerpt": "For disputes escalated through financial institutions, formal bank chargeback timelines are established by the card issuer and typically span 20 to 45 days.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "dispute_refund_execution_sla",
@@ -362,7 +401,8 @@
       "source_doc": "pol-payments-disputes-001",
       "source_file": "disputes.md",
       "source_section": "Timeline and Resolution",
-      "raw_excerpt": "When an internal dispute is resolved in favor of the customer, any re-issued refund appears on the funding account within 5 business days of resolution."
+      "raw_excerpt": "When an internal dispute is resolved in favor of the customer, any re-issued refund appears on the funding account within 5 business days of resolution.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "dispute_reopen_window",
@@ -371,7 +411,8 @@
       "source_doc": "pol-payments-disputes-001",
       "source_file": "disputes.md",
       "source_section": "Timeline and Resolution",
-      "raw_excerpt": "Any closed dispute that a customer seeks to re-open after 30 days have elapsed requires submitting an entirely fresh dispute filing."
+      "raw_excerpt": "Any closed dispute that a customer seeks to re-open after 30 days have elapsed requires submitting an entirely fresh dispute filing.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "exchange_window_standard",
@@ -380,7 +421,8 @@
       "source_doc": "faq-orders-exchanges-001",
       "source_file": "exchanges.md",
       "source_section": "What items are eligible for an exchange?",
-      "raw_excerpt": "You can request an exchange on eligible items within 30 days of carrier delivery confirmation, following the identical timeframe established for standard returns."
+      "raw_excerpt": "You can request an exchange on eligible items within 30 days of carrier delivery confirmation, following the identical timeframe established for standard returns.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "exchange_inventory_hold_hours",
@@ -389,7 +431,8 @@
       "source_doc": "faq-orders-exchanges-001",
       "source_file": "exchanges.md",
       "source_section": "How do size and color exchanges work with inventory?",
-      "raw_excerpt": "To protect your selection, requested exchange inventory is reserved and held for 48 hours after your request is formally submitted."
+      "raw_excerpt": "To protect your selection, requested exchange inventory is reserved and held for 48 hours after your request is formally submitted.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "exchange_expedited_shipping_fee",
@@ -398,7 +441,8 @@
       "source_doc": "faq-orders-exchanges-001",
       "source_file": "exchanges.md",
       "source_section": "What is the step-by-step exchange process?",
-      "raw_excerpt": "If you require urgent delivery, expedited replacement shipping can be selected for an optional $12.95 flat fee."
+      "raw_excerpt": "If you require urgent delivery, expedited replacement shipping can be selected for an optional $12.95 flat fee.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "exchange_replacement_dispatch_sla",
@@ -407,7 +451,8 @@
       "source_doc": "faq-orders-exchanges-001",
       "source_file": "exchanges.md",
       "source_section": "What is the step-by-step exchange process?",
-      "raw_excerpt": "Under standard fulfillment, replacement orders are dispatched within 2 to 3 business days following verified carrier scanning."
+      "raw_excerpt": "Under standard fulfillment, replacement orders are dispatched within 2 to 3 business days following verified carrier scanning.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "shipping_return_first_item",
@@ -416,7 +461,8 @@
       "source_doc": "faq-orders-exchanges-001",
       "source_file": "exchanges.md",
       "source_section": "Who pays for exchange shipping and surcharges?",
-      "raw_excerpt": "For standard change-of-mind exchanges, the customer is responsible for a $6.95 return shipping postage fee."
+      "raw_excerpt": "For standard change-of-mind exchanges, the customer is responsible for a $6.95 return shipping postage fee.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "shipping_standard_min_order_free",
@@ -425,7 +471,8 @@
       "source_doc": "faq-orders-exchanges-001",
       "source_file": "exchanges.md",
       "source_section": "Who pays for exchange shipping and surcharges?",
-      "raw_excerpt": "Replacement outbound shipping is completely free for all qualifying US orders totaling over $50."
+      "raw_excerpt": "Replacement outbound shipping is completely free for all qualifying US orders totaling over $50.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "shipping_ak_hi_surcharge",
@@ -434,7 +481,8 @@
       "source_doc": "faq-orders-exchanges-001",
       "source_file": "exchanges.md",
       "source_section": "Who pays for exchange shipping and surcharges?",
-      "raw_excerpt": "In addition, exchange shipments delivering to addresses in Alaska and Hawaii remain subject to the standard $12.00 regional shipping surcharge."
+      "raw_excerpt": "In addition, exchange shipments delivering to addresses in Alaska and Hawaii remain subject to the standard $12.00 regional shipping surcharge.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "digital_wallet_stepup_threshold",
@@ -443,7 +491,8 @@
       "source_doc": "faq-payments-methods-001",
       "source_file": "methods.md",
       "source_section": "Which digital wallets are supported for purchases?",
-      "raw_excerpt": "To safeguard against unauthorized transactions, digital wallet payments exceeding $500 may trigger an additional security verification challenge at checkout."
+      "raw_excerpt": "To safeguard against unauthorized transactions, digital wallet payments exceeding $500 may trigger an additional security verification challenge at checkout.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "bnpl_klarna_order_range",
@@ -452,7 +501,8 @@
       "source_doc": "faq-payments-methods-001",
       "source_file": "methods.md",
       "source_section": "How do Buy Now Pay Later installments work with Klarna?",
-      "raw_excerpt": "Northvale partners with Klarna to offer flexible Buy Now Pay Later financing on qualifying customer orders valued between $50 and $2,000."
+      "raw_excerpt": "Northvale partners with Klarna to offer flexible Buy Now Pay Later financing on qualifying customer orders valued between $50 and $2,000.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "bnpl_klarna_order_range",
@@ -461,7 +511,8 @@
       "source_doc": "faq-payments-methods-001",
       "source_file": "methods.md",
       "source_section": "How do Buy Now Pay Later installments work with Klarna?",
-      "raw_excerpt": "Northvale partners with Klarna to offer flexible Buy Now Pay Later financing on qualifying customer orders valued between $50 and $2,000."
+      "raw_excerpt": "Northvale partners with Klarna to offer flexible Buy Now Pay Later financing on qualifying customer orders valued between $50 and $2,000.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "refund_processing_klarna",
@@ -470,7 +521,8 @@
       "source_doc": "faq-payments-methods-001",
       "source_file": "methods.md",
       "source_section": "How do Buy Now Pay Later installments work with Klarna?",
-      "raw_excerpt": "When you receive an approved refund on an order financed through Klarna, your remaining unpaid installments are cancelled, and previously settled installments are refunded within 5 business days."
+      "raw_excerpt": "When you receive an approved refund on an order financed through Klarna, your remaining unpaid installments are cancelled, and previously settled installments are refunded within 5 business days.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "ach_min_order_threshold",
@@ -479,7 +531,8 @@
       "source_doc": "faq-payments-methods-001",
       "source_file": "methods.md",
       "source_section": "Can I pay directly using a bank transfer or wire?",
-      "raw_excerpt": "Customers completing large purchases can utilize direct electronic automated clearing house (ACH) bank transfers on qualifying orders exceeding $200."
+      "raw_excerpt": "Customers completing large purchases can utilize direct electronic automated clearing house (ACH) bank transfers on qualifying orders exceeding $200.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "ach_settlement_days",
@@ -488,7 +541,8 @@
       "source_doc": "faq-payments-methods-001",
       "source_file": "methods.md",
       "source_section": "Can I pay directly using a bank transfer or wire?",
-      "raw_excerpt": "Electronic ACH transfers require 3 business days to clear and settle before warehouse picking and parcel dispatch can commence."
+      "raw_excerpt": "Electronic ACH transfers require 3 business days to clear and settle before warehouse picking and parcel dispatch can commence.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "wire_transfer_min_order",
@@ -497,7 +551,8 @@
       "source_doc": "faq-payments-methods-001",
       "source_file": "methods.md",
       "source_section": "Can I pay directly using a bank transfer or wire?",
-      "raw_excerpt": "For substantial commercial purchases totaling over $5,000, Northvale accepts direct domestic wire transfers subject to an administrative wire processing fee of $25."
+      "raw_excerpt": "For substantial commercial purchases totaling over $5,000, Northvale accepts direct domestic wire transfers subject to an administrative wire processing fee of $25.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "wire_transfer_fee",
@@ -506,7 +561,8 @@
       "source_doc": "faq-payments-methods-001",
       "source_file": "methods.md",
       "source_section": "Can I pay directly using a bank transfer or wire?",
-      "raw_excerpt": "For substantial commercial purchases totaling over $5,000, Northvale accepts direct domestic wire transfers subject to an administrative wire processing fee of $25."
+      "raw_excerpt": "For substantial commercial purchases totaling over $5,000, Northvale accepts direct domestic wire transfers subject to an administrative wire processing fee of $25.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "ach_nsf_returned_fee",
@@ -515,7 +571,8 @@
       "source_doc": "faq-payments-methods-001",
       "source_file": "methods.md",
       "source_section": "Can I pay directly using a bank transfer or wire?",
-      "raw_excerpt": "In the event an ACH transfer fails due to insufficient funds (NSF) or account closure, the transaction incurs a $15 returned transfer fee."
+      "raw_excerpt": "In the event an ACH transfer fails due to insufficient funds (NSF) or account closure, the transaction incurs a $15 returned transfer fee.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "refund_processing_ach",
@@ -524,7 +581,8 @@
       "source_doc": "faq-payments-methods-001",
       "source_file": "methods.md",
       "source_section": "Can I pay directly using a bank transfer or wire?",
-      "raw_excerpt": "When orders paid via bank transfer are cancelled or refunded, processed funds take 3 business days to settle back to your account."
+      "raw_excerpt": "When orders paid via bank transfer are cancelled or refunded, processed funds take 3 business days to settle back to your account.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "notification_dispatch_delay",
@@ -533,7 +591,8 @@
       "source_doc": "faq-account-notifications-001",
       "source_file": "notifications.md",
       "source_section": "What notifications will I receive about my order?",
-      "raw_excerpt": "Once our warehouse team picks, packs, and dispatches your order, a dispatch notification including your active carrier tracking number is sent within 4 hours."
+      "raw_excerpt": "Once our warehouse team picks, packs, and dispatches your order, a dispatch notification including your active carrier tracking number is sent within 4 hours.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "notification_transit_exception_delay",
@@ -542,7 +601,8 @@
       "source_doc": "faq-account-notifications-001",
       "source_file": "notifications.md",
       "source_section": "What notifications will I receive about my order?",
-      "raw_excerpt": "If a transit delay or exception occurs, delivery exception alerts are sent to you within 2 hours of the carrier flag being posted."
+      "raw_excerpt": "If a transit delay or exception occurs, delivery exception alerts are sent to you within 2 hours of the carrier flag being posted.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "security_velocity_window_hours",
@@ -551,7 +611,8 @@
       "source_doc": "faq-account-notifications-001",
       "source_file": "notifications.md",
       "source_section": "What security alerts are sent to protect my account?",
-      "raw_excerpt": "If the platform detects suspicious login behavior, defined as 3 or more failed login attempts within a 24-hour window, an alert is dispatched."
+      "raw_excerpt": "If the platform detects suspicious login behavior, defined as 3 or more failed login attempts within a 24-hour window, an alert is dispatched.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "notification_unsubscribe_effect",
@@ -560,7 +621,8 @@
       "source_doc": "faq-account-notifications-001",
       "source_file": "notifications.md",
       "source_section": "How long does unsubscribing take and what are the rules?",
-      "raw_excerpt": "When you submit an unsubscribe request for marketing communications, the modification takes operational effect within 24 hours of submission."
+      "raw_excerpt": "When you submit an unsubscribe request for marketing communications, the modification takes operational effect within 24 hours of submission.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "notification_can_spam_max",
@@ -569,7 +631,8 @@
       "source_doc": "faq-account-notifications-001",
       "source_file": "notifications.md",
       "source_section": "How long does unsubscribing take and what are the rules?",
-      "raw_excerpt": "Northvale ensures all formal marketing unsubscribe requests are processed within 10 business days per CAN-SPAM regulations."
+      "raw_excerpt": "Northvale ensures all formal marketing unsubscribe requests are processed within 10 business days per CAN-SPAM regulations.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "bnpl_klarna_order_range",
@@ -578,7 +641,8 @@
       "source_doc": "faq-payments-terms-001",
       "source_file": "payments-faq.md",
       "source_section": "What payment methods do you accept at checkout?",
-      "raw_excerpt": "For flexible installment financing, Buy Now Pay Later is available via Klarna on qualifying orders valued between $50 and $2,000."
+      "raw_excerpt": "For flexible installment financing, Buy Now Pay Later is available via Klarna on qualifying orders valued between $50 and $2,000.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "bnpl_klarna_order_range",
@@ -587,7 +651,8 @@
       "source_doc": "faq-payments-terms-001",
       "source_file": "payments-faq.md",
       "source_section": "What payment methods do you accept at checkout?",
-      "raw_excerpt": "For flexible installment financing, Buy Now Pay Later is available via Klarna on qualifying orders valued between $50 and $2,000."
+      "raw_excerpt": "For flexible installment financing, Buy Now Pay Later is available via Klarna on qualifying orders valued between $50 and $2,000.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "subscription_retry_max_days",
@@ -596,7 +661,8 @@
       "source_doc": "faq-payments-terms-001",
       "source_file": "payments-faq.md",
       "source_section": "How will charges appear on my billing statement?",
-      "raw_excerpt": "If a subscription renewal charge fails, our billing system automatically retries the payment after 3, 5, and 7 days before initiating service cancellation."
+      "raw_excerpt": "If a subscription renewal charge fails, our billing system automatically retries the payment after 3, 5, and 7 days before initiating service cancellation.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "payment_auth_hold_expiry_days",
@@ -605,7 +671,8 @@
       "source_doc": "faq-payments-terms-001",
       "source_file": "payments-faq.md",
       "source_section": "How do card authorizations and temporary holds work?",
-      "raw_excerpt": "These authorization holds expire automatically after 7 days if the order has not yet been dispatched from the warehouse."
+      "raw_excerpt": "These authorization holds expire automatically after 7 days if the order has not yet been dispatched from the warehouse.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "payment_auth_buffer_max_pct",
@@ -614,7 +681,8 @@
       "source_doc": "faq-payments-terms-001",
       "source_file": "payments-faq.md",
       "source_section": "How do card authorizations and temporary holds work?",
-      "raw_excerpt": "To account for variable regional carrier calculations, the initial authorization amount can exceed the final charge by up to 20% for estimated shipping."
+      "raw_excerpt": "To account for variable regional carrier calculations, the initial authorization amount can exceed the final charge by up to 20% for estimated shipping.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "debit_hold_release_window",
@@ -623,7 +691,8 @@
       "source_doc": "faq-payments-terms-001",
       "source_file": "payments-faq.md",
       "source_section": "How do card authorizations and temporary holds work?",
-      "raw_excerpt": "If you cancel an authorized order, debit card holds may take 3 to 5 business days to be released by your financial institution."
+      "raw_excerpt": "If you cancel an authorized order, debit card holds may take 3 to 5 business days to be released by your financial institution.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "payment_card_retry_lockout_hours",
@@ -632,7 +701,8 @@
       "source_doc": "faq-payments-terms-001",
       "source_file": "payments-faq.md",
       "source_section": "How do card authorizations and temporary holds work?",
-      "raw_excerpt": "Submitting multiple consecutive failed authorizations locks the payment card from further checkout retries for 24 hours."
+      "raw_excerpt": "Submitting multiple consecutive failed authorizations locks the payment card from further checkout retries for 24 hours.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "fx_issuer_fee_range",
@@ -641,7 +711,8 @@
       "source_doc": "faq-payments-terms-001",
       "source_file": "payments-faq.md",
       "source_section": "How are sales taxes, international duties, and currencies handled?",
-      "raw_excerpt": "Foreign currency conversion fees, typically ranging from 1% to 3%, are determined by your card issuer rather than Northvale."
+      "raw_excerpt": "Foreign currency conversion fees, typically ranging from 1% to 3%, are determined by your card issuer rather than Northvale.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "fx_issuer_fee_range",
@@ -650,7 +721,8 @@
       "source_doc": "faq-payments-terms-001",
       "source_file": "payments-faq.md",
       "source_section": "How are sales taxes, international duties, and currencies handled?",
-      "raw_excerpt": "Foreign currency conversion fees, typically ranging from 1% to 3%, are determined by your card issuer rather than Northvale."
+      "raw_excerpt": "Foreign currency conversion fees, typically ranging from 1% to 3%, are determined by your card issuer rather than Northvale.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "payment_hard_decline_cooldown_hours",
@@ -659,7 +731,8 @@
       "source_doc": "faq-payments-terms-001",
       "source_file": "payments-faq.md",
       "source_section": "Why did my payment fail and how can I resolve it?",
-      "raw_excerpt": "When a soft decline occurs, payment retry is allowed immediately; however, hard declines require a mandatory 24-hour waiting period before re-attempting."
+      "raw_excerpt": "When a soft decline occurs, payment retry is allowed immediately; however, hard declines require a mandatory 24-hour waiting period before re-attempting.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "payment_failure_order_hold_hours",
@@ -668,7 +741,8 @@
       "source_doc": "faq-payments-terms-001",
       "source_file": "payments-faq.md",
       "source_section": "Why did my payment fail and how can I resolve it?",
-      "raw_excerpt": "Orders experiencing payment failure are held securely for 72 hours to allow payment resolution before auto-cancellation takes place."
+      "raw_excerpt": "Orders experiencing payment failure are held securely for 72 hours to allow payment resolution before auto-cancellation takes place.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "checkout_account_lockout_hours",
@@ -677,7 +751,8 @@
       "source_doc": "faq-payments-terms-001",
       "source_file": "payments-faq.md",
       "source_section": "Why did my payment fail and how can I resolve it?",
-      "raw_excerpt": "Incurring three consecutive failed transaction attempts will temporarily block your account from attempting checkout for 48 hours."
+      "raw_excerpt": "Incurring three consecutive failed transaction attempts will temporarily block your account from attempting checkout for 48 hours.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "threeds_challenge_threshold",
@@ -686,7 +761,8 @@
       "source_doc": "faq-payments-terms-001",
       "source_file": "payments-faq.md",
       "source_section": "How does Northvale protect my payment and card security?",
-      "raw_excerpt": "A 3-D Secure cardholder authentication challenge is automatically triggered for transactions exceeding $250 or originating from newly detected devices."
+      "raw_excerpt": "A 3-D Secure cardholder authentication challenge is automatically triggered for transactions exceeding $250 or originating from newly detected devices.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "data_retention_order_records",
@@ -695,7 +771,8 @@
       "source_doc": "pol-account-privacy-001",
       "source_file": "privacy.md",
       "source_section": "Data Retention",
-      "raw_excerpt": "Transactional order data, including itemized receipts and billing histories, is retained for a period of 7 years in strict compliance with federal tax regulations and statutory accounting standards."
+      "raw_excerpt": "Transactional order data, including itemized receipts and billing histories, is retained for a period of 7 years in strict compliance with federal tax regulations and statutory accounting standards.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "data_retention_support_records",
@@ -704,7 +781,8 @@
       "source_doc": "pol-account-privacy-001",
       "source_file": "privacy.md",
       "source_section": "Data Retention",
-      "raw_excerpt": "Customer service records, chat transcripts, and recorded support tickets are retained for 3 years to ensure support quality and resolve recurring customer inquiries."
+      "raw_excerpt": "Customer service records, chat transcripts, and recorded support tickets are retained for 3 years to ensure support quality and resolve recurring customer inquiries.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "data_retention_marketing_telemetry",
@@ -713,7 +791,8 @@
       "source_doc": "pol-account-privacy-001",
       "source_file": "privacy.md",
       "source_section": "Data Retention",
-      "raw_excerpt": "Digital marketing telemetry and advertising interaction records are retained for 2 years following collection."
+      "raw_excerpt": "Digital marketing telemetry and advertising interaction records are retained for 2 years following collection.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "account_min_age_majority",
@@ -722,7 +801,8 @@
       "source_doc": "pol-account-privacy-001",
       "source_file": "privacy.md",
       "source_section": "Children's Privacy",
-      "raw_excerpt": "Registration of a Northvale account requires individuals to be at least 18 years of age or the legal age of majority in their jurisdiction."
+      "raw_excerpt": "Registration of a Northvale account requires individuals to be at least 18 years of age or the legal age of majority in their jurisdiction.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "minor_account_deletion_sla",
@@ -731,7 +811,8 @@
       "source_doc": "pol-account-privacy-001",
       "source_file": "privacy.md",
       "source_section": "Children's Privacy",
-      "raw_excerpt": "In the event our compliance team discovers an account registered to a minor under 13, the account profile and associated personal data are permanently deleted within 5 business days."
+      "raw_excerpt": "In the event our compliance team discovers an account registered to a minor under 13, the account profile and associated personal data are permanently deleted within 5 business days.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "adolescent_consent_max_age",
@@ -740,7 +821,8 @@
       "source_doc": "pol-account-privacy-001",
       "source_file": "privacy.md",
       "source_section": "Children's Privacy",
-      "raw_excerpt": "For adolescent users between 13 and 17 years of age, verified parental consent is strictly required in jurisdictions where local privacy legislation mandates it."
+      "raw_excerpt": "For adolescent users between 13 and 17 years of age, verified parental consent is strictly required in jurisdictions where local privacy legislation mandates it.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "return_window_standard",
@@ -749,7 +831,8 @@
       "source_doc": "pol-payments-refunds-001",
       "source_file": "refunds-policy.md",
       "source_section": "Refund Eligibility",
-      "raw_excerpt": "Monetary refunds are available exclusively for eligible items returned within the established 30-day return window."
+      "raw_excerpt": "Monetary refunds are available exclusively for eligible items returned within the established 30-day return window.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "return_inspection_decision_sla",
@@ -758,7 +841,8 @@
       "source_doc": "pol-payments-refunds-001",
       "source_file": "refunds-policy.md",
       "source_section": "Refund Timing",
-      "raw_excerpt": "Every returned shipment undergoes physical inspection and receives a formal refund approval decision within 48 hours of warehouse intake."
+      "raw_excerpt": "Every returned shipment undergoes physical inspection and receives a formal refund approval decision within 48 hours of warehouse intake.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "refund_processing_standard",
@@ -767,7 +851,8 @@
       "source_doc": "pol-payments-refunds-001",
       "source_file": "refunds-policy.md",
       "source_section": "Refund Timing",
-      "raw_excerpt": "Once approved, the funds are credited back to the original funding source within 5 to 7 business days following approval."
+      "raw_excerpt": "Once approved, the funds are credited back to the original funding source within 5 to 7 business days following approval.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "refund_processing_debit_card",
@@ -776,7 +861,8 @@
       "source_doc": "pol-payments-refunds-001",
       "source_file": "refunds-policy.md",
       "source_section": "Refund Timing",
-      "raw_excerpt": "For transactions originally processed on debit cards, the credited funds may require up to 10 business days to appear on the bank statement."
+      "raw_excerpt": "For transactions originally processed on debit cards, the credited funds may require up to 10 business days to appear on the bank statement.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "refund_processing_ach",
@@ -785,7 +871,8 @@
       "source_doc": "pol-payments-refunds-001",
       "source_file": "refunds-policy.md",
       "source_section": "Refund Timing",
-      "raw_excerpt": "Electronic bank transfers executed via automated clearing house (ACH) typically settle within 3 business days after approval."
+      "raw_excerpt": "Electronic bank transfers executed via automated clearing house (ACH) typically settle within 3 business days after approval.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "return_deduction_missing_components",
@@ -794,7 +881,8 @@
       "source_doc": "pol-payments-refunds-001",
       "source_file": "refunds-policy.md",
       "source_section": "Partial Refunds",
-      "raw_excerpt": "Returned merchandise received with missing components or unreturned accessories incurs a deduction of up to 25% from the final refund amount."
+      "raw_excerpt": "Returned merchandise received with missing components or unreturned accessories incurs a deduction of up to 25% from the final refund amount.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "return_deduction_damaged_packaging",
@@ -803,7 +891,8 @@
       "source_doc": "pol-payments-refunds-001",
       "source_file": "refunds-policy.md",
       "source_section": "Partial Refunds",
-      "raw_excerpt": "Products returned with damaged, torn, or defaced manufacturer packaging incur a standard 15% packaging deduction provided the product itself remains fully intact."
+      "raw_excerpt": "Products returned with damaged, torn, or defaced manufacturer packaging incur a standard 15% packaging deduction provided the product itself remains fully intact.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "return_window_standard",
@@ -812,7 +901,8 @@
       "source_doc": "pol-payments-refunds-001",
       "source_file": "refunds-policy.md",
       "source_section": "Partial Refunds",
-      "raw_excerpt": "Late returns received outside the standard 30-day window are accepted only at Northvale's discretion and are subject to a mandatory 50% restocking fee."
+      "raw_excerpt": "Late returns received outside the standard 30-day window are accepted only at Northvale's discretion and are subject to a mandatory 50% restocking fee.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "restocking_fee_late_return",
@@ -821,7 +911,8 @@
       "source_doc": "pol-payments-refunds-001",
       "source_file": "refunds-policy.md",
       "source_section": "Partial Refunds",
-      "raw_excerpt": "Late returns received outside the standard 30-day window are accepted only at Northvale's discretion and are subject to a mandatory 50% restocking fee."
+      "raw_excerpt": "Late returns received outside the standard 30-day window are accepted only at Northvale's discretion and are subject to a mandatory 50% restocking fee.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "refund_rate_failed_inspection",
@@ -830,7 +921,8 @@
       "source_doc": "pol-payments-refunds-001",
       "source_file": "refunds-policy.md",
       "source_section": "Partial Refunds",
-      "raw_excerpt": "Merchandise returned in a condition that fails to meet baseline inspection requirements may be refunded at an adjusted rate of 60%."
+      "raw_excerpt": "Merchandise returned in a condition that fails to meet baseline inspection requirements may be refunded at an adjusted rate of 60%.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "refund_processing_paypal",
@@ -839,7 +931,8 @@
       "source_doc": "pol-payments-refunds-001",
       "source_file": "refunds-policy.md",
       "source_section": "Refund Methods",
-      "raw_excerpt": "Approved refunds for purchases completed via PayPal are returned directly to the originating PayPal account within 48 hours."
+      "raw_excerpt": "Approved refunds for purchases completed via PayPal are returned directly to the originating PayPal account within 48 hours.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "dispute_filing_window",
@@ -848,7 +941,8 @@
       "source_doc": "pol-payments-refunds-001",
       "source_file": "refunds-policy.md",
       "source_section": "Refund Disputes",
-      "raw_excerpt": "Customers wishing to challenge a refund determination must raise a formal dispute within 60 days of the original refund issue date."
+      "raw_excerpt": "Customers wishing to challenge a refund determination must raise a formal dispute within 60 days of the original refund issue date.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "dispute_refund_execution_sla",
@@ -857,7 +951,8 @@
       "source_doc": "pol-payments-refunds-001",
       "source_file": "refunds-policy.md",
       "source_section": "Refund Disputes",
-      "raw_excerpt": "All submitted dispute cases are thoroughly investigated and reviewed within 5 business days by the specialized Northvale billing team."
+      "raw_excerpt": "All submitted dispute cases are thoroughly investigated and reviewed within 5 business days by the specialized Northvale billing team.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "dispute_manual_reissue_sla",
@@ -866,7 +961,8 @@
       "source_doc": "pol-payments-refunds-001",
       "source_file": "refunds-policy.md",
       "source_section": "Refund Disputes",
-      "raw_excerpt": "Following review, approved dispute resolutions trigger a manual refund re-issue within 24 hours."
+      "raw_excerpt": "Following review, approved dispute resolutions trigger a manual refund re-issue within 24 hours.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "return_window_standard",
@@ -875,7 +971,8 @@
       "source_doc": "pol-orders-returns-001",
       "source_file": "returns-policy.md",
       "source_section": "Return Window",
-      "raw_excerpt": "Standard customer returns are accepted within 30 days of delivery."
+      "raw_excerpt": "Standard customer returns are accepted within 30 days of delivery.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "return_window_electronics",
@@ -884,7 +981,8 @@
       "source_doc": "pol-orders-returns-001",
       "source_file": "returns-policy.md",
       "source_section": "Return Window",
-      "raw_excerpt": "For purchases categorized as electronics and appliances, returns are strictly accepted within 15 days only."
+      "raw_excerpt": "For purchases categorized as electronics and appliances, returns are strictly accepted within 15 days only.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "return_notice_bulk",
@@ -893,7 +991,8 @@
       "source_doc": "pol-orders-returns-001",
       "source_file": "returns-policy.md",
       "source_section": "Return Window",
-      "raw_excerpt": "Bulk commercial or consumer orders comprising 10 or more units require formal 14-day advance notice submitted to Northvale support before any return initiation can proceed."
+      "raw_excerpt": "Bulk commercial or consumer orders comprising 10 or more units require formal 14-day advance notice submitted to Northvale support before any return initiation can proceed.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "return_deduction_missing_components",
@@ -902,7 +1001,8 @@
       "source_doc": "pol-orders-returns-001",
       "source_file": "returns-policy.md",
       "source_section": "Item Condition Requirements",
-      "raw_excerpt": "Any approved returns arriving with missing components or original accessories will incur a mandatory deduction of up to 25% from the final refund amount."
+      "raw_excerpt": "Any approved returns arriving with missing components or original accessories will incur a mandatory deduction of up to 25% from the final refund amount.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "shipping_return_first_item",
@@ -911,7 +1011,8 @@
       "source_doc": "pol-orders-returns-001",
       "source_file": "returns-policy.md",
       "source_section": "Return Shipping Costs",
-      "raw_excerpt": "The standardized cost for return shipping is established at $6.95 for the first item, plus an additional $2.50 for each subsequent item in the shipment."
+      "raw_excerpt": "The standardized cost for return shipping is established at $6.95 for the first item, plus an additional $2.50 for each subsequent item in the shipment.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "shipping_return_additional_item",
@@ -920,7 +1021,8 @@
       "source_doc": "pol-orders-returns-001",
       "source_file": "returns-policy.md",
       "source_section": "Return Shipping Costs",
-      "raw_excerpt": "The standardized cost for return shipping is established at $6.95 for the first item, plus an additional $2.50 for each subsequent item in the shipment."
+      "raw_excerpt": "The standardized cost for return shipping is established at $6.95 for the first item, plus an additional $2.50 for each subsequent item in the shipment.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "return_label_availability_sla",
@@ -929,7 +1031,8 @@
       "source_doc": "pol-orders-returns-001",
       "source_file": "returns-policy.md",
       "source_section": "Return Shipping Costs",
-      "raw_excerpt": "A prepaid return shipping label can be accessed directly through the online account portal within 24 hours of submitting the return request."
+      "raw_excerpt": "A prepaid return shipping label can be accessed directly through the online account portal within 24 hours of submitting the return request.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "refund_processing_standard",
@@ -938,7 +1041,8 @@
       "source_doc": "pol-orders-returns-001",
       "source_file": "returns-policy.md",
       "source_section": "Refund Method and Timeline",
-      "raw_excerpt": "Standard refund processing requires 5 to 7 business days following verified receipt and physical intake inspection of the return at the fulfillment facility."
+      "raw_excerpt": "Standard refund processing requires 5 to 7 business days following verified receipt and physical intake inspection of the return at the fulfillment facility.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "return_high_value_signature_threshold",
@@ -947,7 +1051,8 @@
       "source_doc": "pol-orders-returns-001",
       "source_file": "returns-policy.md",
       "source_section": "Refund Method and Timeline",
-      "raw_excerpt": "For loss prevention and security compliance, any returned package carrying a value exceeding $500 requires signature-verified receipt at the intake dock before inspection begins."
+      "raw_excerpt": "For loss prevention and security compliance, any returned package carrying a value exceeding $500 requires signature-verified receipt at the intake dock before inspection begins.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "restocking_fee_late_return",
@@ -956,7 +1061,8 @@
       "source_doc": "pol-orders-returns-001",
       "source_file": "returns-policy.md",
       "source_section": "Exceptions and Non-Returnable Items",
-      "raw_excerpt": "Any returned merchandise received at the intake warehouse after the expiration of the return window is accepted only at Northvale's discretion and is subject to a 50% restocking fee."
+      "raw_excerpt": "Any returned merchandise received at the intake warehouse after the expiration of the return window is accepted only at Northvale's discretion and is subject to a 50% restocking fee.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "shipping_standard_transit",
@@ -965,7 +1071,8 @@
       "source_doc": "faq-orders-shipping-001",
       "source_file": "shipping-faq.md",
       "source_section": "What domestic shipping options can I choose?",
-      "raw_excerpt": "Standard shipping delivers within 5 to 7 business days and is completely free on all qualifying domestic orders over $50."
+      "raw_excerpt": "Standard shipping delivers within 5 to 7 business days and is completely free on all qualifying domestic orders over $50.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "shipping_standard_min_order_free",
@@ -974,7 +1081,8 @@
       "source_doc": "faq-orders-shipping-001",
       "source_file": "shipping-faq.md",
       "source_section": "What domestic shipping options can I choose?",
-      "raw_excerpt": "Standard shipping delivers within 5 to 7 business days and is completely free on all qualifying domestic orders over $50."
+      "raw_excerpt": "Standard shipping delivers within 5 to 7 business days and is completely free on all qualifying domestic orders over $50.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "shipping_expedited_transit",
@@ -983,7 +1091,8 @@
       "source_doc": "faq-orders-shipping-001",
       "source_file": "shipping-faq.md",
       "source_section": "What domestic shipping options can I choose?",
-      "raw_excerpt": "Expedited shipping delivers your package within 2 to 3 business days for a predictable $9.95 flat rate."
+      "raw_excerpt": "Expedited shipping delivers your package within 2 to 3 business days for a predictable $9.95 flat rate.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "shipping_expedited_fee",
@@ -992,7 +1101,8 @@
       "source_doc": "faq-orders-shipping-001",
       "source_file": "shipping-faq.md",
       "source_section": "What domestic shipping options can I choose?",
-      "raw_excerpt": "Expedited shipping delivers your package within 2 to 3 business days for a predictable $9.95 flat rate."
+      "raw_excerpt": "Expedited shipping delivers your package within 2 to 3 business days for a predictable $9.95 flat rate.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "shipping_nextday_transit",
@@ -1001,7 +1111,8 @@
       "source_doc": "faq-orders-shipping-001",
       "source_file": "shipping-faq.md",
       "source_section": "What domestic shipping options can I choose?",
-      "raw_excerpt": "For urgent needs, next-day shipping delivers within 1 business day for $19.95, provided your order is submitted by 12 pm Eastern Time."
+      "raw_excerpt": "For urgent needs, next-day shipping delivers within 1 business day for $19.95, provided your order is submitted by 12 pm Eastern Time.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "shipping_nextday_fee",
@@ -1010,7 +1121,8 @@
       "source_doc": "faq-orders-shipping-001",
       "source_file": "shipping-faq.md",
       "source_section": "What domestic shipping options can I choose?",
-      "raw_excerpt": "For urgent needs, next-day shipping delivers within 1 business day for $19.95, provided your order is submitted by 12 pm Eastern Time."
+      "raw_excerpt": "For urgent needs, next-day shipping delivers within 1 business day for $19.95, provided your order is submitted by 12 pm Eastern Time.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "warehouse_pick_pack_sla",
@@ -1019,7 +1131,8 @@
       "source_doc": "faq-orders-shipping-001",
       "source_file": "shipping-faq.md",
       "source_section": "How long does order processing and dispatch take?",
-      "raw_excerpt": "Standard order processing requires up to 24 hours to pick, verify, and pack your items before official dispatch."
+      "raw_excerpt": "Standard order processing requires up to 24 hours to pick, verify, and pack your items before official dispatch.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "shipping_tracking_activation_sla",
@@ -1028,7 +1141,8 @@
       "source_doc": "faq-orders-shipping-001",
       "source_file": "shipping-faq.md",
       "source_section": "How long does order processing and dispatch take?",
-      "raw_excerpt": "Once your parcel is dispatched from our distribution facility, carrier tracking numbers activate within 4 hours."
+      "raw_excerpt": "Once your parcel is dispatched from our distribution facility, carrier tracking numbers activate within 4 hours.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "notification_transit_exception_delay",
@@ -1037,7 +1151,8 @@
       "source_doc": "faq-orders-shipping-001",
       "source_file": "shipping-faq.md",
       "source_section": "How can I track my shipment and receive updates?",
-      "raw_excerpt": "If a transit exception occurs, delivery exception alerts are sent to your notifications within 2 hours of the carrier flag being posted."
+      "raw_excerpt": "If a transit exception occurs, delivery exception alerts are sent to your notifications within 2 hours of the carrier flag being posted.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "carrier_hold_before_rto_days",
@@ -1046,7 +1161,8 @@
       "source_doc": "faq-orders-shipping-001",
       "source_file": "shipping-faq.md",
       "source_section": "How can I track my shipment and receive updates?",
-      "raw_excerpt": "If a package cannot be delivered after two failed delivery attempts, the carrier will return the package to our warehouse after holding it for 7 days."
+      "raw_excerpt": "If a package cannot be delivered after two failed delivery attempts, the carrier will return the package to our warehouse after holding it for 7 days.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "shipping_international_transit",
@@ -1055,7 +1171,8 @@
       "source_doc": "faq-orders-shipping-001",
       "source_file": "shipping-faq.md",
       "source_section": "Do you offer international delivery and customs clearance?",
-      "raw_excerpt": "International delivery typically takes 10 to 21 business days depending on your specific destination country and customs clearance processes."
+      "raw_excerpt": "International delivery typically takes 10 to 21 business days depending on your specific destination country and customs clearance processes.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "shipping_international_signature_threshold",
@@ -1064,7 +1181,8 @@
       "source_doc": "faq-orders-shipping-001",
       "source_file": "shipping-faq.md",
       "source_section": "Do you offer international delivery and customs clearance?",
-      "raw_excerpt": "For security compliance, international orders valued over $200 require a physical signature at delivery."
+      "raw_excerpt": "For security compliance, international orders valued over $200 require a physical signature at delivery.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "shipping_standard_min_order_free",
@@ -1073,7 +1191,8 @@
       "source_doc": "faq-orders-shipping-001",
       "source_file": "shipping-faq.md",
       "source_section": "How are shipping costs, surcharges, and insurance calculated?",
-      "raw_excerpt": "You receive free standard shipping on all US orders totaling over $50 before taxes and discounts are applied."
+      "raw_excerpt": "You receive free standard shipping on all US orders totaling over $50 before taxes and discounts are applied.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "shipping_ak_hi_surcharge",
@@ -1082,7 +1201,8 @@
       "source_doc": "faq-orders-shipping-001",
       "source_file": "shipping-faq.md",
       "source_section": "How are shipping costs, surcharges, and insurance calculated?",
-      "raw_excerpt": "Orders destined for Alaska and Hawaii incur a mandatory $12.00 surcharge across all available shipping tiers."
+      "raw_excerpt": "Orders destined for Alaska and Hawaii incur a mandatory $12.00 surcharge across all available shipping tiers.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "shipping_international_base_fee",
@@ -1091,7 +1211,8 @@
       "source_doc": "faq-orders-shipping-001",
       "source_file": "shipping-faq.md",
       "source_section": "How are shipping costs, surcharges, and insurance calculated?",
-      "raw_excerpt": "International shipping starts at a base rate of $24.95 for the initial 2 lbs of parcel weight."
+      "raw_excerpt": "International shipping starts at a base rate of $24.95 for the initial 2 lbs of parcel weight.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "shipping_insurance_rate_pct",
@@ -1100,7 +1221,8 @@
       "source_doc": "faq-orders-shipping-001",
       "source_file": "shipping-faq.md",
       "source_section": "How are shipping costs, surcharges, and insurance calculated?",
-      "raw_excerpt": "During the checkout process, optional package protection insurance can be purchased for 1.5% of your total cart value to protect against transit loss."
+      "raw_excerpt": "During the checkout process, optional package protection insurance can be purchased for 1.5% of your total cart value to protect against transit loss.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "shipping_stolen_police_report_threshold",
@@ -1109,7 +1231,8 @@
       "source_doc": "faq-orders-shipping-001",
       "source_file": "shipping-faq.md",
       "source_section": "What should I do if my package is lost, stolen, or damaged?",
-      "raw_excerpt": "If your delivery is marked confirmed but your package was stolen, filing a reimbursement or replacement claim for values over $100 requires an official police report."
+      "raw_excerpt": "If your delivery is marked confirmed but your package was stolen, filing a reimbursement or replacement claim for values over $100 requires an official police report.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "shipping_damage_claim_window",
@@ -1118,7 +1241,8 @@
       "source_doc": "faq-orders-shipping-001",
       "source_file": "shipping-faq.md",
       "source_section": "What should I do if my package is lost, stolen, or damaged?",
-      "raw_excerpt": "Damage claims must be filed through support within 48 hours of carrier delivery along with supporting photographic evidence of the damage."
+      "raw_excerpt": "Damage claims must be filed through support within 48 hours of carrier delivery along with supporting photographic evidence of the damage.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "shipping_insured_coverage_pct",
@@ -1127,7 +1251,8 @@
       "source_doc": "faq-orders-shipping-001",
       "source_file": "shipping-faq.md",
       "source_section": "What should I do if my package is lost, stolen, or damaged?",
-      "raw_excerpt": "If you purchased package protection insurance, it covers 100% of verified transit loss; without insurance, coverage is limited to a maximum of $100."
+      "raw_excerpt": "If you purchased package protection insurance, it covers 100% of verified transit loss; without insurance, coverage is limited to a maximum of $100.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "shipping_uninsured_max_coverage",
@@ -1136,7 +1261,8 @@
       "source_doc": "faq-orders-shipping-001",
       "source_file": "shipping-faq.md",
       "source_section": "What should I do if my package is lost, stolen, or damaged?",
-      "raw_excerpt": "If you purchased package protection insurance, it covers 100% of verified transit loss; without insurance, coverage is limited to a maximum of $100."
+      "raw_excerpt": "If you purchased package protection insurance, it covers 100% of verified transit loss; without insurance, coverage is limited to a maximum of $100.",
+      "source_type": "frozen-corpus"
     },
     {
       "concept": "shipping_claim_replacement_dispatch_sla",
@@ -1145,7 +1271,18 @@
       "source_doc": "faq-orders-shipping-001",
       "source_file": "shipping-faq.md",
       "source_section": "What should I do if my package is lost, stolen, or damaged?",
-      "raw_excerpt": "Once your claim is approved, a replacement order is dispatched at no cost within 3 business days."
+      "raw_excerpt": "Once your claim is approved, a replacement order is dispatched at no cost within 3 business days.",
+      "source_type": "frozen-corpus"
+    },
+    {
+      "concept": "card_display_retention_digits",
+      "value": "4 digits",
+      "unit": "digits",
+      "source_doc": "pol-account-privacy-retention-004",
+      "source_file": "account-privacy-retention.md",
+      "source_section": "How are payment card details tokenized and retained?",
+      "raw_excerpt": "Northvale retains only the last-4 digits, card brand, and expiration date for user interface display purposes.",
+      "source_type": "owner-approved-new"
     }
   ]
 }

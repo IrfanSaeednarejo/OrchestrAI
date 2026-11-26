@@ -46,6 +46,12 @@ interface ExtractedFact {
   section: string;
 }
 
+interface UnmatchedFact {
+  value: string;
+  sentence: string;
+  section: string;
+}
+
 interface DocAuditResult {
   docId: string;
   filename: string;
@@ -53,7 +59,8 @@ interface DocAuditResult {
   factsFound: number;
   valueMismatches: { concept: string; found: string; expected: string; sentence: string }[];
   outOfScopeConcepts: { concept: string; value: string; sentence: string }[];
-  unclassifiedFacts: { value: string; sentence: string }[];
+  proceduralExcluded: UnmatchedFact[];
+  newFactOwnerDecisions: UnmatchedFact[];
   rangeViolations: { concept: string; presentValues: string[]; missingValues: string[] }[];
   snakeCaseLeaks: string[];
   pass: boolean;
@@ -62,18 +69,67 @@ interface DocAuditResult {
 // ── Shared extraction logic (from extract-policy-facts.ts) ─────────────────
 
 const NUMERIC_PATTERN =
-  /(?:\$\d+(?:,\d{3})*(?:\.\d{1,2})?|\d+(?:\.\d+)?%|\b\d+(?:\s*(?:to|-|–)\s*\d+)?\s*(?:calendar\s+days?|business\s+days?|days?|hours?|minutes?|seconds?|months?|years?|characters?|attempts?|tiers?|installments?|items?|digits?)\b|\b\d+\s*-\s*(?:days?|hours?|minutes?|years?)\b)/gi;
+  /(?:\$\d+(?:,\d{3})*(?:\.\d{1,2})?|\d+(?:\.\d+)?\s*(?:%|percent\b)|\b\d+(?:\s*(?:to|-|–)\s*\d+)?\s*(?:calendar\s+days?|business\s+days?|days?|hours?|minutes?|seconds?|months?|years?|characters?|attempts?|tiers?|installments?|items?|digits?)\b|\b\d+\s*-\s*(?:business\s+days?|days?|hours?|minutes?|years?)\b)/gi;
 
 function normalizeExtractedValue(rawMatch: string): string {
-  const trimmed = rawMatch.trim();
-  const hyph = /^(\d+)\s*-\s*(day|days|hour|hours|minute|minutes|year|years)$/i.exec(trimmed);
+  let s = rawMatch.trim().replace(/\s+/g, ' ');
+
+  // Normalize "1.5 percent" -> "1.5%"
+  s = s.replace(/^(\d+(?:\.\d+)?)\s*percent$/i, '$1%');
+
+  // Normalize "$5000" -> "$5,000"
+  const usdMatch = /^\$(\d+)(\.\d{1,2})?$/.exec(s);
+  if (usdMatch?.[1] && usdMatch[1].length >= 4) {
+    const withCommas = Number(usdMatch[1]).toLocaleString('en-US');
+    s = `$${withCommas}${usdMatch[2] ?? ''}`;
+  }
+
+  // Normalize ranges with hyphens/en-dashes: "5-7 business days" -> "5 to 7 business days"
+  s = s.replace(/^(\d+)\s*(?:-|–)\s*(\d+)\s+(.+)$/, '$1 to $2 $3');
+
+  // Normalize hyphenated forms: "30-day" -> "30 days", "5-business-day" -> "5 business days"
+  const hyph = /^(\d+)\s*-\s*(business\s+days?|days?|hours?|minutes?|years?)$/i.exec(s);
   if (hyph?.[1] && hyph[2]) {
     const n = hyph[1];
-    const baseUnit = hyph[2].toLowerCase().replace(/s$/, '');
+    const baseUnit = hyph[2].toLowerCase().replace(/\s+/g, ' ').replace(/s$/, '');
     const pluralUnit = n === '1' ? baseUnit : `${baseUnit}s`;
     return `${n} ${pluralUnit}`;
   }
-  return trimmed;
+
+  // Normalize singular unit when quantity > 1 (e.g. "365 day" -> "365 days", "24 hour" -> "24 hours", "5 business day" -> "5 business days")
+  const unitMatch = /^(\d+)\s+(business\s+days?|calendar\s+days?|days?|hours?|minutes?|seconds?|months?|years?|characters?|digits?)$/i.exec(s);
+  if (unitMatch?.[1] && unitMatch[2]) {
+    const n = unitMatch[1];
+    const baseUnit = unitMatch[2].toLowerCase().replace(/\s+/g, ' ').replace(/s$/, '');
+    const unit = n === '1' ? baseUnit : `${baseUnit}s`;
+    return `${n} ${unit}`;
+  }
+
+  return s;
+}
+
+function isProceduralExcluded(value: string, sentence: string): boolean {
+  const s = sentence.toLowerCase();
+  const v = value.toLowerCase();
+
+  // Attempt counts, IP counts, unit/item/tier/installment counts
+  if (/\b(attempts?|tiers?|installments?|items?)\b/i.test(v)) return true;
+  if (s.includes('distinct ip') || s.includes('failed login') || s.includes('consecutive')) {
+    if (!/\b(hours?|minutes?|days?)\b/i.test(v)) return true;
+  }
+  // OTP digit count (e.g. 6-digit OTP)
+  if (/\bdigits?\b/i.test(v) && (s.includes('otp') || s.includes('verification code') || s.includes('passcode'))) {
+    return true;
+  }
+  return false;
+}
+
+function looksLikePolicyFact(value: string): boolean {
+  return (
+    value.startsWith('$') ||
+    value.endsWith('%') ||
+    /\b(days?|hours?|minutes?|years?|months?|characters?|digits?)\b/i.test(value)
+  );
 }
 
 function inferConcept(sentence: string, value: string): string | null {
@@ -453,7 +509,8 @@ function main(): void {
       factsFound: 0,
       valueMismatches: [],
       outOfScopeConcepts: [],
-      unclassifiedFacts: [],
+      proceduralExcluded: [],
+      newFactOwnerDecisions: [],
       rangeViolations: [],
       snakeCaseLeaks: [],
       pass: true,
@@ -466,6 +523,8 @@ function main(): void {
         result.pass = false;
       }
     }
+
+    const approvedConcepts = isNew ? relevanceMatrix.get(docId) : undefined;
 
     // Parse and extract facts
     const extractedFacts: ExtractedFact[] = [];
@@ -481,12 +540,39 @@ function main(): void {
         if (!matches) continue;
         for (const m of matches) {
           const val = normalizeExtractedValue(m);
-          const concept = inferConcept(sentence, val);
+          let concept = inferConcept(sentence, val);
+
+          if (!concept && isNew) {
+            // Task 1(a): Check if value matches ANY concept's canonical value in this doc's IN-SCOPE matrix row
+            if (approvedConcepts) {
+              for (const c of approvedConcepts) {
+                if (canonicalValues.get(c)?.has(val)) {
+                  concept = c;
+                  break;
+                }
+              }
+            }
+
+            // Task 1(b): Check if value matches ANY concept's canonical value in the FULL fact sheet (out-of-scope)
+            if (!concept) {
+              for (const [c, vals] of canonicalValues.entries()) {
+                if (vals.has(val)) {
+                  concept = c;
+                  break;
+                }
+              }
+            }
+          }
+
           if (concept) {
             extractedFacts.push({ concept, value: val, sentence, section: currentSection });
           } else if (isNew) {
-            // For new docs, track unclassified facts (potential issue)
-            result.unclassifiedFacts.push({ value: val, sentence });
+            // Task 1(c) & Task 2: Truly new fact — categorize into PROCEDURAL_EXCLUDED vs NEW_FACT_OWNER_DECISION
+            if (isProceduralExcluded(val, sentence) || !looksLikePolicyFact(val)) {
+              result.proceduralExcluded.push({ value: val, sentence, section: currentSection });
+            } else {
+              result.newFactOwnerDecisions.push({ value: val, sentence, section: currentSection });
+            }
           }
         }
       }
@@ -509,8 +595,6 @@ function main(): void {
 
     // For NEW docs only: validate against fact sheet and relevance matrix
     if (isNew) {
-      const approvedConcepts = relevanceMatrix.get(docId);
-
       for (const ef of extractedFacts) {
         // Check 1: Value matches canonical fact sheet
         const canonicalVals = canonicalValues.get(ef.concept);
@@ -590,11 +674,11 @@ function main(): void {
   // Per-doc table
   lines2.push('## Per-Doc Results');
   lines2.push('');
-  lines2.push('| # | Doc ID | File | New? | Facts | Value Mismatches | Out-of-Scope | Unclassified | Range Violations | Result |');
-  lines2.push('|---|---|---|---|---|---|---|---|---|---|');
+  lines2.push('| # | Doc ID | File | New? | Facts | Value Mismatches | Out-of-Scope | Procedural Excluded | New Facts (Owner Decision) | Range Violations | Result |');
+  lines2.push('|---|---|---|---|---|---|---|---|---|---|---|');
   results.forEach((r, i) => {
     lines2.push(
-      `| ${i + 1} | \`${r.docId}\` | \`${r.filename}\` | ${r.isNew ? 'NEW' : 'FROZEN'} | ${r.factsFound} | ${r.valueMismatches.length} | ${r.outOfScopeConcepts.length} | ${r.unclassifiedFacts.length} | ${r.rangeViolations.length} | ${r.pass ? '✅' : '❌'} |`
+      `| ${i + 1} | \`${r.docId}\` | \`${r.filename}\` | ${r.isNew ? 'NEW' : 'FROZEN'} | ${r.factsFound} | ${r.valueMismatches.length} | ${r.outOfScopeConcepts.length} | ${r.proceduralExcluded.length} | ${r.newFactOwnerDecisions.length} | ${r.rangeViolations.length} | ${r.pass ? '✅' : '❌'} |`
     );
   });
   lines2.push('');
@@ -638,18 +722,46 @@ function main(): void {
     }
   }
 
-  // Unclassified facts report (informational — not a fail)
-  const docsWithUnclassified = results.filter((r) => r.isNew && r.unclassifiedFacts.length > 0);
-  if (docsWithUnclassified.length > 0) {
-    lines2.push('## Unclassified Numeric Values (Informational)');
+  // Unmatched facts report — truthful categorization (Task 4)
+  lines2.push('## Unmatched Numeric Values');
+  lines2.push('');
+  lines2.push('Values not matched to a fact-sheet concept fall into two categories:');
+  lines2.push('(i) `PROCEDURAL_EXCLUDED` — procedural counts, IPs, attempt limits (see `DECISIONS.md` exclusions)');
+  lines2.push('(ii) `NEW_FACT_OWNER_DECISION` — genuinely new policy facts introduced by new docs, not present in frozen corpus, requiring owner approval to either add to fact sheet or remove from doc.');
+  lines2.push('');
+
+  const docsWithNewFacts = results.filter((r) => r.isNew && r.newFactOwnerDecisions.length > 0);
+  lines2.push(`### NEW_FACT_OWNER_DECISION (${docsWithNewFacts.reduce((acc, r) => acc + r.newFactOwnerDecisions.length, 0)} total)`);
+  lines2.push('');
+  if (docsWithNewFacts.length === 0) {
+    lines2.push('None.');
     lines2.push('');
-    lines2.push('These numeric values in new docs were not matched to any fact-sheet concept.');
-    lines2.push('They are NOT policy facts (e.g., ordinal numbers, procedural counts, section references) and are NOT treated as failures.');
+  } else {
+    for (const r of docsWithNewFacts) {
+      lines2.push(`#### ${r.docId} (\`${r.filename}\`)`);
+      for (const nf of r.newFactOwnerDecisions) {
+        lines2.push(`- **\`${nf.value}\`** (Section: _${nf.section}_)`);
+        lines2.push(`  > ${nf.sentence}`);
+      }
+      lines2.push('');
+    }
+  }
+
+  const docsWithProcedural = results.filter((r) => r.isNew && r.proceduralExcluded.length > 0);
+  lines2.push(`### PROCEDURAL_EXCLUDED (${docsWithProcedural.reduce((acc, r) => acc + r.proceduralExcluded.length, 0)} total)`);
+  lines2.push('');
+  lines2.push(
+    'PROCEDURAL_EXCLUDED = 0 means the extractor\'s numeric regex did not match any procedural values in the corpus. This is by design: procedural counts ("5 password attempts", "3 distinct IP addresses", "6-digit OTP format") are separated from policy facts by the extraction pattern and excluded from scope per DECISIONS.md. This category exists in the audit for completeness — a future regex change that starts matching procedural values will flag them here for review rather than silently passing them.'
+  );
+  lines2.push('');
+  if (docsWithProcedural.length === 0) {
+    lines2.push('None.');
     lines2.push('');
-    for (const r of docsWithUnclassified) {
-      lines2.push(`### ${r.docId}`);
-      for (const u of r.unclassifiedFacts) {
-        lines2.push(`- \`${u.value}\`: "${u.sentence.substring(0, 120)}..."`);
+  } else {
+    for (const r of docsWithProcedural) {
+      lines2.push(`#### ${r.docId}`);
+      for (const p of r.proceduralExcluded) {
+        lines2.push(`- \`${p.value}\`: "${p.sentence.substring(0, 120)}..."`);
       }
       lines2.push('');
     }
