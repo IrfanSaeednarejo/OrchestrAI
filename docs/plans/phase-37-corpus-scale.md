@@ -32,7 +32,12 @@ Phase 37 is strictly scoped to corpus scaling, chunker correctness, ingestion ha
 ### Scope IN
 - **37a**: Fix sentence-splitting content-loss defect in `server/src/knowledge/chunker.ts` + adversarial unit tests (`chunker.test.ts`); run read-only production chunk-truncation audit against `knowledge_chunks` comparing against **PDF-extracted text (`pdf-parser.ts` + `text-cleaner.ts`)** and markdown; stage re-chunking of the 12 frozen existing docs into `server/scripts/.chunk-staging.json` (gitignored).
 - **37b**: Pre-check Gemini embedding quota before generating briefs; produce Scope Map for 30 new docs (10 per domain across existing `(domain, topic)` pairs); extract immutable numeric Policy Fact Sheet from the 12 frozen docs; generate 30 brief files in `docs/knowledge-base/briefs/{doc_id}.md`; draft 30 markdown docs in `docs/knowledge-base/src/{domain}-{topic}-{subtopic}.md` via resumable generator; run automated Contradiction Audit across all 42 docs; generate & XMP-inject PDFs for the 30 new docs.
-- **37c**: Resolve all 96 seed snippets verbatim to new chunk IDs (`eval/seed-labels-resolved.v3.json`), surfacing `no-match`, `multi-match`, and the 4 documented soft matches (`s-exchanges-004`, `s-exchanges-006`, `s-notifications-002`, `s-notifications-007`) for owner review; implement `OD-37a` (`docId`-scoped superseding + regression test) and `OD-37b` (`chunk_key` column, partial unique index, same-version content-hash guard, coexistence test); run pre-flight dry-run validation; ingest with ≤100 batching + post-load HNSW rebuild; migrate golden dataset to `eval/knowledge-golden-dataset.v3.json` with strict `v2`/`v3` equivalence checks and update eval/ablation runners to load `v3`; execute verification checklist + 10-query inline smoke eval.
+- **37c**:
+  - **37c.1' (Pre-Ingest Resolver — Gate 4)**: Resolve all 96 seed snippets verbatim to `(doc_id, chunk_key)` against `server/scripts/.chunk-staging.json` (`eval/seed-labels-resolved.v3-preingest.json`), surfacing `no-match`, `multi-match`, and the 4 documented soft matches (`s-exchanges-004`, `s-exchanges-006`, `s-notifications-002`, `s-notifications-007`) for owner review before spending embedding calls.
+  - **37c.2 (`OD-37a` / `OD-37b` Migration + Ingest)**: Implement `OD-37a` (`docId`-scoped superseding + regression test) and `OD-37b` (`chunk_key` column, partial unique index, same-version content-hash guard, coexistence test); run pre-flight dry-run validation; ingest with ≤100 batching + post-load HNSW rebuild (assigning `defaultRandom()` UUIDs in Postgres).
+  - **37c.2.5 (Post-Ingest UUID Lookup — Gate 5)**: Query Postgres `knowledge_chunks` for each `(doc_id, chunk_key)` to produce `eval/seed-labels-resolved.v3.json` (`seed_id → real_uuid`).
+  - **37c.3 (Golden Dataset Migration `v3`)**: Migrate golden dataset to `eval/knowledge-golden-dataset.v3.json` using real post-ingest UUIDs with strict `v2`/`v3` equivalence checks and update eval/ablation runners to load `v3`.
+  - **37c.4 (Verification + Smoke Eval — Final Gate)**: Execute verification checklist + 10-query inline smoke eval.
 
 ### Scope OUT
 - Editing the text of the 12 existing markdown docs in `docs/knowledge-base/src/*.md` (STRICTLY FROZEN).
@@ -114,23 +119,27 @@ Phase 37 is strictly scoped to corpus scaling, chunker correctness, ingestion ha
    - **Files**: `docs/knowledge-base/*.pdf` (30 new PDFs, reusing `generate-policy-pdfs.ts` and `inject-pdf-xmp.ts`).
    - **Work**: Render and XMP-inject the 30 new markdown sources; verify every PDF opens, has expected page count, and carries valid XMP metadata.
 
-### Sub-Phase 37c — Re-Label, Re-Ingest, Verify (GATE 4 before DB writes)
-10. **Step 37c.1 — Seed Snippet Resolver (GATE 4)**:
-    - **Files**: `server/scripts/resolve-seed-labels.ts`, `eval/seed-labels-resolved.v3.json`.
-    - **Work**: Re-chunk all 42 docs with fixed chunker and resolve all 96 seed snippets in `eval/seed-labels.json` verbatim (`{doc_id}::{chunk_key}`, `match_type`, `confidence`).
+### Sub-Phase 37c — Re-Label, Re-Ingest, Verify (GATE 4 before DB writes, GATE 5 after UUID assignment)
+10. **Step 37c.1' — Pre-Ingest Seed Snippet Resolver (GATE 4)**:
+    - **Files**: `server/scripts/resolve-seed-labels-v3.ts`, `eval/seed-labels-resolved.v3-preingest.json`.
+    - **Work**: Resolve all 96 seed snippets in `eval/seed-labels.json` verbatim against the 66 re-chunked frozen chunks in `server/scripts/.chunk-staging.json` to `(doc_id, chunk_key)` only (UUIDs do not exist before ingest because `id` is `defaultRandom()` per `OD-37b`).
     - **HALT / Owner Review**: Halt immediately on any `no-match` or `multi-match`. Surface the 4 documented soft matches (`s-exchanges-004`, `s-exchanges-006`, `s-notifications-002`, `s-notifications-007`) for owner review without auto-resolving.
-    - **GATE 4 (STOP)**: Wait for owner review of resolver output before any DB writes.
+    - **GATE 4 (STOP)**: Wait for owner review of pre-ingest resolver output before any DB writes or embedding calls.
 11. **Step 37c.2 — `OD-37a`/`OD-37b` Implementation, Pre-Flight Dry-Run (AM4) & Ingest**:
     - **Files**: `server/src/persistence/db/schema.ts`, Drizzle migration (`db:generate` + `db:migrate`), `server/src/persistence/repositories/knowledge.repository.ts`, `server/src/knowledge/ingest.ts`, repository/ingest tests.
     - **Work**:
       - Apply `OD-37b` migration (`chunk_key` column, backfill, drop default, partial unique index `WHERE status = 'active'`) and add coexistence test + `OD-37a` `docId`-scoped superseding regression test + same-version content-hash guard.
       - **Pre-Flight Dry-Run (AM4, zero DB writes)**: Parse + chunk all 42 docs; report per-doc and total counts and domain distribution; assert total within `516 ± 20%`, every `(domain, topic)` has ≥ 1 chunk, every `content_hash` is unique across the corpus, and every chunk has content length between 400 and 1200 chars (flagging any doc `< 10` or `> 20` chunks). Dry-run must pass before any DB write.
-      - **Pre-Flight Quota Re-Check + Ingest**: Confirm quota, batch embeddings at `≤ 100`, upsert via `ON CONFLICT (version_id, chunk_key) DO UPDATE` on main `client.ts` pool (`search_vector` auto-computed by Postgres `GENERATED ALWAYS` column), and run `REINDEX INDEX idx_knowledge_chunks_embedding_hnsw` after bulk load.
-12. **Step 37c.3 — Golden Dataset Migration (`v3`) & Equivalence Check (AM3)**:
+      - **Pre-Flight Quota Re-Check + Ingest**: Confirm quota, batch embeddings at `≤ 100`, upsert via `ON CONFLICT (version_id, chunk_key) DO UPDATE` on main `client.ts` pool (`search_vector` auto-computed by Postgres `GENERATED ALWAYS` column), assigning real `defaultRandom()` UUIDs in `knowledge_chunks`, and run `REINDEX INDEX idx_knowledge_chunks_embedding_hnsw` after bulk load.
+12. **Step 37c.2.5 — Post-Ingest UUID Lookup (GATE 5)**:
+    - **Files**: `eval/seed-labels-resolved.v3.json`.
+    - **Work**: Query `knowledge_chunks` joined with `knowledge_doc_versions` for each `(doc_id, chunk_key)` in `eval/seed-labels-resolved.v3-preingest.json` to map `seed_id → real_uuid` (`active` status). Confirm 96/96 non-null active UUIDs.
+    - **GATE 5 (STOP)**: Wait for owner confirmation of 96/96 UUID lookup before migrating golden dataset.
+13. **Step 37c.3 — Golden Dataset Migration (`v3`) & Equivalence Check (AM3)**:
     - **Files**: `server/scripts/migrate-golden-v3.ts`, `eval/knowledge-golden-dataset.v3.json` (`v2` retained), `server/scripts/run-retrieval-eval.ts`, `server/scripts/run-retrieval-ablation.ts`.
-    - **Work**: Map all 263 queries in `v2` to `v3` chunk IDs via parent seed resolution.
+    - **Work**: Map all 263 queries in `v2` to real `v3` chunk UUIDs via parent seed resolution (`eval/seed-labels-resolved.v3.json`).
     - **Equivalence Check (AM3)**: Assert `v3` has exactly **263** queries (**249** answerable with non-null `gold_chunk_id` UUIDs present in `knowledge_chunks` with `status='active'`, **14** negatives with `gold_chunk_id: null`). Compare `v2` and `v3` per seed: parent seed's `v3` chunk must equal all its paraphrase/messy variants' `v3` chunk. Any mismatch = HALT. Update eval/ablation runners to load `v3`.
-13. **Step 37c.4 — Final Verification & 10-Query Inline Smoke Eval (AM5)**:
+14. **Step 37c.4 — Final Verification & 10-Query Inline Smoke Eval (AM5)**:
     - Verify: total chunk count (`~516 ± 20%`), balanced domain distribution, 100% valid UUIDs, 100% non-NULL embeddings, 100% non-empty `search_vector`, every `(domain, topic)` mapped in scope code, 96/96 seeds resolved in `v3`, 4/4 soft matches confirmed, full test suite passing (≥ 752 tests, 0 failures), and 3-doc retrieval smoke test.
     - **End-of-Phase Smoke Eval (AM5)**: Pick 10 stratified answerable queries from `v3` (`4` keyword, `3` paraphrase, `3` hard), run via `run-retrieval-eval.ts` in unscoped mode with inline embedding (no cache warm, reporting exactly 10 embedding calls spent). Report `hit@3` (expected `≥ 90%` / `9/10`; if `< 80%`, HALT).
     - **FINAL GATE (STOP)**: Report all verification metrics and wait for owner sign-off (owner merges and tags).
