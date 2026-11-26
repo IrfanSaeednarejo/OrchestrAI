@@ -6,6 +6,7 @@
 import {
   sql,
   eq,
+  ne,
   and,
   count,
   inArray,
@@ -50,6 +51,7 @@ export interface HybridCteSearchRow extends KnowledgeSearchRow {
 export interface ChunkInsertPayload {
   sectionPath: string;
   chunkIndex: number;
+  chunkKey: string;
   content: string;
   contentHash: string;
   embedding: number[];
@@ -283,73 +285,145 @@ export async function findActiveDocVersionByHash(fileHash: string): Promise<{ id
 
 /**
  * Atomically upserts a new document version and its chunks.
- * Supersedes older active versions of the same (domain, topic) non-destructively.
+ * Supersedes older active versions of the same docId non-destructively (OD-37a).
+ * Enforces same-version content-hash guard and idempotent (version_id, chunk_key) upsert (OD-37b).
  */
 export async function upsertKnowledgeVersion(
   versionMeta: DocumentVersionInsertPayload,
   chunks: ChunkInsertPayload[]
 ): Promise<{ versionId: string; chunksInserted: number }> {
   return db.transaction(async (tx) => {
-    // 1. Insert new version record as draft first
-    const [insertedVersion] = await tx
-      .insert(knowledgeDocVersions)
-      .values({
-        docId: versionMeta.docId,
-        domain: versionMeta.domain,
-        topic: versionMeta.topic,
-        documentType: versionMeta.documentType,
-        version: versionMeta.version,
-        effectiveDate: versionMeta.effectiveDate,
-        fileHash: versionMeta.fileHash,
-        status: 'draft',
+    // 1. Check for existing version row for (docId, version) — same-version content-hash guard
+    const [existingSameVersion] = await tx
+      .select({
+        id: knowledgeDocVersions.id,
+        fileHash: knowledgeDocVersions.fileHash,
       })
-      .returning({ id: knowledgeDocVersions.id });
+      .from(knowledgeDocVersions)
+      .where(
+        and(
+          eq(knowledgeDocVersions.docId, versionMeta.docId),
+          eq(knowledgeDocVersions.version, versionMeta.version)
+        )
+      )
+      .limit(1);
 
-    if (!insertedVersion) {
-      throw new Error(`Failed to insert document version for ${versionMeta.docId}`);
+    if (existingSameVersion && existingSameVersion.fileHash !== versionMeta.fileHash) {
+      throw new Error(
+        `SAME_VERSION_CONTENT_HASH_MISMATCH: ${versionMeta.docId} v${versionMeta.version} already exists with fileHash=${existingSameVersion.fileHash}, incoming=${versionMeta.fileHash}`
+      );
     }
 
-    const versionId = insertedVersion.id;
+    let versionId: string;
+    if (existingSameVersion) {
+      versionId = existingSameVersion.id;
 
-    // 2. Insert all chunks marked draft
-    if (chunks.length > 0) {
-      await tx.insert(knowledgeChunks).values(
-        chunks.map((c) => ({
-          versionId,
+      // Also guard chunk-level content hashes on same-version retry
+      const existingChunks = await tx
+        .select({
+          chunkKey: knowledgeChunks.chunkKey,
+          contentHash: knowledgeChunks.contentHash,
+        })
+        .from(knowledgeChunks)
+        .where(
+          and(
+            eq(knowledgeChunks.versionId, versionId),
+            eq(knowledgeChunks.status, 'active')
+          )
+        );
+      const existingHashByKey = new Map(existingChunks.map((ec) => [ec.chunkKey, ec.contentHash]));
+      for (const c of chunks) {
+        const prevHash = existingHashByKey.get(c.chunkKey);
+        if (prevHash !== undefined && prevHash !== c.contentHash) {
+          throw new Error(
+            `SAME_VERSION_CHUNK_HASH_MISMATCH: ${versionMeta.docId} v${versionMeta.version} chunk_key=${c.chunkKey} has content_hash=${prevHash}, incoming=${c.contentHash}`
+          );
+        }
+      }
+    } else {
+      // Insert new version record as draft first
+      const [insertedVersion] = await tx
+        .insert(knowledgeDocVersions)
+        .values({
+          docId: versionMeta.docId,
           domain: versionMeta.domain,
           topic: versionMeta.topic,
-          sectionPath: c.sectionPath,
-          chunkIndex: c.chunkIndex,
-          content: c.content,
-          contentHash: c.contentHash,
-          embedding: c.embedding,
-          status: 'draft' as const,
-        }))
-      );
+          documentType: versionMeta.documentType,
+          version: versionMeta.version,
+          effectiveDate: versionMeta.effectiveDate,
+          fileHash: versionMeta.fileHash,
+          status: 'draft',
+        })
+        .returning({ id: knowledgeDocVersions.id });
+
+      if (!insertedVersion) {
+        throw new Error(`Failed to insert document version for ${versionMeta.docId}`);
+      }
+      versionId = insertedVersion.id;
     }
 
-    // 3. Demote currently active versions of this domain & topic to 'superseded'
-    await tx
-      .update(knowledgeDocVersions)
-      .set({ status: 'superseded' })
+    // 2. Upsert chunks via ON CONFLICT (version_id, chunk_key) WHERE status = 'active'
+    const targetStatus = existingSameVersion ? ('active' as const) : ('draft' as const);
+    if (chunks.length > 0) {
+      await tx
+        .insert(knowledgeChunks)
+        .values(
+          chunks.map((c) => ({
+            versionId,
+            domain: versionMeta.domain,
+            topic: versionMeta.topic,
+            sectionPath: c.sectionPath,
+            chunkIndex: c.chunkIndex,
+            chunkKey: c.chunkKey,
+            content: c.content,
+            contentHash: c.contentHash,
+            embedding: c.embedding,
+            status: targetStatus,
+          }))
+        )
+        .onConflictDoUpdate({
+          target: [knowledgeChunks.versionId, knowledgeChunks.chunkKey],
+          targetWhere: sql`status = 'active'`,
+          set: {
+            sectionPath: sql`excluded.section_path`,
+            chunkIndex: sql`excluded.chunk_index`,
+            content: sql`excluded.content`,
+            contentHash: sql`excluded.content_hash`,
+            embedding: sql`excluded.embedding`,
+            status: sql`excluded.status`,
+          },
+        });
+    }
+
+    // 3. Demote currently active prior versions of THIS docId to 'superseded' (OD-37a)
+    const priorActiveVersions = await tx
+      .select({ id: knowledgeDocVersions.id })
+      .from(knowledgeDocVersions)
       .where(
         and(
-          eq(knowledgeDocVersions.domain, versionMeta.domain),
-          eq(knowledgeDocVersions.topic, versionMeta.topic),
-          eq(knowledgeDocVersions.status, 'active')
+          eq(knowledgeDocVersions.docId, versionMeta.docId),
+          eq(knowledgeDocVersions.status, 'active'),
+          ne(knowledgeDocVersions.id, versionId)
         )
       );
 
-    await tx
-      .update(knowledgeChunks)
-      .set({ status: 'superseded' })
-      .where(
-        and(
-          eq(knowledgeChunks.domain, versionMeta.domain),
-          eq(knowledgeChunks.topic, versionMeta.topic),
-          eq(knowledgeChunks.status, 'active')
-        )
-      );
+    if (priorActiveVersions.length > 0) {
+      const priorIds = priorActiveVersions.map((v) => v.id);
+      await tx
+        .update(knowledgeDocVersions)
+        .set({ status: 'superseded' })
+        .where(inArray(knowledgeDocVersions.id, priorIds));
+
+      await tx
+        .update(knowledgeChunks)
+        .set({ status: 'superseded' })
+        .where(
+          and(
+            inArray(knowledgeChunks.versionId, priorIds),
+            eq(knowledgeChunks.status, 'active')
+          )
+        );
+    }
 
     // 4. Promote new version and chunks to 'active'
     await tx
@@ -360,7 +434,12 @@ export async function upsertKnowledgeVersion(
     await tx
       .update(knowledgeChunks)
       .set({ status: 'active' })
-      .where(eq(knowledgeChunks.versionId, versionId));
+      .where(
+        and(
+          eq(knowledgeChunks.versionId, versionId),
+          eq(knowledgeChunks.status, 'draft')
+        )
+      );
 
     return { versionId, chunksInserted: chunks.length };
   });

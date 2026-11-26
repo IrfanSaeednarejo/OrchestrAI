@@ -55,6 +55,7 @@ beforeAll(async () => {
       topic: 'returns',
       sectionPath: 'Eligibility / 30-day Window',
       chunkIndex: 0,
+      chunkKey: '01',
       content: 'Customers may return eligible items within 30 days of purchase for a full refund.',
       contentHash: crypto.createHash('sha256').update('returns content').digest('hex'),
       embedding: sql`${vectorJson}::vector`,
