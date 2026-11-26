@@ -14,6 +14,21 @@ import { xmpMetadataSchema } from '../src/knowledge/pdf-parser.js';
 const SRC_DIR = path.resolve(process.cwd(), '../docs/knowledge-base/src');
 const OUTPUT_DIR = path.resolve(process.cwd(), '../docs/knowledge-base');
 
+const FROZEN_FILES = new Set([
+  'account-security-faq.md',
+  'cancellations.md',
+  'data-deletion.md',
+  'disputes.md',
+  'exchanges.md',
+  'methods.md',
+  'notifications.md',
+  'payments-faq.md',
+  'privacy.md',
+  'refunds-policy.md',
+  'returns-policy.md',
+  'shipping-faq.md',
+]);
+
 function findBrowserExecutable(): string | undefined {
   if (process.env.PUPPETEER_EXECUTABLE_PATH) {
     return process.env.PUPPETEER_EXECUTABLE_PATH;
@@ -44,7 +59,11 @@ export async function generatePolicyPdfs(): Promise<void> {
     fs.mkdirSync(OUTPUT_DIR, { recursive: true });
   }
 
-  const files = fs.readdirSync(SRC_DIR).filter((f) => f.endsWith('.md'));
+  const newOnly = process.argv.includes('--new-only');
+  const files = fs
+    .readdirSync(SRC_DIR)
+    .filter((f) => f.endsWith('.md'))
+    .filter((f) => !newOnly || !FROZEN_FILES.has(f));
   if (files.length === 0) {
     throw new Error(`No markdown files found in ${SRC_DIR}`);
   }
