@@ -1,9 +1,9 @@
 /**
  * server/scripts/run-retrieval-eval.ts
  *
- * Deterministic retrieval evaluation runner for the 263-query golden dataset (v2).
+ * Deterministic retrieval evaluation runner for the golden dataset.
  * Evaluates both Scoped (domain+topic) and Unscoped (global corpus) retrieval
- * across the 66-chunk active knowledge base.
+ * across the active knowledge base.
  *
  * Enforces mandatory on-disk query embedding cache to protect Gemini API quota.
  */
@@ -125,8 +125,9 @@ async function retryWithBackoff<T>(fn: () => Promise<T>, retries = 3, baseDelayM
     } catch (err) {
       attempt++;
       if (attempt >= retries) throw err;
-      const delay = baseDelayMs * Math.pow(2, attempt);
-      const errCode = (err as { status?: number; code?: string })?.status
+      const errStatus = (err as { status?: number })?.status;
+      const delay = errStatus === 429 ? 65_000 : baseDelayMs * Math.pow(2, attempt);
+      const errCode = errStatus
         ?? (err as { code?: string })?.code
         ?? (err instanceof Error ? err.message.slice(0, 60) : String(err).slice(0, 60));
       console.warn(`[Gemini Retry] attempt=${attempt} delay=${delay}ms err=${errCode}`);
@@ -175,8 +176,8 @@ async function getOrFetchEmbedding(text: string): Promise<number[]> {
   };
   fs.writeFileSync(cachePath, JSON.stringify(cachePayload) + '\n', 'utf8');
 
-  // Gentle pacing for API rate limit protection
-  await new Promise((resolve) => setTimeout(resolve, 200));
+  // Pace requests at ~85 RPM (700ms) to stay under the Gemini Free Tier 100 RPM cap
+  await new Promise((resolve) => setTimeout(resolve, 700));
 
   return values;
 }
@@ -354,7 +355,7 @@ async function main() {
   const runDate = new Date().toISOString().slice(0, 10);
   console.log('='.repeat(78));
   console.log(`  OrchestrAI: Deterministic Retrieval Evaluation Runner (Prompt 4)`);
-  console.log(`  Date: ${runDate} | Target DB: PostgreSQL + pgvector (66 active chunks)`);
+  console.log(`  Date: ${runDate} | Target DB: PostgreSQL + pgvector`);
   console.log('='.repeat(78));
 
   // 1. Load active document versions from DB
@@ -645,8 +646,8 @@ async function main() {
   const unscopedAggs = buildAggregations(unscopedSummary.results);
 
   // --- Save Raw Per-Query JSON Files ---
-  const scopedJsonPath = path.resolve(RESULTS_DIR, `retrieval-eval-v2-scoped-${runDate}.json`);
-  const unscopedJsonPath = path.resolve(RESULTS_DIR, `retrieval-eval-v2-unscoped-${runDate}.json`);
+  const scopedJsonPath = path.resolve(RESULTS_DIR, `retrieval-eval-${goldenData.dataset_version}-scoped-${runDate}.json`);
+  const unscopedJsonPath = path.resolve(RESULTS_DIR, `retrieval-eval-${goldenData.dataset_version}-unscoped-${runDate}.json`);
 
   const scopedJsonContent = {
     metadata: {
@@ -655,7 +656,7 @@ async function main() {
       generatedAt: new Date().toISOString(),
       embeddingModel: EMBEDDING_MODEL,
       taskType: TASK_TYPE,
-      corpusChunkCount: 66,
+      corpusChunkCount: goldenData.corpus_chunk_count,
       totalQueriesEvaluated: scopedSummary.totalQueries,
       activeAnswerable: scopedSummary.results.length,
       unanswerableNegatives: scopedSummary.negativeResults.length,
@@ -676,7 +677,7 @@ async function main() {
       generatedAt: new Date().toISOString(),
       embeddingModel: EMBEDDING_MODEL,
       taskType: TASK_TYPE,
-      corpusChunkCount: 66,
+      corpusChunkCount: goldenData.corpus_chunk_count,
       totalQueriesEvaluated: unscopedSummary.totalQueries,
       activeAnswerable: unscopedSummary.results.length,
       unanswerableNegatives: unscopedSummary.negativeResults.length,
@@ -700,11 +701,11 @@ async function main() {
   const overallWilsonScoped = computeWilson95(scopedAggs.overall.hitAt3Count, scopedAggs.overall.n);
   const overallWilsonUnscoped = computeWilson95(unscopedAggs.overall.hitAt3Count, unscopedAggs.overall.n);
 
-  let md = `# OrchestrAI: Retrieval Evaluation Report (v2)
+  let md = `# OrchestrAI: Retrieval Evaluation Report (${goldenData.dataset_version})
 
 **Execution Date:** ${runDate}  
-**Corpus:** 66 active chunks across 12 policy/FAQ documents in PostgreSQL (\`knowledge_chunks\`)  
-**Evaluator Dataset:** \`eval/knowledge-golden-dataset.v2.json\` (263 active: 249 answerable + 14 negatives; 39 excluded)  
+**Corpus:** ${goldenData.corpus_chunk_count} active chunks across ${dbDocVersions.length} policy/FAQ documents in PostgreSQL (\`knowledge_chunks\`)  
+**Evaluator Dataset:** \`eval/knowledge-golden-dataset.v3.json\` (${scopedSummary.results.length + scopedSummary.negativeResults.length} active: ${scopedSummary.results.length} answerable + ${scopedSummary.negativeResults.length} negatives; ${goldenData.queries.length - scopedSummary.results.length - scopedSummary.negativeResults.length} excluded)  
 **Embedding Model:** \`${EMBEDDING_MODEL}\` (768-dim, taskType \`${TASK_TYPE}\`)  
 **Cache Location:** \`scripts/.embed-cache/\`  
 
@@ -820,7 +821,7 @@ $$\\text{CI}_{95\\%} = \\frac{\\hat{p} + \\frac{z^2}{2n} \\pm z \\sqrt{\\frac{\\
   md += `| **search_ms (mean)** | ${scopedAggs.overall.searchMsMean.toFixed(1)}ms | ${unscopedAggs.overall.searchMsMean.toFixed(1)}ms | ${(scopedAggs.overall.searchMsMean - unscopedAggs.overall.searchMsMean).toFixed(1)}ms |\n`;
   md += `| **search_ms (p50)** | ${scopedAggs.overall.searchMsP50.toFixed(1)}ms | ${unscopedAggs.overall.searchMsP50.toFixed(1)}ms | ${(scopedAggs.overall.searchMsP50 - unscopedAggs.overall.searchMsP50).toFixed(1)}ms |\n`;
 
-  const summaryMdPath = path.resolve(RESULTS_DIR, 'retrieval-eval-v2-summary.md');
+  const summaryMdPath = path.resolve(RESULTS_DIR, `retrieval-eval-${goldenData.dataset_version}-summary.md`);
   fs.writeFileSync(summaryMdPath, md, 'utf8');
   console.log(`\nSaved summary report to: ${summaryMdPath}`);
 
