@@ -47,8 +47,9 @@ async function retryWithBackoff<T>(fn: () => Promise<T>, retries = 3, baseDelayM
     } catch (err) {
       attempt++;
       if (attempt >= retries) throw err;
-      const delay = baseDelayMs * Math.pow(2, attempt);
-      const errCode = (err as { status?: number; code?: string })?.status
+      const errStatus = (err as { status?: number })?.status;
+      const delay = errStatus === 429 ? 65_000 : baseDelayMs * Math.pow(2, attempt);
+      const errCode = errStatus
         ?? (err as { code?: string })?.code
         ?? (err instanceof Error ? err.message.slice(0, 60) : String(err).slice(0, 60));
       console.error(`[retry] attempt=${attempt} delay=${delay}ms err=${errCode}`);
@@ -96,13 +97,17 @@ export async function embedBatch(texts: string[]): Promise<number[][]> {
   if (texts.length === 0) return [];
   logEmbedCall('batch', texts.length);
 
-  const BATCH_SIZE = 100;
+  // Pace requests at ~85 RPM (700ms interval) to stay under the Gemini Free Tier 100 RPM cap.
+  const PACE_DELAY_MS = process.env.VITEST ? 0 : 700;
   const results: number[][] = [];
 
-  for (let i = 0; i < texts.length; i += BATCH_SIZE) {
-    const slice = texts.slice(i, i + BATCH_SIZE);
-    const batchEmbeddings = await Promise.all(slice.map((t) => embedWithTaskType(t, 'RETRIEVAL_DOCUMENT')));
-    results.push(...batchEmbeddings);
+  for (let i = 0; i < texts.length; i++) {
+    const text = texts[i];
+    if (text === undefined) continue;
+    if (i > 0 && PACE_DELAY_MS > 0) {
+      await new Promise((resolve) => setTimeout(resolve, PACE_DELAY_MS));
+    }
+    results.push(await embedWithTaskType(text, 'RETRIEVAL_DOCUMENT'));
   }
 
   return results;
