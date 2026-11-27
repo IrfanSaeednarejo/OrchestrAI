@@ -3,7 +3,7 @@ docId: pol-orders-cancellation-001
 domain: orders
 topic: cancellations
 documentType: policy
-version: 1.0.0
+version: 1.0.1
 effectiveDate: '2026-11-21T00:00:00Z'
 title: Order Cancellation Policy
 ---

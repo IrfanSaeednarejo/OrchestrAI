@@ -3,7 +3,7 @@ docId: pol-payments-disputes-001
 domain: payments
 topic: disputes
 documentType: policy
-version: 1.0.0
+version: 1.0.1
 effectiveDate: '2026-11-21T00:00:00Z'
 title: Payment Dispute Policy
 ---

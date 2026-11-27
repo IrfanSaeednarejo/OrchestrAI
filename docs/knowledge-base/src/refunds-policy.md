@@ -3,7 +3,7 @@ docId: pol-payments-refunds-001
 domain: payments
 topic: refunds
 documentType: policy
-version: 2.0.0
+version: 2.0.1
 effectiveDate: '2026-11-21T00:00:00Z'
 title: Refund Policy
 ---

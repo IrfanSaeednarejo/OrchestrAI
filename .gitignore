@@ -147,4 +147,5 @@ vite.config.ts.timestamp-*
 .embed-cache/
 .ablation-query-cache.json
 .chunk-staging.json
+.ingest-day1/
 

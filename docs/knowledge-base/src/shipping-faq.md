@@ -3,7 +3,7 @@ docId: faq-orders-shipping-001
 domain: orders
 topic: shipping
 documentType: faq
-version: 2.0.0
+version: 2.0.1
 effectiveDate: '2026-11-21T00:00:00Z'
 title: Shipping and Delivery FAQ
 ---

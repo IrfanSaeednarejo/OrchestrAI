@@ -3,7 +3,7 @@ docId: faq-account-notifications-001
 domain: account
 topic: notifications
 documentType: faq
-version: 1.0.0
+version: 1.0.1
 effectiveDate: '2026-11-21T00:00:00Z'
 title: Notifications and Alerts FAQ
 ---
