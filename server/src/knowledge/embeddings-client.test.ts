@@ -20,7 +20,7 @@ vi.mock('@google/genai', () => {
 });
 
 // Import AFTER mock is established
-import { embedDocument, embedQuery } from './embeddings-client.js';
+import { embedBatch, embedDocument, embedQuery } from './embeddings-client.js';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -124,5 +124,45 @@ describe('embeddings-client', () => {
     const result = await embedQuery('test');
     expect(result).toEqual(mockValues);
     expect(result).toHaveLength(768);
+  });
+
+  // h. Retry policy split: embedQuery uses 2s/2 retries on 429; embedBatch uses 65s/3 retries on 429
+  it('embedQuery retries once with 2000ms delay on 429 and throws on second 429', async () => {
+    vi.useFakeTimers();
+    const err429 = Object.assign(new Error('429 Too Many Requests'), { status: 429 });
+    mockEmbedContent.mockRejectedValue(err429);
+    const setTimeoutSpy = vi.spyOn(globalThis, 'setTimeout');
+
+    const promise = embedQuery('rate limited query').catch((e: unknown) => e);
+    await vi.runAllTimersAsync();
+    const err = await promise;
+
+    expect(err).toBe(err429);
+    expect(mockEmbedContent).toHaveBeenCalledTimes(2);
+    expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), 2_000);
+
+    setTimeoutSpy.mockRestore();
+    vi.useRealTimers();
+  });
+
+  it('embedBatch retries with 65000ms delay on 429 up to 3 attempts', async () => {
+    vi.useFakeTimers();
+    const err429 = Object.assign(new Error('429 Too Many Requests'), { status: 429 });
+    mockEmbedContent
+      .mockRejectedValueOnce(err429)
+      .mockRejectedValueOnce(err429)
+      .mockResolvedValueOnce(makeSuccessResponse());
+    const setTimeoutSpy = vi.spyOn(globalThis, 'setTimeout');
+
+    const promise = embedBatch(['chunk 1']);
+    await vi.runAllTimersAsync();
+    const result = await promise;
+
+    expect(result).toEqual([mockValues]);
+    expect(mockEmbedContent).toHaveBeenCalledTimes(3);
+    expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), 65_000);
+
+    setTimeoutSpy.mockRestore();
+    vi.useRealTimers();
   });
 });

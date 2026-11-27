@@ -39,16 +39,39 @@ export function assertValidEmbedding(embedding: number[]): void {
   }
 }
 
-async function retryWithBackoff<T>(fn: () => Promise<T>, retries = 3, baseDelayMs = 1000): Promise<T> {
+interface RetryPolicy {
+  retries: number;
+  baseDelayMs: number;
+  rateLimitDelayMs: number;
+}
+
+const BATCH_RETRY_POLICY: RetryPolicy = {
+  retries: 3,
+  baseDelayMs: 1000,
+  rateLimitDelayMs: 65_000,
+};
+
+const QUERY_RETRY_POLICY: RetryPolicy = {
+  retries: 2,
+  baseDelayMs: 1000,
+  rateLimitDelayMs: 2_000,
+};
+
+async function retryWithBackoff<T>(
+  fn: () => Promise<T>,
+  policy: RetryPolicy = BATCH_RETRY_POLICY
+): Promise<T> {
   let attempt = 0;
-  while (attempt < retries) {
+  while (attempt < policy.retries) {
     try {
       return await fn();
     } catch (err) {
       attempt++;
-      if (attempt >= retries) throw err;
+      if (attempt >= policy.retries) throw err;
       const errStatus = (err as { status?: number })?.status;
-      const delay = errStatus === 429 ? 65_000 : baseDelayMs * Math.pow(2, attempt);
+      const delay = errStatus === 429
+        ? policy.rateLimitDelayMs
+        : policy.baseDelayMs * Math.pow(2, attempt);
       const errCode = errStatus
         ?? (err as { code?: string })?.code
         ?? (err instanceof Error ? err.message.slice(0, 60) : String(err).slice(0, 60));
@@ -66,7 +89,8 @@ async function retryWithBackoff<T>(fn: () => Promise<T>, retries = 3, baseDelayM
  */
 async function embedWithTaskType(
   contents: string,
-  taskType: 'RETRIEVAL_DOCUMENT' | 'RETRIEVAL_QUERY'
+  taskType: 'RETRIEVAL_DOCUMENT' | 'RETRIEVAL_QUERY',
+  retryPolicy: RetryPolicy
 ): Promise<number[]> {
   const response = await retryWithBackoff(async () => {
     return await ai.models.embedContent({
@@ -77,7 +101,7 @@ async function embedWithTaskType(
         taskType,
       },
     });
-  });
+  }, retryPolicy);
 
   const values = response.embeddings?.[0]?.values;
   if (!values) {
@@ -90,7 +114,7 @@ async function embedWithTaskType(
 
 export async function embedDocument(text: string): Promise<number[]> {
   logEmbedCall('document', 1);
-  return embedWithTaskType(text, 'RETRIEVAL_DOCUMENT');
+  return embedWithTaskType(text, 'RETRIEVAL_DOCUMENT', BATCH_RETRY_POLICY);
 }
 
 export async function embedBatch(texts: string[]): Promise<number[][]> {
@@ -107,12 +131,12 @@ export async function embedBatch(texts: string[]): Promise<number[][]> {
     if (i > 0 && PACE_DELAY_MS > 0) {
       await new Promise((resolve) => setTimeout(resolve, PACE_DELAY_MS));
     }
-    results.push(await embedWithTaskType(text, 'RETRIEVAL_DOCUMENT'));
+    results.push(await embedWithTaskType(text, 'RETRIEVAL_DOCUMENT', BATCH_RETRY_POLICY));
   }
 
   return results;
 }
 
 export async function embedQuery(text: string): Promise<number[]> {
-  return embedWithTaskType(text, 'RETRIEVAL_QUERY');
+  return embedWithTaskType(text, 'RETRIEVAL_QUERY', QUERY_RETRY_POLICY);
 }
