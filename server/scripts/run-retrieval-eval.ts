@@ -30,7 +30,7 @@ import { config } from '../src/shared/config.js';
 // --- Configuration & Paths ---
 const SCRIPT_DIR = import.meta.dirname;
 const CACHE_DIR = path.resolve(SCRIPT_DIR, '.embed-cache');
-const GOLDEN_PATH = path.resolve(SCRIPT_DIR, '../../eval/knowledge-golden-dataset.v2.json');
+const GOLDEN_PATH = path.resolve(SCRIPT_DIR, '../../eval/knowledge-golden-dataset.v3.json');
 const RESULTS_DIR = path.resolve(SCRIPT_DIR, '../../benchmarks/results');
 
 const EMBEDDING_MODEL = 'gemini-embedding-001';
