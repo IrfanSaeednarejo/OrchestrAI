@@ -3,7 +3,7 @@ docId: faq-payments-methods-001
 domain: payments
 topic: methods
 documentType: faq
-version: 1.0.0
+version: 1.0.1
 effectiveDate: '2026-11-21T00:00:00Z'
 title: Payment Methods FAQ
 ---

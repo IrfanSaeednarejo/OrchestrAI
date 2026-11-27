@@ -128,5 +128,43 @@ Approved items move to DECISIONS.md. Items marked [CONFLICT] are inconsistencies
 
    **Approval gate**: Do not proceed to Step 3 until this OD is approved by owner, `DATABASE_URL_RETRIEVAL` is set, and `check-gucs.ts` returns `100/relaxed_order/40000` on all 5 consecutive runs using the retrieval pool.
 
+37. [RESOLVED 2026-11-25] Phase 37 Corpus Scale Decisions:
+
+   - **OD-37a [RESOLVED 2026-11-25] `upsertKnowledgeVersion` Superseding Scope**:
+     - **Problem**: `upsertKnowledgeVersion` in `server/src/persistence/repositories/knowledge.repository.ts:331-352` currently demotes all active `knowledge_doc_versions` and `knowledge_chunks` matching `(domain, topic)` to `'superseded'`. At 42 docs across 12 topics, upserting one doc would silently wipe sibling docs in the same `(domain, topic)`.
+     - **Options**:
+       - *Option A (Recommended)*: Scope version superseding by `docId` (`eq(knowledgeDocVersions.docId, versionMeta.docId)`) and demote `knowledgeChunks` by the superseded `versionId`s.
+       - *Option B*: Create 30 new `(domain, topic)` pairs so each doc has a unique `(domain, topic)`. Rejected — violates the constraint to use existing topics only.
+     - **Tradeoffs**: Option A preserves sibling docs in the same `(domain, topic)` retrieval bucket with zero schema changes; shifts `topic` semantics from "one doc per topic" to "retrieval bucket containing N docs" while keeping specialist-to-topic scope 1:1.
+     - **Required Regression Test**:
+       `upsertKnowledgeVersion(docB)` when `docA` and `docB` share `(domain='orders', topic='returns')` -> assert `docA`'s active version remains `status='active'` and only `docB`'s prior versions are demoted to `'superseded'`.
+     - **Approval gate**: Awaiting explicit owner approval (`APPROVED: OD-37a`) before 37c implementation.
+
+   - **OD-37b [RESOLVED 2026-11-25] `knowledge_chunks.chunk_key` Column & Partial Unique Index**:
+     - **Problem**: `knowledge_chunks` currently has `id` (random `uuid`) with no deterministic positional key or unique constraint to support idempotent `ON CONFLICT DO UPDATE` across re-ingests.
+     - **Options**:
+       - *Option A (Rejected)*: Deterministic UUIDv5 on `id`. Hides ID-formation contract and breaks cleanly across version bumps (`v1.0.0 -> v1.0.1`).
+       - *Option B (Recommended)*: Add `chunk_key text NOT NULL` (zero-padded 2-digit section position `'01'`, `'02'`, ...) to `knowledge_chunks` in `server/src/persistence/db/schema.ts` with a partial unique index `knowledge_chunks_version_chunk_key_active_unique ON knowledge_chunks (version_id, chunk_key) WHERE status = 'active'`.
+     - **Migration**:
+       1. `ALTER TABLE knowledge_chunks ADD COLUMN chunk_key text NOT NULL DEFAULT '';`
+       2. `UPDATE knowledge_chunks SET chunk_key = chunk_index::text WHERE chunk_key = '';`
+       3. `ALTER TABLE knowledge_chunks ALTER COLUMN chunk_key DROP DEFAULT;`
+       4. `CREATE UNIQUE INDEX knowledge_chunks_version_chunk_key_active_unique ON knowledge_chunks (version_id, chunk_key) WHERE status = 'active';`
+     - **Tradeoffs**: One small Drizzle migration (`db:generate` + `db:migrate`); preserves `search_vector` `GENERATED ALWAYS` column; allows historical `superseded` rows to coexist with `active` rows at the same `(version_id, chunk_key)`; plain SQL debuggability in `psql`.
+     - **Required Tests & Guards**:
+       - Same-version content-hash guard in ingest: if `existing.version === incoming.version && existing.content_hash !== incoming.content_hash`, throw/HALT.
+       - Coexistence test: `INSERT active (v1, '01')` -> `UPDATE status='superseded'` -> `INSERT active (v1, '01')` succeeds.
+     - **Approval gate**: Do not modify `schema.ts` or generate/run migration until owner explicitly approves OD-37b (`APPROVED: OD-37b`).
+
+   - **OD-37c [RESOLVED 2026-11-25] Topic Naming Convention**:
+     Use underscore naming (`account_security`, `data_deletion`) matching existing frontmatter and `specialist-scope.ts`.
+
+38. [OPEN] **OD-38: PDF-Parser Heading Heuristic False-Positives on Short Numeric Sentences**:
+    - **Problem**: `pdf-parser.ts` heading-detection heuristics false-positive on short sentences starting with a number at a PDF line wrap.
+    - **Symptom**: `orders-exchanges-instant-swap.pdf` split into 16 chunks when its markdown source had 15 sections, producing a 245-char chunk (`08`) and a corrupted `sectionPath` starting with `12.95 dollars...`.
+    - **Mitigation (Phase 37)**: Mitigated in Phase 37c.2 by normalizing `"12.95 dollars"` to `"$12.95"` in `orders-exchanges-instant-swap.md`.
+    - **Root Fix (Phase 38+)**: Either tighten the heading regex (require sentence-case start + minimum length) or add a post-parse defensive guard in `ingest.ts` (if any chunk < 300 chars, HALT and report). Recommended: add the post-parse chunk-length check to `ingest.ts` as a defensive guard.
+
+
 
 

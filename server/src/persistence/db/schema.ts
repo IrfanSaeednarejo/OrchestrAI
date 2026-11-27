@@ -451,6 +451,7 @@ export const knowledgeChunks = pgTable(
     topic: text('topic').notNull(),
     sectionPath: text('section_path').notNull(),
     chunkIndex: integer('chunk_index').notNull(),
+    chunkKey: text('chunk_key').notNull(),
     pageNumber: integer('page_number').notNull().default(0),
     content: text('content').notNull(),
     contentHash: text('content_hash').notNull(),
@@ -463,5 +464,8 @@ export const knowledgeChunks = pgTable(
     index('idx_knowledge_chunks_embedding_hnsw').using('hnsw', table.embedding.op('vector_cosine_ops')),
     index('idx_knowledge_chunks_search_vector_gin').using('gin', table.searchVector),
     index('idx_knowledge_chunks_scope_section').on(table.domain, table.topic, table.status, table.sectionPath),
+    uniqueIndex('knowledge_chunks_version_chunk_key_active_unique')
+      .on(table.versionId, table.chunkKey)
+      .where(sql`${table.status} = 'active'`),
   ],
 );

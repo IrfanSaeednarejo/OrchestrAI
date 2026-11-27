@@ -3,7 +3,7 @@ docId: faq-account-data-deletion-001
 domain: account
 topic: data_deletion
 documentType: faq
-version: 1.0.0
+version: 1.0.1
 effectiveDate: '2026-11-21T00:00:00Z'
 title: Account Data Deletion FAQ
 ---

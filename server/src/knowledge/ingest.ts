@@ -198,6 +198,7 @@ export async function ingestPdfKnowledgeBase(
           return {
             sectionPath: item.chunk.sectionPath,
             chunkIndex: item.chunk.chunkIndex,
+            chunkKey: String(item.chunk.chunkIndex + 1).padStart(2, '0'),
             content: item.chunk.content,
             contentHash: item.chunk.contentHash,
             embedding: item.embedding,

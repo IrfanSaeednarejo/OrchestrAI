@@ -126,6 +126,7 @@ async function seedChunk(opts: {
       topic: opts.topic,
       sectionPath: 'Overview',
       chunkIndex: 0,
+      chunkKey: '01',
       content,
       contentHash: hash,
       embedding: sql`${embeddingJson}::vector`,

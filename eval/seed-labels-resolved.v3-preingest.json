@@ -1,0 +1,1752 @@
+{
+  "generatedAt": "2026-11-26T18:51:10.569Z",
+  "seedCount": 96,
+  "resolved": [
+    {
+      "seed_id": "s-returns-001",
+      "doc_id": "pol-orders-returns-001",
+      "snippet_text": "accepted within 30 days of delivery",
+      "matches": [
+        {
+          "doc_id": "pol-orders-returns-001",
+          "chunk_key": "01",
+          "chunk_index": 0,
+          "section_path": "Return Window",
+          "raw_chunk_excerpt": "[Policy: orders > returns | Section: Return Window | v2.0.0]\nStandard customer returns are accepted "
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-returns-002",
+      "doc_id": "pol-orders-returns-001",
+      "snippet_text": "eligibility window starts the day after carrier delivery confirmation",
+      "matches": [
+        {
+          "doc_id": "pol-orders-returns-001",
+          "chunk_key": "01",
+          "chunk_index": 0,
+          "section_path": "Return Window",
+          "raw_chunk_excerpt": "[Policy: orders > returns | Section: Return Window | v2.0.0]\nStandard customer returns are accepted "
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-returns-003",
+      "doc_id": "pol-orders-returns-001",
+      "snippet_text": "defective items are completely exempt from standard condition requirements",
+      "matches": [
+        {
+          "doc_id": "pol-orders-returns-001",
+          "chunk_key": "02",
+          "chunk_index": 1,
+          "section_path": "Item Condition Requirements",
+          "raw_chunk_excerpt": "[Policy: orders > returns | Section: Item Condition Requirements | v2.0.0]\nAll returned items must a"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-returns-004",
+      "doc_id": "pol-orders-returns-001",
+      "snippet_text": "calculated return shipping cost is deducted directly from the final issued refund balance",
+      "matches": [
+        {
+          "doc_id": "pol-orders-returns-001",
+          "chunk_key": "03",
+          "chunk_index": 2,
+          "section_path": "Return Shipping Costs",
+          "raw_chunk_excerpt": "[Policy: orders > returns | Section: Return Shipping Costs | v2.0.0]\nNorthvale provides complimentar"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-returns-005",
+      "doc_id": "pol-orders-returns-001",
+      "snippet_text": "prepaid return shipping label can be accessed directly through the online account portal",
+      "matches": [
+        {
+          "doc_id": "pol-orders-returns-001",
+          "chunk_key": "03",
+          "chunk_index": 2,
+          "section_path": "Return Shipping Costs",
+          "raw_chunk_excerpt": "[Policy: orders > returns | Section: Return Shipping Costs | v2.0.0]\nNorthvale provides complimentar"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-returns-006",
+      "doc_id": "pol-orders-returns-001",
+      "snippet_text": "Standard refund processing requires 5 to 7 business days following verified receipt",
+      "matches": [
+        {
+          "doc_id": "pol-orders-returns-001",
+          "chunk_key": "04",
+          "chunk_index": 3,
+          "section_path": "Refund Method and Timeline",
+          "raw_chunk_excerpt": "[Policy: orders > returns | Section: Refund Method and Timeline | v2.0.0]\nAll approved monetary refu"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-returns-007",
+      "doc_id": "pol-orders-returns-001",
+      "snippet_text": "prepaid return shipping label can be accessed directly through the online account portal",
+      "matches": [
+        {
+          "doc_id": "pol-orders-returns-001",
+          "chunk_key": "03",
+          "chunk_index": 2,
+          "section_path": "Return Shipping Costs",
+          "raw_chunk_excerpt": "[Policy: orders > returns | Section: Return Shipping Costs | v2.0.0]\nNorthvale provides complimentar"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-returns-008",
+      "doc_id": "pol-orders-returns-001",
+      "snippet_text": "Returns originating from gift purchases are non-refundable to payment cards and are issued strictly as store credit",
+      "matches": [
+        {
+          "doc_id": "pol-orders-returns-001",
+          "chunk_key": "04",
+          "chunk_index": 3,
+          "section_path": "Refund Method and Timeline",
+          "raw_chunk_excerpt": "[Policy: orders > returns | Section: Refund Method and Timeline | v2.0.0]\nAll approved monetary refu"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-shipping-001",
+      "doc_id": "faq-orders-shipping-001",
+      "snippet_text": "three domestic shipping tiers at checkout to suit your schedule and budget",
+      "matches": [
+        {
+          "doc_id": "faq-orders-shipping-001",
+          "chunk_key": "01",
+          "chunk_index": 0,
+          "section_path": "What domestic shipping options can I choose?",
+          "raw_chunk_excerpt": "[Policy: orders > shipping | Section: What domestic shipping options can I choose? | v2.0.0]\nYou can"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-shipping-002",
+      "doc_id": "faq-orders-shipping-001",
+      "snippet_text": "provided your order is submitted by 12 pm Eastern Time",
+      "matches": [
+        {
+          "doc_id": "faq-orders-shipping-001",
+          "chunk_key": "01",
+          "chunk_index": 0,
+          "section_path": "What domestic shipping options can I choose?",
+          "raw_chunk_excerpt": "[Policy: orders > shipping | Section: What domestic shipping options can I choose? | v2.0.0]\nYou can"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-shipping-003",
+      "doc_id": "faq-orders-shipping-001",
+      "snippet_text": "Any orders placed after 3 pm Eastern Time begin order fulfillment processing on the following business day",
+      "matches": [
+        {
+          "doc_id": "faq-orders-shipping-001",
+          "chunk_key": "02",
+          "chunk_index": 1,
+          "section_path": "How long does order processing and dispatch take?",
+          "raw_chunk_excerpt": "[Policy: orders > shipping | Section: How long does order processing and dispatch take? | v2.0.0]\nSt"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-shipping-004",
+      "doc_id": "faq-orders-shipping-001",
+      "snippet_text": "International delivery typically takes 10 to 21 business days depending on your specific destination country",
+      "matches": [
+        {
+          "doc_id": "faq-orders-shipping-001",
+          "chunk_key": "04",
+          "chunk_index": 3,
+          "section_path": "Do you offer international delivery and customs clearance?",
+          "raw_chunk_excerpt": "[Policy: orders > shipping | Section: Do you offer international delivery and customs clearance? | v"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-shipping-005",
+      "doc_id": "faq-orders-shipping-001",
+      "snippet_text": "international orders valued over $200 require a physical signature at delivery",
+      "matches": [
+        {
+          "doc_id": "faq-orders-shipping-001",
+          "chunk_key": "04",
+          "chunk_index": 3,
+          "section_path": "Do you offer international delivery and customs clearance?",
+          "raw_chunk_excerpt": "[Policy: orders > shipping | Section: Do you offer international delivery and customs clearance? | v"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-shipping-006",
+      "doc_id": "faq-orders-shipping-001",
+      "snippet_text": "delivery is marked confirmed but your package was stolen, filing a reimbursement or replacement claim",
+      "matches": [
+        {
+          "doc_id": "faq-orders-shipping-001",
+          "chunk_key": "06",
+          "chunk_index": 5,
+          "section_path": "What should I do if my package is lost, stolen, or damaged?",
+          "raw_chunk_excerpt": "[Policy: orders > shipping | Section: What should I do if my package is lost, stolen, or damaged? | "
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-shipping-007",
+      "doc_id": "faq-orders-shipping-001",
+      "snippet_text": "Damage claims must be filed through support within 48 hours of carrier delivery along with supporting photographic evidence",
+      "matches": [
+        {
+          "doc_id": "faq-orders-shipping-001",
+          "chunk_key": "06",
+          "chunk_index": 5,
+          "section_path": "What should I do if my package is lost, stolen, or damaged?",
+          "raw_chunk_excerpt": "[Policy: orders > shipping | Section: What should I do if my package is lost, stolen, or damaged? | "
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-shipping-008",
+      "doc_id": "faq-orders-shipping-001",
+      "snippet_text": "Carriers officially mark packages as lost after 10 consecutive business days pass without any registered scanning activity",
+      "matches": [
+        {
+          "doc_id": "faq-orders-shipping-001",
+          "chunk_key": "06",
+          "chunk_index": 5,
+          "section_path": "What should I do if my package is lost, stolen, or damaged?",
+          "raw_chunk_excerpt": "[Policy: orders > shipping | Section: What should I do if my package is lost, stolen, or damaged? | "
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-payments-001",
+      "doc_id": "faq-payments-terms-001",
+      "snippet_text": "Buy Now Pay Later is available via Klarna on qualifying orders valued between $50 and $2,000",
+      "matches": [
+        {
+          "doc_id": "faq-payments-terms-001",
+          "chunk_key": "01",
+          "chunk_index": 0,
+          "section_path": "What payment methods do you accept at checkout?",
+          "raw_chunk_excerpt": "[Policy: payments > payments | Section: What payment methods do you accept at checkout? | v2.0.0]\nNo"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-payments-002",
+      "doc_id": "faq-payments-terms-001",
+      "snippet_text": "standardized descriptor \"NORTHVALE*ORDER\"",
+      "matches": [
+        {
+          "doc_id": "faq-payments-terms-001",
+          "chunk_key": "02",
+          "chunk_index": 1,
+          "section_path": "How will charges appear on my billing statement?",
+          "raw_chunk_excerpt": "[Policy: payments > payments | Section: How will charges appear on my billing statement? | v2.0.0]\nA"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-payments-003",
+      "doc_id": "faq-payments-terms-001",
+      "snippet_text": "authorization holds expire automatically after 7 days",
+      "matches": [
+        {
+          "doc_id": "faq-payments-terms-001",
+          "chunk_key": "03",
+          "chunk_index": 2,
+          "section_path": "How do card authorizations and temporary holds work?",
+          "raw_chunk_excerpt": "[Policy: payments > payments | Section: How do card authorizations and temporary holds work? | v2.0."
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-payments-004",
+      "doc_id": "faq-payments-terms-001",
+      "snippet_text": "initial authorization amount can exceed the final charge by up to 20% for estimated shipping",
+      "matches": [
+        {
+          "doc_id": "faq-payments-terms-001",
+          "chunk_key": "03",
+          "chunk_index": 2,
+          "section_path": "How do card authorizations and temporary holds work?",
+          "raw_chunk_excerpt": "[Policy: payments > payments | Section: How do card authorizations and temporary holds work? | v2.0."
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-payments-005",
+      "doc_id": "faq-payments-terms-001",
+      "snippet_text": "calculated automatically based on your destination shipping address",
+      "matches": [
+        {
+          "doc_id": "faq-payments-terms-001",
+          "chunk_key": "04",
+          "chunk_index": 3,
+          "section_path": "How are sales taxes, international duties, and currencies handled?",
+          "raw_chunk_excerpt": "[Policy: payments > payments | Section: How are sales taxes, international duties, and currencies ha"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-payments-006",
+      "doc_id": "faq-payments-terms-001",
+      "snippet_text": "billing system automatically retries the payment after 3, 5, and 7 days",
+      "matches": [
+        {
+          "doc_id": "faq-payments-terms-001",
+          "chunk_key": "02",
+          "chunk_index": 1,
+          "section_path": "How will charges appear on my billing statement?",
+          "raw_chunk_excerpt": "[Policy: payments > payments | Section: How will charges appear on my billing statement? | v2.0.0]\nA"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-payments-007",
+      "doc_id": "faq-payments-terms-001",
+      "snippet_text": "most common causes of payment failure include an expired card",
+      "matches": [
+        {
+          "doc_id": "faq-payments-terms-001",
+          "chunk_key": "05",
+          "chunk_index": 4,
+          "section_path": "Why did my payment fail and how can I resolve it?",
+          "raw_chunk_excerpt": "[Policy: payments > payments | Section: Why did my payment fail and how can I resolve it? | v2.0.0]\n"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-payments-008",
+      "doc_id": "faq-payments-terms-001",
+      "snippet_text": "three consecutive failed transaction attempts will temporarily block your account from attempting checkout for 48 hours",
+      "matches": [
+        {
+          "doc_id": "faq-payments-terms-001",
+          "chunk_key": "05",
+          "chunk_index": 4,
+          "section_path": "Why did my payment fail and how can I resolve it?",
+          "raw_chunk_excerpt": "[Policy: payments > payments | Section: Why did my payment fail and how can I resolve it? | v2.0.0]\n"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-data-deletion-007",
+      "doc_id": "faq-account-data-deletion-001",
+      "snippet_text": "recover and reactivate your deleted account exclusively while the account remains within the initial 30-day grace period",
+      "matches": [
+        {
+          "doc_id": "faq-account-data-deletion-001",
+          "chunk_key": "05",
+          "chunk_index": 4,
+          "section_path": "Can I recover a deleted account or create a new one?",
+          "raw_chunk_excerpt": "[Policy: account > data_deletion | Section: Can I recover a deleted account or create a new one? | v"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-refunds-001",
+      "doc_id": "pol-payments-refunds-001",
+      "snippet_text": "receives a formal refund approval decision within 48 hours of warehouse intake",
+      "matches": [
+        {
+          "doc_id": "pol-payments-refunds-001",
+          "chunk_key": "02",
+          "chunk_index": 1,
+          "section_path": "Refund Timing",
+          "raw_chunk_excerpt": "[Policy: payments > refunds | Section: Refund Timing | v2.0.0]\nEvery returned shipment undergoes phy"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-refunds-002",
+      "doc_id": "pol-payments-refunds-001",
+      "snippet_text": "credited back to the original funding source within 5 to 7 business days following approval",
+      "matches": [
+        {
+          "doc_id": "pol-payments-refunds-001",
+          "chunk_key": "02",
+          "chunk_index": 1,
+          "section_path": "Refund Timing",
+          "raw_chunk_excerpt": "[Policy: payments > refunds | Section: Refund Timing | v2.0.0]\nEvery returned shipment undergoes phy"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-refunds-003",
+      "doc_id": "pol-payments-refunds-001",
+      "snippet_text": "missing components or unreturned accessories incurs a deduction of up to 25%",
+      "matches": [
+        {
+          "doc_id": "pol-payments-refunds-001",
+          "chunk_key": "03",
+          "chunk_index": 2,
+          "section_path": "Partial Refunds",
+          "raw_chunk_excerpt": "[Policy: payments > refunds | Section: Partial Refunds | v2.0.0]\nReturned merchandise received with "
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-refunds-004",
+      "doc_id": "pol-payments-refunds-001",
+      "snippet_text": "Purchases made using a gift card are refunded exclusively as store credit credited back to the customer's gift card balance",
+      "matches": [
+        {
+          "doc_id": "pol-payments-refunds-001",
+          "chunk_key": "04",
+          "chunk_index": 3,
+          "section_path": "Refund Methods",
+          "raw_chunk_excerpt": "[Policy: payments > refunds | Section: Refund Methods | v2.0.0]\nAll monetary refunds are issued stri"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-refunds-005",
+      "doc_id": "pol-payments-refunds-001",
+      "snippet_text": "For orders placed through Klarna, issuing a refund automatically cancels remaining unpaid installments",
+      "matches": [
+        {
+          "doc_id": "pol-payments-refunds-001",
+          "chunk_key": "04",
+          "chunk_index": 3,
+          "section_path": "Refund Methods",
+          "raw_chunk_excerpt": "[Policy: payments > refunds | Section: Refund Methods | v2.0.0]\nAll monetary refunds are issued stri"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-refunds-006",
+      "doc_id": "pol-payments-refunds-001",
+      "snippet_text": "all return shipping postage costs are fully refunded to the customer whenever the underlying return was necessitated by Northvale's operational error",
+      "matches": [
+        {
+          "doc_id": "pol-payments-refunds-001",
+          "chunk_key": "05",
+          "chunk_index": 4,
+          "section_path": "Shipping Fee Refunds",
+          "raw_chunk_excerpt": "[Policy: payments > refunds | Section: Shipping Fee Refunds | v2.0.0]\nOriginal outbound shipping fee"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-refunds-007",
+      "doc_id": "pol-payments-refunds-001",
+      "snippet_text": "Transactions completed using split payment methods have their refund amounts allocated proportionally across each respective payment method",
+      "matches": [
+        {
+          "doc_id": "pol-payments-refunds-001",
+          "chunk_key": "04",
+          "chunk_index": 3,
+          "section_path": "Refund Methods",
+          "raw_chunk_excerpt": "[Policy: payments > refunds | Section: Refund Methods | v2.0.0]\nAll monetary refunds are issued stri"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-refunds-008",
+      "doc_id": "pol-payments-refunds-001",
+      "snippet_text": "missing components or unreturned accessories incurs a deduction of up to 25%",
+      "matches": [
+        {
+          "doc_id": "pol-payments-refunds-001",
+          "chunk_key": "03",
+          "chunk_index": 2,
+          "section_path": "Partial Refunds",
+          "raw_chunk_excerpt": "[Policy: payments > refunds | Section: Partial Refunds | v2.0.0]\nReturned merchandise received with "
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-account-security-001",
+      "doc_id": "faq-account-security-001",
+      "snippet_text": "passwords must contain a minimum of 12 characters and cannot exceed a maximum length of 128 characters",
+      "matches": [
+        {
+          "doc_id": "faq-account-security-001",
+          "chunk_key": "01",
+          "chunk_index": 0,
+          "section_path": "What are the password complexity and rotation requirements?",
+          "raw_chunk_excerpt": "[Policy: account > account_security | Section: What are the password complexity and rotation require"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-account-security-002",
+      "doc_id": "faq-account-security-001",
+      "snippet_text": "all passwords expire automatically after 365 days",
+      "matches": [
+        {
+          "doc_id": "faq-account-security-001",
+          "chunk_key": "01",
+          "chunk_index": 0,
+          "section_path": "What are the password complexity and rotation requirements?",
+          "raw_chunk_excerpt": "[Policy: account > account_security | Section: What are the password complexity and rotation require"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-account-security-003",
+      "doc_id": "faq-account-security-001",
+      "snippet_text": "Enabling 2FA is mandatory for all customer accounts that store saved payment methods on file",
+      "matches": [
+        {
+          "doc_id": "faq-account-security-001",
+          "chunk_key": "02",
+          "chunk_index": 1,
+          "section_path": "How does two-factor authentication protect my profile?",
+          "raw_chunk_excerpt": "[Policy: account > account_security | Section: How does two-factor authentication protect my profile"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-account-security-004",
+      "doc_id": "faq-account-security-001",
+      "snippet_text": "you are issued 10 single-use emergency backup codes to retain for emergency access",
+      "matches": [
+        {
+          "doc_id": "faq-account-security-001",
+          "chunk_key": "02",
+          "chunk_index": 1,
+          "section_path": "How does two-factor authentication protect my profile?",
+          "raw_chunk_excerpt": "[Policy: account > account_security | Section: How does two-factor authentication protect my profile"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-account-security-005",
+      "doc_id": "faq-account-security-001",
+      "snippet_text": "permits a maximum of 5 failed OTP attempts before imposing a mandatory 15-minute verification lockout",
+      "matches": [
+        {
+          "doc_id": "faq-account-security-001",
+          "chunk_key": "03",
+          "chunk_index": 2,
+          "section_path": "How do one-time verification codes (OTP) work?",
+          "raw_chunk_excerpt": "[Policy: account > account_security | Section: How do one-time verification codes (OTP) work? | v2.0"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-account-security-006",
+      "doc_id": "faq-account-security-001",
+      "snippet_text": "Entering 5 consecutive incorrect passwords automatically locks your account for a duration of 30 minutes",
+      "matches": [
+        {
+          "doc_id": "faq-account-security-001",
+          "chunk_key": "05",
+          "chunk_index": 4,
+          "section_path": "What causes account lockouts and how are they unlocked?",
+          "raw_chunk_excerpt": "[Policy: account > account_security | Section: What causes account lockouts and how are they unlocke"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-account-security-007",
+      "doc_id": "faq-account-security-001",
+      "snippet_text": "Automated security login alerts are triggered and delivered to your registered email address whenever a login occurs from an unrecognized device",
+      "matches": [
+        {
+          "doc_id": "faq-account-security-001",
+          "chunk_key": "04",
+          "chunk_index": 3,
+          "section_path": "How does Northvale detect and handle suspicious activity?",
+          "raw_chunk_excerpt": "[Policy: account > account_security | Section: How does Northvale detect and handle suspicious activ"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-account-security-008",
+      "doc_id": "faq-account-security-001",
+      "snippet_text": "standard lockout conditions allow self-service unlock using an emailed OTP once the initial 30-minute lockout expires",
+      "matches": [
+        {
+          "doc_id": "faq-account-security-001",
+          "chunk_key": "05",
+          "chunk_index": 4,
+          "section_path": "What causes account lockouts and how are they unlocked?",
+          "raw_chunk_excerpt": "[Policy: account > account_security | Section: What causes account lockouts and how are they unlocke"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-cancellations-001",
+      "doc_id": "pol-orders-cancellation-001",
+      "snippet_text": "free cancellation on standard orders up until the order fulfillment status officially transitions to \"Shipped\"",
+      "matches": [
+        {
+          "doc_id": "pol-orders-cancellation-001",
+          "chunk_key": "01",
+          "chunk_index": 0,
+          "section_path": "Cancellation Window",
+          "raw_chunk_excerpt": "[Policy: orders > cancellations | Section: Cancellation Window | v1.0.0]\nCustomers are entitled to f"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-cancellations-002",
+      "doc_id": "pol-orders-cancellation-001",
+      "snippet_text": "Once an order is marked as shipped, cancellation is strictly disallowed; customers must instead follow the standard return process after delivery",
+      "matches": [
+        {
+          "doc_id": "pol-orders-cancellation-001",
+          "chunk_key": "01",
+          "chunk_index": 0,
+          "section_path": "Cancellation Window",
+          "raw_chunk_excerpt": "[Policy: orders > cancellations | Section: Cancellation Window | v1.0.0]\nCustomers are entitled to f"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-cancellations-003",
+      "doc_id": "pol-orders-cancellation-001",
+      "snippet_text": "cancel their pre-ordered items up to 48 hours prior to the scheduled official product release date",
+      "matches": [
+        {
+          "doc_id": "pol-orders-cancellation-001",
+          "chunk_key": "02",
+          "chunk_index": 1,
+          "section_path": "Pre-Order Cancellation",
+          "raw_chunk_excerpt": "[Policy: orders > cancellations | Section: Pre-Order Cancellation | v1.0.0]\nCustomers placing advanc"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-cancellations-004",
+      "doc_id": "pol-orders-cancellation-001",
+      "snippet_text": "Purchases categorized as bulk orders comprising 10 or more units require formal written notice submitted at least 24 hours prior to cancellation",
+      "matches": [
+        {
+          "doc_id": "pol-orders-cancellation-001",
+          "chunk_key": "03",
+          "chunk_index": 2,
+          "section_path": "Bulk Order Cancellation",
+          "raw_chunk_excerpt": "[Policy: orders > cancellations | Section: Bulk Order Cancellation | v1.0.0]\nPurchases categorized a"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-cancellations-005",
+      "doc_id": "pol-orders-cancellation-001",
+      "snippet_text": "customers wishing to cancel a package already in transit may choose to refuse delivery at the door",
+      "matches": [
+        {
+          "doc_id": "pol-orders-cancellation-001",
+          "chunk_key": "04",
+          "chunk_index": 3,
+          "section_path": "Cancellation After Shipping",
+          "raw_chunk_excerpt": "[Policy: orders > cancellations | Section: Cancellation After Shipping | v1.0.0]\nOrders that have co"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-cancellations-006",
+      "doc_id": "pol-orders-cancellation-001",
+      "snippet_text": "electronic refund transaction is initiated within 2 hours of confirmed cancellation",
+      "matches": [
+        {
+          "doc_id": "pol-orders-cancellation-001",
+          "chunk_key": "05",
+          "chunk_index": 4,
+          "section_path": "Refund on Cancellation",
+          "raw_chunk_excerpt": "[Policy: orders > cancellations | Section: Refund on Cancellation | v1.0.0]\nWhen an order is success"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-cancellations-007",
+      "doc_id": "pol-orders-cancellation-001",
+      "snippet_text": "custom-manufactured or made-to-order goods and cancellation occurs after production has started, the transaction incurs a 15% cancellation fee",
+      "matches": [
+        {
+          "doc_id": "pol-orders-cancellation-001",
+          "chunk_key": "03",
+          "chunk_index": 2,
+          "section_path": "Bulk Order Cancellation",
+          "raw_chunk_excerpt": "[Policy: orders > cancellations | Section: Bulk Order Cancellation | v1.0.0]\nPurchases categorized a"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-cancellations-008",
+      "doc_id": "pol-orders-cancellation-001",
+      "snippet_text": "reserves the right to reprice all remaining items according to single-unit retail rates",
+      "matches": [
+        {
+          "doc_id": "pol-orders-cancellation-001",
+          "chunk_key": "03",
+          "chunk_index": 2,
+          "section_path": "Bulk Order Cancellation",
+          "raw_chunk_excerpt": "[Policy: orders > cancellations | Section: Bulk Order Cancellation | v1.0.0]\nPurchases categorized a"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-exchanges-001",
+      "doc_id": "faq-orders-exchanges-001",
+      "snippet_text": "request an exchange on eligible items within 30 days of carrier delivery confirmation",
+      "matches": [
+        {
+          "doc_id": "faq-orders-exchanges-001",
+          "chunk_key": "01",
+          "chunk_index": 0,
+          "section_path": "What items are eligible for an exchange?",
+          "raw_chunk_excerpt": "[Policy: orders > exchanges | Section: What items are eligible for an exchange? | v1.0.0]\nYou can re"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-exchanges-002",
+      "doc_id": "faq-orders-exchanges-001",
+      "snippet_text": "Size exchanges are permitted for any corresponding size option currently in stock",
+      "matches": [
+        {
+          "doc_id": "faq-orders-exchanges-001",
+          "chunk_key": "02",
+          "chunk_index": 1,
+          "section_path": "How do size and color exchanges work with inventory?",
+          "raw_chunk_excerpt": "[Policy: orders > exchanges | Section: How do size and color exchanges work with inventory? | v1.0.0"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-exchanges-003",
+      "doc_id": "faq-orders-exchanges-001",
+      "snippet_text": "desired size or color is completely sold out, an exchange cannot be fulfilled",
+      "matches": [
+        {
+          "doc_id": "faq-orders-exchanges-001",
+          "chunk_key": "02",
+          "chunk_index": 1,
+          "section_path": "How do size and color exchanges work with inventory?",
+          "raw_chunk_excerpt": "[Policy: orders > exchanges | Section: How do size and color exchanges work with inventory? | v1.0.0"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-exchanges-004",
+      "doc_id": "faq-orders-exchanges-001",
+      "snippet_text": "Under standard fulfillment, replacement orders are dispatched within 2 to 3 business days following verified carrier scanning",
+      "matches": [
+        {
+          "doc_id": "faq-orders-exchanges-001",
+          "chunk_key": "03",
+          "chunk_index": 2,
+          "section_path": "What is the step-by-step exchange process?",
+          "raw_chunk_excerpt": "[Policy: orders > exchanges | Section: What is the step-by-step exchange process? | v1.0.0]\nYou can "
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": true,
+      "owner_review_needed": false,
+      "soft_match_note": "originally flagged; confirmed clean verbatim post-re-chunk"
+    },
+    {
+      "seed_id": "s-exchanges-005",
+      "doc_id": "faq-orders-exchanges-001",
+      "snippet_text": "replacement shipment is dispatched automatically as soon as the returned merchandise receives its initial carrier intake scan",
+      "matches": [
+        {
+          "doc_id": "faq-orders-exchanges-001",
+          "chunk_key": "03",
+          "chunk_index": 2,
+          "section_path": "What is the step-by-step exchange process?",
+          "raw_chunk_excerpt": "[Policy: orders > exchanges | Section: What is the step-by-step exchange process? | v1.0.0]\nYou can "
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-exchanges-006",
+      "doc_id": "faq-orders-exchanges-001",
+      "snippet_text": "The return transit leg is provided free of charge whenever you are exchanging an item that arrived defective or was shipped incorrectly",
+      "matches": [
+        {
+          "doc_id": "faq-orders-exchanges-001",
+          "chunk_key": "04",
+          "chunk_index": 3,
+          "section_path": "Who pays for exchange shipping and surcharges?",
+          "raw_chunk_excerpt": "[Policy: orders > exchanges | Section: Who pays for exchange shipping and surcharges? | v1.0.0]\nThe "
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": true,
+      "owner_review_needed": false,
+      "soft_match_note": "originally flagged; confirmed clean verbatim post-re-chunk"
+    },
+    {
+      "seed_id": "s-exchanges-007",
+      "doc_id": "faq-orders-exchanges-001",
+      "snippet_text": "exchange an item for a higher-priced variation, you are required to pay the price difference",
+      "matches": [
+        {
+          "doc_id": "faq-orders-exchanges-001",
+          "chunk_key": "05",
+          "chunk_index": 4,
+          "section_path": "How are pricing differences and discounts calculated?",
+          "raw_chunk_excerpt": "[Policy: orders > exchanges | Section: How are pricing differences and discounts calculated? | v1.0."
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-exchanges-008",
+      "doc_id": "faq-orders-exchanges-001",
+      "snippet_text": "exchanging an item previously purchased on sale for a regular-priced item, you will be charged the current regular price difference",
+      "matches": [
+        {
+          "doc_id": "faq-orders-exchanges-001",
+          "chunk_key": "05",
+          "chunk_index": 4,
+          "section_path": "How are pricing differences and discounts calculated?",
+          "raw_chunk_excerpt": "[Policy: orders > exchanges | Section: How are pricing differences and discounts calculated? | v1.0."
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-disputes-001",
+      "doc_id": "pol-payments-disputes-001",
+      "snippet_text": "within the card issuer's mandated response deadline, which typically ranges from 20 to 45 days",
+      "matches": [
+        {
+          "doc_id": "pol-payments-disputes-001",
+          "chunk_key": "03",
+          "chunk_index": 2,
+          "section_path": "Chargeback Handling",
+          "raw_chunk_excerpt": "[Policy: payments > disputes | Section: Chargeback Handling | v1.0.0]\nWhen a customer initiates a fo"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-disputes-002",
+      "doc_id": "pol-payments-disputes-001",
+      "snippet_text": "file a formal payment dispute to investigate unauthorized transactions, confirmed duplicate charges",
+      "matches": [
+        {
+          "doc_id": "pol-payments-disputes-001",
+          "chunk_key": "01",
+          "chunk_index": 0,
+          "section_path": "When to File a Dispute",
+          "raw_chunk_excerpt": "[Policy: payments > disputes | Section: When to File a Dispute | v1.0.0]\nCustomers may file a formal"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-disputes-003",
+      "doc_id": "pol-payments-disputes-001",
+      "snippet_text": "initiates an internal billing review within 2 business days of receiving an official dispute inquiry ticket",
+      "matches": [
+        {
+          "doc_id": "pol-payments-disputes-001",
+          "chunk_key": "02",
+          "chunk_index": 1,
+          "section_path": "Internal Review Process",
+          "raw_chunk_excerpt": "[Policy: payments > disputes | Section: Internal Review Process | v1.0.0]\nNorthvale initiates an int"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-disputes-004",
+      "doc_id": "pol-payments-disputes-001",
+      "snippet_text": "filing a formal police report is strictly mandatory for any dispute exceeding $500",
+      "matches": [
+        {
+          "doc_id": "pol-payments-disputes-001",
+          "chunk_key": "04",
+          "chunk_index": 3,
+          "section_path": "Documentation Requirements",
+          "raw_chunk_excerpt": "[Policy: payments > disputes | Section: Documentation Requirements | v1.0.0]\nCustomers submitting a "
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-disputes-005",
+      "doc_id": "pol-payments-disputes-001",
+      "snippet_text": "billing department sends a formal dispute receipt acknowledgment within 24 hours of ticket submission",
+      "matches": [
+        {
+          "doc_id": "pol-payments-disputes-001",
+          "chunk_key": "05",
+          "chunk_index": 4,
+          "section_path": "Timeline and Resolution",
+          "raw_chunk_excerpt": "[Policy: payments > disputes | Section: Timeline and Resolution | v1.0.0]\nThe billing department sen"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-disputes-006",
+      "doc_id": "pol-payments-disputes-001",
+      "snippet_text": "submission must include an official bank or credit card statement clearly demonstrating the disputed charge",
+      "matches": [
+        {
+          "doc_id": "pol-payments-disputes-001",
+          "chunk_key": "04",
+          "chunk_index": 3,
+          "section_path": "Documentation Requirements",
+          "raw_chunk_excerpt": "[Policy: payments > disputes | Section: Documentation Requirements | v1.0.0]\nCustomers submitting a "
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-disputes-007",
+      "doc_id": "pol-payments-disputes-001",
+      "snippet_text": "closed dispute that a customer seeks to re-open after 30 days have elapsed requires submitting an entirely fresh dispute filing",
+      "matches": [
+        {
+          "doc_id": "pol-payments-disputes-001",
+          "chunk_key": "05",
+          "chunk_index": 4,
+          "section_path": "Timeline and Resolution",
+          "raw_chunk_excerpt": "[Policy: payments > disputes | Section: Timeline and Resolution | v1.0.0]\nThe billing department sen"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-disputes-008",
+      "doc_id": "pol-payments-disputes-001",
+      "snippet_text": "Submitting a payment dispute immediately reverses and suspends any ongoing return or refund processing",
+      "matches": [
+        {
+          "doc_id": "pol-payments-disputes-001",
+          "chunk_key": "01",
+          "chunk_index": 0,
+          "section_path": "When to File a Dispute",
+          "raw_chunk_excerpt": "[Policy: payments > disputes | Section: When to File a Dispute | v1.0.0]\nCustomers may file a formal"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-methods-001",
+      "doc_id": "faq-payments-methods-001",
+      "snippet_text": "Visa, Mastercard, American Express, and Discover",
+      "matches": [
+        {
+          "doc_id": "faq-payments-methods-001",
+          "chunk_key": "01",
+          "chunk_index": 0,
+          "section_path": "What credit and debit cards can I use at Northvale?",
+          "raw_chunk_excerpt": "[Policy: payments > methods | Section: What credit and debit cards can I use at Northvale? | v1.0.0]"
+        }
+      ],
+      "cross_doc_overlaps": [
+        {
+          "doc_id": "faq-payments-terms-001",
+          "chunk_key": "01"
+        }
+      ],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-methods-002",
+      "doc_id": "faq-payments-methods-001",
+      "snippet_text": "using popular digital wallets including Apple Pay, Google Pay, and PayPal",
+      "matches": [
+        {
+          "doc_id": "faq-payments-methods-001",
+          "chunk_key": "02",
+          "chunk_index": 1,
+          "section_path": "Which digital wallets are supported for purchases?",
+          "raw_chunk_excerpt": "[Policy: payments > methods | Section: Which digital wallets are supported for purchases? | v1.0.0]\n"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-methods-003",
+      "doc_id": "faq-payments-methods-001",
+      "snippet_text": "all approved refund amounts are returned directly to the wallet balance rather than the underlying linked card",
+      "matches": [
+        {
+          "doc_id": "faq-payments-methods-001",
+          "chunk_key": "02",
+          "chunk_index": 1,
+          "section_path": "Which digital wallets are supported for purchases?",
+          "raw_chunk_excerpt": "[Policy: payments > methods | Section: Which digital wallets are supported for purchases? | v1.0.0]\n"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-methods-004",
+      "doc_id": "faq-payments-methods-001",
+      "snippet_text": "refund on an order financed through Klarna, your remaining unpaid installments are cancelled",
+      "matches": [
+        {
+          "doc_id": "faq-payments-methods-001",
+          "chunk_key": "03",
+          "chunk_index": 2,
+          "section_path": "How do Buy Now Pay Later installments work with Klarna?",
+          "raw_chunk_excerpt": "[Policy: payments > methods | Section: How do Buy Now Pay Later installments work with Klarna? | v1."
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-methods-005",
+      "doc_id": "faq-payments-methods-001",
+      "snippet_text": "commercial purchases totaling over $5,000, Northvale accepts direct domestic wire transfers",
+      "matches": [
+        {
+          "doc_id": "faq-payments-methods-001",
+          "chunk_key": "05",
+          "chunk_index": 4,
+          "section_path": "Can I pay directly using a bank transfer or wire?",
+          "raw_chunk_excerpt": "[Policy: payments > methods | Section: Can I pay directly using a bank transfer or wire? | v1.0.0]\nC"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-methods-006",
+      "doc_id": "faq-payments-methods-001",
+      "snippet_text": "recurring subscription services, you can update your stored payment method at any time through the billing dashboard",
+      "matches": [
+        {
+          "doc_id": "faq-payments-methods-001",
+          "chunk_key": "06",
+          "chunk_index": 5,
+          "section_path": "How can I update or change my payment method?",
+          "raw_chunk_excerpt": "[Policy: payments > methods | Section: How can I update or change my payment method? | v1.0.0]\nYou c"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-methods-007",
+      "doc_id": "faq-payments-methods-001",
+      "snippet_text": "simply deleting a saved card from your account wallet does not cancel active recurring subscriptions",
+      "matches": [
+        {
+          "doc_id": "faq-payments-methods-001",
+          "chunk_key": "06",
+          "chunk_index": 5,
+          "section_path": "How can I update or change my payment method?",
+          "raw_chunk_excerpt": "[Policy: payments > methods | Section: How can I update or change my payment method? | v1.0.0]\nYou c"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-methods-008",
+      "doc_id": "faq-payments-methods-001",
+      "snippet_text": "refund on an order financed through Klarna, your remaining unpaid installments are cancelled",
+      "matches": [
+        {
+          "doc_id": "faq-payments-methods-001",
+          "chunk_key": "03",
+          "chunk_index": 2,
+          "section_path": "How do Buy Now Pay Later installments work with Klarna?",
+          "raw_chunk_excerpt": "[Policy: payments > methods | Section: How do Buy Now Pay Later installments work with Klarna? | v1."
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-privacy-001",
+      "doc_id": "pol-account-privacy-001",
+      "snippet_text": "Northvale collects necessary account data during profile creation and checkout, including your full name",
+      "matches": [
+        {
+          "doc_id": "pol-account-privacy-001",
+          "chunk_key": "01",
+          "chunk_index": 0,
+          "section_path": "Data We Collect",
+          "raw_chunk_excerpt": "[Policy: account > privacy | Section: Data We Collect | v1.0.0]\nNorthvale collects necessary account"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-privacy-002",
+      "doc_id": "pol-account-privacy-001",
+      "snippet_text": "Northvale never sells personal customer information to independent third parties for their own commercial advertising",
+      "matches": [
+        {
+          "doc_id": "pol-account-privacy-001",
+          "chunk_key": "03",
+          "chunk_index": 2,
+          "section_path": "Data Sharing",
+          "raw_chunk_excerpt": "[Policy: account > privacy | Section: Data Sharing | v1.0.0]\nNorthvale shares customer information w"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-privacy-003",
+      "doc_id": "pol-account-privacy-001",
+      "snippet_text": "Transactional order data, including itemized receipts and billing histories, is retained for a period of 7 years",
+      "matches": [
+        {
+          "doc_id": "pol-account-privacy-001",
+          "chunk_key": "04",
+          "chunk_index": 3,
+          "section_path": "Data Retention",
+          "raw_chunk_excerpt": "[Policy: account > privacy | Section: Data Retention | v1.0.0]\nAccount profile records and active lo"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-privacy-004",
+      "doc_id": "pol-account-privacy-001",
+      "snippet_text": "Customer service records, chat transcripts, and recorded support tickets are retained for 3 years to ensure support quality",
+      "matches": [
+        {
+          "doc_id": "pol-account-privacy-001",
+          "chunk_key": "04",
+          "chunk_index": 3,
+          "section_path": "Data Retention",
+          "raw_chunk_excerpt": "[Policy: account > privacy | Section: Data Retention | v1.0.0]\nAccount profile records and active lo"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-privacy-005",
+      "doc_id": "pol-account-privacy-001",
+      "snippet_text": "requesting an export of their personal profile and transaction history delivered in standardized CSV or JSON formats",
+      "matches": [
+        {
+          "doc_id": "pol-account-privacy-001",
+          "chunk_key": "05",
+          "chunk_index": 4,
+          "section_path": "Your Privacy Rights",
+          "raw_chunk_excerpt": "[Policy: account > privacy | Section: Your Privacy Rights | v1.0.0]\nCustomers maintain the legal rig"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-privacy-006",
+      "doc_id": "pol-account-privacy-001",
+      "snippet_text": "Residents of California enjoy comprehensive protections under the California Consumer Privacy Act (CCPA)",
+      "matches": [
+        {
+          "doc_id": "pol-account-privacy-001",
+          "chunk_key": "05",
+          "chunk_index": 4,
+          "section_path": "Your Privacy Rights",
+          "raw_chunk_excerpt": "[Policy: account > privacy | Section: Your Privacy Rights | v1.0.0]\nCustomers maintain the legal rig"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-privacy-007",
+      "doc_id": "pol-account-privacy-001",
+      "snippet_text": "discovers an account registered to a minor under 13, the account profile and associated personal data are permanently deleted within 5 business days",
+      "matches": [
+        {
+          "doc_id": "pol-account-privacy-001",
+          "chunk_key": "06",
+          "chunk_index": 5,
+          "section_path": "Children's Privacy",
+          "raw_chunk_excerpt": "[Policy: account > privacy | Section: Children's Privacy | v1.0.0]\nRegistration of a Northvale accou"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-privacy-008",
+      "doc_id": "pol-account-privacy-001",
+      "snippet_text": "We disclose confidential account records to government agencies or law enforcement authorities only when compelled by valid legal process",
+      "matches": [
+        {
+          "doc_id": "pol-account-privacy-001",
+          "chunk_key": "03",
+          "chunk_index": 2,
+          "section_path": "Data Sharing",
+          "raw_chunk_excerpt": "[Policy: account > privacy | Section: Data Sharing | v1.0.0]\nNorthvale shares customer information w"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-data-deletion-001",
+      "doc_id": "faq-account-data-deletion-001",
+      "snippet_text": "Your account immediately enters a mandatory 30-day grace period before permanent erasure is executed",
+      "matches": [
+        {
+          "doc_id": "faq-account-data-deletion-001",
+          "chunk_key": "01",
+          "chunk_index": 0,
+          "section_path": "How do I request the deletion of my account?",
+          "raw_chunk_excerpt": "[Policy: account > data_deletion | Section: How do I request the deletion of my account? | v1.0.0]\nY"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-data-deletion-002",
+      "doc_id": "faq-account-data-deletion-001",
+      "snippet_text": "If you change your mind during this window, cancelling the deletion request restores your account to full standing",
+      "matches": [
+        {
+          "doc_id": "faq-account-data-deletion-001",
+          "chunk_key": "01",
+          "chunk_index": 0,
+          "section_path": "How do I request the deletion of my account?",
+          "raw_chunk_excerpt": "[Policy: account > data_deletion | Section: How do I request the deletion of my account? | v1.0.0]\nY"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-data-deletion-003",
+      "doc_id": "faq-account-data-deletion-001",
+      "snippet_text": "systems permanently remove your account profile, login credentials, and all saved shipping addresses",
+      "matches": [
+        {
+          "doc_id": "faq-account-data-deletion-001",
+          "chunk_key": "02",
+          "chunk_index": 1,
+          "section_path": "What personal information is permanently deleted?",
+          "raw_chunk_excerpt": "[Policy: account > data_deletion | Section: What personal information is permanently deleted? | v1.0"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-data-deletion-004",
+      "doc_id": "faq-account-data-deletion-001",
+      "snippet_text": "itemized order records and associated payment transaction logs are retained for 7 years to ensure compliance",
+      "matches": [
+        {
+          "doc_id": "faq-account-data-deletion-001",
+          "chunk_key": "03",
+          "chunk_index": 2,
+          "section_path": "What data is retained after account deletion?",
+          "raw_chunk_excerpt": "[Policy: account > data_deletion | Section: What data is retained after account deletion? | v1.0.0]\n"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-data-deletion-005",
+      "doc_id": "faq-account-data-deletion-001",
+      "snippet_text": "Secure system backup archives that contain snapshot data are cycled and permanently purged within 30 days of production deletion execution",
+      "matches": [
+        {
+          "doc_id": "faq-account-data-deletion-001",
+          "chunk_key": "04",
+          "chunk_index": 3,
+          "section_path": "What is the timeline for data deletion?",
+          "raw_chunk_excerpt": "[Policy: account > data_deletion | Section: What is the timeline for data deletion? | v1.0.0]\nThe ac"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-data-deletion-006",
+      "doc_id": "faq-account-data-deletion-001",
+      "snippet_text": "permitted to register an entirely new Northvale account in the future using the same email address",
+      "matches": [
+        {
+          "doc_id": "faq-account-data-deletion-001",
+          "chunk_key": "05",
+          "chunk_index": 4,
+          "section_path": "Can I recover a deleted account or create a new one?",
+          "raw_chunk_excerpt": "[Policy: account > data_deletion | Section: Can I recover a deleted account or create a new one? | v"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-data-deletion-008",
+      "doc_id": "faq-account-data-deletion-001",
+      "snippet_text": "Your customer-facing order history is removed from active platform databases, except for specific records that Northvale is legally obligated to maintain",
+      "matches": [
+        {
+          "doc_id": "faq-account-data-deletion-001",
+          "chunk_key": "02",
+          "chunk_index": 1,
+          "section_path": "What personal information is permanently deleted?",
+          "raw_chunk_excerpt": "[Policy: account > data_deletion | Section: What personal information is permanently deleted? | v1.0"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-notifications-001",
+      "doc_id": "faq-account-notifications-001",
+      "snippet_text": "Northvale delivers account and order communications across several convenient digital channels designed to keep you informed",
+      "matches": [
+        {
+          "doc_id": "faq-account-notifications-001",
+          "chunk_key": "01",
+          "chunk_index": 0,
+          "section_path": "What notification channels does Northvale use?",
+          "raw_chunk_excerpt": "[Policy: account > notifications | Section: What notification channels does Northvale use? | v1.0.0]"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-notifications-002",
+      "doc_id": "faq-account-notifications-001",
+      "snippet_text": "opt in to receive real-time SMS text messages for important account security verification and urgent carrier delivery updates",
+      "matches": [
+        {
+          "doc_id": "faq-account-notifications-001",
+          "chunk_key": "01",
+          "chunk_index": 0,
+          "section_path": "What notification channels does Northvale use?",
+          "raw_chunk_excerpt": "[Policy: account > notifications | Section: What notification channels does Northvale use? | v1.0.0]"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": true,
+      "owner_review_needed": false,
+      "soft_match_note": "originally flagged; confirmed clean verbatim post-re-chunk"
+    },
+    {
+      "seed_id": "s-notifications-003",
+      "doc_id": "faq-account-notifications-001",
+      "snippet_text": "If a transit delay or exception occurs, delivery exception alerts are sent to you within 2 hours of the carrier flag being posted",
+      "matches": [
+        {
+          "doc_id": "faq-account-notifications-001",
+          "chunk_key": "02",
+          "chunk_index": 1,
+          "section_path": "What notifications will I receive about my order?",
+          "raw_chunk_excerpt": "[Policy: account > notifications | Section: What notifications will I receive about my order? | v1.0"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-notifications-004",
+      "doc_id": "faq-account-notifications-001",
+      "snippet_text": "dispatches immediate automated security alerts whenever a login is detected originating from an unrecognized device hardware profile or new geographic location",
+      "matches": [
+        {
+          "doc_id": "faq-account-notifications-001",
+          "chunk_key": "03",
+          "chunk_index": 2,
+          "section_path": "What security alerts are sent to protect my account?",
+          "raw_chunk_excerpt": "[Policy: account > notifications | Section: What security alerts are sent to protect my account? | v"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-notifications-005",
+      "doc_id": "faq-account-notifications-001",
+      "snippet_text": "full control over promotional communications and can choose to opt in to marketing emails during checkout or at any time via your account settings",
+      "matches": [
+        {
+          "doc_id": "faq-account-notifications-001",
+          "chunk_key": "04",
+          "chunk_index": 3,
+          "section_path": "How do I manage my marketing communication preferences?",
+          "raw_chunk_excerpt": "[Policy: account > notifications | Section: How do I manage my marketing communication preferences? "
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-notifications-006",
+      "doc_id": "faq-account-notifications-001",
+      "snippet_text": "When you submit an unsubscribe request for marketing communications, the modification takes operational effect within 24 hours of submission",
+      "matches": [
+        {
+          "doc_id": "faq-account-notifications-001",
+          "chunk_key": "05",
+          "chunk_index": 4,
+          "section_path": "How long does unsubscribing take and what are the rules?",
+          "raw_chunk_excerpt": "[Policy: account > notifications | Section: How long does unsubscribing take and what are the rules?"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    },
+    {
+      "seed_id": "s-notifications-007",
+      "doc_id": "faq-account-notifications-001",
+      "snippet_text": "Enrolling in promotional marketing SMS text messages requires a separate explicit opt-in distinct from transactional security and delivery SMS alerts",
+      "matches": [
+        {
+          "doc_id": "faq-account-notifications-001",
+          "chunk_key": "04",
+          "chunk_index": 3,
+          "section_path": "How do I manage my marketing communication preferences?",
+          "raw_chunk_excerpt": "[Policy: account > notifications | Section: How do I manage my marketing communication preferences? "
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": true,
+      "owner_review_needed": false,
+      "soft_match_note": "originally flagged; confirmed clean verbatim post-re-chunk"
+    },
+    {
+      "seed_id": "s-notifications-008",
+      "doc_id": "faq-account-notifications-001",
+      "snippet_text": "Unsubscribing from all promotional marketing materials has no impact on the delivery of vital transactional emails, receipts, or account notices",
+      "matches": [
+        {
+          "doc_id": "faq-account-notifications-001",
+          "chunk_key": "05",
+          "chunk_index": 4,
+          "section_path": "How long does unsubscribing take and what are the rules?",
+          "raw_chunk_excerpt": "[Policy: account > notifications | Section: How long does unsubscribing take and what are the rules?"
+        }
+      ],
+      "cross_doc_overlaps": [],
+      "match_type": "verbatim",
+      "soft_match_flag": false,
+      "owner_review_needed": false
+    }
+  ],
+  "summary": {
+    "verbatim": 96,
+    "multi_match": 0,
+    "cross_doc_no_match": 0,
+    "no_match": 0,
+    "soft_matches_flagged": 4,
+    "maxSeedsPerChunk": 3,
+    "chunksWithMoreThanThreeSeeds": 0
+  }
+}

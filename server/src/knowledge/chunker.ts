@@ -20,12 +20,134 @@ export interface ChunkOptions {
   overlapTokens?: number; // default 50
 }
 
+export interface SentenceSegment {
+  sentence: string;
+  separator: string;
+}
+
+const KNOWN_ABBREVIATIONS = new Set([
+  'no',
+  'dr',
+  'mr',
+  'mrs',
+  'ms',
+  'prof',
+  'inc',
+  'ltd',
+  'corp',
+  'vs',
+  'etc',
+  'approx',
+  'est',
+  'sec',
+  'fig',
+  'vol',
+  'ref',
+  'dept',
+  'max',
+  'min',
+  'ver',
+]);
+
+const CLOSING_PUNCT = new Set(['"', "'", '”', '’', ')', ']']);
+
+function isAbbreviationAtDot(text: string, dotIndex: number): boolean {
+  const prefix = text.slice(0, dotIndex + 1);
+  // Multi-letter dotted abbreviations like e.g., i.e., u.s., a.m., p.m.
+  if (/(?:^|[\s(])(?:[a-zA-Z]\.){2,}$/.test(prefix)) {
+    return true;
+  }
+  const wordMatch = /(?:^|[\s(])([a-zA-Z]+)\.$/.exec(prefix);
+  if (wordMatch?.[1] && KNOWN_ABBREVIATIONS.has(wordMatch[1].toLowerCase())) {
+    return true;
+  }
+  return false;
+}
+
 /**
- * Splits sentences by standard punctuation while keeping sentence integrity.
+ * Splits text into sentence segments while preserving every character and separator.
+ * Invariant: segments.map((s) => s.sentence + s.separator).join('') === text
  */
-function splitIntoSentences(text: string): string[] {
-  const matched = text.match(/[^.!?]+[.!?]+(\s+|$)|[^.!?]+$/g);
-  return matched ? matched.map((s) => s.trim()).filter(Boolean) : [text];
+export function splitIntoSentencesWithSeparators(text: string): SentenceSegment[] {
+  if (text.length === 0) return [];
+
+  const segments: SentenceSegment[] = [];
+  let start = 0;
+  let i = 0;
+
+  while (i < text.length) {
+    const ch = text[i];
+    if (ch !== '.' && ch !== '!' && ch !== '?') {
+      i++;
+      continue;
+    }
+
+    // Decimal or version number (e.g. 25.50, 3.2, 1.0.0)
+    const prev = i > 0 ? text[i - 1] : '';
+    const next = i + 1 < text.length ? text[i + 1] : '';
+    if (ch === '.' && /\d/.test(prev ?? '') && /\d/.test(next ?? '')) {
+      i++;
+      continue;
+    }
+
+    // Consume consecutive sentence-ending punctuation (e.g. ..., ?!, !!)
+    let punctEnd = i + 1;
+    while (
+      punctEnd < text.length &&
+      (text[punctEnd] === '.' || text[punctEnd] === '!' || text[punctEnd] === '?')
+    ) {
+      punctEnd++;
+    }
+
+    // Single-dot abbreviation check (e.g. No., e.g., i.e.)
+    if (punctEnd === i + 1 && ch === '.' && isAbbreviationAtDot(text, i)) {
+      i = punctEnd;
+      continue;
+    }
+
+    // Consume any closing quotes or brackets attached to the sentence
+    let sentEnd = punctEnd;
+    while (sentEnd < text.length && CLOSING_PUNCT.has(text[sentEnd] ?? '')) {
+      sentEnd++;
+    }
+
+    // Require either end-of-string or whitespace after sentence-ending punctuation
+    if (sentEnd < text.length && !/\s/.test(text[sentEnd] ?? '')) {
+      i = sentEnd;
+      continue;
+    }
+
+    let sepEnd = sentEnd;
+    while (sepEnd < text.length && /\s/.test(text[sepEnd] ?? '')) {
+      sepEnd++;
+    }
+
+    segments.push({
+      sentence: text.slice(start, sentEnd),
+      separator: text.slice(sentEnd, sepEnd),
+    });
+    start = sepEnd;
+    i = sepEnd;
+  }
+
+  if (start < text.length) {
+    segments.push({
+      sentence: text.slice(start),
+      separator: '',
+    });
+  }
+
+  return segments;
+}
+
+/**
+ * Splits sentences by standard punctuation while keeping sentence integrity
+ * and guaranteeing zero fragment loss.
+ */
+export function splitIntoSentences(text: string): string[] {
+  return splitIntoSentencesWithSeparators(text)
+    .map((s) => s.sentence.trim())
+    .filter(Boolean);
 }
 
 export function chunkDocument(

@@ -37,7 +37,7 @@ import { fuseRrf } from '../src/knowledge/rrf-reranker.js';
 // --- Paths & Constants ---
 const SCRIPT_DIR = import.meta.dirname;
 const CACHE_DIR = path.resolve(SCRIPT_DIR, '.embed-cache');
-const GOLDEN_PATH = path.resolve(SCRIPT_DIR, '../../eval/knowledge-golden-dataset.v2.json');
+const GOLDEN_PATH = path.resolve(SCRIPT_DIR, '../../eval/knowledge-golden-dataset.v3.json');
 const RESULTS_DIR = path.resolve(SCRIPT_DIR, '../../benchmarks/results');
 const INTERMEDIATE_CACHE = path.resolve(RESULTS_DIR, '.ablation-query-cache.json');
 

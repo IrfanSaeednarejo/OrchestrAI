@@ -1,6 +1,6 @@
 # STATUS (update at the end of every step/phase)
 
-Last verified suite figure reported: Server 725 passing (1 skipped), Client 150/150 passing (875 total passing). Server baseline test count: 647. Client baseline test count: 144.
+Last verified suite figure reported: Server 768 passing (21 skipped), Client 150/150 passing (918 total passing). Server baseline test count: 647. Client baseline test count: 144.
 
 ## Phase state
 - Phases 1-23: COMPLETE and signed off.
@@ -16,6 +16,14 @@ Last verified suite figure reported: Server 725 passing (1 skipped), Client 150/
   - Step Final: Integration test suites verified — Journey 3 rewritten for profile-owned flow in `conversational-routing.integration.test.ts`, Scenario 7 Redis key isolation in `parent-graph-account.integration.test.ts`; 725 server + 150 client tests passing (0 failures).
 - Phase 33 (Authentication Redesign): COMPLETE on branch `phase/33-auth-visual-redesign`.
 - Phase 34 (Operations & Observability Redesign): COMPLETE on branch `phase/34-ops-visual-redesign`. Full console redesign across `/ops` (Conversation Explorer), `/ops/traces/[id]` (Trace Inspector), and `/ops/evals` (Evaluation Benchmark Dashboard) using Midnight Burgundy (`bg-surface-canvas`, `bg-surface`, `bg-surface-inset`) and Imperial Crimson (`bg-brand-primary`, `text-brand-link`) design system tokens; Geist Mono technical typography for UUIDs, timestamps, and neutral monospace durations (`duration` ms); decoupled operational status badges (`active`, `escalated`, `archived`); verifiable environment telemetry; and responsive mobile layouts. All 150 client tests passing across 28 test files (24/24 ops tests passing). Zero backend or contract changes.
+- Phase 37 (Corpus Scaling, Chunker Fix, Idempotent Ingest & Golden Dataset v3 Migration): COMPLETE on branch `phase/37-corpus-scale`.
+  - 37a: Fixed `chunker.ts` sentence-splitter truncation defect (+843 chars recovered across 6 chunks in 4 frozen docs); 11 adversarial unit tests passing.
+  - 37b: Generated 30 new policy/FAQ markdown docs (10 per domain), passed 42-doc contradiction audit (0 divergences), generated and XMP-injected 30 PDFs.
+  - 37c.1': Pre-ingest seed resolver (`eval/seed-labels-resolved.v3-preingest.json`) resolved 96/96 seeds to `(doc_id, chunk_key)`.
+  - 37c.2: Added `chunk_key` column + partial unique index (`0014_slippery_king_bedlam.sql`), docId-scoped superseding + `ON CONFLICT (version_id, chunk_key)` upsert, RPM-paced sequential `embedBatch` (700ms interval, 65s 429 backoff) vs `embedQuery` (2s/2x 429 retry), metadata-only XMP version bump on 12 frozen PDFs (`1.0.0→1.0.1` / `2.0.0→2.0.1`), and 2-day split ingest of all 42 PDFs → `516` active chunks (`account: 172`, `orders: 171`, `payments: 173`), `0` null `chunk_key`/`embedding`, HNSW + GIN indexes rebuilt.
+  - 37c.2.5 (Gate 5): Post-ingest UUID lookup (`eval/seed-labels-resolved.v3.json`) resolved 96/96 active UUIDs.
+  - 37c.3: Migrated golden dataset to `eval/knowledge-golden-dataset.v3.json` (302 total queries: 249 active with gold UUIDs, 14 negatives, 39 excluded; 0 mismatches) and updated `run-retrieval-eval.ts` / `run-retrieval-ablation.ts` to load `v3`.
+  - 37c.4: 10-query stratified smoke eval passed (`Hit@3 = 9/10`, `90%`); full server suite `88 passed | 2 skipped` (`768 passed | 21 skipped`).
   - Phase A (Scale Hardening): concurrency limiting (`p-limit`), dry-run mode, RSS memory measurement, embed counter, `page_number` column and migration, `ingestDirectory` support, 56KB large-doc fixture + benchmark script (`benchmark-large-pdf.ts`).
   - Phase B (Hardening & Latency Budgeting): 128 passed | 20 skipped test suite confirmed, p50 476ms local, p95 target revised to <2,000ms (Gemini API embed-bound), peak RSS ~476MB for 56KB fixture, legacy fallback guarded against 42P01 error code, retry logging verified with `console.error`.
   - Phase C (Deployment Artifacts & Discrepancy Reconciliation): all 7 discrepancies A–G resolved and locked across `MIGRATION.md`, `DEPLOYMENT.md`, `eval/production-smoke.md`, `eval/retrieval-queries.README.md`, and `.github/workflows/rag-ci.yml`.
@@ -158,6 +166,21 @@ Phase 19 hardening: recursive tool output PII redaction, `user` reducer null-saf
 
 ---
 
+## Phase 37 (In Progress) — Corpus Scale, Chunker Fix & Re-Labeling
+
+**Branch**: `phase/37-corpus-scale`
+
+### Sub-Phase 37a — COMPLETE (Gate 1 verified, commits `9aeaee7`, `0c8b69b`)
+- **Chunker Fix (`server/src/knowledge/chunker.ts`)**: Replaced destructive sentence-splitting regex with `splitIntoSentencesWithSeparators`, protecting decimals (`25.50`), version numbers (`3.2`, `1.0.0`), and abbreviations (`No.`, `e.g.`, `i.e.`) with a strict verbatim round-trip invariant. Added 11 adversarial tests in `chunker.test.ts` (14/14 passing).
+- **Production Chunk-Truncation Audit (READ-ONLY)**: Audited 66 production chunks against source PDFs and found 6 silently truncated by a regex that dropped sentence fragments preceding decimal amounts, losing 81–202 characters of customer-facing policy per affected chunk (`64aafead`, `9fbc24e7`, `f638b0c3`, `859759ac`, `1f440385`, `db883c4f`).
+- **Staging Recovery Proof (`server/scripts/.chunk-staging.json`)**: Re-chunking the 12 frozen PDFs recovered `+843` chars (`+99`, `+188`, `+165`, `+202`, `+81`, `+108`) across the 6 affected chunks (`52,166` staged vs `51,323` prod), with `0` char difference across all 60 unaffected chunks.
+- **Test count**: 763 active server tests across 88 files (`752 + 11` new chunker tests), run via CI in-region; parallel local runs from a high-latency region show integration-only WAN timeouts, documented below.
+
+### Known Issues
+- Integration tests (`parent-graph-*.integration.test.ts`) fail with WAN timeouts when run in parallel from Pakistan -> `us-east-2` (`755 passed | 8 failed | 21 skipped` in parallel run). Pass sequentially with `--fileParallelism=false --testTimeout=60000` (e.g., `parent-graph-cross-domain` 14/14, `parent-graph-account` 5/5). CI (in-region) is the source of truth. Root fix: region-aware test timeout or test-side batching, deferred to Phase 39+.
+
+---
+
 ## Changelog
 - 2026-11-05: Phase 6 Step 6a integration proof graph and test suite verified (239 tests).
 - 2026-11-05: Phase 6 Step 6b type unification (SpecialistId), cast cleanup, and Phase 6 close-out (240 tests).
@@ -188,4 +211,5 @@ Phase 19 hardening: recursive tool output PII redaction, `user` reducer null-saf
 - 2026-11-21: Phase 32 Orders Page Redesign completed on branch `phase/32-orders-visual-redesign`. Steps 0–1: discovery proposal (`client/ORCHESTRAI_ORDERS_REDESIGN_PROPOSAL.md`), StageShow visual demonstration (`orders-redesign-stageshow.html`), and full page redesign in `client/src/app/orders/page.tsx` using Midnight Burgundy (`bg-surface-canvas`, `bg-surface`) and Imperial Crimson (`bg-brand-primary`, `text-brand-link`) design system tokens; added unified semantic status badges (`status-success`, `status-info`, `status-warning`, `status-error`), `Geist Mono` order telemetry chip, structured metadata grid, autonomous AI assistant handoff dock (`bg-surface-inset`), calm empty state with catalog CTA, and responsive mobile adaptations. All 150 client tests passing across 28 suites (5/5 orders unit/integration tests passing). Zero backend or contract changes.
 - 2026-11-21: Phase 33 Authentication Redesign completed on branch `phase/33-auth-visual-redesign`. Steps 0–7: discovery proposal (`client/ORCHESTRAI_AUTH_REDESIGN_PROPOSAL.md`), StageShow visual demonstration (`auth-split-screen-stageshow.html`), full split-screen architecture for `/login` (`client/src/app/login/page.tsx`) and `/register` (`client/src/app/register/page.tsx`) featuring 57.5% multi-agent orchestration architectural visual mesh (Meta-Triage node, checkpointer radar rings, 6 specialist satellites, bezier transition splines, and editorial metrics), 42.5% focused authentication panel, mobile compact branded header, and shared modal dialog redesign (`client/src/components/auth/auth-modal.tsx`) using Midnight Burgundy (`bg-surface-canvas`, `bg-surface`, `bg-surface-inset`) and Imperial Crimson (`bg-brand-primary`, `text-brand-link`) design system tokens; added brand mark badges, AlertCircle semantic error banners (`bg-status-error/10`), recessed form inputs, and smooth tab transition pills. All 150 client tests passing across 28 suites (11/11 auth tests passing). Zero backend or contract changes.
 - 2026-11-21: Phase 34 Operations & Observability Redesign completed on branch `phase/34-ops-visual-redesign`. Steps 0–5: discovery proposal (`client/ORCHESTRAI_OPS_REDESIGN_PROPOSAL.md`), StageShow visual demonstration (`ops-redesign-stageshow.html`), full console redesign across `/ops` (Conversation Explorer), `/ops/traces/[id]` (Trace Inspector), and `/ops/evals` (Evaluation Benchmark Dashboard) using Midnight Burgundy (`bg-surface-canvas`, `bg-surface`, `bg-surface-inset`) and Imperial Crimson (`bg-brand-primary`, `text-brand-link`) design system tokens; added Geist Mono technical typography for IDs, timestamps, and neutral monospace durations, decoupled operational status semantics (`active`, `escalated`, `archived`), verifiable environment telemetry, and responsive mobile adaptations. All 150 client tests passing across 28 suites (24/24 ops tests passing). Zero backend or contract changes.
+- 2026-11-27: Phase 37 Corpus Scaling & Golden Dataset v3 Migration completed on branch `phase/37-corpus-scale`: chunker sentence-splitter fix (+843 chars recovered), 30 new policy/FAQ PDFs + 42-doc contradiction audit, `chunk_key` schema migration, RPM-paced sequential `embedBatch` + split `embedQuery` retry policy, full 42-doc / 516-chunk ingest + HNSW/GIN REINDEX, 96/96 post-ingest seed UUID resolution (`eval/seed-labels-resolved.v3.json`), `v3` golden dataset migration (`eval/knowledge-golden-dataset.v3.json`), and 10-query smoke eval (`Hit@3 = 90%`). Server suite: 768 passing, 21 skipped.
 
